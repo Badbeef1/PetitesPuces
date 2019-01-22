@@ -6,13 +6,12 @@ using System.Web.Mvc;
 
 namespace PetitesPuces.Controllers
 {
-    public class HomeController : Controller
+    public class AdministrateurController : Controller
     {
-        // GET: Home
-        public ActionResult Index()
+        // GET: Administrateur
+        public ActionResult GestionInactivite()
         {
             return View();
         }
-
     }
 }
