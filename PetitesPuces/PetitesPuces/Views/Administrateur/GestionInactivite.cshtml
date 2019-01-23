@@ -7,17 +7,20 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 </head>
-<body style="padding-left:10px;padding-right:10px">
+<body>
     <div id="navigation">
         @RenderPage("~/Views/Home/index.cshtml")
     </div>
-    <h1 style="text-align:center">Gestion de l'inactivité</h1>
-    <div id="divClient">
-        <h2 style="text-align:left;display:inline">Client(s)</h2>
-        
+    <div id="infoPage" style="padding-left:10px;padding-right:10px">
+        <h1 style="text-align:center">Gestion de l'inactivité</h1>
+        <div id="divClient">
+            <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
+            <br />
             <select id="ddlClient" style="display:inline;float:right">
-                <option>1 mois</option>
+                <option selected="selected">1 mois</option>
                 <option>3 mois</option>
                 <option>6 mois</option>
                 <option>1 an</option>
@@ -25,27 +28,120 @@
                 <option>3 ans</option>
                 <option>Début du site Web</option>
             </select>
-        
-        <div id="tableauClient">
 
+            <br />
+            <div id="tableauClient">
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>#</strong></td>
+                        <td style="text-align:left" class="col-2"><strong>Nom</strong></td>
+                        <td style="text-align:left" class="col-2"><strong>Prénom</strong></td>
+                        <td style="text-align:right" class="col-2"><strong>Dernière présence</strong></td>
+                        <td style="text-align:center" class="col-1"><strong>Détruire</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>1</strong></td>
+                        <td style="text-align:left" class="col-2">Desrosiers</td>
+                        <td style="text-align:left" class="col-2">Jean-Marc</td>
+                        <td style="text-align:right" class="col-2">1 oct. 2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireClient1" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>2</strong></td>
+                        <td style="text-align:left" class="col-2">Duquo</td>
+                        <td style="text-align:left" class="col-2">Marie-Isabelle</td>
+                        <td style="text-align:right" class="col-2">01-10-2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireClient2" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>3</strong></td>
+                        <td style="text-align:left" class="col-2">Desrosiers</td>
+                        <td style="text-align:left" class="col-2">Jean-Luc</td>
+                        <td style="text-align:right" class="col-2">1er octobre 2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireClient3" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>4</strong></td>
+                        <td style="text-align:left" class="col-2">Mokakiko</td>
+                        <td style="text-align:left" class="col-2">Francine</td>
+                        <td style="text-align:right" class="col-2">1 octobre 2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireClient4" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="divVendeur">
+            <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
+            <br />
+            <select id="ddlVendeur" style="display:inline; float:right">
+                <option selected="selected">1 an</option>
+                <option>2 ans</option>
+                <option>3 ans</option>
+                <option>Début du site Web</option>
+            </select>
+            <br />
+            <div id="tableauVendeur">
+                <table class="table table-bordered">
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>#</strong></td>
+                        <td style="text-align:left" class="col-2"><strong>Nom</strong></td>
+                        <td style="text-align:left" class="col-2"><strong>Prénom</strong></td>
+                        <td style="text-align:right" class="col-2"><strong>Dernière activité</strong></td>
+                        <td style="text-align:center" class="col-1"><strong>Détruire</strong></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>15</strong></td>
+                        <td style="text-align:left" class="col-2">Desrosiers</td>
+                        <td style="text-align:left" class="col-2">Jean-Marc</td>
+                        <td style="text-align:right" class="col-2">1 oct. 2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireVendeur1" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>21</strong></td>
+                        <td style="text-align:left" class="col-2">Duquo</td>
+                        <td style="text-align:left" class="col-2">Marie-Isabelle</td>
+                        <td style="text-align:right" class="col-2">01-10-2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireVendeur2" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>33</strong></td>
+                        <td style="text-align:left" class="col-2">Desrosiers</td>
+                        <td style="text-align:left" class="col-2">Jean-Luc</td>
+                        <td style="text-align:right" class="col-2">1er octobre 2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireVendeur3" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                    .
+                    <tr>
+                        <td style="text-align:right" class="col-1"><strong>45</strong></td>
+                        <td style="text-align:left" class="col-2">Mokakiko</td>
+                        <td style="text-align:left" class="col-2">Francine</td>
+                        <td style="text-align:right" class="col-2">1 octobre 2018</td>
+                        <td style="text-align:center" class="col-1">
+                            <input type="checkbox" id="btnDetruireVendeur4" value="Ok" style="width:inherit" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
-    <div id="divVendeur">
-        <h2 style="text-align:left;display:inline">Vendeur(s)</h2>
-        
-            <select id="ddlVendeur" style="display:inline; float:right">
-                <option>1 mois</option>
-                <option>3 mois</option>
-                <option>6 mois</option>
-                <option>1 an</option>
-                <option>2 ans</option>
-                <option>3 ans</option>
-                <option>Début du site Web</option>
-            </select>
-        
-    <div id="tableauVendeur">
-
-    </div>
-    </div>
+    <br />
+    <br />
+    <div id="divConfirmation" style="text-align:center">
+        <input id="btnConfirmer" type="button" value="Confirmer" class="btn btn-primary"/>
+        </div>
 </body>
 </html>
