@@ -35,6 +35,8 @@ namespace PetitesPuces.Controllers
       }
 
       public ActionResult RecupererPassword() => View();
-      
+
+      public ActionResult TestStatistiques() => View("TestStatistiques");
+
    }
 }
