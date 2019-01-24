@@ -1,0 +1,247 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Catalogue du vendeur</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <style>
+        .sCardItemCatalogue {
+            max-width: 17rem;
+            min-width: 17rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Catalogue du vendeur Bureau en gros</h1>
+        <div class="row">
+            <div class="col-5">
+                <div id="divRecherche" class="border-secondary card">
+                    <h6 class="card-header">Recherche</h6>
+                    <div class="card-body d-flex flex-wrap">
+                        <input type="text" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12"><br />
+                        <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3">
+                            <option value="1" selected>Nom produit</option>
+                            <option value="2">Catégorie produit</option>
+                            <option value="3">Numéro produit</option>
+                            <option value="4">Description produit</option>
+                            <option value="5">Date de parution</option>
+                        </select>
+                        <button type="button" class="btn btn-outline-primary mt-3 ml-auto">Lancer recherche <span class="fas fa-search"></span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                <div id="divTriEtNbItems" class="border rounded border-secondary card">
+                    <h6 class="card-header">Présentation</h6>
+                    <div class="card-body d-flex">
+                        <div class="">
+                            <label class="font-weight-bold">Classer par </label><br /><br />
+                            <button type="button" class="btn btn-outline-primary">Numéro de produit <span class="fas fa-sort-alpha-up"></span></button>
+                            <button type="button" class="btn btn-outline-primary">Catégorie <span class="fas fa-sort-alpha-up"></span></button>
+                            <button type="button" class="btn btn-outline-primary">Date de parution <span class="fas fa-sort-alpha-up"></span></button>
+                        </div>
+                        <div class="ml-auto">
+                            <label for="selPage" class="font-weight-bold">Par page</label><br /><br />
+                            <select id="selPage" class="custom-select border-primary text-primary">
+                                <option>5</option>
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>20</option>
+                                <option>25</option>
+                                <option>tout</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div id="divPaginationHaut" class="d-flex justify-content-center">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;&lsaquo;</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item"><a class="page-link" href="#">6</a></li>
+                    <li class="page-item"><a class="page-link" href="#">7</a></li>
+                    <li class="page-item"><a class="page-link" href="#">8</a></li>
+                    <li class="page-item"><a class="page-link" href="#">9</a></li>
+                    <li class="page-item"><a class="page-link" href="#">10</a></li>
+                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&rsaquo;&rsaquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&rsaquo;</a></li>
+                </ul>
+            </nav>
+            <button type="button" class="btn btn-outline-primary ml-3 btn-sm">Ajouter un produit <span class="fas fa-plus"></span></button>
+        </div>
+
+        <br />
+        <div class="card-columns">
+            <div id="divItems" class="card border-dark sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                <div class="card-body">
+                    <h5 class="card-title">Crayon en bois</h5>
+                    <p class="card-text">
+                        <span id="spPrix">5,00$</span><br />
+                        <span id="spQqt">Quantité restant: 5</span><br />
+                        <small>#245786654</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                </div>
+                <div class="card-footer btn-group" style="width:100%">
+                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="divPaginationBas" class="d-flex justify-content-center">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;&lsaquo;</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">4</a></li>
+                    <li class="page-item"><a class="page-link" href="#">5</a></li>
+                    <li class="page-item"><a class="page-link" href="#">6</a></li>
+                    <li class="page-item"><a class="page-link" href="#">7</a></li>
+                    <li class="page-item"><a class="page-link" href="#">8</a></li>
+                    <li class="page-item"><a class="page-link" href="#">9</a></li>
+                    <li class="page-item"><a class="page-link" href="#">10</a></li>
+                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&rsaquo;&rsaquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&rsaquo;</a></li>
+                </ul>
+            </nav>
+            <button type="button" class="btn btn-outline-primary ml-3 btn-sm">Ajouter un produit <span class="fas fa-plus"></span></button>
+        </div>
+    </div>
+</body>
+</html>

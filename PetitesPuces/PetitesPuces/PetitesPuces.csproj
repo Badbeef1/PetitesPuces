@@ -119,6 +119,9 @@
     <Content Include="Views\Client\SaisieCommande.cshtml" />
     <Content Include="Views\Client\Catalogue.cshtml" />
     <Content Include="Views\Client\ProduitDetaille.cshtml" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
+    <Content Include="Views\Vendeur\GestionProduit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
