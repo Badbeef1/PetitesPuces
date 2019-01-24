@@ -13,5 +13,17 @@ namespace PetitesPuces.Controllers
         {
             return View();
         }
+
+        // GET: Cataloguess
+        public ActionResult Catalogue()
+        {
+            return View();
+        }
+
+        // GET: ProduitDetail
+        public ActionResult ProduitDetaille()
+        {
+            return View();
+        }
     }
 }

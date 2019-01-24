@@ -13,5 +13,11 @@ namespace PetitesPuces.Controllers
         {
             return View();
         }
+
+        //GET: GestionProduit
+        public ActionResult GestionProduit()
+        {
+            return View();
+        }
     }
 }
