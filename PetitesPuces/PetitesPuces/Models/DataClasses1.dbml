@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="BD6B8_424R_TESTS" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=sv-sqlinfo;Initial Catalog=BD6B8_424R_TESTS;User ID=6B8equipe424r" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="BD6B8_424R_TESTSConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.PPCategories" Member="PPCategories">
+    <Type Name="PPCategories">
+      <Column Name="NoCategorie" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Details" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Association Name="PPCategories_PPProduits" Member="PPProduits" ThisKey="NoCategorie" OtherKey="NoCategorie" Type="PPProduits" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPArticlesEnPanier" Member="PPArticlesEnPanier">
+    <Type Name="PPArticlesEnPanier">
+      <Column Name="NoPanier" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NoClient" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoVendeur" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoProduit" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="DateCreation" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="NbItems" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Association Name="PPClients_PPArticlesEnPanier" Member="PPClients" ThisKey="NoClient" OtherKey="NoClient" Type="PPClients" IsForeignKey="true" />
+      <Association Name="PPProduits_PPArticlesEnPanier" Member="PPProduits" ThisKey="NoProduit" OtherKey="NoProduit" Type="PPProduits" IsForeignKey="true" />
+      <Association Name="PPVendeurs_PPArticlesEnPanier" Member="PPVendeurs" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPVendeurs" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPClients" Member="PPClients">
+    <Type Name="PPClients">
+      <Column Name="NoClient" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AdresseEmail" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MotDePasse" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Nom" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Prenom" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Rue" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Ville" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Province" Type="System.String" DbType="Char(2)" CanBeNull="true" />
+      <Column Name="CodePostal" Type="System.String" DbType="VarChar(7)" CanBeNull="true" />
+      <Column Name="Pays" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="Tel1" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Tel2" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="DateCreation" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="DateMAJ" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="NbConnexions" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="DateDerniereConnexion" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="Statut" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Association Name="PPClients_PPArticlesEnPanier" Member="PPArticlesEnPanier" ThisKey="NoClient" OtherKey="NoClient" Type="PPArticlesEnPanier" />
+      <Association Name="PPClients_PPCommandes" Member="PPCommandes" ThisKey="NoClient" OtherKey="NoClient" Type="PPCommandes" />
+      <Association Name="PPClients_PPVendeursClients" Member="PPVendeursClients" ThisKey="NoClient" OtherKey="NoClient" Type="PPVendeursClients" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPCommandes" Member="PPCommandes">
+    <Type Name="PPCommandes">
+      <Column Name="NoCommande" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NoClient" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoVendeur" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="DateCommande" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="CoutLivraison" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="TypeLivraison" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="MontantTotAvantTaxes" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="TPS" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="TVQ" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="PoidsTotal" Type="System.Decimal" DbType="Decimal(8,1)" CanBeNull="true" />
+      <Column Name="Statut" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
+      <Column Name="NoAutorisation" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="PPCommandes_PPDetailsCommandes" Member="PPDetailsCommandes" ThisKey="NoCommande" OtherKey="NoCommande" Type="PPDetailsCommandes" />
+      <Association Name="PPClients_PPCommandes" Member="PPClients" ThisKey="NoClient" OtherKey="NoClient" Type="PPClients" IsForeignKey="true" />
+      <Association Name="PPTypesLivraison_PPCommandes" Member="PPTypesLivraison" ThisKey="TypeLivraison" OtherKey="CodeLivraison" Type="PPTypesLivraison" IsForeignKey="true" />
+      <Association Name="PPVendeurs_PPCommandes" Member="PPVendeurs" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPVendeurs" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPDetailsCommandes" Member="PPDetailsCommandes">
+    <Type Name="PPDetailsCommandes">
+      <Column Name="NoDetailCommandes" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NoCommande" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoProduit" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="PrixVente" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="Quantité" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Association Name="PPCommandes_PPDetailsCommandes" Member="PPCommandes" ThisKey="NoCommande" OtherKey="NoCommande" Type="PPCommandes" IsForeignKey="true" />
+      <Association Name="PPProduits_PPDetailsCommandes" Member="PPProduits" ThisKey="NoProduit" OtherKey="NoProduit" Type="PPProduits" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPPoidsLivraisons" Member="PPPoidsLivraisons">
+    <Type Name="PPPoidsLivraisons">
+      <Column Name="CodeLivraison" Type="System.Int16" DbType="SmallInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CodePoids" Type="System.Int16" DbType="SmallInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Tarif" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Association Name="PPTypesLivraison_PPPoidsLivraisons" Member="PPTypesLivraison" ThisKey="CodeLivraison" OtherKey="CodeLivraison" Type="PPTypesLivraison" IsForeignKey="true" />
+      <Association Name="PPTypesPoids_PPPoidsLivraisons" Member="PPTypesPoids" ThisKey="CodePoids" OtherKey="CodePoids" Type="PPTypesPoids" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPHistoriquePaiements" Member="PPHistoriquePaiements">
+    <Type Name="PPHistoriquePaiements">
+      <Column Name="NoHistorique" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="MontantVenteAvantLivraison" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="NoVendeur" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoClient" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoCommande" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="DateVente" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="NoAutorisation" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="FraisLesi" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="Redevance" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="FraisLivraison" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="FraisTPS" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="FraisTVQ" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPProduits" Member="PPProduits">
+    <Type Name="PPProduits">
+      <Column Name="NoProduit" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NoVendeur" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="NoCategorie" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Nom" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Photo" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PrixDemande" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="NombreItems" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Column Name="Disponibilité" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DateVente" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="PrixVente" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="Poids" Type="System.Decimal" DbType="Decimal(8,1)" CanBeNull="true" />
+      <Column Name="DateCreation" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="DateMAJ" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Association Name="PPProduits_PPArticlesEnPanier" Member="PPArticlesEnPanier" ThisKey="NoProduit" OtherKey="NoProduit" Type="PPArticlesEnPanier" />
+      <Association Name="PPProduits_PPDetailsCommandes" Member="PPDetailsCommandes" ThisKey="NoProduit" OtherKey="NoProduit" Type="PPDetailsCommandes" />
+      <Association Name="PPCategories_PPProduits" Member="PPCategories" ThisKey="NoCategorie" OtherKey="NoCategorie" Type="PPCategories" IsForeignKey="true" />
+      <Association Name="PPVendeurs_PPProduits" Member="PPVendeurs" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPVendeurs" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPTaxeFederale" Member="PPTaxeFederale">
+    <Type Name="PPTaxeFederale">
+      <Column Name="NoTPS" Type="System.Byte" DbType="TinyInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DateEffectiveTPS" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="TauxTPS" Type="System.Decimal" DbType="Decimal(4,2)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPTaxeProvinciale" Member="PPTaxeProvinciale">
+    <Type Name="PPTaxeProvinciale">
+      <Column Name="NoTVQ" Type="System.Byte" DbType="TinyInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DateEffectiveTVQ" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="TauxTVQ" Type="System.Decimal" DbType="Decimal(5,3)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPTypesLivraison" Member="PPTypesLivraison">
+    <Type Name="PPTypesLivraison">
+      <Column Name="CodeLivraison" Type="System.Int16" DbType="SmallInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="PPTypesLivraison_PPCommandes" Member="PPCommandes" ThisKey="CodeLivraison" OtherKey="TypeLivraison" Type="PPCommandes" />
+      <Association Name="PPTypesLivraison_PPPoidsLivraisons" Member="PPPoidsLivraisons" ThisKey="CodeLivraison" OtherKey="CodeLivraison" Type="PPPoidsLivraisons" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPTypesPoids" Member="PPTypesPoids">
+    <Type Name="PPTypesPoids">
+      <Column Name="CodePoids" Type="System.Int16" DbType="SmallInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PoidsMin" Type="System.Decimal" DbType="Decimal(8,1)" CanBeNull="true" />
+      <Column Name="PoidsMax" Type="System.Decimal" DbType="Decimal(8,1)" CanBeNull="true" />
+      <Association Name="PPTypesPoids_PPPoidsLivraisons" Member="PPPoidsLivraisons" ThisKey="CodePoids" OtherKey="CodePoids" Type="PPPoidsLivraisons" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPVendeurs" Member="PPVendeurs">
+    <Type Name="PPVendeurs">
+      <Column Name="NoVendeur" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NomAffaires" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Nom" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Prenom" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Rue" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Ville" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Province" Type="System.String" DbType="Char(2)" CanBeNull="true" />
+      <Column Name="CodePostal" Type="System.String" DbType="VarChar(7)" CanBeNull="true" />
+      <Column Name="Pays" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="Tel1" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Tel2" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="AdresseEmail" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="MotDePasse" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="PoidsMaxLivraison" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="LivraisonGratuite" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="Taxes" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Pourcentage" Type="System.Decimal" DbType="Decimal(4,2)" CanBeNull="true" />
+      <Column Name="Configuration" Type="System.String" DbType="VarChar(512)" CanBeNull="true" />
+      <Column Name="DateCreation" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="DateMAJ" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="Statut" Type="System.Int16" DbType="SmallInt" CanBeNull="true" />
+      <Association Name="PPVendeurs_PPArticlesEnPanier" Member="PPArticlesEnPanier" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPArticlesEnPanier" />
+      <Association Name="PPVendeurs_PPCommandes" Member="PPCommandes" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPCommandes" />
+      <Association Name="PPVendeurs_PPProduits" Member="PPProduits" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPProduits" />
+      <Association Name="PPVendeurs_PPVendeursClients" Member="PPVendeursClients" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPVendeursClients" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PPVendeursClients" Member="PPVendeursClients">
+    <Type Name="PPVendeursClients">
+      <Column Name="NoVendeur" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NoClient" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DateVisite" Type="System.DateTime" DbType="SmallDateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="PPClients_PPVendeursClients" Member="PPClients" ThisKey="NoClient" OtherKey="NoClient" Type="PPClients" IsForeignKey="true" />
+      <Association Name="PPVendeurs_PPVendeursClients" Member="PPVendeurs" ThisKey="NoVendeur" OtherKey="NoVendeur" Type="PPVendeurs" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
