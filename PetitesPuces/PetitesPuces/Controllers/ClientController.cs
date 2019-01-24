@@ -13,5 +13,15 @@ namespace PetitesPuces.Controllers
         {
             return View();
         }
+
+        public ActionResult ProduitDetaille()
+        {
+            return View();
+        }
+
+        public ActionResult Catalogue()
+        {
+            return View();
+        }
     }
 }
