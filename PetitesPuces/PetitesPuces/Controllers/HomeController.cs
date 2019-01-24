@@ -13,6 +13,22 @@ namespace PetitesPuces.Controllers
         {
             return View();
         }
+        public ActionResult accueil_gestionnaire()
+        {
+            return View();
+        }
+        public ActionResult accueil_vendeur()
+        {
+            return View();
+        }
+        public ActionResult accueuil_internaute()
+        {
+            return View();
+        }
+        public ActionResult home_client()
+        {
+            return View();
+        }
 
     }
 }

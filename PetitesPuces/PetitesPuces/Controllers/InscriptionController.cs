@@ -6,20 +6,19 @@ using System.Web.Mvc;
 
 namespace PetitesPuces.Controllers
 {
-    public class InscriptionController : Controller
-    {
-        // GET: Inscription
-        public ActionResult Index()
-        {
-            return View();
-        }
+   public class InscriptionController : Controller
+   {
+      // GET: Inscription
+      public ActionResult Index()
+      {
+         return View();
+      }
 
-       [HttpPost]
-       public ActionResult VerifyEntry()
-       {
+      [HttpPost]
+      public ActionResult VerifyEntry()
+      {
+         return null;
+      }
 
-          return null;
-       } 
-
-    }
+   }
 }

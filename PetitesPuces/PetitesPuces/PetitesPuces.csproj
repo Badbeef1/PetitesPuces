@@ -89,6 +89,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\cart.jpg" />
+    <Content Include="Content\images\dell.jpg" />
+    <Content Include="Content\images\elec.jpg" />
+    <Content Include="Content\images\mac.jpg" />
+    <Content Include="Content\images\order.jpg" />
+    <Content Include="Content\images\sport.jpg" />
+    <Content Include="Content\images\sport2.jpg" />
+    <Content Include="Content\images\sport3.jpg" />
+    <Content Include="Content\images\visites.png" />
+    <Content Include="Content\images\voiture.jpg" />
+    <Content Include="Content\images\voiture2.jpg" />
+    <Content Include="Content\images\voiture3.jpg" />
+    <Content Include="Content\images\voiture4.jpg" />
+    <Content Include="Content\images\voiture5.jpg" />
+    <Content Include="Content\images\voiture6.JPG" />
+    <Content Include="Content\images\voiture7.JPG" />
+    <Content Include="Content\images\voiture8.jpg" />
     <Content Include="Content\images\stylo-plume.jpg" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -113,15 +130,18 @@
     </Content>
     <None Include="packages.config" />
     <Content Include="Views\Home\index.cshtml" />
+	<Content Include="Views\Home\accueil_gestionnaire.cshtml" />
+	<Content Include="Views\Home\accueil_vendeur.cshtml" />
+	<Content Include="Views\Home\accueuil_internaute.cshtml" />
+	<Content Include="Views\Home\home_client.cshtml" />
     <Content Include="Views\Administrateur\GestionInactivite.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Vendeur\GestionCommande.cshtml" />
+    <Content Include="Views\Login\RecupererPassword.cshtml" />
+    <None Include="Views\Inscription\index.cshtml" />
     <Content Include="Views\Client\SaisieCommande.cshtml" />
     <Content Include="Views\Client\Catalogue.cshtml" />
     <Content Include="Views\Client\ProduitDetaille.cshtml" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
-    <Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
-    <Content Include="Views\Vendeur\GestionProduit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -131,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\css\" />
+    <Folder Include="Content\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
