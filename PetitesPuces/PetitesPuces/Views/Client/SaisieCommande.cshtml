@@ -91,14 +91,44 @@
 </style>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
     <title>SaisieCommande</title>
 </head>
 <body>
     <!-- Barre de navigation -->
-    <div id="navigation">
-        @RenderPage("~/Views/Home/index.cshtml")
-    </div>
+    <!--Barre de navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
+        <a class="navbar-brand" href="#">Petites Puces</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/Administrateur/GestionInactivite">Gérer l'inactivité des clients/vendeurs <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Administrateur/Statistiques" id="navbarDropdown">
+                        Voir les statistiques
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Login/Index">
+                        Déconnexion
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+            </form>
+        </div>
+    </nav>
     <!-- Onglets -->
     <div class="tab" style="padding-left:10px;padding-right:10px">
         <button id="btnCommandeTab" class="tablinks "><h4>Commande</h4></button>
@@ -106,16 +136,16 @@
         <button id="btnFacturationTab" class="tablinks " disabled><h4>Obtenir une facture</h4></button>
     </div>
     <!-- Premier Onglet -->
-    <div id="divCommande" class="row" style="padding-left:10px;padding-right:10px">
+    <div id="divCommande" class="" style="padding-left:10px;padding-right:10px">
         <div style="width:100%">
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <div class="panel-title">
                         <div class="row">
-                            <div class="col-xs-9">
+                            <div class="col-9">
                                 <h5><span class="glyphicon glyphicon-shopping-cart"></span> Panier</h5>
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-3">
                                 <button id="btnContinueMagasiner" type="button" class="btn btn-primary btn-sm btn-block">
                                     <h4><span class="glyphicon glyphicon-share-alt"></span> Continuer à magasiner</h4>
                                 </button>
@@ -125,20 +155,20 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-2">
+                        <div class="col-2">
                             <img class="img-responsive" src="http://placehold.it/100x70">
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-4">
                             <h4 class="product-name"><strong><a href="">Clou 15CMx0.1CM</a></strong></h4><h4><small>Clou de 15CM</small></h4>
                         </div>
-                        <div class="col-xs-6">
-                            <div class="col-xs-6 text-right">
+                        <div class="col-6">
+                            <div class="col-6 text-right">
                                 <h4><strong>0.05 $<span class="text-muted">x</span></strong></h4>
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-4">
                                 <input type="number" step="1" class="form-control input-sm" value="100">
                             </div>
-                            <div class="col-xs-2">
+                            <div class="col-2">
                                 <button type="button" class="btn btn-link btn-xs">
                                     <span class="glyphicon glyphicon-trash"> </span>
                                 </button>
@@ -147,20 +177,20 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-xs-2">
+                        <div class="col-2">
                             <img class="img-responsive" src="http://placehold.it/100x70">
                         </div>
-                        <div class="col-xs-4">
+                        <div class="col-4">
                             <h4 class="product-name"><strong><a href="">Marteau</a></strong></h4><h4><small>Marteau avec tête en acier</small></h4>
                         </div>
-                        <div class="col-xs-6">
-                            <div class="col-xs-6 text-right">
+                        <div class="col-6">
+                            <div class="col-6 text-right">
                                 <h4><strong>10.99 $ <span class="text-muted">x</span></strong></h4>
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-4">
                                 <input type="number" step="1" class="form-control input-sm" value="1">
                             </div>
-                            <div class="col-xs-2">
+                            <div class="col-2">
                                 <button type="button" class="btn btn-link btn-xs">
                                     <span class="glyphicon glyphicon-trash"> </span>
                                 </button>
@@ -170,11 +200,11 @@
                     <hr>
                     <div class="row">
                         <div class="text-center">
-                            <div class="col-xs-5">
+                            <div class="col-5">
                                 <h4>Ajouté des objets?</h4>
                             </div>
-                            <div class="col-xs-7">
-                                <button type="button" class="btn btn-primary btn-sm btn-block" >
+                            <div class="col-7">
+                                <button type="button" class="btn btn-primary btn-sm btn-block">
                                     <h4>Mettre à jour le panier</h4>
                                 </button>
                             </div>
@@ -183,9 +213,9 @@
                 </div>
                 <div class="panel-footer">
                     <div class="row text-right">
-                        <div class="col-xs-10">
-                            </div>
-                        <div class="col-xs-2">
+                        <div class="col-10">
+                        </div>
+                        <div class="col-2">
                             <h4>
                                 <select>
                                     <option value="0" selected>Poste régulière</option>
@@ -196,21 +226,21 @@
                         </div>
                     </div>
                     <div class="row text-center">
-                        <div class="col-xs-8">
+                        <div class="col-8">
                             <h4 class="text-right">Frais de livraison</h4>
                             <h4 class="text-right">Sous-total</h4>
                             <h4 class="text-right">TPS (5%)</h4>
                             <h4 class="text-right">TVQ (9.975%)</h4>
                             <h4 class="text-right">Total</h4>
                         </div>
-                        <div class="col-xs-2">
+                        <div class="col-2">
                             <h4 class="text-right"><strong>5.00 $</strong></h4>
                             <h4 class="text-right"><strong>20.99 $</strong></h4>
                             <h4 class="text-right"><strong>1.05 $</strong></h4>
                             <h4 class="text-right"><strong>2.10 $</strong></h4>
                             <h4 class="text-right"><strong>24.14 $</strong></h4>
                         </div>
-                        <div class="col-xs-2">
+                        <div class="col-2">
                             <button id="btnPoursuivre" type="button" class="btn btn-success btn-block">
                                 <h4> Poursuivre</h4>
                             </button>
@@ -227,54 +257,54 @@
             <div class="panel-heading" style="padding-left:20px;padding-right:20px">
                 <h3><u>Information personnelle</u></h3>
                 <div class="row">
-                    <label class="col-xs-2" for="email">Courriel électronique</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-2" for="lastName">Nom</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-1" style="text-align:left" for="firstName">Prénom</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-1" for="tel1">Téléphone primaire</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-1" for="tel2">Téléphone secondaire</label>
+                    <label class="col-2" for="email">Courriel électronique</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-2" for="lastName">Nom</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-1" style="text-align:left" for="firstName">Prénom</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-1" for="tel1">Téléphone primaire</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-1" for="tel2">Téléphone secondaire</label>
                 </div>
                 <div class="row">
 
-                    <input class="col-xs-2" id="email" style="margin-left:15px" type="text" />
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-2" id="lastName" type="text" />
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-1" id="firstName" type="text" />
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-1" id="tel1" type="text" />
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-1" id="tel2" type="text" />
+                    <input class="col-2" id="email" style="margin-left:15px" type="text" />
+                    <div class="col-offset-1"></div>
+                    <input class="col-2" id="lastName" type="text" />
+                    <div class="col-offset-1"></div>
+                    <input class="col-1" id="firstName" type="text" />
+                    <div class="col-offset-1"></div>
+                    <input class="col-1" id="tel1" type="text" />
+                    <div class="col-offset-1"></div>
+                    <input class="col-1" id="tel2" type="text" />
                 </div>
                 <div class="row">
-                    <label class="col-xs-2" for="rue">Rue</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-2" for="ville">Ville</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-1" for="province">Province</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-1" for="pays">Pays</label>
-                    <div class="col-xs-offset-1"></div>
-                    <label class="col-xs-1" for="codePostal">Code Postal</label>
+                    <label class="col-2" for="rue">Rue</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-2" for="ville">Ville</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-1" for="province">Province</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-1" for="pays">Pays</label>
+                    <div class="col-offset-1"></div>
+                    <label class="col-1" for="codePostal">Code Postal</label>
                 </div>
                 <div class="row">
 
-                    <input class="col-xs-2" style="margin-left:15px" id="rue" type="text" />
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-2" id="ville" type="text" />
-                    <div class="col-xs-offset-1"></div>
-                    <select class="col-xs-1">
+                    <input class="col-2" style="margin-left:15px" id="rue" type="text" />
+                    <div class="col-offset-1"></div>
+                    <input class="col-2" id="ville" type="text" />
+                    <div class="col-offset-1"></div>
+                    <select class="col-1">
                         <option value="0">Québec</option>
                         <option value="1">Ontario</option>
                         <option value="2">Nouveau-Brunswick</option>
                     </select>
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-1" id="pays" type="text" value="Canada" disabled />
-                    <div class="col-xs-offset-1"></div>
-                    <input class="col-xs-1" id="codePostal" type="text" />
+                    <div class="col-offset-1"></div>
+                    <input class="col-1" id="pays" type="text" value="Canada" disabled />
+                    <div class="col-offset-1"></div>
+                    <input class="col-1" id="codePostal" type="text" />
                 </div>
             </div>
         </div>
@@ -287,13 +317,13 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-xs-4"></div>
-            <input type="button" id="btnConfirmer" class="btn btn-success btn-block col-xs-4" value="Confirmer" style="width:30%"/>
-            <div class="col-xs-4"></div>
+            <div class="col-4"></div>
+            <input type="button" id="btnConfirmer" class="btn btn-success btn-block col-4" value="Confirmer" style="width:30%" />
+            <div class="col-4"></div>
         </div>
     </div>
-        <!-- Troisième et Dernier Onglet -->
-        <div id="divFacturation" style="padding-left:10px;padding-right:10px">
-        </div>
+    <!-- Troisième et Dernier Onglet -->
+    <div id="divFacturation" style="padding-left:10px;padding-right:10px">
+    </div>
 </body>
 </html>

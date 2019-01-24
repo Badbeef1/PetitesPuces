@@ -49,51 +49,65 @@
                 {
 
                 <div class="container">
-                   <!-- Email -->
-                   <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                         <span class="input-group-text text-center" style="width: 45px">
-                            <i class="fa fa-at" aria-hidden="true"></i>
-                         </span>
-                      </div>
-                      @Html.EditorFor(x => x.username, new { htmlAttributes = new {
-                         @class = "form-control",
-                         @placeholder = "Inscrivez votre courriel",
-                         @style = Model != null && Model.username == null ? "border:1px solid red" : "" }
-                      })
-                   </div>
+                    <!-- Email -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-center" style="width: 45px">
+                                <i class="fa fa-at" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(x => x.username, new { htmlAttributes = new {
+                           @class = "form-control",
+                           @placeholder = "Inscrivez votre courriel",
+                           @style = Model != null && Model.username == null ? "border:1px solid red" : "" }
+                        })
+                    </div>
 
-                   <!-- Password -->
-                   <div class="input-group mb-3 has-feedback">
-                      <div class="input-group-prepend">
-                         <span class="input-group-text text-center" style="width: 45px">
-                            <i class="fa fa-unlock-alt" aria-hidden="true"></i>
-                         </span>
-                      </div>
-                      @Html.EditorFor(x => x.password, new { htmlAttributes = new {
-                          @id = "tbPassword",
-                          @class = "form-control",
-                          @placeholder = "Inscrivez votre mot de passe",
-                          @style = Model != null && Model.password == null  ? "border:1px solid red" : "", }
-                      })
-                      <span class="input-group-append">
-                         <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
-                            <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
-                         </button>
-                      </span>
-                   </div>
+                    <!-- Password -->
+                    <div class="input-group mb-3 has-feedback">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-center" style="width: 45px">
+                                <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(x => x.password, new { htmlAttributes = new {
+                            @id = "tbPassword",
+                            @class = "form-control",
+                            @placeholder = "Inscrivez votre mot de passe",
+                            @style = Model != null && Model.password == null  ? "border:1px solid red" : "", }
+                        })
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
+                                <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
+                            </button>
+                        </span>
+                    </div>
 
-                   <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
+                    <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
+                    <p>
+                        <input type="submit" value="Se connecter" class="btn btn-primary btn-block" />
+                    </p>
+                    <p>
+                        <a href="/Home/accueil_internaute" style="text-decoration: none;">
+                            <input type="button" value="Retour à la page d'accueil" class="btn btn-primary btn-block" />
+                        </a>
+                    </p>
+                    <hr />
 
-                   <input type="submit" value="Se connecter" class="btn btn-primary btn-block" />
-
-                   <hr />
-
-                   <div>
-                      <p>
-                         Pas de compte? <a href="~/Inscription">S'inscrire</a>&nbsp;&nbsp; / &nbsp;&nbsp;<a href="/Login/RecupererPassword">Oublié votre mot de passe?</a>
-                      </p>
-                   </div>
+                    <div>
+                        <p>
+                            Pas de compte? <a href="~/Inscription">S'inscrire</a>&nbsp;&nbsp; / &nbsp;&nbsp;<a href="/Login/RecupererPassword">Oublié votre mot de passe?</a>
+                        </p>
+                        <hr />
+                        <p>Section pour débogage</p>
+<p>
+                            <a href="~/Home/home_client">Test connexion Client</a>
+                            <br />
+                            <a href="~/Home/accueil_vendeur">Test connexion Vendeur</a>
+                            <br />
+                            <a href="~/Home/accueil_gestionnaire">Test connexion Gestionnaire</a>
+                        </p>
+                    </div>
                 </div>
                 }
             </div>
