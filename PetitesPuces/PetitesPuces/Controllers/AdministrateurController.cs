@@ -13,5 +13,10 @@ namespace PetitesPuces.Controllers
         {
             return View();
         }
-    }
+
+       public ActionResult Statistiques()
+       {
+          return View();
+       }
+   }
 }
