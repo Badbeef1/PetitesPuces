@@ -92,6 +92,7 @@
     <Content Include="Content\images\cart.jpg" />
     <Content Include="Content\images\dell.jpg" />
     <Content Include="Content\images\elec.jpg" />
+    <Content Include="Content\images\images.png" />
     <Content Include="Content\images\mac.jpg" />
     <Content Include="Content\images\order.jpg" />
     <Content Include="Content\images\sport.jpg" />
