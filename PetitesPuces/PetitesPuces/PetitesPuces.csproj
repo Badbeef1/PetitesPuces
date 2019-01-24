@@ -108,10 +108,10 @@
     <Content Include="Content\images\voiture7.JPG" />
     <Content Include="Content\images\voiture8.jpg" />
     <Content Include="Content\images\stylo-plume.jpg" />
-	<Content Include="Content\AdminLTE.css" />
-	<Content Include="Content\morris.css" />
-	<Content Include="Content\morris.js" />
-	<Content Include="Content\raphael.js" />
+    <Content Include="Content\css\AdminLTE.css" />
+    <Content Include="Content\css\morris.css" />
+    <Content Include="Content\scripts\morris.js" />
+    <Content Include="Content\scripts\raphael.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
