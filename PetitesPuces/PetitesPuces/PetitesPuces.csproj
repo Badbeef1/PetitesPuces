@@ -98,6 +98,7 @@
     <Compile Include="Controllers\AdministrateurController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InscriptionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\VendeurController.cs" />
     <Compile Include="Global.asax.cs">

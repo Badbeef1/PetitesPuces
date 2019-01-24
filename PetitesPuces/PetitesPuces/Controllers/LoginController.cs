@@ -1,43 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace PetitesPuces.Controllers
 {
-    public class LoginController : Controller
-    {
-        // GET: Login
-        public ActionResult Index()
-        {
-            return View();
-        }
+   public class LoginController : Controller
+   {
 
-        [HttpPost]
-        public ActionResult VerifyLogin(Models.userExemple model)
-        {
-            var username = model.username;
-            var password = model.password;
+      // GET: Login
+      public ActionResult Index() => View();
 
-            if(username == null || password == null)
-            {
-                model.errorMessage = "Vous avez oublié au moins un champ !";
-                model.password = (password != null) ? "" : null;  // null = red outline, "" = none
-                return View("Index", model);
-            }
-            else if(username.Equals("a") && password.Equals("a"))
-            { 
-                Session["username"] = "Utilisateur test";
-            }
-            else
-            {
-                model.errorMessage = "Le courriel ou le mot de passe n'est pas valide.";
-                model.password = ""; //No red border
-                return View("Index",model);
-            }
+      [HttpPost]
+      public ActionResult VerifyLogin(Models.userExemple model)
+      {
+         var username = model.username;
+         var password = model.password;
 
-            return RedirectToAction("Index","Home");// Return to catalog
-        }
-    }
+         if (username == null || password == null)
+         {
+            model.errorMessage = "Vous avez oublié au moins un champ !";
+            model.password = (password != null) ? "" : null;  // null = red outline, "" = none
+            return View("Index", model);
+         }
+         else if (username.Equals("a") && password.Equals("a"))
+         {
+            Session["username"] = "Utilisateur test";
+         }
+         else
+         {
+            model.errorMessage = "Le courriel ou le mot de passe n'est pas valide.";
+            model.password = ""; //No red border
+            return View("Index", model);
+         }
+
+         return RedirectToAction("Index", "Home");// Return to catalog
+      }
+
+      public ActionResult RecupererPassword() => View();
+      
+   }
 }
