@@ -106,6 +106,7 @@
     <Content Include="Content\images\voiture6.JPG" />
     <Content Include="Content\images\voiture7.JPG" />
     <Content Include="Content\images\voiture8.jpg" />
+    <Content Include="Content\images\stylo-plume.jpg" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -136,6 +137,8 @@
     <Content Include="Views\Administrateur\GestionInactivite.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Vendeur\GestionCommande.cshtml" />
+<Content Include="Views\Vendeur\GestionProduit.cshtml" />
+<Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
     <Content Include="Views\Login\RecupererPassword.cshtml" />
     <None Include="Views\Inscription\index.cshtml" />
     <Content Include="Views\Client\SaisieCommande.cshtml" />
@@ -151,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
