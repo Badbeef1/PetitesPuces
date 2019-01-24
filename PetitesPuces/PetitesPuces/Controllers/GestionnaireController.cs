@@ -15,5 +15,6 @@ namespace PetitesPuces.Controllers
         public ActionResult GestionInactivite() => View();
 
         public ActionResult Statistiques() => View();
+
     }
 }
