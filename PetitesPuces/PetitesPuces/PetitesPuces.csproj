@@ -132,13 +132,13 @@
     <Content Include="Views\Home\index.cshtml" />
     <Content Include="Views\Home\accueil_gestionnaire.cshtml" />
     <Content Include="Views\Home\accueil_vendeur.cshtml" />
-    <Content Include="Views\Home\accueuil_internaute.cshtml" />
+    <Content Include="Views\Home\accueil_internaute.cshtml" />
     <Content Include="Views\Home\home_client.cshtml" />
     <Content Include="Views\Administrateur\GestionInactivite.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Vendeur\GestionCommande.cshtml" />
-<Content Include="Views\Vendeur\GestionProduit.cshtml" />
-<Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
+    <Content Include="Views\Vendeur\GestionProduit.cshtml" />
+    <Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
     <Content Include="Views\Login\RecupererPassword.cshtml" />
     <None Include="Views\Inscription\index.cshtml" />
     <Content Include="Views\Client\SaisieCommande.cshtml" />
@@ -154,7 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

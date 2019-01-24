@@ -21,7 +21,7 @@ namespace PetitesPuces.Controllers
         {
             return View();
         }
-        public ActionResult accueuil_internaute()
+        public ActionResult accueil_internaute()
         {
             return View();
         }

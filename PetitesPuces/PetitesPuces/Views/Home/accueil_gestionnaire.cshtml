@@ -1,21 +1,22 @@
 ﻿<!doctype html>
 <html lang="fr">
 <head>
-  <title>Petites Puces</title>
-  <!--Librairies externes (Bootstrap 4.2)-->
+    <meta charset="UTF-8">
+    <title>Petites Puces</title>
+    <!--Librairies externes (Bootstrap 4.2)-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-                /*
+        /*
         * Base structure
         */
 
         /* Move down content because we have a fixed navbar that is 50px tall */
         body {
-        padding-top: 50px;
+            padding-top: 50px;
         }
 
         /*
@@ -23,9 +24,9 @@
         */
 
         h1 {
-        margin-bottom: 20px;
-        padding-bottom: 9px;
-        border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid #eee;
         }
 
         /*
@@ -33,38 +34,38 @@
         */
 
         .sidebar {
-        position: fixed;
-        top: 51px;
-        bottom: 0;
-        left: 0;
-        z-index: 1000;
-        padding: 20px;
-        overflow-x: hidden;
-        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-        border-right: 1px solid #eee;
+            position: fixed;
+            top: 51px;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+            border-right: 1px solid #eee;
         }
 
         /* Sidebar navigation */
         .sidebar {
-        padding-left: 0;
-        padding-right: 0;
+            padding-left: 0;
+            padding-right: 0;
         }
 
-        .sidebar .nav {
-        margin-bottom: 20px;
-        }
+            .sidebar .nav {
+                margin-bottom: 20px;
+            }
 
-        .sidebar .nav-item {
-        width: 100%;
-        }
+            .sidebar .nav-item {
+                width: 100%;
+            }
 
-        .sidebar .nav-item + .nav-item {
-        margin-left: 0;
-        }
+                .sidebar .nav-item + .nav-item {
+                    margin-left: 0;
+                }
 
-        .sidebar .nav-link {
-        border-radius: 0;
-        }
+            .sidebar .nav-link {
+                border-radius: 0;
+            }
 
         /*
         * Dashboard
@@ -72,12 +73,12 @@
 
         /* Placeholders */
         .placeholders {
-        padding-bottom: 3rem;
+            padding-bottom: 3rem;
         }
 
         .placeholder img {
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
         }
     </style>
 </head>
@@ -95,7 +96,7 @@
                     <a class="nav-link" href="/Administrateur/GestionInactivite">Gérer l'inactivité des clients/vendeurs <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="" id="navbarDropdown">
+                    <a class="nav-link" href="/Administrateur/Statistiques" id="navbarDropdown">
                         Voir les statistiques
                     </a>
                 </li>
