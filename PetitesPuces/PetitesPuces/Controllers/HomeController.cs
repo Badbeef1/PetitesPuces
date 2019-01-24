@@ -11,7 +11,7 @@ namespace PetitesPuces.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            return View();
+            return View("accueil_internaute");
         }
         public ActionResult accueil_gestionnaire()
         {
