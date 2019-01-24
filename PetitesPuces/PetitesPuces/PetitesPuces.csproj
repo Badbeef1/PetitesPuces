@@ -117,11 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AdministrateurController.cs" />
+    <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\InscriptionController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\InternauteController.cs" />
+    <Compile Include="Controllers\ConnexionController.cs" />
     <Compile Include="Controllers\VendeurController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -134,24 +133,24 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="packages.config" />
-    <Content Include="Views\Home\index.cshtml" />
-    <Content Include="Views\Home\accueil_gestionnaire.cshtml" />
-    <Content Include="Views\Home\accueil_vendeur.cshtml" />
-    <Content Include="Views\Home\accueil_internaute.cshtml" />
-    <Content Include="Views\Home\home_client.cshtml" />
-    <Content Include="Views\Administrateur\GestionInactivite.cshtml" />
-    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\Gestionnaire\AccueilGestionnaire.cshtml" />
+    <Content Include="Views\Vendeur\AccueilVendeur.cshtml" />
+    <Content Include="Views\Internaute\AccueilInternaute.cshtml" />
+    <Content Include="Views\Client\AccueilClient.cshtml" />
+    <Content Include="Views\Gestionnaire\GestionInactivite.cshtml" />
+    <Content Include="Views\Connexion\Index.cshtml" />
     <Content Include="Views\Vendeur\GestionCommande.cshtml" />
     <Content Include="Views\Vendeur\GestionProduit.cshtml" />
     <Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
-    <Content Include="Views\Login\RecupererPassword.cshtml" />
+    <Content Include="Views\Connexion\RecupererMDP.cshtml" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
-    <Content Include="Views\Inscription\index.cshtml" />
+    <Content Include="Views\Internaute\Inscription.cshtml" />
     <Content Include="Views\Client\SaisieCommande.cshtml" />
     <Content Include="Views\Client\Catalogue.cshtml" />
     <Content Include="Views\Client\ProduitDetaille.cshtml" />
-    <Content Include="Views\Administrateur\Statistiques.cshtml" />
+    <Content Include="Views\Gestionnaire\Statistiques.cshtml" />
     <Content Include="Views\Vendeur\GestionProfileVendeur.cshtml" />
+    <Content Include="Views\Client\GestionProfileClient.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

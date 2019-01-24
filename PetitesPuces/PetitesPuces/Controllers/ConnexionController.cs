@@ -2,7 +2,7 @@
 
 namespace PetitesPuces.Controllers
 {
-   public class LoginController : Controller
+   public class ConnexionController : Controller
    {
 
       // GET: Login
@@ -34,7 +34,7 @@ namespace PetitesPuces.Controllers
          return RedirectToAction("home_client", "Home");// Return to catalog
       }
 
-      public ActionResult RecupererPassword() => View();
+      public ActionResult RecupererMDP() => View();
       
    }
 }
