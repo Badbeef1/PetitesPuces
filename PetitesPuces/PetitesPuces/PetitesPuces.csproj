@@ -147,6 +147,7 @@
     <Content Include="Views\Client\Catalogue.cshtml" />
     <Content Include="Views\Client\ProduitDetaille.cshtml" />
     <Content Include="Views\Administrateur\Statistiques.cshtml" />
+    <Content Include="Views\Vendeur\GestionProfileVendeur.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
