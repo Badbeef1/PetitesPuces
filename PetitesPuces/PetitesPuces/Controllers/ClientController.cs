@@ -14,12 +14,14 @@ namespace PetitesPuces.Controllers
             return View();
         }
 
-        public ActionResult ProduitDetaille()
+        // GET: Cataloguess
+        public ActionResult Catalogue()
         {
             return View();
         }
 
-        public ActionResult Catalogue()
+        // GET: ProduitDetail
+        public ActionResult ProduitDetaille()
         {
             return View();
         }

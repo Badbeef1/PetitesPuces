@@ -106,6 +106,7 @@
     <Content Include="Content\images\voiture6.JPG" />
     <Content Include="Content\images\voiture7.JPG" />
     <Content Include="Content\images\voiture8.jpg" />
+    <Content Include="Content\images\stylo-plume.jpg" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -141,7 +142,6 @@
     <Content Include="Views\Client\SaisieCommande.cshtml" />
     <Content Include="Views\Client\Catalogue.cshtml" />
     <Content Include="Views\Client\ProduitDetaille.cshtml" />
-    <Content Include="Views\Login\TestStatistiques.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
