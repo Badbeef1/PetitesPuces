@@ -31,7 +31,7 @@ namespace PetitesPuces.Controllers
             return View("Index", model);
          }
 
-         return RedirectToAction("Index", "Home");// Return to catalog
+         return RedirectToAction("home_client", "Home");// Return to catalog
       }
 
       public ActionResult RecupererPassword() => View();

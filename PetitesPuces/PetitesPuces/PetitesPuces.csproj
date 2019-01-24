@@ -140,6 +140,7 @@
     <Content Include="Views\Vendeur\GestionProduit.cshtml" />
     <Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
     <Content Include="Views\Login\RecupererPassword.cshtml" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Views\Inscription\index.cshtml" />
     <Content Include="Views\Client\SaisieCommande.cshtml" />
     <Content Include="Views\Client\Catalogue.cshtml" />
