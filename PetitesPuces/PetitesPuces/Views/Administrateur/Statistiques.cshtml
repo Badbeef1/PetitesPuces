@@ -35,194 +35,197 @@
 
 </head>
 <body>
-<div class="container text-center">
-   <div class="header m-5">
-      <h2> Statistiques et rapports</h2>
+   <div id="navigation">
+      @RenderPage("~/Views/Home/index.cshtml")
    </div>
+   <div class="container text-center">
+      <div class="header m-5">
+         <h2> Statistiques et rapports</h2>
+      </div>
 
 
-   <div class="row m-5">
+      <div class="row m-5">
 
-      <!-- Total utilisateurs -->
-      <div class="box box-danger col-md-6">
-         <div class="box-body chart-responsive">
-            <div class="chart" id="total-chart" style="height: 300px; position: relative;"></div>
-            <h3>Comptes totaux</h3>
+         <!-- Total utilisateurs -->
+         <div class="box box-danger col-md-6">
+            <div class="box-body chart-responsive">
+               <div class="chart" id="total-chart" style="height: 300px; position: relative;"></div>
+               <h3>Comptes totaux</h3>
+            </div>
+         </div>
+         <!-- END CHART -->
+         <!-- Clients categorie-->
+         <div class="box box-danger col-md-6">
+            <div class="box-body chart-responsive">
+               <div class="chart" id="clients-chart" style="height: 300px; position: relative;"></div>
+               <h3>Clients totaux</h3>
+            </div>
+         </div>
+         <!-- END CHART -->
+
+      </div>
+
+      <hr class="m-5" />
+
+      <div class="text-center p-3">
+         <h3>Nombre de nouveaux comptes</h3>
+      </div>
+      <div class="row">
+         <div class="col-md-2"></div>
+
+         <!-- BAR CHART -->
+         <div class="box box-success col-md-8">
+            <div class="box-body chart-responsive">
+               <div class="chart" id="nbNouveaux-chart" style="height: 300px;"></div>
+            </div>
+         </div>
+         <!-- BAR END -->
+
+         <div class="col-md-2"></div>
+      </div>
+
+      <hr class="m-5" />
+
+      <div class="text-center p-3">
+         <h3>Nombre de connexions client</h3>
+      </div>
+      <div class="row">
+         <div class="col-md-2"></div>
+
+         <!-- BAR CHART Connexions -->
+         <div class="box box-success col-md-8">
+            <div class="box-body chart-responsive">
+               <div class="chart" id="nbConnexions-chart" style="height: 300px;"></div>
+            </div>
+         </div>
+         <!-- BAR END -->
+
+         <div class="col-md-2"></div>
+      </div>
+
+      <hr class="m-5" />
+
+      <!-- Section vendeur -->
+
+      <div class="text-center p-3">
+         <h3>Statistique d'un vendeur spécifique</h3>
+      </div>
+
+      <label for="tbRechercheVendeur">Nom du vendeur : <input type="text" class="form-control " id="tbRechercheVendeur" /></label>
+
+
+      <div class="row">
+         <!-- Clients d'un vendeur categorie-->
+         <div class="box box-danger col-md-12 my-auto">
+            <div class="box-body chart-responsive">
+               <div class="chart" id="clientsVendeur-chart" style="height: 300px; position: relative;"></div>
+               <h5>Clients de ce vendeur</h5>
+            </div>
+         </div>
+         <!-- END CHART -->
+      </div>
+
+      <div class="text-center p-3 m-3">
+         <h3>Liste des clients d'un vendeur</h3>
+      </div>
+
+      <table class="table">
+         <tr class="row">
+            <th class="col">Numéro client</th>
+            <th class="col">Nom et prénom</th>
+            <th class="col">Total commande</th>
+            <th class="col">Nb de connexions</th>
+            <th class="col">Date dernière commande</th>
+            <th class="col">Numéro vendeur</th>
+            <th class="col">Nb de connexions</th>
+         </tr>
+         <tr class="row">
+            <td class="col">10002</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1230$</td>
+            <td class="col">122</td>
+            <td class="col">2018-01-13</td>
+            <td class="col">11</td>
+            <td class="col">235</td>
+         </tr>
+         <tr class="row">
+            <td class="col">10002</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1230$</td>
+            <td class="col">122</td>
+            <td class="col">2018-01-13</td>
+            <td class="col">11</td>
+            <td class="col">235</td>
+         </tr>
+         <tr class="row">
+            <td class="col">10002</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1230$</td>
+            <td class="col">122</td>
+            <td class="col">2018-01-13</td>
+            <td class="col">11</td>
+            <td class="col">235</td>
+         </tr>
+         <tr class="row">
+            <td class="col">10002</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1230$</td>
+            <td class="col">122</td>
+            <td class="col">2018-01-13</td>
+            <td class="col">11</td>
+            <td class="col">235</td>
+         </tr>
+      </table>
+
+
+
+      <hr class="m-5" />
+
+      <div class="text-center p-3 m-3">
+         <h3>Liste des dernières connexions clients</h3>
+         <div class="">
+            <input type="number" min="0" placeholder="00" class="form-control col-md-1 float-right" />
+            <span class="float-right">
+               Nb de clients à afficher :&nbsp;
+            </span>
          </div>
       </div>
-      <!-- END CHART -->
-      <!-- Clients categorie-->
-      <div class="box box-danger col-md-6">
-         <div class="box-body chart-responsive">
-            <div class="chart" id="clients-chart" style="height: 300px; position: relative;"></div>
-            <h3>Clients totaux</h3>
-         </div>
-      </div>
-      <!-- END CHART -->
+
+      <table class="table">
+         <tr class="row">
+            <th class="col">Date</th>
+            <th class="col">Numéro Client</th>
+            <th class="col">Nom et prénom</th>
+            <th class="col">Nb de connexions</th>
+         </tr>
+         <tr class="row">
+            <td class="col">2018-01-12</td>
+            <td class="col">10001</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1231</td>
+         </tr>
+         <tr class="row">
+            <td class="col">2018-01-12</td>
+            <td class="col">10001</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1231</td>
+         </tr>
+         <tr class="row">
+            <td class="col">2018-01-12</td>
+            <td class="col">10001</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1231</td>
+         </tr>
+         <tr class="row">
+            <td class="col">2018-01-12</td>
+            <td class="col">10001</td>
+            <td class="col">Utilisateur Test</td>
+            <td class="col">1231</td>
+         </tr>
+      </table>
 
    </div>
-
-   <hr class="m-5" />
-
-   <div class="text-center p-3">
-      <h3>Nombre de nouveaux comptes</h3>
-   </div>
-   <div class="row">
-      <div class="col-md-2"></div>
-
-      <!-- BAR CHART -->
-      <div class="box box-success col-md-8">
-         <div class="box-body chart-responsive">
-            <div class="chart" id="nbNouveaux-chart" style="height: 300px;"></div>
-         </div>
-      </div>
-      <!-- BAR END -->
-
-      <div class="col-md-2"></div>
-   </div>
-
-   <hr class="m-5" />
-
-   <div class="text-center p-3">
-      <h3>Nombre de connexions client</h3>
-   </div>
-   <div class="row">
-      <div class="col-md-2"></div>
-
-      <!-- BAR CHART Connexions -->
-      <div class="box box-success col-md-8">
-         <div class="box-body chart-responsive">
-            <div class="chart" id="nbConnexions-chart" style="height: 300px;"></div>
-         </div>
-      </div>
-      <!-- BAR END -->
-
-      <div class="col-md-2"></div>
-   </div>
-
-   <hr class="m-5" />
-
-   <!-- Section vendeur -->
-
-   <div class="text-center p-3">
-      <h3>Statistique d'un vendeur spécifique</h3>
-   </div>
-
-   <label for="tbRechercheVendeur">Nom du vendeur : <input type="text" class="form-control " id="tbRechercheVendeur" /></label>
-      
-
-   <div class="row">
-      <!-- Clients d'un vendeur categorie-->
-      <div class="box box-danger col-md-12 my-auto">
-         <div class="box-body chart-responsive">
-            <div class="chart" id="clientsVendeur-chart" style="height: 300px; position: relative;"></div>
-            <h5>Clients de ce vendeur</h5>
-         </div>
-      </div>
-      <!-- END CHART -->
-   </div>
-
-   <div class="text-center p-3 m-3">
-      <h3>Liste des clients d'un vendeur</h3>
-   </div>
-
-   <table class="table">
-      <tr class="row">
-         <th class="col">Numéro client</th>
-         <th class="col">Nom et prénom</th>
-         <th class="col">Total commande</th>
-         <th class="col">Nb de connexions</th>
-         <th class="col">Date dernière commande</th>
-         <th class="col">Numéro vendeur</th>
-         <th class="col">Nb de connexions</th>
-      </tr>
-      <tr class="row">
-         <td class="col">10002</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1230$</td>
-         <td class="col">122</td>
-         <td class="col">2018-01-13</td>
-         <td class="col">11</td>
-         <td class="col">235</td>
-      </tr>
-      <tr class="row">
-         <td class="col">10002</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1230$</td>
-         <td class="col">122</td>
-         <td class="col">2018-01-13</td>
-         <td class="col">11</td>
-         <td class="col">235</td>
-      </tr>
-      <tr class="row">
-         <td class="col">10002</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1230$</td>
-         <td class="col">122</td>
-         <td class="col">2018-01-13</td>
-         <td class="col">11</td>
-         <td class="col">235</td>
-      </tr>
-      <tr class="row">
-         <td class="col">10002</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1230$</td>
-         <td class="col">122</td>
-         <td class="col">2018-01-13</td>
-         <td class="col">11</td>
-         <td class="col">235</td>
-      </tr>
-   </table>
-
-
-
-   <hr class="m-5" />
-
-   <div class="text-center p-3 m-3">
-      <h3>Liste des dernières connexions clients</h3>
-      <div class="">
-         <input type="number" min="0" placeholder="00" class="form-control col-md-1 float-right" />
-         <span class="float-right">
-            Nb de clients à afficher :&nbsp;
-         </span>
-      </div>
-   </div>
-
-   <table class="table">
-      <tr class="row">
-         <th class="col">Date</th>
-         <th class="col">Numéro Client</th>
-         <th class="col">Nom et prénom</th>
-         <th class="col">Nb de connexions</th>
-      </tr>
-      <tr class="row">
-         <td class="col">2018-01-12</td>
-         <td class="col">10001</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1231</td>
-      </tr>
-      <tr class="row">
-         <td class="col">2018-01-12</td>
-         <td class="col">10001</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1231</td>
-      </tr>
-      <tr class="row">
-         <td class="col">2018-01-12</td>
-         <td class="col">10001</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1231</td>
-      </tr>
-      <tr class="row">
-         <td class="col">2018-01-12</td>
-         <td class="col">10001</td>
-         <td class="col">Utilisateur Test</td>
-         <td class="col">1231</td>
-      </tr>
-   </table>
-
-</div>
-<div class="m-5"></div>
+   <div class="m-5"></div>
 </body>
 
 <script>
