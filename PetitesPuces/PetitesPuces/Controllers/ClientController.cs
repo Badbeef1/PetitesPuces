@@ -21,6 +21,6 @@ namespace PetitesPuces.Controllers
         // GET: ProduitDetail
         public ActionResult ProduitDetaille() => View();
 
-        public ActionResult GestionProfileClient() => View();
+        public ActionResult GestionProfilClient() => View();
     }
 }

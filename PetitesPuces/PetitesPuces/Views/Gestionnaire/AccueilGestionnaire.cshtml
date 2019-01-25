@@ -84,6 +84,7 @@
 </head>
 <body>
     <!--Barre de navigation-->
+    <!--
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="#">Petites Puces</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,10 +116,12 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
             </form>
         </div>
-    </nav>
+    </nav>-->
+    <div id="navigation">
+        @RenderPage("~/Views/Gestionnaire/index.cshtml")
+    </div>
     <div class="container-fluid">
-            <div class="row">
-            
+            <div class="row">    
               <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
                   <ul class="nav nav-pills flex-column">
                       <li class="nav-item">

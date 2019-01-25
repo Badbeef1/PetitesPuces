@@ -22,6 +22,6 @@ namespace PetitesPuces.Controllers
         //GET: CatalogueVendeur
         public ActionResult CatalogueVendeur() => View();
 
-        public ActionResult GestionProfileVendeur() => View();
+        public ActionResult GestionProfilVendeur() => View();
     }
 }
