@@ -1,4 +1,4 @@
-﻿@model PetitesPuces.Models.userExemple
+﻿@model PetitesPuces.Models.PPClientViewModel
 
 @{
     Layout = null;
@@ -45,36 +45,36 @@
                 <h5 class="card-title">Connexion</h5>
 
                 <br />
-                @using (Html.BeginForm("VerifyLogin", "Login", FormMethod.Post))
+                @using (Html.BeginForm("VerifyLogin", "Connexion", FormMethod.Post))
                 {
 
                 <div class="container">
                     <!-- Email -->
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 45px">
+                            <span class="input-group-text text-center" style="width: 40px">
                                 <i class="fa fa-at" aria-hidden="true"></i>
                             </span>
                         </div>
-                        @Html.EditorFor(x => x.username, new { htmlAttributes = new {
+                        @Html.EditorFor(x => x.client.AdresseEmail, new { htmlAttributes = new {
                            @class = "form-control",
                            @placeholder = "Inscrivez votre courriel",
-                           @style = Model != null && Model.username == null ? "border:1px solid red" : "" }
+                           @style = Model != null && Model.client.AdresseEmail == null ? "border:1px solid red" : "" }
                         })
                     </div>
 
                     <!-- Password -->
                     <div class="input-group mb-3 has-feedback">
                         <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 45px">
+                            <span class="input-group-text text-center" style="width: 40px">
                                 <i class="fa fa-unlock-alt" aria-hidden="true"></i>
                             </span>
                         </div>
-                        @Html.EditorFor(x => x.password, new { htmlAttributes = new {
+                        @Html.EditorFor(x => x.client.MotDePasse, new { htmlAttributes = new {
                             @id = "tbPassword",
                             @class = "form-control",
                             @placeholder = "Inscrivez votre mot de passe",
-                            @style = Model != null && Model.password == null  ? "border:1px solid red" : "", }
+                            @style = Model != null && Model.client.MotDePasse == null  ? "border:1px solid red" : "", }
                         })
                         <span class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
