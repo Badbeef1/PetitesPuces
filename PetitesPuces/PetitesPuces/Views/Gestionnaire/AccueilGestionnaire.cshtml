@@ -84,39 +84,6 @@
 </head>
 <body>
     <!--Barre de navigation-->
-    <!--
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="#">Petites Puces</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-           <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                 <a class="nav-link" href="/Administrateur/GestionInactivite">G&eacute;rer l'inactivit&eacute; des clients/vendeurs <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                 <a class="nav-link" href="/Administrateur/Statistiques" id="navbarDropdown">
-                    Voir les statistiques
-                 </a>
-              </li>
-              <li class="nav-item">
-                 <a class="nav-link" href="/Login/Index">
-                    Déconnexion
-                    <i class="fas fa-sign-out-alt"></i>
-                 </a>
-              </li>
-              <li class="nav-item">
-                 <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
-              </li>
-           </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-            </form>
-        </div>
-    </nav>-->
     <div id="navigation">
         @RenderPage("~/Views/Gestionnaire/index.cshtml")
     </div>
@@ -187,7 +154,7 @@
                         <th>Nom Complet</th>
                         <th>Province</th>
                         <th>No Tel&eacute;phone</th>
-                        <th>Verdict</th>
+                        <th>Détails Demande</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -198,8 +165,7 @@
                         <td>dolor</td>
                         <td>sit</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                            <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -209,8 +175,7 @@
                         <td>adipiscing</td>
                         <td>elit</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -220,8 +185,7 @@
                         <td>odio</td>
                         <td>Praesent</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -231,8 +195,7 @@
                         <td>cursus</td>
                         <td>ante</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
 
                       </tr>
@@ -243,8 +206,7 @@
                         <td>Sed</td>
                         <td>nisi</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -254,8 +216,7 @@
                         <td>sem</td>
                         <td>at</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -265,8 +226,7 @@
                         <td>imperdiet</td>
                         <td>Duis</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -276,8 +236,7 @@
                         <td>Praesent</td>
                         <td>mauris</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -287,8 +246,7 @@
                         <td>tellus</td>
                         <td>sed</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -298,8 +256,7 @@
                         <td>porta</td>
                         <td>Mauris</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -309,8 +266,7 @@
                         <td>lacinia</td>
                         <td>arcu</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -320,8 +276,7 @@
                         <td>Class</td>
                         <td>aptent</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -331,8 +286,7 @@
                         <td>ad</td>
                         <td>litora</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -342,8 +296,7 @@
                         <td>conubia</td>
                         <td>nostra</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -353,8 +306,7 @@
                         <td>himenaeos</td>
                         <td>Curabitur</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                       <tr>
@@ -364,8 +316,7 @@
                         <td>in</td>
                         <td>libero</td>
                         <td>
-                            <button class="btn btn-success">Accepter</button>
-                            <button class="btn btn-danger">Refuser</button>
+                           <button class="btn btn-primary">Détails du vendeur</button>
                         </td>
                       </tr>
                     </tbody>
@@ -425,15 +376,6 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="container">
-                                <div class="form-group row">
-                                    <div class="col-sm-4">
-                                        <label>No cat&eacute;gorie</label>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" placeholder="NoCategorie" aria-label="Recipient's username" aria-describedby="basic-addon2" disabled="true" value="1">
-                                    </div>
-                                        
-                                </div>
                                 <div class="form-group row">
                                     <div class="col-sm-8">
                                         <div class="input-group">
