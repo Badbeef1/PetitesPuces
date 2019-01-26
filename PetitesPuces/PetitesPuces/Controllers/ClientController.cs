@@ -22,5 +22,8 @@ namespace PetitesPuces.Controllers
         public ActionResult ProduitDetaille() => View();
 
         public ActionResult GestionProfilClient() => View();
-    }
+        
+        //Panier Détaillé du client
+        public ActionResult PanierDetail() => View();
+   }
 }
