@@ -10,7 +10,7 @@ namespace PetitesPuces.Controllers
    {
       // GET: Inscription
       public ActionResult Index() => View("AccueilInternaute");
-
+      
       public ActionResult AccueilInternaute()
       {
          /* Compare data with Database */
@@ -23,11 +23,12 @@ namespace PetitesPuces.Controllers
          return View(categories);
       }
 
-
+      
       public ActionResult Inscription() => View();
 
       [HttpPost]
       public ActionResult VerifyEntry() => null;
+      public ActionResult CatalogueNouveaute => View();
 
    }
 }
