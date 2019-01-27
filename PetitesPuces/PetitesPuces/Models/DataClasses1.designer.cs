@@ -3792,6 +3792,7 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MotDePasse", DbType="VarChar(50)")]
+        [DataType(DataType.Password)]
 		public string MotDePasse
 		{
 			get
