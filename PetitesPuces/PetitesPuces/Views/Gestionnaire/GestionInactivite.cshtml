@@ -1,4 +1,5 @@
-﻿
+﻿@model PetitesPuces.Models.InactiviteViewModel
+@using PetitesPuces.Models
 @{
     Layout = null;
 }
@@ -26,133 +27,103 @@
         @RenderPage("~/Views/Gestionnaire/index.cshtml")
     </div>
     <div class="container">
-    <div id="infoPage" style="padding-left:10px;padding-right:10px">
-        <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
-        <div id="divClient">
-            <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
-            <br />
-            <select id="ddlClient" style="display:inline;float:right">
-                <option selected="selected">1 mois</option>
-                <option>3 mois</option>
-                <option>6 mois</option>
-                <option>1 an</option>
-                <option>2 ans</option>
-                <option>3 ans</option>
-                <option>Début du site Web</option>
-            </select>
+        <div id="infoPage" style="padding-left:10px;padding-right:10px">
+            <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
+            <div id="divClient">
+                <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
+                <br />
+                <select id="ddlClient" style="display:inline;float:right">
+                    <option selected>Tous</option>
+                    <option>1 mois</option>
+                    <option>3 mois</option>
+                    <option>6 mois</option>
+                    <option>1 an</option>
+                    <option>2 ans</option>
+                    <option>3 ans</option>
+                    <option>Début du site Web</option>
+                </select>
 
-            <br />
-            <div id="tableauClient">
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 5%">#</th>
-                        <th style="width: 30%">Nom</th>
-                        <th style="width: 30%">Prénom</th>
-                        <th style="width: 30%">Dernière présence</th>
-                        <th style="width: 5%"  class="text-center">Détruire</th>
-                    </tr>
-                    <tr>
-                        <th>1</th>
-                        <td>Desrosiers</td>
-                        <td>Jean-Marc</td>
-                        <td>1 oct. 2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireClient1" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>Duquo</td>
-                        <td>Marie-Isabelle</td>
-                        <td>01-10-2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireClient2" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td>Desrosiers</td>
-                        <td>Jean-Luc</td>
-                        <td>1er octobre 2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireClient3" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>4</th>
-                        <td>Mokakiko</td>
-                        <td>Francine</td>
-                        <td>1 octobre 2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireClient4" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                </table>
+                <br />
+                <div id="tableauClient">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 5%;text-align:right">#</th>
+                            <th style="width: 30%">Nom</th>
+                            <th style="width: 30%">Prénom</th>
+                            <th style="width: 30%;text-align:right">Dernière présence</th>
+                            <th style="width: 5%" class="text-center">Détruire</th>
+                        </tr>
+
+
+                        @{
+                            int counter = 1;
+                            foreach (PPClients client in @Model.clients)
+
+                            {
+                                <tr id="@(client.NoClient)">
+                                    <th style="text-align:right">@counter</th>
+                                    <td>@client.Nom</td>
+                                    <td>@client.Prenom</td>
+                                    <td style="text-align:right">@client.Nom</td>
+                                    <td class="text-center">
+
+                                        <input type="checkbox" id="btnDetruireClient@(counter)" value="Ok" style="width:inherit" />
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+            <div id="divVendeur">
+                <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
+                <br />
+                <select id="ddlVendeur" style="display:inline; float:right">
+                    <option selected>Tous</option>
+                    <option >1 an</option>
+                    <option>2 ans</option>
+                    <option>3 ans</option>
+                    <option>Début du site Web</option>
+                </select>
+                <br />
+                <div id="tableauVendeur">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 5%;text-align:right">#</th>
+                            <th style="width: 30%">Nom</th>
+                            <th style="width: 30%">Prénom</th>
+                            <th style="width: 30%;text-align:right">Dernière activité</th>
+                            <th style="width: 5%" class="text-center">Détruire</th>
+                        </tr>
+
+
+                        @{
+                            counter = 1;
+                            foreach (PPVendeurs vendeur in @Model.vendeurs)
+
+                            {
+                                <tr id="@(vendeur.NoVendeur)">
+                                    <th style="text-align:right">@counter</th>
+                                    <td>@vendeur.Nom</td>
+                                    <td>@vendeur.Prenom</td>
+                                    <td style="text-align:right">@vendeur.Nom</td>
+                                    <td class="text-center">
+
+                                        <input type="checkbox" id="btnDetruireClient@(counter)" value="Ok" style="width:inherit" />
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                    </table>
+                </div>
             </div>
         </div>
-        <div id="divVendeur">
-            <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
-            <br />
-            <select id="ddlVendeur" style="display:inline; float:right">
-                <option selected="selected">1 an</option>
-                <option>2 ans</option>
-                <option>3 ans</option>
-                <option>Début du site Web</option>
-            </select>
-            <br />
-            <div id="tableauVendeur">
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 5%">#</th>
-                        <th style="width: 30%">Nom</th>
-                        <th style="width: 30%">Prénom</th>
-                        <th style="width: 30%">Dernière activité</th>
-                        <th style="width: 5%" class="text-center">Détruire</th>
-                    </tr>
-                    <tr>
-                        <th>15</th>
-                        <td>Desrosiers</td>
-                        <td>Jean-Marc</td>
-                        <td>1 oct. 2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireVendeur1" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>21</th>
-                        <td>Duquo</td>
-                        <td>Marie-Isabelle</td>
-                        <td>01-10-2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireVendeur2" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>33</th>
-                        <td>Desrosiers</td>
-                        <td>Jean-Luc</td>
-                        <td>1er octobre 2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireVendeur3" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>45</th>
-                        <td>Mokakiko</td>
-                        <td>Francine</td>
-                        <td>1 octobre 2018</td>
-                        <td class="text-center">
-                            <input type="checkbox" id="btnDetruireVendeur4" value="Ok" style="width:inherit" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-    <br />
-    <br />
-    <div id="divConfirmation" style="text-align:center">
-        <input id="btnConfirmer" type="button" value="Confirmer" class="btn btn-primary"/>
+        <br />
+        <br />
+        <div id="divConfirmation" style="text-align:center">
+            <input id="btnConfirmer" type="button" value="Confirmer" class="btn btn-primary" onclick="location.href='@Url.Action("Destroy","GestionnaireController")'"/>
         </div>
     </div>
 </body>
