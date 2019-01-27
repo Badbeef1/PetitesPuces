@@ -6,17 +6,28 @@ using System.Web.Mvc;
 
 namespace PetitesPuces.Controllers
 {
-    public class InternauteController : Controller
-    {
-        // GET: Inscription
-        public ActionResult Index() => View("AccueilInternaute");
+   public class InternauteController : Controller
+   {
+      // GET: Inscription
+      public ActionResult Index() => View("AccueilInternaute");
 
-        public ActionResult AccueilInternaute() => View();
+      public ActionResult AccueilInternaute()
+      {
+         /* Compare data with Database */
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         var categories = (from cat in db.GetTable<Models.PPCategories>() select cat);
 
-        public ActionResult Inscription() => View();
+         db.Connection.Close();
 
-        [HttpPost]
-        public ActionResult VerifyEntry() => null;
+         return View(categories);
+      }
 
-    }
+
+      public ActionResult Inscription() => View();
+
+      [HttpPost]
+      public ActionResult VerifyEntry() => null;
+
+   }
 }

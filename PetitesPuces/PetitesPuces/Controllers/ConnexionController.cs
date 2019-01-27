@@ -5,7 +5,6 @@ namespace PetitesPuces.Controllers
 {
     public class ConnexionController : Controller
     {
-
         // GET: Login
         public ActionResult Index() => View();
 
@@ -14,6 +13,7 @@ namespace PetitesPuces.Controllers
         {
             var username = model.client.AdresseEmail?.ToLower();
             var password = model.client.MotDePasse;
+         
 
             /* First checks  (Empty / IsAdmin) */
             if (username == null || password == null)
