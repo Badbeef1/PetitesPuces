@@ -10,24 +10,150 @@
     <title>Gestion profile du vendeur</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
 </head>
 <body>
     <div id="navigation">
         @RenderPage("~/Views/Vendeur/index.cshtml")
     </div>
-    <div>
-        <label class="col-form-label">Nom d'affaire</label>
-        <label class="col-form-label">Prénom</label>
-        <label class="col-form-label">Nom</label>
-        <label class="col-form-label">Rue</label>
-        <label class="col-form-label">Ville</label>
-        <label class="col-form-label">Province</label>
-        <label class="col-form-label"></label>
-        <label class="col-form-label"></label>
-        <label class="col-form-label"></label>
-        <label class="col-form-label"></label>
-        <label class="col-form-label"></label>
-        <label class="col-form-label"></label>
+    <div class="container sEspaceBarNavigation">
+        <div class="card">
+            <h5 class="card-header">Modification du profil de <span>***</span></h5>
+            <div class="card-body">
+                <div class="form-row form-group">
+                    <label class="col-form-label">Nom de l'entreprice</label>
+                    <input type="text" class="form-control" />
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-3">
+                        <label class="col-form-label">Prénom</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Nom</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Rue</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Ville</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-3">
+                        <label class="col-form-label">Province</label>
+                        <select id="ddlProvince" class="custom-select ">
+                            <option selected value="">Choisir...</option>
+                            <option value="AB">Alberta</option>
+                            <option value="BC">Colombie-Britannique</option>
+                            <option value="PE">Île-du-Prince-Édouard</option>
+                            <option value="MB">Manitoba</option>
+                            <option value="NB">Nouveau-Brunswick</option>
+                            <option value="NS">Nouvelle-Écosse</option>
+                            <option value="ON">Ontario</option>
+                            <option value="QC">Québec</option>
+                            <option value="SK">Saskatchewan</option>
+                            <option value="NL">Terre-Neuve-et-Labrador</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Pays</label>
+                        <select id="ddlPays" class="form-control">
+                            <option selected value="Canada">Canada</option>
+                            <option selected value="Canada">Canada</option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label class="col-form-label">Code postal</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-2">
+                        <label class="col-form-label">Téléphone #1</label>
+                        <input type="text" class="form-control" placeholder="(999) 999-9999"/>
+                    </div>
+                    <div class="col-2">
+                        <label class="col-form-label">Téléphone #2</label>
+                        <input type="text" class="form-control" placeholder="(999) 999-9999"/>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer btn-group sPiedPageBouton">
+                <button type="button" class="btn btn-outline-success">Sauvegarder</button>
+                <a href="#" class="btn btn-outline-primary">Retour</a>
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <h5 class="card-header">Modification du mot de passe</h5>
+            <div class="card-body">
+                <div class="form-row form-group">
+                    <div class="col-6">
+                        <label class="col-form-label mr-auto">Ancien mot de passe</label>
+                        <input type="text" class="form-control" />
+                    </div>
+
+                </div>
+                <div class="form-row form-group">
+                    <div class="col-6">
+                        <label class="col-form-label">Nouveau mot de passe</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                    <div class="col-6">
+                        <label class="col-form-label">Confirmation mot de passe</label>
+                        <input type="text" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer btn-group sPiedPageBouton">
+                <button type="button" class="btn btn-outline-success">Sauvegarde</button>
+                <a href="#" class="btn btn-outline-primary">Retour</a>
+            </div>
+        </div>
+        <br />
+        <div class="card">
+            <h5 class="card-header">Livraison et paiement</h5>
+            <div class="card-body">
+                <div class="form-row form-group">
+                    <div class="col-3">
+                        <label class="col-form-label">Poids de livraison Maximum</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="tbPoids" placeholder="00">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    Lbs
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Prix de la livraison</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    $
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Taux de redevence</label>
+                        <input type="text" class="form-control" disabled />
+                    </div>
+                    <div class="col-3">
+                        <label class="col-form-label">Prélèvement de la taxe</label>
+                        <input type="checkbox" class="form-check" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer btn-group sPiedPageBouton">
+                <button type="button" class="btn btn-outline-success">Sauvegarder</button>
+                <a href="#" class="btn btn-outline-primary">Retour</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
