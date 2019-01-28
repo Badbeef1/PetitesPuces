@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PetitesPuces.Models.PPVendeurs
+@{
     Layout = null;
 }
 
@@ -17,21 +18,22 @@
         @RenderPage("~/Views/Vendeur/index.cshtml")
     </div>
     <div class="container sEspaceBarNavigation">
-        @Html.Partial("~/Views/Client/InformationPersonnel.cshtml")          
+        @Html.Partial("InformationPersonnel", Model)
         <br />
-        @Html.Partial("~/Views/Client/ModificationMDP.cshtml")
+        @Html.Partial("ModificationMDP")
         <br />
         <div class="card">
             <h5 class="card-header">Section Vendeur</h5>
             <div class="card-body">
                 <div class="form-row form-group">
                     <label class="col-form-label">Nom de l'entreprice</label>
-                    <input type="text" class="form-control" />
+                    @Html.TextBoxFor(x => x.NomAffaires, new { @class = "form-control" })
                 </div>
                 <div class="form-row form-group">
                     <div class="col-3">
                         <label class="col-form-label">Poids de livraison Maximum</label>
                         <div class="input-group">
+                            @Html.TextBoxFor(x => x.PoidsMaxLivraison, new { @class = "form-control" })
                             <input type="text" class="form-control" id="tbPoids" placeholder="00">
                             <div class="input-group-append">
                                 <span class="input-group-text">
@@ -43,6 +45,7 @@
                     <div class="col-3">
                         <label class="col-form-label">Prix de la livraison</label>
                         <div class="input-group">
+                            @Html.TextBoxFor(x => x.LivraisonGratuite, new { @class = "form-control" })
                             <input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">
                             <div class="input-group-append">
                                 <span class="input-group-text">

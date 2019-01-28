@@ -1,0 +1,29 @@
+﻿@using (Html.BeginForm())
+{
+    <div class="card">
+        <h5 class="card-header">Modification du mot de passe</h5>
+        <div class="card-body">
+            <div class="form-row form-group">
+                <div class="col-6">
+                    <label class="col-form-label mr-auto">Ancien mot de passe</label>
+                    <input type="text" class="form-control" />
+                </div>
+
+            </div>
+            <div class="form-row form-group">
+                <div class="col-6">
+                    <label class="col-form-label">Nouveau mot de passe</label>
+                    <input type="text" class="form-control" />
+                </div>
+                <div class="col-6">
+                    <label class="col-form-label">Confirmation mot de passe</label>
+                    <input type="text" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="card-footer btn-group sPiedPageBouton">
+            <button type="button" class="btn btn-outline-success">Sauvegarde</button>
+            <a href="#" class="btn btn-outline-primary">Retour</a>
+        </div>
+    </div>
+}
