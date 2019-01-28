@@ -149,6 +149,7 @@
     </Compile>
     <Compile Include="Models\InactiviteViewModel.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
+    <Compile Include="Models\ProduitPanier.cs" />
     <Compile Include="Models\Province.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -209,7 +210,8 @@
     <Content Include="Views\Client\InformationPersonnel.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Client\ModificationMDP.cshtml" />
-    <Content Include="Views\Shared\InfoVendeur.cshtml" />
+    <Content Include="Views\Vendeur\InformationPersonnel.cshtml" />
+    <Content Include="Views\Vendeur\ModificationMDP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
