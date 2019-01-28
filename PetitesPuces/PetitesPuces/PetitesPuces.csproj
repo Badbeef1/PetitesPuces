@@ -185,6 +185,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Content Include="Views\Client\PanierDetail.cshtml" />
+    <Content Include="Views\Internaute\CatalogueNouveaute.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
