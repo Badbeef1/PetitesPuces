@@ -1,5 +1,5 @@
-﻿@using PetitesPuces.Models
-@model IQueryable<IGrouping<PPVendeurs, PPArticlesEnPanier>>
+﻿
+@model IQueryable<IGrouping<PetitesPuces.Models.PPVendeurs, PetitesPuces.Models.PPArticlesEnPanier>>
    <!DOCTYPE html>
 
    <html>
@@ -108,7 +108,7 @@
                      foreach (var item in Model)
                      {
                         <li class="nav-item">
-                           <a class="nav-link" href="#">Panier @compteur<span class="sr-only">(current)</span></a>
+                           <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @compteur<span class="sr-only">(current)</span></a>
                         </li>
                         compteur ++;
                      }
@@ -127,21 +127,21 @@
                   @foreach (var articlesVendeur in Model)
                   {
                      <div class="card">
-                        <div class="card-header" id="heading1">
+                        <div class="card-header" id="heading_@articlesVendeur.Key.NoVendeur">
                            <div class="float-left">
                               <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
                            </div>
 
                            <div class="float-center">
                               <h5 class="mb-0">
-                                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                                    Apple
+                                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@articlesVendeur.Key.NoVendeur" aria-expanded="true" aria-controls="collapse_@articlesVendeur.Key.NoVendeur">
+                                    @articlesVendeur.Key.NomAffaires
                                  </button>
                               </h5>
                            </div>
                         </div>
 
-                        <div id="collapse1" class="collapse show" aria-labelledby="heading1" data-parent="#accordion">
+                        <div id="collapse_@articlesVendeur.Key.NoVendeur" class="collapse show" aria-labelledby="heading_@articlesVendeur.Key.NoVendeur" data-parent="#accordion">
 
                            <div class="card-body">
                               <div class="card">

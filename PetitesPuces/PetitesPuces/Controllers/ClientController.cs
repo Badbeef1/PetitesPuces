@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PetitesPuces.Models;
 
 namespace PetitesPuces.Controllers
 {
@@ -14,13 +15,15 @@ namespace PetitesPuces.Controllers
 
       public ActionResult AccueilClient()
       {
-         /* Compare data with Database */
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+        String noClient = "10000";
+        //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+        /* Compare data with Database */
+        Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
 
          //Requête qui va permettre d'aller chercher les paniers du client
          var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                          where panier.NoClient.Equals(10000)
+                          where panier.NoClient.Equals(noClient)
                           group panier by panier.PPVendeurs;
 
          db.Connection.Close();
@@ -43,13 +46,20 @@ namespace PetitesPuces.Controllers
       {
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
-         //requête pour aller chercher les produits à l'aide d'un vendeur
-         var items = from panier in db.GetTable<Models.PPArticlesEnPanier>()
+            //requête pour aller chercher les produits à l'aide d'un vendeur
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
                      where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
-                     select panier;
+                     select panier).ToList();
 
          return View(items);
       }
+        
+        [HttpPost]
+        public ActionResult PanierDetail(int id,List<PPArticlesEnPanier> model)
+        {
+            var rnd = model;
+            return View(model);
+        }
         public ActionResult GestionProfilClient()
         {
             //HttpContext.User.Identity.Name
