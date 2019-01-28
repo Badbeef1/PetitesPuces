@@ -51,8 +51,7 @@ namespace PetitesPuces.Controllers
                 var weightDelivery = model.vendeur.PoidsMaxLivraison;
                 var taxes = model.vendeur.Taxes;
 
-<<<<<<< HEAD
-=======
+
 
                 var clientSectionValide = (username ?? confUsername ?? password ?? confPassword) != null &&
                                            username == confUsername && password == confPassword;
@@ -74,7 +73,6 @@ namespace PetitesPuces.Controllers
                     //Error missing field
                 }
 
->>>>>>> 1f3362f3ae12bb12c277e048902f87355080e377
             }
 
 

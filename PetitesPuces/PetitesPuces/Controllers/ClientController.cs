@@ -37,7 +37,6 @@ namespace PetitesPuces.Controllers
       // GET: ProduitDetail
       public ActionResult ProduitDetaille() => View();
 
-      public ActionResult GestionProfilClient() => View();
 
       //Panier Détaillé du client
       public ActionResult PanierDetail(int id)
@@ -65,9 +64,6 @@ namespace PetitesPuces.Controllers
 
             return View(client.First());
         }
-        
-        //Panier Détaillé du client
-        public ActionResult PanierDetail() => View();
 
         //Vue partiel Information personnel
         [ChildActionOnly]
