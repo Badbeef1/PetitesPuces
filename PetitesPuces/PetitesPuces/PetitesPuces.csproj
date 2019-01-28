@@ -117,11 +117,8 @@
     <Content Include="Content\css\morris.css" />
     <Content Include="Content\scripts\morris.js" />
     <Content Include="Content\scripts\raphael.js" />
-
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-
     <Content Include="Content\Site.css" />
-
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -171,7 +168,6 @@
     </Content>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="Models\DataClasses1.dbml.layout">
@@ -206,13 +202,14 @@
     </None>
     <Content Include="Views\Client\PanierDetail.cshtml" />
     <Content Include="Views\Internaute\CatalogueNouveaute.cshtml" />
-
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Client\InformationPersonnel.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Client\ModificationMDP.cshtml" />
+    <Content Include="Views\Vendeur\InformationPersonnel.cshtml" />
+    <Content Include="Views\Vendeur\ModificationMDP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
