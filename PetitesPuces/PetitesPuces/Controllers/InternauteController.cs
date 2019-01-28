@@ -6,22 +6,22 @@ using System.Web.Mvc;
 
 namespace PetitesPuces.Controllers
 {
-   public class InternauteController : Controller
-   {
-      // GET: Inscription
-      public ActionResult Index() => View("AccueilInternaute");
+    public class InternauteController : Controller
+    {
+        // GET: Inscription
+        public ActionResult Index() => View("AccueilInternaute");
 
-      public ActionResult AccueilInternaute()
-      {
-         /* Compare data with Database */
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
-         var categories = (from cat in db.GetTable<Models.PPCategories>() select cat);
+        public ActionResult AccueilInternaute()
+        {
+            /* Compare data with Database */
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            var categories = (from cat in db.GetTable<Models.PPCategories>() select cat);
 
-         db.Connection.Close();
+            db.Connection.Close();
 
-         return View(categories);
-      }
+            return View(categories);
+        }
 
 
         public ActionResult Inscription(Models.PPClientViewModel model)
@@ -50,14 +50,34 @@ namespace PetitesPuces.Controllers
                 var taxes = model.vendeur.Taxes;
 
 
+                var clientSectionValide = (username ?? confUsername ?? password ?? confPassword) != null &&
+                                           username == confUsername && password == confPassword;
+                var vendeurSectionValide = (businessName ?? lastName ?? firstName ?? street ?? city ?? province ??
+                    postalCode ?? tel1 ?? tel2) == null && (freeDelivery ?? weightDelivery) != null;
+
+
+                if (clientSectionValide && !vendeurSectionValide)
+                {
+                    //Register client  
+
+                }
+                else if(clientSectionValide && vendeurSectionValide)
+                {
+                    //Register vendeur
+                }
+                else
+                {
+                    //Error missing field
+                }
+
             }
 
 
             return View();
         }
 
-      [HttpPost]
-      public ActionResult VerifyEntry() => null;
+        [HttpPost]
+        public ActionResult VerifyEntry() => null;
 
-   }
+    }
 }

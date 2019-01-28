@@ -47,7 +47,7 @@ namespace PetitesPuces.Controllers
             if (clientLogged != null)
             {
                 clientLogged.MotDePasse = "";
-                Session["clientObj"] = vendeurLogged;
+                Session["clientObj"] = clientLogged;
                 return RedirectToAction("Index", "Client");
             }
             else if (vendeurLogged != null)

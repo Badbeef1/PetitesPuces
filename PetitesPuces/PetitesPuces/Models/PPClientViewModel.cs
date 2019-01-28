@@ -22,5 +22,7 @@ namespace PetitesPuces.Models
         [DataType(DataType.Password)]
         //[Compare("client.MotDePasse")]
         public string confirmPassword { get; set; }
+
+        public bool boolVendeur { get; set; }
     }
 }
