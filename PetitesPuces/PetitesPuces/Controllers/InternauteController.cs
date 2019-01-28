@@ -23,6 +23,8 @@ namespace PetitesPuces.Controllers
          return View(categories);
       }
 
+      public ActionResult CatalogueNouveaute() => View();
+
 
         public ActionResult Inscription(Models.PPClientViewModel model)
         {
@@ -49,16 +51,15 @@ namespace PetitesPuces.Controllers
                 var weightDelivery = model.vendeur.PoidsMaxLivraison;
                 var taxes = model.vendeur.Taxes;
 
-
             }
 
 
             return View();
         }
-
+        
       [HttpPost]
       public ActionResult VerifyEntry() => null;
-      public ActionResult CatalogueNouveaute => View();
+     
 
    }
 }

@@ -6,24 +6,48 @@ using System.Web.Mvc;
 
 namespace PetitesPuces.Controllers
 {
-    public class ClientController : Controller
-    {
-        public ActionResult Index() => View("AccueilClient");
+   public class ClientController : Controller
+   {
+      public ActionResult Index() => View("AccueilClient");
 
-        public ActionResult AccueilClient() => View();
+      public ActionResult AccueilClient()
+      {
+         /* Compare data with Database */
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
 
-        // GET: Client
-        public ActionResult SaisieCommande() => View();
+         //Requête qui va permettre d'aller chercher les paniers du client
+         var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                          where panier.NoClient.Equals(10000)
+                          group panier by panier.PPVendeurs;
 
-        // GET: Cataloguess
-        public ActionResult Catalogue() => View();
+         db.Connection.Close();
 
-        // GET: ProduitDetail
-        public ActionResult ProduitDetaille() => View();
+         return View(paniers);
+      }
 
-        public ActionResult GestionProfilClient() => View();
-        
-        //Panier Détaillé du client
-        public ActionResult PanierDetail() => View();
+      // GET: Client
+      public ActionResult SaisieCommande() => View();
+
+      // GET: Cataloguess
+      public ActionResult Catalogue() => View();
+
+      // GET: ProduitDetail
+      public ActionResult ProduitDetaille() => View();
+
+      public ActionResult GestionProfilClient() => View();
+
+      //Panier Détaillé du client
+      public ActionResult PanierDetail(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //requête pour aller chercher les produits à l'aide d'un vendeur
+         var items = from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                     where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
+                     select panier;
+
+         return View(items);
+      }
    }
 }

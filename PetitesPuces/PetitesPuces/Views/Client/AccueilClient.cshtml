@@ -1,407 +1,189 @@
-﻿<!DOCTYPE html>
+﻿@using PetitesPuces.Models
+@model IQueryable<IGrouping<PPVendeurs, PPArticlesEnPanier>>
+   <!DOCTYPE html>
 
-<html>
-<head>
-   <meta name="viewport" content="width=device-width" />
-   <meta charset="utf-8">
-   <title>Petites Puces</title>
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+   <html>
+   <head>
+      <meta name="viewport" content="width=device-width" />
+      <meta charset="utf-8">
+      <title>Petites Puces</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
-   <style>
-      body {
-         position: relative;
-      }
+      <style>
+          body {
+             position: relative;
+          }
 
-      #navbarCategorie {
-         position: fixed;
-      }
+          #navbarCategorie {
+             position: fixed;
+          }
 
-      
-      /*
-        * Base structure
-        */
-      /* Move down content because we have a fixed navbar that is 50px tall */
-      body {
-         padding-top: 50px;
-      }
+          /*
+         * Base structure
+         */
+          /* Move down content because we have a fixed navbar that is 50px tall */
+          body {
+             padding-top: 50px;
+          }
 
-      /*
-        * Typography
-        */
+          /*
+         * Typography
+         */
 
-      h1 {
-         margin-bottom: 20px;
-         padding-bottom: 9px;
-         border-bottom: 1px solid #eee;
-      }
+          h1 {
+             margin-bottom: 20px;
+             padding-bottom: 9px;
+             border-bottom: 1px solid #eee;
+          }
 
-      /*
-        * Sidebar
-        */
+          /*
+         * Sidebar
+         */
 
-      .sidebar {
-         position: fixed;
-         top: 51px;
-         bottom: 0;
-         left: 0;
-         z-index: 1000;
-         padding: 20px;
-         overflow-x: hidden;
-         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-         border-right: 1px solid #eee;
-      }
+          .sidebar {
+             position: fixed;
+             top: 51px;
+             bottom: 0;
+             left: 0;
+             z-index: 1000;
+             padding: 20px;
+             overflow-x: hidden;
+             overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+             border-right: 1px solid #eee;
+          }
 
-      /* Sidebar navigation */
-      .sidebar {
-         padding-left: 0;
-         padding-right: 0;
-      }
+          /* Sidebar navigation */
+          .sidebar {
+             padding-left: 0;
+             padding-right: 0;
+          }
 
-         .sidebar .nav {
-            margin-bottom: 20px;
-         }
+             .sidebar .nav {
+                margin-bottom: 20px;
+             }
 
-         .sidebar .nav-item {
-            width: 100%;
-         }
+             .sidebar .nav-item {
+                width: 100%;
+             }
 
-            .sidebar .nav-item + .nav-item {
-               margin-left: 0;
-            }
+                .sidebar .nav-item + .nav-item {
+                   margin-left: 0;
+                }
 
-         .sidebar .nav-link {
-            border-radius: 0;
-         }
+             .sidebar .nav-link {
+                border-radius: 0;
+             }
 
-      /*
-        * Dashboard
-        */
+          /*
+         * Dashboard
+         */
 
-      /* Placeholders */
-      .placeholders {
-         padding-bottom: 3rem;
-      }
+          /* Placeholders */
+          .placeholders {
+             padding-bottom: 3rem;
+          }
 
-      .placeholder img {
-         padding-top: 1.5rem;
-         padding-bottom: 1.5rem;
-      }
-   </style>
+          .placeholder img {
+             padding-top: 1.5rem;
+             padding-bottom: 1.5rem;
+          }
+      </style>
 
-</head>
-<body>
-   <div id="navigation">
-      @RenderPage("~/Views/Client/index.cshtml")
-   </div>
-   <div class="container-fluid">
-      <div class="row">
-         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-            <h4>Les paniers</h4>
-            <ul class="nav nav-pills flex-column">
-               <li class="nav-item">
-                  <a class="nav-link active" href="#">Panier 1<span class="sr-only">(current)</span></a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">Panier 2</a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">Panier 3</a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">
-                     Panier 4
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">
-                     Panier 5
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">
-                     Panier 6
-                  </a>
-               </li>
-            </ul>
-         </nav>
-
-         <!--Les catégories avec entreprises-->
-         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-
-            <br />
-            <hr>
-            <h3>Bienvenue !</h3>
-            <hr />
-            <h4>Voici vos paniers</h4>
-            <div id="accordion">
-               <div class="card">
-                  <div class="card-header" id="heading1">
-                     <div class="float-left">
-                        <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
-                     </div>
-
-                     <div class="float-center">
-                        <h5 class="mb-0">
-                           <button class="btn btn-link" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                              Apple
-                           </button>
-                        </h5>
-                     </div>
-                  </div>
-
-                  <div id="collapse1" class="collapse show" aria-labelledby="heading1" data-parent="#accordion">
-                     <div class="card-body">
-                        <div class="card">
-                           <div class="card-header">
-                              <h4>Apple</h4>
-                           </div>
-                           <div class="card-body">
-                              <div class="row">
-                                 <!--Produit 1-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Macbook</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1500</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 2-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 3-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 4-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 5-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 6-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>MacBook</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="card-footer">
-                              <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <hr />
-
-               <div class="card">
-                  <div class="card-header" id="headingOne">
-                     <div class="float-left">
-                        <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
-                     </div>
-
-                     <div class="float-center">
-                        <h5 class="mb-0">
-                           <button class="btn btn-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
-                              Dell
-                           </button>
-                        </h5>
-                     </div>
-
-                  </div>
-
-                  <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordion">
-                     <div class="card-body">
-                        <div class="card">
-                           <div class="card-header">
-                              <h4>Dell</h4>
-                           </div>
-                           <div class="card-body">
-                              <div class="row">
-                                 <!--Produit 1-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Macbook</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1500</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 2-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 3-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 4-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 5-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>DELL Laptop</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <!--Produit 6-->
-                                 <div class="col-sm-2">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>MacBook</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <div class="float-center">
-                                             <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                          </div>
-                                       </div>
-                                       <div class="card-footer">
-                                          <h5>$1200</h5>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="card-footer">
-                              <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <hr />
-            </div>
-         </main>
+   </head>
+   <body>
+      <div id="navigation">
+         @RenderPage("~/Views/Client/index.cshtml")
       </div>
-   </div>
+      <div class="container-fluid">
+         <div class="row">
+            <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+               <h4>Les paniers</h4>
+               <ul class="nav nav-pills flex-column">
+                  @{
+                     int compteur = 1;
+                     foreach (var item in Model)
+                     {
+                        <li class="nav-item">
+                           <a class="nav-link" href="#">Panier @compteur<span class="sr-only">(current)</span></a>
+                        </li>
+                        compteur ++;
+                     }
+                  }
+               </ul>
+            </nav>
 
-</body>
+            <!--Les catégories avec entreprises-->
+            <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+               <br />
+               <hr>
+               <h3>Bienvenue !</h3>
+               <hr />
+               <h4>Voici vos paniers</h4>
+               <div id="accordion">
+                  @foreach (var articlesVendeur in Model)
+                  {
+                     <div class="card">
+                        <div class="card-header" id="heading1">
+                           <div class="float-left">
+                              <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
+                           </div>
+
+                           <div class="float-center">
+                              <h5 class="mb-0">
+                                 <button class="btn btn-link" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                    Apple
+                                 </button>
+                              </h5>
+                           </div>
+                        </div>
+
+                        <div id="collapse1" class="collapse show" aria-labelledby="heading1" data-parent="#accordion">
+
+                           <div class="card-body">
+                              <div class="card">
+                                 <div class="card-header">
+                                    <h4>@articlesVendeur.Key.NomAffaires</h4>
+                                 </div>
+                                 <div class="card-body">
+                                    <div class="row">
+                                       @foreach (var article in articlesVendeur)
+                                       {
+                                          <div class="col-sm-2">
+                                             <div class="card">
+                                                <div class="card-header">
+                                                   <h5>@article.PPProduits.Nom</h5>
+                                                </div>
+                                                <div class="card-body">
+                                                   <div class="float-center">
+                                                      <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                                   </div>
+                                                </div>
+                                                <div class="card-footer">
+                                                   <h5>@article.PPProduits.PrixVente $</h5>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       }
+                                    </div>
+                                 </div>
+                                 <div class="card-footer">
+                                    @Html.ActionLink("Détail du panier", "PanierDetail", "Client", new { id = articlesVendeur.Key.NoVendeur}, new { @class = "btn btn-primary" })
+                                    <!-- <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>-->
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <hr />
+                  }
+               </div>
+            </main>
+         </div>
+      </div>
+
+   </body>
 </html>
