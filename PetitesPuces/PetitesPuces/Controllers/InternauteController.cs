@@ -23,6 +23,8 @@ namespace PetitesPuces.Controllers
             return View(categories);
         }
 
+      public ActionResult CatalogueNouveaute() => View();
+
 
 
         //GET
@@ -56,6 +58,7 @@ namespace PetitesPuces.Controllers
                 var taxes = model.vendeur.Taxes;
 
 
+
                 var clientSectionValide = (username ?? confUsername ?? password ?? confPassword) != null &&
                                            username == confUsername && password == confPassword;
 
@@ -86,10 +89,10 @@ namespace PetitesPuces.Controllers
             
             return View(model);
         }
-
+        
       [HttpPost]
       public ActionResult VerifyEntry() => null;
-      public ActionResult CatalogueNouveaute => View();
+     
 
     }
 }
