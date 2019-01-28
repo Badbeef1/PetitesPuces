@@ -18,10 +18,10 @@ namespace PetitesPuces.Controllers
          db.Connection.Open();
          var categories = (from cat in db.GetTable<Models.PPCategories>() select cat);
 
-         db.Connection.Close();
+            db.Connection.Close();
 
-         return View(categories);
-      }
+            return View(categories);
+        }
 
       public ActionResult CatalogueNouveaute() => View();
 
@@ -51,6 +51,30 @@ namespace PetitesPuces.Controllers
                 var weightDelivery = model.vendeur.PoidsMaxLivraison;
                 var taxes = model.vendeur.Taxes;
 
+<<<<<<< HEAD
+=======
+
+                var clientSectionValide = (username ?? confUsername ?? password ?? confPassword) != null &&
+                                           username == confUsername && password == confPassword;
+                var vendeurSectionValide = (businessName ?? lastName ?? firstName ?? street ?? city ?? province ??
+                    postalCode ?? tel1 ?? tel2) == null && (freeDelivery ?? weightDelivery) != null;
+
+
+                if (clientSectionValide && !vendeurSectionValide)
+                {
+                    //Register client  
+
+                }
+                else if(clientSectionValide && vendeurSectionValide)
+                {
+                    //Register vendeur
+                }
+                else
+                {
+                    //Error missing field
+                }
+
+>>>>>>> 1f3362f3ae12bb12c277e048902f87355080e377
             }
 
 
@@ -61,5 +85,5 @@ namespace PetitesPuces.Controllers
       public ActionResult VerifyEntry() => null;
      
 
-   }
+    }
 }

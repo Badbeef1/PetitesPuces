@@ -90,6 +90,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\styleGeneral.css" />
     <Content Include="Content\images\cart.jpg" />
     <Content Include="Content\images\dell.jpg" />
@@ -115,7 +117,11 @@
     <Content Include="Content\css\morris.css" />
     <Content Include="Content\scripts\morris.js" />
     <Content Include="Content\scripts\raphael.js" />
+<<<<<<< HEAD
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+=======
+    <Content Include="Content\Site.css" />
+>>>>>>> 1f3362f3ae12bb12c277e048902f87355080e377
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -145,12 +151,14 @@
     </Compile>
     <Compile Include="Models\InactiviteViewModel.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
+    <Compile Include="Models\Province.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\InformationPersonnelViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config">
@@ -163,6 +171,10 @@
     </Content>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+<<<<<<< HEAD
+=======
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+>>>>>>> 1f3362f3ae12bb12c277e048902f87355080e377
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <None Include="Models\DataClasses1.dbml.layout">
       <DependentUpon>DataClasses1.dbml</DependentUpon>
@@ -196,7 +208,15 @@
     </None>
     <Content Include="Views\Client\PanierDetail.cshtml" />
     <Content Include="Views\Internaute\CatalogueNouveaute.cshtml" />
+<<<<<<< HEAD
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+=======
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Client\InformationPersonnel.cshtml" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Client\ModificationMDP.cshtml" />
+>>>>>>> 1f3362f3ae12bb12c277e048902f87355080e377
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

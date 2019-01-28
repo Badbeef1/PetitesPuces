@@ -17,105 +17,17 @@
         @RenderPage("~/Views/Vendeur/index.cshtml")
     </div>
     <div class="container sEspaceBarNavigation">
+        @Html.Partial("~/Views/Client/InformationPersonnel.cshtml")          
+        <br />
+        @Html.Partial("~/Views/Client/ModificationMDP.cshtml")
+        <br />
         <div class="card">
-            <h5 class="card-header">Modification du profil de <span>***</span></h5>
+            <h5 class="card-header">Section Vendeur</h5>
             <div class="card-body">
                 <div class="form-row form-group">
                     <label class="col-form-label">Nom de l'entreprice</label>
                     <input type="text" class="form-control" />
                 </div>
-                <div class="form-row form-group">
-                    <div class="col-3">
-                        <label class="col-form-label">Prénom</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                    <div class="col-3">
-                        <label class="col-form-label">Nom</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                    <div class="col-3">
-                        <label class="col-form-label">Rue</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                    <div class="col-3">
-                        <label class="col-form-label">Ville</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                </div>
-                <div class="form-row form-group">
-                    <div class="col-3">
-                        <label class="col-form-label">Province</label>
-                        <select id="ddlProvince" class="custom-select ">
-                            <option selected value="">Choisir...</option>
-                            <option value="AB">Alberta</option>
-                            <option value="BC">Colombie-Britannique</option>
-                            <option value="PE">Île-du-Prince-Édouard</option>
-                            <option value="MB">Manitoba</option>
-                            <option value="NB">Nouveau-Brunswick</option>
-                            <option value="NS">Nouvelle-Écosse</option>
-                            <option value="ON">Ontario</option>
-                            <option value="QC">Québec</option>
-                            <option value="SK">Saskatchewan</option>
-                            <option value="NL">Terre-Neuve-et-Labrador</option>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <label class="col-form-label">Pays</label>
-                        <select id="ddlPays" class="form-control">
-                            <option selected value="Canada">Canada</option>
-                            <option selected value="Canada">Canada</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Code postal</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Téléphone #1</label>
-                        <input type="text" class="form-control" placeholder="(999) 999-9999"/>
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Téléphone #2</label>
-                        <input type="text" class="form-control" placeholder="(999) 999-9999"/>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer btn-group sPiedPageBouton">
-                <button type="button" class="btn btn-outline-success">Sauvegarder</button>
-                <a href="#" class="btn btn-outline-primary">Retour</a>
-            </div>
-        </div>
-        <br />
-        <div class="card">
-            <h5 class="card-header">Modification du mot de passe</h5>
-            <div class="card-body">
-                <div class="form-row form-group">
-                    <div class="col-6">
-                        <label class="col-form-label mr-auto">Ancien mot de passe</label>
-                        <input type="text" class="form-control" />
-                    </div>
-
-                </div>
-                <div class="form-row form-group">
-                    <div class="col-6">
-                        <label class="col-form-label">Nouveau mot de passe</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                    <div class="col-6">
-                        <label class="col-form-label">Confirmation mot de passe</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer btn-group sPiedPageBouton">
-                <button type="button" class="btn btn-outline-success">Sauvegarde</button>
-                <a href="#" class="btn btn-outline-primary">Retour</a>
-            </div>
-        </div>
-        <br />
-        <div class="card">
-            <h5 class="card-header">Livraison et paiement</h5>
-            <div class="card-body">
                 <div class="form-row form-group">
                     <div class="col-3">
                         <label class="col-form-label">Poids de livraison Maximum</label>

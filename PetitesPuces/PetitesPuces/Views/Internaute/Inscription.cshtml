@@ -43,7 +43,7 @@
             $('#tbCodePostal').mask('AAA AAA');
             $('#tbTel1').mask('(000) 000-0000');
             $('#tbTel2').mask('(000) 000-0000');
-            $('#tbLivraisonGratuite').mask('000.00');
+            $('#tbLivraisonGratuite').mask('0 000.00');
             
         });
     </script>
@@ -67,6 +67,21 @@
         .tooltipB:hover .tooltiptext {
             visibility: visible;
         }
+
+        .custom-control-lg .custom-control-label::before,
+        .custom-control-lg .custom-control-label::after {
+            top: 0.1rem !important;
+            left: -2rem !important;
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+        }
+
+        .custom-control-lg .custom-control-label {
+            margin-left: 0.5rem !important;
+            margin-top: 1rem !important;
+            font-size: 1rem !important;
+        }
+
     </style>
 </head>
 <body>
@@ -80,7 +95,7 @@
                 <br />
                 @using (Html.BeginForm("Inscription", "Internaute", FormMethod.Post))
                 {
-
+                    @Html.AntiForgeryToken()
                     <div class="container">
                         <!-- Email -->
                         <div class="input-group mb-3">
@@ -154,13 +169,21 @@
                         <br />
 
                         <!-- Accordion for vendeur-->
-                        <div class="card btn-block">
-                            <Button class="card-header btn" id="vendeurHeading" data-toggle="collapse"
-                                    data-target="#sectionVendeur" aria-expanded="false" aria-controls="sectionVendeur" type="button">
-                                <b>Informations supplémentaires requises pour s'enregistrer comme vendeur</b>
-                                <span class="float-right"><i class="fas fa-chevron-down"></i></span>
-                            </Button>
+                        <div class="card">
+                            <div class="card-header">
+                                
+                                <div class="custom-control-lg custom-control custom-checkbox ">
+                                    @Html.CheckBoxFor(x => x.boolVendeur, new {
+                                       @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
+                                       ,data_target="#sectionVendeur", aria_expanded="false" } )
+                                    <label class="custom-control-label " for="cbVendeur">
+                                        <span style="font-size:20px; font-weight:bold" class="align-text-bottom">Je veux être un vendeur</span>
+                                    </label>
+                                </div>
 
+
+                                <!--<span class="float-right"><i class="fas fa-chevron-down"></i></span>-->
+                            </div>
                             <div id="sectionVendeur" class="collapse" aria-labelledby="vendeurHeading">
                                 <div class="card-body">
 
@@ -325,7 +348,7 @@
                                                 @Html.EditorFor(x => x.vendeur.LivraisonGratuite, new { htmlAttributes = new {
                                            @id = "tbLivraisonGratuite",
                                            @class = "form-control",
-                                           @placeholder = "000.00"
+                                           @placeholder = "0 000.00"
                                            //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
                                        }
                                        })
