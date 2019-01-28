@@ -25,8 +25,9 @@ namespace PetitesPuces.Controllers
             return View("GestionInactivite", iVM);
 
         }
+
         [HttpPost]
-        public ActionResult GestionInactivite(List<String> lstClients, List<String> lstVendeurs)
+        public ActionResult btnDetruire(List<String> lstClients, List<String> lstVendeurs)
         {
             InactiviteViewModel iVM = new InactiviteViewModel
             {
