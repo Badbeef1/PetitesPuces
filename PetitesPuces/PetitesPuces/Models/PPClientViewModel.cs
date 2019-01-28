@@ -21,6 +21,7 @@ namespace PetitesPuces.Models
         
 
         public string errorMessage { get; set; }
+       public string okMessage { get; set; }
 
         public bool boolVendeur { get; set; }
 

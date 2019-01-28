@@ -31,21 +31,21 @@
     <script>
         $(document).ready(function () {
             $("#btnPasswordVisible").click(function () {
-                $("#iconVisible").toggleClass("fa-eye fa-eye-slash")
-                var newType = ($("#tbPassword").attr("type") === "password") ? "text" : "password";
+                $("#iconVisible").toggleClass("fa-eye fa-eye-slash");
+               var newType = ($("#tbPassword").attr("type") === "password") ? "text" : "password";
                 $("#tbPassword").attr("type", newType);
             });
 
             $("#btnPasswordVisible2").click(function () {
-                $("#iconVisible2").toggleClass("fa-eye fa-eye-slash")
-                var newType = ($("#tbPassword2").attr("type") === "password") ? "text" : "password";
+                $("#iconVisible2").toggleClass("fa-eye fa-eye-slash");
+               var newType = ($("#tbPassword2").attr("type") === "password") ? "text" : "password";
                 $("#tbPassword2").attr("type", newType);
             });
 
             $('#tbCodePostal').mask('AAA AAA');
             $('#tbTel1').mask('(000) 000-0000');
             $('#tbTel2').mask('(000) 000-0000');
-            $('#tbLivraisonGratuite').mask('0 000.00');
+            $('#tbLivraisonGratuite').mask('000.00');
 
         });
     </script>
@@ -185,15 +185,15 @@
                             <div class="card-header">
 
                                 <div class="custom-control-lg custom-control custom-checkbox ">
-                                    @Html.CheckBoxFor(x => x.boolVendeur, new {
-                                       @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
-                                       ,data_target="#sectionVendeur", aria_expanded = Model != null ? Model.boolVendeur : false } )
-                                    <label class="custom-control-label " for="cbVendeur">
+                                   @Html.CheckBoxFor(x => x.boolVendeur, new {
+                                      @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
+                                      ,data_target="#sectionVendeur", aria_expanded = Model?.boolVendeur ?? false } )
+                                   <label class="custom-control-label " for="cbVendeur">
                                         <span style="font-weight:bold">Je veux être un vendeur</span>
                                     </label>
                                 </div>
                             </div>
-                            <div id="sectionVendeur" class="collapse" aria-labelledby="vendeurHeading">
+                            <div id="sectionVendeur" class="collapse @(Model != null && Model.boolVendeur ? "show" : "hide")" aria-labelledby="vendeurHeading">
                                 <div class="card-body">
 
                                     <div class="form-row">
@@ -383,9 +383,8 @@
                         <br />
                         <br />
 
-                        <p style="color:red">@Html.DisplayFor(x => x.errorMessage)
-                        @Html.ValidationSummary()</p>
-
+                        <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
+                        <p style="color:greenyellow">@Html.DisplayFor(x => x.okMessage)</p>
                         <div>
                             <input type="submit" value="S'inscrire" class="btn btn-primary btn-block" />
                         </div>

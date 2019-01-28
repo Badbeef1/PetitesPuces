@@ -49,65 +49,66 @@
                 {
 
                 <div class="container">
-                    <!-- Email -->
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 40px">
-                                <i class="fa fa-at" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        @Html.EditorFor(x => x.client.AdresseEmail, new { htmlAttributes = new {
-                           @class = "form-control",
-                           @placeholder = "Inscrivez votre courriel",
-                           @style = Model != null && Model.client.AdresseEmail == null ? "border:1px solid red" : "" }
-                        })
-                    </div>
+                   <!-- Email -->
+                   <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                         <span class="input-group-text text-center" style="width: 40px">
+                            <i class="fa fa-at" aria-hidden="true"></i>
+                         </span>
+                      </div>
+                      @Html.EditorFor(x => x.client.AdresseEmail, new { htmlAttributes = new {
+                         @class = "form-control",
+                         @placeholder = "Inscrivez votre courriel",
+                         @style = Model != null && Model.client.AdresseEmail == null ? "border:1px solid red" : "" }
+                      })
+                   </div>
 
-                    <!-- Password -->
-                    <div class="input-group mb-3 has-feedback">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 40px">
-                                <i class="fa fa-unlock-alt" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        @Html.EditorFor(x => x.client.MotDePasse, new { htmlAttributes = new {
-                            @id = "tbPassword",
-                            @class = "form-control",
-                            @placeholder = "Inscrivez votre mot de passe",
-                            @style = Model != null && Model.client.MotDePasse == null  ? "border:1px solid red" : "", }
-                        })
-                        <span class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
-                                <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
-                            </button>
-                        </span>
-                    </div>
+                   <!-- Password -->
+                   <div class="input-group mb-3 has-feedback">
+                      <div class="input-group-prepend">
+                         <span class="input-group-text text-center" style="width: 40px">
+                            <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                         </span>
+                      </div>
+                      @Html.EditorFor(x => x.client.MotDePasse, new { htmlAttributes = new {
+                          @id = "tbPassword",
+                          @class = "form-control",
+                          @placeholder = "Inscrivez votre mot de passe",
+                          @style = Model != null && Model.client.MotDePasse == null  ? "border:1px solid red" : "", }
+                      })
+                      <span class="input-group-append">
+                         <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
+                            <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
+                         </button>
+                      </span>
+                   </div>
 
-                    <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
-                    <p>
-                        <input type="submit" value="Se connecter" class="btn btn-primary btn-block" />
-                    </p>
-                    <p>
-                        <a href="/Internaute" style="text-decoration: none;">
-                            <input type="button" value="Retour à la page d'accueil" class="btn btn-primary btn-block" />
-                        </a>
-                    </p>
-                    <hr />
+                   <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
+                   <p style="color:greenyellow">@Html.DisplayFor(x => x.okMessage)</p>
+                   <p>
+                      <input type="submit" value="Se connecter" class="btn btn-primary btn-block" />
+                   </p>
+                   <p>
+                      <a href="/Internaute" style="text-decoration: none;">
+                         <input type="button" value="Retour à la page d'accueil" class="btn btn-primary btn-block" />
+                      </a>
+                   </p>
+                   <hr />
 
-                    <div>
-                        <p>
-                            Pas de compte? <a href="~/Internaute/Inscription">S'inscrire</a>&nbsp;&nbsp; / &nbsp;&nbsp;<a href="/Connexion/RecupererMDP">Oublié votre mot de passe?</a>
-                        </p>
-                        <hr />
-                        <p>Section pour débogage</p>
-<p>
-                            <a href="/Client">Test connexion Client</a>
-                            <br />
-                            <a href="/Vendeur">Test connexion Vendeur</a>
-                            <br />
-                            <a href="/Gestionnaire">Test connexion Gestionnaire</a>
-                        </p>
-                    </div>
+                   <div>
+                      <p>
+                         Pas de compte? <a href="~/Internaute/Inscription">S'inscrire</a>&nbsp;&nbsp; / &nbsp;&nbsp;<a href="/Connexion/RecupererMDP">Oublié votre mot de passe?</a>
+                      </p>
+                      <hr />
+                      <p>Section pour débogage</p>
+                      <p>
+                         <a href="/Client">Test connexion Client</a>
+                         <br />
+                         <a href="/Vendeur">Test connexion Vendeur</a>
+                         <br />
+                         <a href="/Gestionnaire">Test connexion Gestionnaire</a>
+                      </p>
+                   </div>
                 </div>
                 }
             </div>
