@@ -1,0 +1,70 @@
+﻿@model PetitesPuces.Models.PPClients
+
+@using (Html.BeginForm())
+{
+    <div class="card">
+        <h5 class="card-header">Modification du profil de <span>@Html.DisplayNameFor(model => Model.AdresseEmail)</span></h5>
+        <div class="card-body">
+            <div class="form-row form-group">
+                <div class="col-3">
+                    <label class="col-form-label">Prénom</label>
+                    @Html.TextBoxFor(model => Model.Prenom, new { @class = "form-control" })
+                </div>
+                <div class="col-3">
+                    <label class="col-form-label">Nom</label>
+                    @Html.TextBoxFor(model => Model.Nom, new { @class = "form-control" })
+                </div>
+                <div class="col-3">
+                    <label class="col-form-label">Rue</label>
+                    @Html.TextBoxFor(model => Model.Rue, new { @class = "form-control" })
+                </div>
+                <div class="col-3">
+                    <label class="col-form-label">Ville</label>
+                    @Html.TextBoxFor(model => Model.Ville, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-row form-group">
+                <div class="col-3">
+                    <label class="col-form-label">Province</label>
+                    <select id="ddlProvince" class="custom-select ">
+                        <option selected value="">Choisir...</option>
+                        <option value="AB">Alberta</option>
+                        <option value="BC">Colombie-Britannique</option>
+                        <option value="PE">Île-du-Prince-Édouard</option>
+                        <option value="MB">Manitoba</option>
+                        <option value="NB">Nouveau-Brunswick</option>
+                        <option value="NS">Nouvelle-Écosse</option>
+                        <option value="ON">Ontario</option>
+                        <option value="QC">Québec</option>
+                        <option value="SK">Saskatchewan</option>
+                        <option value="NL">Terre-Neuve-et-Labrador</option>
+                    </select>
+                    @Html.DropDownList("ddlProvince", (SelectList)ViewBag.ListeDesProvinces)
+                </div>
+                <div class="col-3">
+                    <label class="col-form-label">Pays</label>
+                    <select id="ddlPays" class="form-control">
+                        <option selected value="Canada">Canada</option>
+                        <option selected value="Canada">Canada</option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="col-form-label">Code postal</label>
+                    @Html.TextBoxFor(model => Model.CodePostal, new { @class = "form-control" })
+                </div>
+                <div class="col-2">
+                    <label class="col-form-label">Téléphone #1</label>
+                    @Html.TextBoxFor(model => Model.Tel1, new { @class = "form-control", placeholder = "(999) 999-9999" })
+                </div>
+                <div class="col-2">
+                    <label class="col-form-label">Téléphone #2</label>
+                    @Html.TextBoxFor(model => Model.Tel2, new { @class = "form-control", placeholder = "(999) 999-9999" })
+                </div>
+            </div>
+        </div>
+        <div class="card-footer btn-group sPiedPageBouton">
+            <button type="button" class="btn btn-outline-success">Sauvegarder</button>
+            <a href="#" class="btn btn-outline-primary">Retour</a>
+        </div>
+    </div>
+}
