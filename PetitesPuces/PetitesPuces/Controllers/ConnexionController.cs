@@ -46,12 +46,13 @@ namespace PetitesPuces.Controllers
 
             if (clientLogged != null)
             {
-                Session["username"] = clientLogged.AdresseEmail;
+                clientLogged.MotDePasse = "";
+                Session["clientObj"] = clientLogged;
                 return RedirectToAction("Index", "Client");
             }
             else if (vendeurLogged != null)
             {
-                Session["username"] = vendeurLogged.AdresseEmail;
+                vendeurLogged.MotDePasse = "";
                 Session["vendeurObj"] = vendeurLogged;
                 return RedirectToAction("Index", "Vendeur");
             }
