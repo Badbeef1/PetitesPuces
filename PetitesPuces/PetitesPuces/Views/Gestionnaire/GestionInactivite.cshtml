@@ -1,5 +1,6 @@
 ﻿@model PetitesPuces.Models.InactiviteViewModel
 @using PetitesPuces.Models
+@using System.Linq
 @{
     Layout = null;
 }
@@ -58,23 +59,20 @@
                             </tr>
 
                             @{
-                                int counter = 1;
-                                foreach (PPClients client in @Model.clients)
-
+                                for (int i = 0; i < @Model.cbClients.Count-1; i++)
                                 {
-                                    <tr id="@(client.NoClient)">
-                                        <th style="text-align:right">@counter</th>
-                                        <td>@client.Nom</td>
-                                        <td>@client.Prenom</td>
-                                        <td style="text-align:right">@client.Nom</td>
+                                    <tr>
+                                        <th style="text-align:right">@(i + 1)</th>
+                                        <td>@Model.clients[i].Nom</td>
+                                        <td>@Model.clients[i].Prenom</td>
+                                        <td style="text-align:right">@Model.clients[i].Nom</td>
                                         <td class="text-center">
-
-                                            <input type="checkbox" id="cbClient@(counter)" value="Ok" style="width:inherit" />
+                                            <input type="checkbox" id="cbClient@(Model.cbClients[i].Value)" style="width:inherit" />
                                         </td>
                                     </tr>
-                                    counter++;
                                 }
                             }
+
                         </table>
                     </div>
                 </div>
@@ -101,21 +99,17 @@
 
 
                             @{
-                                counter = 1;
-                                foreach (PPVendeurs vendeur in @Model.vendeurs)
-
+                                for (int i = 0; i < @Model.cbVendeurs.Count - 1; i++)
                                 {
-                                    <tr id="@(vendeur.NoVendeur)">
-                                        <th style="text-align:right">@counter</th>
-                                        <td>@vendeur.Nom</td>
-                                        <td>@vendeur.Prenom</td>
-                                        <td style="text-align:right">@vendeur.Nom</td>
+                                    <tr>
+                                        <th style="text-align:right">@(i + 1)</th>
+                                        <td>@Model.vendeurs[i].Nom</td>
+                                        <td>@Model.vendeurs[i].Prenom</td>
+                                        <td style="text-align:right">@Model.vendeurs[i].Nom</td>
                                         <td class="text-center">
-
-                                            <input type="checkbox" id="cbVendeur@(counter)" value="Ok" style="width:inherit" />
+                                            <input type="checkbox" id="cbVendeurs@(Model.cbVendeurs[i].Value)" style="width:inherit" />
                                         </td>
                                     </tr>
-                                    counter++;
                                 }
                             }
                         </table>

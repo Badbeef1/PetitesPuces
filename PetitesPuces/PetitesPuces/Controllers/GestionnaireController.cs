@@ -17,24 +17,40 @@ namespace PetitesPuces.Controllers
 
         public ActionResult GestionInactivite()
         {
+            IList<SelectListItem> lstClient = new List<SelectListItem>();
+            IList<SelectListItem> lstVendeur = new List<SelectListItem>();
+
+            for (int i = 0; i < dc.GetTable<PPClients>().ToList().Count; i++)
+            {
+                lstClient.Add(new SelectListItem
+                {
+                    Value = dc.GetTable<PPClients>().ToList()[i].NoClient.ToString()
+                });
+            }
+
+            for (int i = 0; i < dc.GetTable<PPVendeurs>().ToList().Count; i++)
+            {
+                lstVendeur.Add(new SelectListItem
+                {
+                    Value = dc.GetTable<PPVendeurs>().ToList()[i].NoVendeur.ToString()
+                });
+            }
+
             InactiviteViewModel iVM = new InactiviteViewModel
             {
                 clients = dc.GetTable<PPClients>().ToList(),
-                vendeurs = dc.GetTable<PPVendeurs>().ToList()
+                vendeurs = dc.GetTable<PPVendeurs>().ToList(),
+                cbClients = lstClient,
+                cbVendeurs = lstVendeur
             };
             return View("GestionInactivite", iVM);
 
         }
 
         [HttpPost]
-        public ActionResult btnDetruire(List<String> lstClients, List<String> lstVendeurs)
+        public ActionResult GestionInactivite(List<SelectListItem> items)
         {
-            InactiviteViewModel iVM = new InactiviteViewModel
-            {
-                clients = dc.GetTable<PPClients>().ToList(),
-                vendeurs = dc.GetTable<PPVendeurs>().ToList()
-            };
-            return View("GestionInactivite", iVM);
+            return View();
         }
 
         public ActionResult Statistiques() => View();
