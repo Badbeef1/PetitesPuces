@@ -12,17 +12,17 @@ namespace PetitesPuces.Models
         public PPClients client { get; set; }
         public PPVendeurs vendeur { get; set; }
 
+        [Required]
+        public string confirmUsername { get; set; }
+        
+        [Required]
+        [DataType(DataType.Password)]
+        public string confirmPassword { get; set; }
+        
+
         public string errorMessage { get; set; }
 
-        [NotMapped] // Does not effect with your database
-        //[Compare("client.AdresseEmail")]
-        public string confirmUsername { get; set; }
-
-        [NotMapped]
-        [DataType(DataType.Password)]
-        //[Compare("client.MotDePasse")]
-        public string confirmPassword { get; set; }
-
         public bool boolVendeur { get; set; }
+
     }
 }

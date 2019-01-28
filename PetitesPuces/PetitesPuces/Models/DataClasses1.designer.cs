@@ -775,6 +775,7 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AdresseEmail", DbType="VarChar(100)")]
+        [Required]
 		public string AdresseEmail
 		{
 			get
@@ -3572,6 +3573,7 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NomAffaires", DbType="VarChar(50)")]
+        [Required]
 		public string NomAffaires
 		{
 			get
@@ -3592,7 +3594,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Nom", DbType="VarChar(50)")]
-		public string Nom
+        [Required]
+        public string Nom
 		{
 			get
 			{
@@ -3612,7 +3615,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Prenom", DbType="VarChar(50)")]
-		public string Prenom
+        [Required]
+        public string Prenom
 		{
 			get
 			{
@@ -3632,7 +3636,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Rue", DbType="VarChar(50)")]
-		public string Rue
+        [Required]
+        public string Rue
 		{
 			get
 			{
@@ -3652,7 +3657,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Ville", DbType="VarChar(50)")]
-		public string Ville
+        [Required]
+        public string Ville
 		{
 			get
 			{
@@ -3672,7 +3678,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Province", DbType="Char(2)")]
-		public string Province
+        [Required]
+        public string Province
 		{
 			get
 			{
@@ -3692,7 +3699,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CodePostal", DbType="VarChar(7)")]
-		public string CodePostal
+        [Required]
+        public string CodePostal
 		{
 			get
 			{
@@ -3712,7 +3720,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Pays", DbType="VarChar(10)")]
-		public string Pays
+        [Required]
+        public string Pays
 		{
 			get
 			{
@@ -3732,7 +3741,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Tel1", DbType="VarChar(20)")]
-		public string Tel1
+        [Required]
+        public string Tel1
 		{
 			get
 			{
@@ -3772,7 +3782,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AdresseEmail", DbType="VarChar(100)")]
-		public string AdresseEmail
+        [Required]
+        public string AdresseEmail
 		{
 			get
 			{
@@ -3792,6 +3803,7 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MotDePasse", DbType="VarChar(50)")]
+        [Required]
         [DataType(DataType.Password)]
 		public string MotDePasse
 		{
@@ -3813,7 +3825,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PoidsMaxLivraison", DbType="Int")]
-		public System.Nullable<int> PoidsMaxLivraison
+        [Required]
+        public System.Nullable<int> PoidsMaxLivraison
 		{
 			get
 			{
@@ -3833,7 +3846,8 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LivraisonGratuite", DbType="SmallMoney")]
-		public System.Nullable<decimal> LivraisonGratuite
+        [Required]
+        public System.Nullable<decimal> LivraisonGratuite
 		{
 			get
 			{
@@ -3853,6 +3867,7 @@ namespace PetitesPuces.Models
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Taxes", DbType="Bit")]
+        [Required]
 		public System.Nullable<bool> Taxes
 		{
 			get

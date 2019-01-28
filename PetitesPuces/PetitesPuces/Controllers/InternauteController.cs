@@ -24,6 +24,12 @@ namespace PetitesPuces.Controllers
         }
 
 
+
+        //GET
+        public ActionResult Inscription() => View();
+        
+        
+        [HttpPost] //POST
         public ActionResult Inscription(Models.PPClientViewModel model)
         {
             if (model.vendeur != null)
@@ -52,18 +58,24 @@ namespace PetitesPuces.Controllers
 
                 var clientSectionValide = (username ?? confUsername ?? password ?? confPassword) != null &&
                                            username == confUsername && password == confPassword;
+
+                var etreVendeur = model.boolVendeur;
+
                 var vendeurSectionValide = (businessName ?? lastName ?? firstName ?? street ?? city ?? province ??
                     postalCode ?? tel1 ?? tel2) == null && (freeDelivery ?? weightDelivery) != null;
 
 
-                if (clientSectionValide && !vendeurSectionValide)
+                if (clientSectionValide && !etreVendeur)
                 {
                     //Register client  
 
                 }
-                else if(clientSectionValide && vendeurSectionValide)
+                else if(clientSectionValide && etreVendeur)
                 {
-                    //Register vendeur
+                    if (vendeurSectionValide)
+                    {
+                        //Register vendeur
+                    }
                 }
                 else
                 {
@@ -71,9 +83,8 @@ namespace PetitesPuces.Controllers
                 }
 
             }
-
-
-            return View();
+            
+            return View(model);
         }
 
       [HttpPost]

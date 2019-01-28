@@ -1,4 +1,6 @@
-﻿@model PetitesPuces.Models.PPClientViewModel
+﻿
+
+@model PetitesPuces.Models.PPClientViewModel
 
 <!DOCTYPE html>
 
@@ -25,7 +27,7 @@
     <!-- JQuery mask -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
 
-    
+
     <script>
         $(document).ready(function () {
             $("#btnPasswordVisible").click(function () {
@@ -44,7 +46,7 @@
             $('#tbTel1').mask('(000) 000-0000');
             $('#tbTel2').mask('(000) 000-0000');
             $('#tbLivraisonGratuite').mask('0 000.00');
-            
+
         });
     </script>
     <style>
@@ -78,10 +80,16 @@
 
         .custom-control-lg .custom-control-label {
             margin-left: 0.5rem !important;
-            margin-top: 1rem !important;
             font-size: 1rem !important;
         }
 
+        .input-validation-error {
+            border: 1px solid #ff0000;
+            background-color: white;
+        }
+        .validation-summary-valid {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -91,7 +99,7 @@
         <div class="card mx-auto my-auto" style="width: 40rem; min-width: 50rem">
             <div class="card-body h-100">
 
-                <h5 class="card-title text-center">Inscription client ou vendeur</h5>
+                <h5 class="card-title text-center">Inscription</h5>
                 <br />
                 @using (Html.BeginForm("Inscription", "Internaute", FormMethod.Post))
                 {
@@ -100,45 +108,48 @@
                         <!-- Email -->
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 50px">
+                                <span class="input-group-text text-center" style="width: 45px">
                                     <i class="fa fa-at" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            @Html.EditorFor(x => x.vendeur.AdresseEmail, new { htmlAttributes = new {
-                            @class = "form-control",
-                            @placeholder = "Inscrivez votre courriel",
-                            @style = Model != null && Model.vendeur.AdresseEmail == null ? "border:1px solid red" : "" }
-                            })
+                            @Html.EditorFor(x => x.vendeur.AdresseEmail, new {
+                           htmlAttributes = new {
+                               @class = "form-control",
+                               @placeholder = "Inscrivez votre courriel"
+                           }})
                         </div>
 
                         <!-- Confirm Email-->
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 50px">
+                                <span class="input-group-text text-center" style="width: 45px">
                                     <i class="fa fa-at" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            @Html.EditorFor(x => x.confirmUsername, new { htmlAttributes = new {
-                            @class = "form-control",
-                            @placeholder = "Inscrivez votre courriel une autre fois",
-                            @style = Model != null && Model.confirmUsername == null ? "border:1px solid red" : "" }
-                            })
+                            @Html.EditorFor(x => x.confirmUsername, new {
+                           htmlAttributes = new
+                           {
+                               @class = "form-control",
+                               @placeholder = "Inscrivez votre courriel une autre fois"
+                           }})
 
                         </div>
 
                         <!-- Password -->
                         <div class="input-group mb-3 has-feedback">
                             <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 50px">
+                                <span class="input-group-text text-center" style="width: 45px">
                                     <i class="fa fa-unlock-alt" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            @Html.EditorFor(x => x.vendeur.MotDePasse, new { htmlAttributes = new {
-                            @id = "tbPassword",
-                            @class = "form-control",
-                            @placeholder = "Inscrivez votre mot de passe",
-                            @style = Model != null && Model.vendeur.MotDePasse == null  ? "border:1px solid red" : "", }
-                            })
+                            @Html.EditorFor(x => x.vendeur.MotDePasse, new {
+                           htmlAttributes = new
+                           {
+                               @id = "tbPassword",
+                               @class = "form-control",
+                               @placeholder = "Inscrivez votre mot de passe"
+
+                           }})
                             <span class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
                                     <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
@@ -149,16 +160,17 @@
                         <!-- Confirm Password-->
                         <div class="input-group mb-3 has-feedback">
                             <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 50px">
+                                <span class="input-group-text text-center" style="width: 45px">
                                     <i class="fa fa-unlock-alt" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            @Html.EditorFor(x => x.confirmPassword, new { htmlAttributes = new {
-                            @id = "tbPassword2",
-                            @class = "form-control",
-                            @placeholder = "Inscrivez votre mot de passe une autre fois",
-                            @style = Model != null && Model.confirmPassword == null  ? "border:1px solid red" : "", }
-                            })
+                            @Html.EditorFor(x => x.confirmPassword, new {
+                           htmlAttributes = new
+                           {
+                               @id = "tbPassword2",
+                               @class = "form-control",
+                               @placeholder = "Inscrivez votre mot de passe une autre fois"
+                           }})
                             <span class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible2">
                                     <i class="fa fa-eye form-control-feedback" id="iconVisible2"></i>
@@ -171,18 +183,15 @@
                         <!-- Accordion for vendeur-->
                         <div class="card">
                             <div class="card-header">
-                                
+
                                 <div class="custom-control-lg custom-control custom-checkbox ">
                                     @Html.CheckBoxFor(x => x.boolVendeur, new {
                                        @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
-                                       ,data_target="#sectionVendeur", aria_expanded="false" } )
+                                       ,data_target="#sectionVendeur", aria_expanded = Model != null ? Model.boolVendeur : false } )
                                     <label class="custom-control-label " for="cbVendeur">
-                                        <span style="font-size:20px; font-weight:bold" class="align-text-bottom">Je veux être un vendeur</span>
+                                        <span style="font-weight:bold">Je veux être un vendeur</span>
                                     </label>
                                 </div>
-
-
-                                <!--<span class="float-right"><i class="fas fa-chevron-down"></i></span>-->
                             </div>
                             <div id="sectionVendeur" class="collapse" aria-labelledby="vendeurHeading">
                                 <div class="card-body">
@@ -190,47 +199,45 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-12">
                                             <label for="tbNomAffaires">Nom de l'entreprise</label>
-                                            @Html.EditorFor(x => x.vendeur.NomAffaires, new { htmlAttributes = new {
-                                           @id = "tbNomAffaires",
-                                           @class = "form-control",
-                                           @placeholder = "Nom de l'entreprise"
-                                           //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                       }})
+                                            @Html.EditorFor(x => x.vendeur.NomAffaires, new {
+                                           htmlAttributes = new {
+                                               @id = "tbNomAffaires",
+                                               @class = "form-control",
+                                               @placeholder = "Nom de l'entreprise"
+                                           }})
                                         </div>
                                     </div>
 
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="tbNom">Nom</label>
-                                            @Html.EditorFor(x => x.vendeur.Nom, new { htmlAttributes = new {
-                                            @id = "tbNom",
-                                            @class = "form-control",
-                                            @placeholder = "Nom"
-                                            //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                        }})
+                                            @Html.EditorFor(x => x.vendeur.Nom, new {
+                                           htmlAttributes = new {
+                                               @id = "tbNom",
+                                               @class = "form-control",
+                                               @placeholder = "Nom"
+                                           }})
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="prenom">Prénom</label>
-                                            @Html.EditorFor(x => x.vendeur.Prenom, new { htmlAttributes = new {
-                                           @id = "tbPrenom",
-                                           @class = "form-control",
-                                           @placeholder = "Prénom"
-                                           //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                       }
-                                       })
+                                            @Html.EditorFor(x => x.vendeur.Prenom, new {
+                                           htmlAttributes = new {
+                                               @id = "tbPrenom",
+                                               @class = "form-control",
+                                               @placeholder = "Prénom"
+                                           }})
                                         </div>
                                     </div>
 
                                     <div class="form-row">
                                         <div class="form-group col-md-10">
                                             <label for="tbRue">Rue</label>
-                                            @Html.EditorFor(x => x.vendeur.Rue, new { htmlAttributes = new {
-                                           @id = "tbRue",
-                                           @class = "form-control",
-                                           @placeholder = "15615 Boul Gouin"
-                                           //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                       }
-                                       })
+                                            @Html.EditorFor(x => x.vendeur.Rue, new {
+                                           htmlAttributes = new {
+                                               @id = "tbRue",
+                                               @class = "form-control",
+                                               @placeholder = "15615 Boul Gouin"
+                                           }})
                                         </div>
                                         <div class="form-group col-md-2">
                                             <label for="ddlPays">Pays</label>
@@ -245,13 +252,12 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="tbVille">Ville</label>
-                                            @Html.EditorFor(x => x.vendeur.Ville, new { htmlAttributes = new {
-                                           @id = "tbVille",
-                                           @class = "form-control",
-                                           @placeholder = "Dollard-des-Ormeaux"
-                                           //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                       }
-                                       })
+                                            @Html.EditorFor(x => x.vendeur.Ville, new {
+                                           htmlAttributes = new {
+                                               @id = "tbVille",
+                                               @class = "form-control",
+                                               @placeholder = "Dollard-des-Ormeaux"
+                                           }})
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label for="ddlProvince">Province</label>
@@ -273,36 +279,33 @@
                                         </div>
                                         <div class="form-group col-md-2">
                                             <label for="tbCodePostal">Code postal</label>
-                                            @Html.EditorFor(x => x.vendeur.CodePostal, new { htmlAttributes = new {
-                                            @id = "tbCodePostal",
-                                            @class = "form-control",
-                                            @placeholder = "H9H 2A5"
-                                            //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                        }
-                                        })
+                                            @Html.EditorFor(x => x.vendeur.CodePostal, new {
+                                           htmlAttributes = new {
+                                               @id = "tbCodePostal",
+                                               @class = "form-control",
+                                               @placeholder = "H9H 2A5"
+                                           }})
                                         </div>
                                     </div>
 
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="tbTel1">Téléphone 1</label>
-                                            @Html.EditorFor(x => x.vendeur.Tel1, new { htmlAttributes = new {
-                                            @id = "tbTel1",
-                                            @class = "form-control",
-                                            @placeholder = "(514) 222-2222"
-                                            //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                        }
-                                        })
+                                            @Html.EditorFor(x => x.vendeur.Tel1, new {
+                                           htmlAttributes = new {
+                                               @id = "tbTel1",
+                                               @class = "form-control",
+                                               @placeholder = "(514) 222-2222"
+                                           }})
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="tbTel2">Téléphone 2</label>
-                                            @Html.EditorFor(x => x.vendeur.Tel2, new { htmlAttributes = new {
-                                            @id = "tbTel2",
-                                            @class = "form-control",
-                                            @placeholder = "(514) 555-5555"
-                                            //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                        }
-                                        })
+                                            @Html.EditorFor(x => x.vendeur.Tel2, new {
+                                           htmlAttributes = new {
+                                               @id = "tbTel2",
+                                               @class = "form-control",
+                                               @placeholder = "(514) 555-5555"
+                                           }})
                                         </div>
                                     </div>
 
@@ -319,13 +322,12 @@
                                                 </span>
                                             </label>
                                             <div class="input-group">
-                                                @Html.EditorFor(x => x.vendeur.PoidsMaxLivraison, new { htmlAttributes = new {
-                                            @id = "tbPoidsMaxLivraison",
-                                            @class = "form-control",
-                                            @placeholder = "00"
-                                            //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                        }
-                                        })
+                                                @Html.EditorFor(x => x.vendeur.PoidsMaxLivraison, new {
+                                               htmlAttributes = new {
+                                                   @id = "tbPoidsMaxLivraison",
+                                                   @class = "form-control",
+                                                   @placeholder = "00"
+                                               }})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">
                                                         Lbs
@@ -345,13 +347,12 @@
                                                 </span>
                                             </label>
                                             <div class="input-group">
-                                                @Html.EditorFor(x => x.vendeur.LivraisonGratuite, new { htmlAttributes = new {
-                                           @id = "tbLivraisonGratuite",
-                                           @class = "form-control",
-                                           @placeholder = "0 000.00"
-                                           //,@style = Model != null && Model.vendeur.NomAffaires == null  ? "border:1px solid red" : "",
-                                       }
-                                       })
+                                                @Html.EditorFor(x => x.vendeur.LivraisonGratuite, new {
+                                               htmlAttributes = new {
+                                                   @id = "tbLivraisonGratuite",
+                                                   @class = "form-control",
+                                                   @placeholder = "0 000.00"
+                                               }})
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">
                                                         $
@@ -382,7 +383,8 @@
                         <br />
                         <br />
 
-                        <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
+                        <p style="color:red">@Html.DisplayFor(x => x.errorMessage)
+                        @Html.ValidationSummary()</p>
 
                         <div>
                             <input type="submit" value="S'inscrire" class="btn btn-primary btn-block" />
