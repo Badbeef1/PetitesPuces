@@ -59,34 +59,23 @@ namespace PetitesPuces.Controllers
                          where unClient.AdresseEmail == strAdresseCourrielClient
                          select unClient;
 
-            //client.ToList().ForEach(test => System.Diagnostics.Debug.WriteLine(test.AdresseEmail));
-            
+            List<Models.Province> lstProvinces = new List<Models.Province>
+            {
+                new Models.Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Models.Province { Abreviation = "ON", Nom = "Ontario"},
+                new Models.Province { Abreviation = "QC", Nom = "Québec"},
+            };
 
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+            
             return View(client.First());
         }
 
         //Vue partiel Information personnel
         [ChildActionOnly]
-        public ActionResult InformationPersonnel(PetitesPuces.Models.PPClients pp)
+        public ActionResult InformationPersonnel()
         {
-            System.Diagnostics.Debug.WriteLine("Il passe ici la vue partiel!!!");
-
-            List<Models.Province> lstProvinces = new List<Models.Province>
-            {
-                new Models.Province { Abreviation = "AB", Nom = "Alberta"},
-                new Models.Province { Abreviation = "BC", Nom = "Colombie-Britanique"},
-                new Models.Province { Abreviation = "PE", Nom = "Île-du-Prince-Édouard"},
-                new Models.Province { Abreviation = "MB", Nom = "Manitoba"},
-                new Models.Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
-                new Models.Province { Abreviation = "NS", Nom = "Nouvelle-Écosse"},
-                new Models.Province { Abreviation = "ON", Nom = "Ontario"},
-                new Models.Province { Abreviation = "QC", Nom = "Québec"},
-                new Models.Province { Abreviation = "SK", Nom = "Saskatchewan"},
-                new Models.Province { Abreviation = "NL", Nom = "Terre-Neuve-et-Labrador"}
-            };
-
-            ViewBag.ListeDesProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-
             return PartialView();
         }
 
