@@ -9,60 +9,63 @@ namespace PetitesPuces.Controllers
 {
     public class ClientController : Controller
     {
-        Models.DataClasses1DataContext contextPP = new Models.DataClasses1DataContext();
+        DataClasses1DataContext contextPP = new DataClasses1DataContext();
+        PPClients unClient;
+        ClientDao clientDao;
 
         public ActionResult Index() => View("AccueilClient");
 
-      public ActionResult AccueilClient()
-      {
-        String noClient = "10000";
-        //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-        /* Compare data with Database */
-        Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
+        public ActionResult AccueilClient()
+        {
+            String noClient = "10000";
 
-         //Requête qui va permettre d'aller chercher les paniers du client
-         var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
+            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+            /* Compare data with Database */
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+
+            //Requête qui va permettre d'aller chercher les paniers du client
+            var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
                           where panier.NoClient.Equals(noClient)
                           group panier by panier.PPVendeurs;
 
-         db.Connection.Close();
+            db.Connection.Close();
 
-         return View(paniers);
-      }
+            return View(paniers);
+        }
 
-      // GET: Client
-      public ActionResult SaisieCommande() => View();
+        // GET: Client
+        public ActionResult SaisieCommande() => View();
 
-      // GET: Cataloguess
-      public ActionResult Catalogue() => View();
+        // GET: Cataloguess
+        public ActionResult Catalogue() => View();
 
-      // GET: ProduitDetail
-      public ActionResult ProduitDetaille() => View();
+        // GET: ProduitDetail
+        public ActionResult ProduitDetaille() => View();
 
 
-      //Panier Détaillé du client
-      public ActionResult PanierDetail(int id)
-      {
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
+        //Panier Détaillé du client
+        public ActionResult PanierDetail(int id)
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                     where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
-                     select panier).ToList();
+                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
+                                              select panier).ToList();
 
-         return View(items);
-      }
-        
+            return View(items);
+        }
+
         [HttpPost]
-        public ActionResult PanierDetail(int id,List<PPArticlesEnPanier> model)
+        public ActionResult PanierDetail(int id, List<PPArticlesEnPanier> model)
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             String noClient = "10000";
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
-            foreach(var articlepanier in model)
+            foreach (var articlepanier in model)
             {
                 var query = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
                              where panier.NoPanier.Equals(articlepanier.NoPanier)
@@ -95,9 +98,9 @@ namespace PetitesPuces.Controllers
             //HttpContext.User.Identity.Name
             String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
 
-            var client = from unClient in contextPP.PPClients
-                         where unClient.AdresseEmail == strAdresseCourrielClient
-                         select unClient;
+            unClient = (from unClient in contextPP.PPClients
+                        where unClient.AdresseEmail == strAdresseCourrielClient
+                        select unClient).First();
 
             List<Province> lstProvinces = new List<Province>
             {
@@ -106,8 +109,8 @@ namespace PetitesPuces.Controllers
                 new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
-            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom"); 
-            return View(client.First());
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+            return View(unClient);
         }
 
         //Vue partiel Information personnel
@@ -122,8 +125,76 @@ namespace PetitesPuces.Controllers
         public ActionResult ModificationMDP() => PartialView();
 
         [HttpPost]
-        public ActionResult GestionProfilClient(PPClients unClient)
+        public ActionResult GestionProfilClient(PPClients client, String strProvenence)
         {
+            List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+            clientDao = new ClientDao();
+
+            PPClients leClient = clientDao.rechecheClientParNo(client.NoClient);
+
+            if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
+            {
+                clientDao.modifierProfilInformationPersonnel(unClient);
+            }
+            else
+            {
+                String strAncientMDP = Request["tbAncienMdp"];
+                String strNouveauMDP = Request["tbNouveauMdp"];
+                String strConfirmationMDP = Request["tbConfirmationMdp"];
+
+                String strMessageErreurVide = "Le champs doit être rempli!";
+                bool booValide = true;
+                if (string.IsNullOrWhiteSpace(strAncientMDP))
+                {
+                    ViewBag.MessageErreurAncient = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(strNouveauMDP))
+                {
+                    ViewBag.MessageErreurNouveau = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(strConfirmationMDP))
+                {
+                    ViewBag.MessageErreurConfirmation = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                //Tous les champs ne sont pas vide
+                if (booValide)
+                {
+                    //Valide que le mot de passe est bien l'ancien mdp.
+                    if (leClient.MotDePasse.Equals(strAncientMDP))
+                    {
+                        //Valide que le nouveau mdp est identique a celui de confirmation
+                        if (strNouveauMDP.Equals(strConfirmationMDP))
+                        {
+                            clientDao.modifierProfilMDP(strNouveauMDP);
+                        }
+                        else
+                        {
+                            ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                    }
+                }
+
+                TempData["msgConfirmation"] = leClient.MotDePasse != strAncientMDP ? "succes" : "echec";
+            }
+
             return View();
         }
     }
