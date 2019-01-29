@@ -57,8 +57,38 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult PanierDetail(int id,List<PPArticlesEnPanier> model)
         {
-            var rnd = model;
-            return View();
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            String noClient = "10000";
+            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+
+            foreach(var articlepanier in model)
+            {
+                var query = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                             where panier.NoPanier.Equals(articlepanier.NoPanier)
+                             select panier
+                             );
+                query.First().NbItems = articlepanier.NbItems;
+            }
+
+            // Submit the changes to the database.
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                // Provide for exceptions.
+            }
+            //Requête qui va permettre d'aller chercher les paniers du client
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
+                                              select panier).ToList();
+
+            db.Connection.Close();
+
+            return View(items);
         }
         public ActionResult GestionProfilClient()
         {
@@ -76,9 +106,7 @@ namespace PetitesPuces.Controllers
                 new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
-            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-
-            
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom"); 
             return View(client.First());
         }
 
