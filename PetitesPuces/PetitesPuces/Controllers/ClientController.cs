@@ -58,7 +58,7 @@ namespace PetitesPuces.Controllers
         public ActionResult PanierDetail(int id,List<PPArticlesEnPanier> model)
         {
             var rnd = model;
-            return View(model);
+            return View();
         }
         public ActionResult GestionProfilClient()
         {
