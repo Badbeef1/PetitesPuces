@@ -34,7 +34,6 @@
                         <label class="col-form-label">Poids de livraison Maximum</label>
                         <div class="input-group">
                             @Html.TextBoxFor(x => x.PoidsMaxLivraison, new { @class = "form-control" })
-                            <input type="text" class="form-control" id="tbPoids" placeholder="00">
                             <div class="input-group-append">
                                 <span class="input-group-text">
                                     Lbs
@@ -46,7 +45,6 @@
                         <label class="col-form-label">Prix de la livraison</label>
                         <div class="input-group">
                             @Html.TextBoxFor(x => x.LivraisonGratuite, new { @class = "form-control" })
-                            <input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">
                             <div class="input-group-append">
                                 <span class="input-group-text">
                                     $
@@ -56,11 +54,11 @@
                     </div>
                     <div class="col-3">
                         <label class="col-form-label">Taux de redevence</label>
-                        <input type="text" class="form-control" disabled />
+                        @Html.TextBoxFor(x => x.Pourcentage, new { @class = "form-control", @readonly = "readonly" })
                     </div>
                     <div class="col-3">
                         <label class="col-form-label">Prélèvement de la taxe</label>
-                        <input type="checkbox" class="form-check" />
+                        @Html.CheckBoxFor(x => x.Taxes.Value, new { @class = "form-control"})
                     </div>
                 </div>
             </div>

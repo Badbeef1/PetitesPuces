@@ -69,11 +69,11 @@ namespace PetitesPuces.Controllers
                          where unClient.AdresseEmail == strAdresseCourrielClient
                          select unClient;
 
-            List<Models.Province> lstProvinces = new List<Models.Province>
+            List<Province> lstProvinces = new List<Province>
             {
-                new Models.Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
-                new Models.Province { Abreviation = "ON", Nom = "Ontario"},
-                new Models.Province { Abreviation = "QC", Nom = "Québec"},
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
@@ -92,5 +92,11 @@ namespace PetitesPuces.Controllers
         //Vue partiel modification du mot de passe
         [ChildActionOnly]
         public ActionResult ModificationMDP() => PartialView();
-   }
+
+        [HttpPost]
+        public ActionResult GestionProfilClient(PPClients unClient)
+        {
+            return View();
+        }
+    }
 }
