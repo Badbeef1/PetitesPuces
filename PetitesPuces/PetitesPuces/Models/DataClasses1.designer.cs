@@ -3573,7 +3573,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_NomAffaires", DbType = "VarChar(50)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ nom d'affaires est requis.")]
       public string NomAffaires
       {
          get
@@ -3594,7 +3594,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ nom est requis.")]
       public string Nom
       {
          get
@@ -3615,7 +3615,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Prenom", DbType = "VarChar(50)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ prenom est requis.")]
       public string Prenom
       {
          get
@@ -3636,7 +3636,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Rue", DbType = "VarChar(50)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ rue est requis.")]
       public string Rue
       {
          get
@@ -3657,7 +3657,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ville", DbType = "VarChar(50)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ ville est requis.")]
       public string Ville
       {
          get
@@ -3678,7 +3678,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Province", DbType = "Char(2)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ province est requis.")]
       public string Province
       {
          get
@@ -3699,7 +3699,8 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_CodePostal", DbType = "VarChar(7)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ code postal est requis.")]
+      [RegularExpression("[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]")]
       public string CodePostal
       {
          get
@@ -3720,7 +3721,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Pays", DbType = "VarChar(10)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ pays est requis.")]
       public string Pays
       {
          get
@@ -3741,7 +3742,8 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel1", DbType = "VarChar(20)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ téléphone 1 est requis.")]
+      [MinLength(14, ErrorMessage = "Le numéro de téléphone 1 est invalide.")]
       public string Tel1
       {
          get
@@ -3762,7 +3764,8 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel2", DbType = "VarChar(20)")]
-      public string Tel2
+        [MinLength(14,ErrorMessage = "Le numéro de téléphone 2 est invalide.")]
+        public string Tel2
       {
          get
          {
@@ -3782,7 +3785,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_AdresseEmail", DbType = "VarChar(100)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ courriel est requis.")]
       public string AdresseEmail
       {
          get
@@ -3803,7 +3806,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_MotDePasse", DbType = "VarChar(50)")]
-      [Required]
+      [Required(ErrorMessage = "Le champ mot de passe est requis.")]
       [DataType(DataType.Password)]
       public string MotDePasse
       {
@@ -3825,7 +3828,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_PoidsMaxLivraison", DbType = "Int")]
-      [Required]
+      [Required(ErrorMessage = "Le champ poids max livraison est requis.")]
       public System.Nullable<int> PoidsMaxLivraison
       {
          get
@@ -3846,7 +3849,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_LivraisonGratuite", DbType = "SmallMoney")]
-      [Required]
+      [Required(ErrorMessage = "Le champ livraison gratuite est requis.")]
       public System.Nullable<decimal> LivraisonGratuite
       {
          get
@@ -3867,7 +3870,7 @@ namespace PetitesPuces.Models
       }
 
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Taxes", DbType = "Bit")]
-      [Required]
+      [Required(ErrorMessage = "Le champ taxes est requis.")]
       public System.Nullable<bool> Taxes
       {
          get

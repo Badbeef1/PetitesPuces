@@ -104,306 +104,128 @@
                 @using (Html.BeginForm("Inscription", "Internaute", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
-                    <div class="container">
-                        <!-- Email -->
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 45px">
-                                    <i class="fa fa-at" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            @Html.EditorFor(x => x.vendeur.AdresseEmail, new {
-                           htmlAttributes = new {
-                               @class = "form-control",
-                               @placeholder = "Inscrivez votre courriel"
-                           }})
-                        </div>
-
-                        <!-- Confirm Email-->
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 45px">
-                                    <i class="fa fa-at" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            @Html.EditorFor(x => x.confirmUsername, new {
-                           htmlAttributes = new
-                           {
-                               @class = "form-control",
-                               @placeholder = "Inscrivez votre courriel une autre fois"
-                           }})
-
-                        </div>
-
-                        <!-- Password -->
-                        <div class="input-group mb-3 has-feedback">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 45px">
-                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            @Html.EditorFor(x => x.vendeur.MotDePasse, new {
-                           htmlAttributes = new
-                           {
-                               @id = "tbPassword",
-                               @class = "form-control",
-                               @placeholder = "Inscrivez votre mot de passe"
-
-                           }})
-                            <span class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
-                                    <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
-                                </button>
+                <div class="container">
+                    <!-- Email -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-center" style="width: 45px">
+                                <i class="fa fa-at" aria-hidden="true"></i>
                             </span>
                         </div>
+                        @Html.EditorFor(x => x.vendeur.AdresseEmail, new {
+                       htmlAttributes = new {
+                           @class = "form-control",
+                           @placeholder = "Inscrivez votre courriel"
+                       }})
+                    </div>
 
-                        <!-- Confirm Password-->
-                        <div class="input-group mb-3 has-feedback">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 45px">
-                                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            @Html.EditorFor(x => x.confirmPassword, new {
-                           htmlAttributes = new
-                           {
-                               @id = "tbPassword2",
-                               @class = "form-control",
-                               @placeholder = "Inscrivez votre mot de passe une autre fois"
-                           }})
-                            <span class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible2">
-                                    <i class="fa fa-eye form-control-feedback" id="iconVisible2"></i>
-                                </button>
+                    <!-- Confirm Email-->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-center" style="width: 45px">
+                                <i class="fa fa-at" aria-hidden="true"></i>
                             </span>
                         </div>
+                        @Html.EditorFor(x => x.confirmUsername, new {
+                       htmlAttributes = new
+                       {
+                           @class = "form-control",
+                           @placeholder = "Inscrivez votre courriel une autre fois"
+                       }})
 
-                        <br />
+                    </div>
 
-                        <!-- Accordion for vendeur-->
-                        <div class="card">
-                            <div class="card-header">
+                    <!-- Password -->
+                    <div class="input-group mb-3 has-feedback">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-center" style="width: 45px">
+                                <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(x => x.vendeur.MotDePasse, new {
+                       htmlAttributes = new
+                       {
+                           @id = "tbPassword",
+                           @class = "form-control",
+                           @placeholder = "Inscrivez votre mot de passe"
 
-                                <div class="custom-control-lg custom-control custom-checkbox ">
-                                   @Html.CheckBoxFor(x => x.boolVendeur, new {
-                                      @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
-                                      ,data_target="#sectionVendeur", aria_expanded = Model?.boolVendeur ?? false } )
-                                   <label class="custom-control-label " for="cbVendeur">
-                                        <span style="font-weight:bold">Je veux être un vendeur</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div id="sectionVendeur" class="collapse @(Model != null && Model.boolVendeur ? "show" : "hide")" aria-labelledby="vendeurHeading">
-                                <div class="card-body">
+                       }})
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
+                                <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
+                            </button>
+                        </span>
+                    </div>
 
-                                    <div class="form-row">
-                                        <div class="form-group col-md-12">
-                                            <label for="tbNomAffaires">Nom de l'entreprise</label>
-                                            @Html.EditorFor(x => x.vendeur.NomAffaires, new {
-                                           htmlAttributes = new {
-                                               @id = "tbNomAffaires",
-                                               @class = "form-control",
-                                               @placeholder = "Nom de l'entreprise"
-                                           }})
-                                        </div>
-                                    </div>
+                    <!-- Confirm Password-->
+                    <div class="input-group mb-3 has-feedback">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text text-center" style="width: 45px">
+                                <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(x => x.confirmPassword, new {
+                       htmlAttributes = new
+                       {
+                           @id = "tbPassword2",
+                           @class = "form-control",
+                           @placeholder = "Inscrivez votre mot de passe une autre fois"
+                       }})
+                        <span class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible2">
+                                <i class="fa fa-eye form-control-feedback" id="iconVisible2"></i>
+                            </button>
+                        </span>
+                    </div>
 
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="tbNom">Nom</label>
-                                            @Html.EditorFor(x => x.vendeur.Nom, new {
-                                           htmlAttributes = new {
-                                               @id = "tbNom",
-                                               @class = "form-control",
-                                               @placeholder = "Nom"
-                                           }})
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="prenom">Prénom</label>
-                                            @Html.EditorFor(x => x.vendeur.Prenom, new {
-                                           htmlAttributes = new {
-                                               @id = "tbPrenom",
-                                               @class = "form-control",
-                                               @placeholder = "Prénom"
-                                           }})
-                                        </div>
-                                    </div>
+                    <br />
 
-                                    <div class="form-row">
-                                        <div class="form-group col-md-10">
-                                            <label for="tbRue">Rue</label>
-                                            @Html.EditorFor(x => x.vendeur.Rue, new {
-                                           htmlAttributes = new {
-                                               @id = "tbRue",
-                                               @class = "form-control",
-                                               @placeholder = "15615 Boul Gouin"
-                                           }})
-                                        </div>
-                                        <div class="form-group col-md-2">
-                                            <label for="ddlPays">Pays</label>
-                                            @Html.DropDownListFor(x => x.vendeur.Pays, new SelectList(
-                                                  new List<Object>{
-                                                       new { value = "Canada" , text = "Canada"  }
-                                                    }, "value", "text", null
-                                            ),new { @id= "ddlPays", @class = "form-control"})
-                                        </div>
-                                    </div>
+                    <!-- Accordion for vendeur-->
+                    <div class="card">
+                        <div class="card-header">
 
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="tbVille">Ville</label>
-                                            @Html.EditorFor(x => x.vendeur.Ville, new {
-                                           htmlAttributes = new {
-                                               @id = "tbVille",
-                                               @class = "form-control",
-                                               @placeholder = "Dollard-des-Ormeaux"
-                                           }})
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label for="ddlProvince">Province</label>
-                                            @Html.DropDownListFor(x => x.vendeur.Province, new SelectList(
-                                                   new List<Object>{
-                                                        new { value = "" , text = "Choisir..."  },
-                                                        new { value = "AB" , text = "Alberta"  },
-                                                        new { value = "BC" , text = "Colombie-Britannique"  },
-                                                        new { value = "PE" , text = "Île-du-Prince-Édouard"  },
-                                                        new { value = "MB" , text = "Manitoba"  },
-                                                        new { value = "NB" , text = "Nouveau-Brunswick"  },
-                                                        new { value = "NS" , text = "Nouvelle-Écosse"  },
-                                                        new { value = "ON" , text = "Ontario"  },
-                                                        new { value = "QC" , text = "Québec"  },
-                                                        new { value = "SK" , text = "Saskatchewan"  },
-                                                        new { value = "NL" , text = "Terre-Neuve-et-Labrador"  }
-                                                     }, "value", "text", ""
-                                             ),new { @id= "ddlProvince", @class = "form-control"})
-                                        </div>
-                                        <div class="form-group col-md-2">
-                                            <label for="tbCodePostal">Code postal</label>
-                                            @Html.EditorFor(x => x.vendeur.CodePostal, new {
-                                           htmlAttributes = new {
-                                               @id = "tbCodePostal",
-                                               @class = "form-control",
-                                               @placeholder = "H9H 2A5"
-                                           }})
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label for="tbTel1">Téléphone 1</label>
-                                            @Html.EditorFor(x => x.vendeur.Tel1, new {
-                                           htmlAttributes = new {
-                                               @id = "tbTel1",
-                                               @class = "form-control",
-                                               @placeholder = "(514) 222-2222"
-                                           }})
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="tbTel2">Téléphone 2</label>
-                                            @Html.EditorFor(x => x.vendeur.Tel2, new {
-                                           htmlAttributes = new {
-                                               @id = "tbTel2",
-                                               @class = "form-control",
-                                               @placeholder = "(514) 555-5555"
-                                           }})
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-
-                                        <div class="form-group col-md-3">
-                                            <label for="tbPoidsMaxLivraison">
-                                                <span style="font-size: 12px">
-                                                    Poids livraison maximale
-                                                </span>
-                                                <span class="tooltipB">
-                                                    (?)
-                                                    <span class="tooltiptext"> Le poids maximal permis pour une commande</span>
-                                                </span>
-                                            </label>
-                                            <div class="input-group">
-                                                @Html.EditorFor(x => x.vendeur.PoidsMaxLivraison, new {
-                                               htmlAttributes = new {
-                                                   @id = "tbPoidsMaxLivraison",
-                                                   @class = "form-control",
-                                                   @placeholder = "00"
-                                               }})
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">
-                                                        Lbs
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group col-md-3">
-                                            <label for="tbLivraisonGratuite">
-                                                <span style="font-size: 12px">
-                                                    Prix livraison Gratuite
-                                                </span>
-                                                <span class="tooltipB">
-                                                    (?)
-                                                    <span class="tooltiptext"> Le prix minimum d’une commande permettant au client de recevoir gratuitement son colis</span>
-                                                </span>
-                                            </label>
-                                            <div class="input-group">
-                                                @Html.EditorFor(x => x.vendeur.LivraisonGratuite, new {
-                                               htmlAttributes = new {
-                                                   @id = "tbLivraisonGratuite",
-                                                   @class = "form-control",
-                                                   @placeholder = "0 000.00"
-                                               }})
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">
-                                                        $
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group col-md-6">
-                                            <label for="ddlTaxes">
-                                                Taxes
-                                            </label>
-                                            @Html.DropDownListFor(x => x.vendeur.Taxes, new SelectList(
-                                                  new List<Object>{
-                                                       new { value = true , text = "TPS et TVQ" },
-                                                       new { value = false , text = "Aucun" }
-                                                    }, "value", "text", true
-                                            ),new { @id= "ddlTaxes", @class = "form-control"})
-                                        </div>
-
-                                    </div>
-
-                                </div>
+                            <div class="custom-control-lg custom-control custom-checkbox ">
+                                @Html.CheckBoxFor(x => x.boolVendeur, new {
+                                   @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
+                                   ,data_target="#sectionVendeur", aria_expanded = Model?.boolVendeur ?? false } )
+                                <label class="custom-control-label " for="cbVendeur">
+                                    <span style="font-weight:bold">Je veux être un vendeur</span>
+                                </label>
                             </div>
                         </div>
+                        <div id="sectionVendeur" class="collapse @(Model != null && Model.boolVendeur ? "show" : "hide")" aria-labelledby="vendeurHeading">
+                            <div class="card-body">
 
-
-                        <br />
-                        <br />
-
-                        <p style="color:red">@Html.DisplayFor(x => x.errorMessage)</p>
-                        <p style="color:greenyellow">@Html.DisplayFor(x => x.okMessage)</p>
-                        <div>
-                            <input type="submit" value="S'inscrire" class="btn btn-primary btn-block" />
-                        </div>
-                        <br />
-                        <div>
-                            <a href="/Connexion" style="text-decoration: none;">
-                                <input type="button" value="Retour à la page de connexion" class="btn btn-primary btn-block" />
-                            </a>
-                        </div>
-                        <hr />
-                        <br />
-                        <div>
-                            <p>
-                                <a href="/Connexion/RecupererMDP">
-                                    Oublié votre mot de passe?
-                                </a>
-                            </p>
+                                @Html.Partial("~/Views/Internaute/partialVendeurInformations.cshtml", Model)
+                            </div>
                         </div>
                     </div>
+
+
+                    <br />
+                    <br />
+                    <p style="color:red">@Html.ValidationSummary()</p>
+                    <p style="color:red" class="text-align">@Html.DisplayFor(x => x.errorMessage)</p>
+                    <p style="color:greenyellow">@Html.DisplayFor(x => x.okMessage)</p>
+                    <div>
+                        <input type="submit" value="S'inscrire" class="btn btn-primary btn-block" />
+                    </div>
+                    <br />
+                    <div>
+                        <a href="/Connexion" style="text-decoration: none;">
+                            <input type="button" value="Retour à la page de connexion" class="btn btn-primary btn-block" />
+                        </a>
+                    </div>
+                    <hr />
+                    <br />
+                    <div>
+                        <p>
+                            <a href="/Connexion/RecupererMDP">
+                                Oublié votre mot de passe?
+                            </a>
+                        </p>
+                    </div>
+                </div>
                 }
             </div>
         </div>
