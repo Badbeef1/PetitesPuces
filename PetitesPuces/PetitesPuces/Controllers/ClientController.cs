@@ -51,11 +51,13 @@ namespace PetitesPuces.Controllers
                      where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
                      select panier).ToList();
 
+            db.Connection.Close();
+
          return View(items);
       }
         
         [HttpPost]
-        public ActionResult PanierDetail(int id,List<PPArticlesEnPanier> model)
+        public ActionResult PanierDetail(long id,List<PPArticlesEnPanier> model)
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
@@ -78,8 +80,7 @@ namespace PetitesPuces.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                // Provide for exceptions.
+                Console.WriteLine(e); 
             }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
@@ -90,6 +91,40 @@ namespace PetitesPuces.Controllers
 
             return View(items);
         }
+
+        public ActionResult SupprimerProduit(int id)
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            long noVendeur;
+            String noClient = "10000";
+            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+
+            //Aller chercher le panier à supprimer
+            var query = (from articlePanier in db.GetTable<Models.PPArticlesEnPanier>()
+                         where articlePanier.NoPanier.Equals(id)
+                         select articlePanier
+                         );
+            noVendeur = (long)query.First().NoVendeur;
+
+            db.PPArticlesEnPanier.DeleteOnSubmit(query.First());
+
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            //Requête qui va permettre d'aller chercher les paniers du client
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              select panier).ToList();
+            db.Connection.Close();
+            return PartialView("Client/Panier",items);
+        }
+
         public ActionResult GestionProfilClient()
         {
             //HttpContext.User.Identity.Name
