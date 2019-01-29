@@ -12,10 +12,10 @@ namespace PetitesPuces.Models
         public PPClients client { get; set; }
         public PPVendeurs vendeur { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Le champ confirmer adresse courriel est requis. ")]
         public string confirmUsername { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = "Le champ confirmer mot de passe est requis. ")]
         [DataType(DataType.Password)]
         public string confirmPassword { get; set; }
         

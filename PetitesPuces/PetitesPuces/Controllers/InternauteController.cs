@@ -4,124 +4,182 @@ using System.Linq;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
+using  System.Net.Mail;
 using PetitesPuces.Models;
+
 
 namespace PetitesPuces.Controllers
 {
-   public class InternauteController : Controller
-   {
-      // GET: Inscription
-      public ActionResult Index() => View("AccueilInternaute");
+    public class InternauteController : Controller
+    {
+        // GET: Inscription
+        public ActionResult Index() => View("AccueilInternaute");
 
-      public ActionResult AccueilInternaute()
-      {
-         /* Compare data with Database */
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
-         var categories = (from cat in db.GetTable<Models.PPCategories>() select cat);
+        public ActionResult AccueilInternaute()
+        {
+            /* Compare data with Database */
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            var categories = (from cat in db.GetTable<Models.PPCategories>() select cat);
 
-         db.Connection.Close();
+            db.Connection.Close();
 
-         return View(categories);
-      }
+            return View(categories);
+        }
 
-      public ActionResult CatalogueNouveaute() => View();
-
-
-
-      //GET
-      public ActionResult Inscription() => View();
+        public ActionResult CatalogueNouveaute() => View();
 
 
-      [HttpPost] //POST
-      public ActionResult Inscription(Models.PPClientViewModel model)
-      {
-         
-         /* Variables required for client registration */
-         var username = model.vendeur.AdresseEmail;
-         var confUsername = model.confirmUsername;
-         var password = model.vendeur.MotDePasse;
-         var confPassword = model.confirmPassword;
 
-         /* Variables required for seller registration */
-         var businessName = model.vendeur.NomAffaires;
-         var lastName = model.vendeur.Nom;
-         var firstName = model.vendeur.Prenom;
-         var street = model.vendeur.Rue;
-         var city = model.vendeur.Ville;
-         var province = model.vendeur.Province;
-         var postalCode = model.vendeur.CodePostal;
-         var country = model.vendeur.Pays;
-         var tel1 = model.vendeur.Tel1;
-         var tel2 = model.vendeur.Tel2;
-         var freeDelivery = model.vendeur.LivraisonGratuite;
-         var weightDelivery = model.vendeur.PoidsMaxLivraison;
-         var taxes = model.vendeur.Taxes;
+        //GET
+        public ActionResult Inscription() => View();
 
-         var clientSectionValide = (username ?? confUsername ?? password ?? confPassword) != null &&
-                                   username == confUsername && password == confPassword;
-         
-         var vendeurSectionValide = (businessName ?? lastName ?? firstName ?? street ?? city ?? province ??
-                                     postalCode ?? tel1) != null && (freeDelivery ?? weightDelivery) != null;
-         
+
+        [HttpPost] //POST
+        public ActionResult Inscription(Models.PPClientViewModel model)
+        {
+
+            /* Variables required for client registration */
+            var username = model.vendeur.AdresseEmail;
+            var confUsername = model.confirmUsername;
+            var password = model.vendeur.MotDePasse;
+            var confPassword = model.confirmPassword;
+
+            /* Variables required for seller registration */
+
+            var clientSectionValid = (username != null &&  password != null);
+            var usernameConfirmValid = username == confUsername;
+            var passwordConfirmValid = password == confPassword;
+            
             var etreVendeur = model.boolVendeur;
 
-         var context = new DataClasses1DataContext();
+            model.errorMessage = "";
 
-         if (clientSectionValide && !etreVendeur)
-         {
-            //Register client  
-            context.Connection.Open();
-
-            context.Connection.Close();
-         }
-         else if (clientSectionValide && vendeurSectionValide && ModelState.IsValid)
-         {
-            //Register vendeur
-            context.Connection.Open();
-
-            using (var transaction = new TransactionScope())
+            /* Some validations */
+            try
+            { MailAddress ma = new MailAddress(username); }
+            catch (Exception ex)
             {
-               try
-               {
-                  model.vendeur.DateCreation = DateTime.Now;
-
-                  var max = (context.PPVendeurs.Max(x => x.NoVendeur) + 1);
-                  model.vendeur.NoVendeur = max > 10 ? max : 11;
-                  context.PPVendeurs.InsertOnSubmit(model.vendeur);
-
-                  context.SubmitChanges();
-                  model.okMessage = "L'ajout dans la base de données a réussi. ";
-                  transaction.Complete();
-               }
-               catch (Exception ex)
-               {
-                  model.errorMessage = "L'ajout dans la base de données a échoué. " + ex.Message;
-               }
+                model.errorMessage = "Le format de l'adresse courriel n'est pas valide !";
             }
 
-            context.Connection.Close();
+            model.errorMessage = usernameConfirmValid ?
+                (passwordConfirmValid ? "" : "Le deuxième mot de passe doit correspondre au premier.") : "Le deuxième courriel doit correspondre au premier.";
 
-            if (model.okMessage != null)
-               return RedirectToAction("Index","Connexion", model);
-         }
-         else if(!etreVendeur)
-         {
-            //Clear errors in Vendeur section
-            foreach (var item in ModelState.Keys.Where(s => !s.Equals("vendeur.AdresseEmail") &&
-                    !s.Equals("vendeur.MotDePasse") && !s.Equals("confirmUsername") && !s.Equals("confirmPassword")))
+            if (!etreVendeur) // "Je veux etre vendeur" is not checked
             {
-               ModelState[item].Errors.Clear();
+                //Clear errors in Vendeur section
+                foreach (var item in ModelState.Keys.Where(s => !s.Equals("vendeur.AdresseEmail") &&
+                        !s.Equals("vendeur.MotDePasse") && !s.Equals("confirmUsername") && !s.Equals("confirmPassword")))
+                {
+                    ModelState[item].Errors.Clear();
+                }
             }
-         }
-         
 
-         return View(model);
-      }
+            /* Database section */
 
-      [HttpPost]
-      public ActionResult VerifyEntry() => null;
+            var context = new DataClasses1DataContext();
+
+            if (clientSectionValid && !etreVendeur && usernameConfirmValid && passwordConfirmValid)
+            {
+                //Register client  
+                context.Connection.Open();
+                var max = (context.PPClients.Max(x => x.NoClient) + 1);
+
+                //Maximum amount of clients reached
+                if (max >= 99999)
+                    model.errorMessage = "Nous avons atteint le nombre maximum de vendeurs (100).";
+
+                //Email exists              "model.vendeur" part is ok
+                else if (context.PPClients.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
+                    model.errorMessage = "Ce courriel est déjà inscrit !";
+
+                //else if(ModelState["vendeur.AdresseEmail"]?.Errors != null)
+                //    model.errorMessage = "Le format de courriel est invalide !";
+
+                //Stop right there if theres an error
+                if (model.errorMessage != "") return View(model);
+
+                using (var transaction = new TransactionScope())
+                {
+                    try
+                    {
+                        context.PPClients.InsertOnSubmit(new PPClients()
+                        {
+                            NoClient = max > 10000 ? max : 10001,
+                            AdresseEmail = model.vendeur.AdresseEmail,
+                            MotDePasse = model.vendeur.MotDePasse,
+                            DateCreation = DateTime.Now
+                        });
+
+                        context.SubmitChanges();
+                        model.okMessage = "L'ajout dans la base de données a réussi. ";
+                        transaction.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        model.errorMessage = "L'ajout dans la base de données a échoué. " + ex.Message;
+                    }
+                }
+
+                context.Connection.Close();
+
+                model = new PPClientViewModel() { errorMessage = model.errorMessage, okMessage = model.okMessage, vendeur = null };
+            }
+            else if (clientSectionValid && usernameConfirmValid && passwordConfirmValid && etreVendeur && ModelState.IsValid )
+            {
+                //Register seller
+                context.Connection.Open();
+
+                var max = (context.PPVendeurs.Max(x => x.NoVendeur) + 1);
+
+                //Maximum amount of sellers reached
+                if (max >= 100)
+                    model.errorMessage = "Nous avons atteint le nombre maximum de vendeurs (100).";
+
+                //Email exists
+                else if (context.PPVendeurs.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
+                    model.errorMessage = "Ce courriel est déjà inscrit !";
+
+                //Company name exists
+                else if (context.PPVendeurs.Any(x => x.NomAffaires.ToLower().Equals(model.vendeur.NomAffaires.ToLower())))
+                    model.errorMessage = "Le nom d'entreprise existe déjà !";
 
 
-   }
+                //Stop right there if theres an error
+                if (model.errorMessage != "") return View(model);
+
+
+                using (var transaction = new TransactionScope())
+                {
+                    try
+                    {
+                        model.vendeur.DateCreation = DateTime.Now;
+
+                        model.vendeur.NoVendeur = max > 10 ? max : 11;
+                        context.PPVendeurs.InsertOnSubmit(model.vendeur);
+
+                        context.SubmitChanges();
+                        model.okMessage = "L'ajout dans la base de données a réussi. ";
+                        transaction.Complete();
+                    }
+                    catch (Exception ex)
+                    {
+                        model.errorMessage = "L'ajout dans la base de données a échoué. " + ex.Message;
+                    }
+                }
+
+                context.Connection.Close();
+                
+                model = new PPClientViewModel() { errorMessage = model.errorMessage, okMessage = model.okMessage,vendeur = null };
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult VerifyEntry() => null;
+
+
+    }
 }
