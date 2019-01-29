@@ -57,10 +57,6 @@ namespace PetitesPuces.Controllers
             return View(items);
         }
 
-            db.Connection.Close();
-
-         return View(items);
-      }
         
         [HttpPost]
         public ActionResult PanierDetail(long id,List<PPArticlesEnPanier> model)
