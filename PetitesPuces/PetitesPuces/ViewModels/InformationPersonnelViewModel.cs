@@ -7,5 +7,7 @@ namespace PetitesPuces.ViewModels
 {
     public class InformationPersonnelViewModel
     {
+        public string AdresseCourriel { get; set; }
+        public string Prenom { get; set; }
     }
 }

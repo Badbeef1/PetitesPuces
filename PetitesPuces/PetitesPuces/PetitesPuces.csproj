@@ -131,8 +131,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ClientDao.cs" />
     <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\IClient.cs" />
     <Compile Include="Controllers\InternauteController.cs" />
     <Compile Include="Controllers\ConnexionController.cs" />
     <Compile Include="Controllers\VendeurController.cs" />
