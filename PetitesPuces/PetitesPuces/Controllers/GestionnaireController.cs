@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
@@ -8,7 +9,7 @@ using PetitesPuces.Models;
 
 namespace PetitesPuces.Controllers
 {
-    
+
     public class GestionnaireController : Controller
     {
         DataClasses1DataContext dc = new DataClasses1DataContext();
@@ -21,12 +22,12 @@ namespace PetitesPuces.Controllers
             List<Inactiver> lstClient = new List<Inactiver>();
             List<Inactiver> lstVendeur = new List<Inactiver>();
             int counter = 0;
-            foreach (PPClients client in dc.GetTable<PPClients>().ToList())
+            foreach (PPClients client in dc.GetTable<PPClients>().Where(m => m.Statut == 1).ToList())
             {
                 lstClient.Add(
                     new Inactiver
                     {
-                        ID =  counter,
+                        ID = counter,
                         IsSelected = false,
                         idClient = client.NoClient.ToString()
                     });
@@ -57,6 +58,7 @@ namespace PetitesPuces.Controllers
         }
 
         [HttpPost]
+        // Bouton confirmer
         public ActionResult GestionInactivite(InactiviteViewModel form)
         {
             List<PPClients> lstClientInfo = new List<PPClients>();
@@ -69,87 +71,94 @@ namespace PetitesPuces.Controllers
             //Retirer client
             foreach (Inactiver client in form.cbClients)
             {
-                if(client.IsSelected == true)
+                if (client.IsSelected == true)
                 {
 
-                    dc.Connection.Open();
-                    // Client ayant une commande, donc le plus d'endroit dans la BDD
-                    if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
+
+                    try
                     {
-                        // On vide le panier
-                        foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+                        using (var trans = new TransactionScope())
                         {
-                            lstPanierAVider.Add(art);
-                        }
+                            dc.Connection.Open();
 
-                        // On modifie le status pour le rendre "inactif"
-                        dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
-
-                        // On copie son historique de la table commande et détails
-                        dc.ExecuteCommand("SELECT * into HistoCommandes FROM PPCommandes WHERE NoClient = " + client.idClient);
-                        dc.ExecuteCommand("SELECT * into HistoDetailsCommandes FROM PPDetailsCommandes WHERE NoClient = " + client.idClient);
-
-                        // On retire les commandes actives
-                        foreach (PPCommandes comm in dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                        {
-                            foreach (PPDetailsCommandes det in dc.GetTable<PPDetailsCommandes>().Where(m => m.NoCommande == comm.NoCommande).ToList())
+                            // On vide le panier
+                            foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
                             {
-                                dc.GetTable<PPDetailsCommandes>().DeleteOnSubmit(det);
+                                lstPanierAVider.Add(art);
                             }
-                            dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
-
-                        }
-
-                        // On retire les visites de la BDD
-                        foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                        {
-                            dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
-                        }
-
-                        if (lstPanierAVider.Count > 0)
-                        {
-                            dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
-                        }
-
-                        // Stats? 
-
-                    }
-
-                    // Client présent nul part dans la BDD, car il doit avoir visité un vendeur pour avoir été ajouté ailleur
-                    else if (dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count <= 0)
-                    {
-                        foreach(PPClients clientBDD in dc.GetTable<PPClients>().ToList())
-                        {
-                            if(clientBDD.NoClient.ToString() == client.idClient)
+                            if (lstPanierAVider.Count > 0)
                             {
-                                dc.GetTable<PPClients>().DeleteOnSubmit(clientBDD);
+                                dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
                             }
-                        }
-                        dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
 
+                            // On retire les visites
+                            foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+                            {
+                                dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
+                            }
+
+                            // Client ayant une commande, donc le plus d'endroit dans la BDD
+                            if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
+                            {
+                                // Si la table HistoCommandes n'existe pas on la crée et y met les informations qu'on retire
+                                try
+                                {
+                                    dc.ExecuteCommand("SELECT * INTO HistoCommandes FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
+                                }
+                                // Sinon on insère simplement les données
+                                catch (Exception e)
+                                {
+                                    dc.ExecuteCommand("INSERT INTO HistoCommandes SELECT * FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
+                                }
+
+                                // On retire les commandes actives
+                                foreach (PPCommandes comm in dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+                                {
+                                    //Même chose, mais pour HistoDetailsCommandes
+                                    try
+                                    {
+                                        dc.ExecuteCommand("SELECT * INTO HistoDetailsCommandes FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        dc.ExecuteCommand("INSERT INTO HistoDetailsCommandes SELECT * FROM PPDetailsCOmmandes WHERE NoCommande = '" + comm.NoCommande + "'");
+                                    }
+                                    // Puis on supprime
+                                    foreach (PPDetailsCommandes det in dc.GetTable<PPDetailsCommandes>().Where(m => m.NoCommande == comm.NoCommande).ToList())
+                                    {
+                                        dc.GetTable<PPDetailsCommandes>().DeleteOnSubmit(det);
+                                    }
+                                    dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
+
+                                }
+
+                                // On met le statut à 2 (Intégrité)
+                                dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
+
+                                // Stats? 
+
+                            }
+                            // Client n'ayant pas de commande (Avec ou sans panier)
+                            else
+                            {
+                                // On delete (Déjà retiré des autres tables)
+                                dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
+                            }
+                            dc.SubmitChanges();
+                            dc.Connection.Close();
+                            trans.Complete();
+
+
+                        }
                     }
-                    // Client ayant visité un vendeur, mais n'ayant pas de commande
-                    else
+                    catch (Exception e)
                     {
-                        // On liste les items dans le panier
-                        foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                        {
-                            dc.GetTable<PPArticlesEnPanier>().DeleteOnSubmit(art);
-                        }
-                        // On retire les visites de la BDD
-                        foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                        {
-                            dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
-                        }
-                        if (lstPanierAVider.Count > 0)
-                        {
-                            dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
-                        }
-                        dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
+                        System.Diagnostics.Debug.WriteLine("Rollback");
                     }
-                    dc.SubmitChanges();
-                    dc.Connection.Close();
+                        
                 }
+
+
                 else
                 {
                     lstClients.Add(client);
@@ -172,14 +181,15 @@ namespace PetitesPuces.Controllers
                     lstVendeurs.Add(vendeur);
                 }
             }
+            ModelState.Clear();
+            dc = new DataClasses1DataContext();
             InactiviteViewModel renvoyer = new InactiviteViewModel
             {
-                clients = dc.GetTable<PPClients>().ToList(),
+                clients = dc.GetTable<PPClients>().Where(m => m.Statut == 1).ToList(),
                 vendeurs = lstVendeurInfo,
                 cbClients = lstClients,
                 cbVendeurs = lstVendeurs
             };
-            ModelState.Clear();
             return View("GestionInactivite", renvoyer);
         }
 
