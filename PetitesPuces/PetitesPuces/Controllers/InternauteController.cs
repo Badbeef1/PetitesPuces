@@ -35,6 +35,7 @@ namespace PetitesPuces.Controllers
 
 
       [HttpPost] //POST
+      [ValidateAntiForgeryToken]
       public ActionResult Inscription(Models.PPClientViewModel model)
       {
 
@@ -56,12 +57,26 @@ namespace PetitesPuces.Controllers
 
          /* Some validations */
          try
-         { MailAddress ma = new MailAddress(username); }
-         catch (Exception ex) { model.errorMessage = "Le format de l'adresse courriel n'est pas valide !"; }
+         {
+            MailAddress ma = new MailAddress(username);
+         }
+         catch (Exception)
+         {
+            ModelState["vendeur.AdresseEmail"].Errors.Add("Le format de l'adresse courriel n'est pas valide !");
+            model.errorMessage = " ";
+         }
 
-         model.errorMessage = usernameConfirmValid ?
-             (passwordConfirmValid ? model.errorMessage : "Le deuxième mot de passe doit correspondre au premier.") : "Le deuxième courriel doit correspondre au premier.";
+         if (!usernameConfirmValid)
+         {
+            ModelState[nameof(model.confirmUsername)].Errors.Add("Le deuxième courriel doit correspondre au premier.");
+            model.errorMessage = " ";
+         }
 
+         if (!passwordConfirmValid)
+         {
+            ModelState[nameof(model.confirmPassword)].Errors.Add("Le deuxième mot de passe doit correspondre au premier.");
+            model.errorMessage = " ";
+         }
 
          if (!etreVendeur) // "Je veux etre vendeur" is not checked
          {
@@ -71,28 +86,39 @@ namespace PetitesPuces.Controllers
             {
                ModelState[item].Errors.Clear();
             }
-         }
+         } 
 
          /* Database section */
          var context = new DataClasses1DataContext();
 
          if (clientSectionValid && !etreVendeur && usernameConfirmValid && passwordConfirmValid)
          {
-            //Register client  
-            context.Connection.Open();
+            //
+            //Register client
+            //
+            try
+            {
+               context.Connection.Open();
+            }
+            catch (Exception)
+            {
+               model.errorMessage = "Connexion à la base de donnée échouée !";
+               return View(model);
+            }
+
             var max = (context.PPClients.Max(x => x.NoClient) + 1);
 
             //Maximum amount of clients reached
             if (max >= 99999)
                model.errorMessage = "Nous avons atteint le nombre maximum de vendeurs (100).";
 
-            //Email exists              "model.vendeur" part is ok
+            //Email exists             
             else if (context.PPClients.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
-               model.errorMessage = "Ce courriel est déjà inscrit !";
-
-            //else if(ModelState["vendeur.AdresseEmail"]?.Errors != null)
-            //    model.errorMessage = "Le format de courriel est invalide !";
-
+            {
+               ModelState["vendeur.AdresseEmail"].Errors.Add("Ce courriel est déjà inscrit !");
+               model.errorMessage = " ";
+            }
+            
             //Stop right there if theres an error
             if (model.errorMessage != "") return View(model);
 
@@ -111,8 +137,11 @@ namespace PetitesPuces.Controllers
                   });
 
                   context.SubmitChanges();
-                  model.okMessage = "L'ajout dans la base de données a réussi. ";
                   transaction.Complete();
+                  ModelState.Clear();
+
+                  context.Connection.Close();
+                  return View(new PPClientViewModel() { okMessage = "L'ajout dans la base de données a réussi. " });
                }
                catch (Exception ex)
                {
@@ -121,13 +150,22 @@ namespace PetitesPuces.Controllers
             }
 
             context.Connection.Close();
-
-            model = new PPClientViewModel() { errorMessage = model.errorMessage, okMessage = model.okMessage, vendeur = null };
+            
          }
          else if (clientSectionValid && usernameConfirmValid && passwordConfirmValid && etreVendeur && ModelState.IsValid)
          {
+            //
             //Register seller
-            context.Connection.Open();
+            //
+            try
+            {
+               context.Connection.Open();
+            }
+            catch (Exception)
+            {
+               model.errorMessage = "Connexion à la base de donnée échouée !";
+               return View(model);
+            }
 
             var max = (context.PPVendeurs.Max(x => x.NoVendeur) + 1);
 
@@ -136,12 +174,17 @@ namespace PetitesPuces.Controllers
                model.errorMessage = "Nous avons atteint le nombre maximum de vendeurs (100).";
 
             //Email exists
-            else if (context.PPVendeurs.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
-               model.errorMessage = "Ce courriel est déjà inscrit !";
+            else if (context.PPVendeurs.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower()))) { 
+               ModelState["vendeur.AdresseEmail"].Errors.Add("Ce courriel est déjà inscrit !");
+               model.errorMessage = " ";
+            }
 
             //Company name exists
             else if (context.PPVendeurs.Any(x => x.NomAffaires.ToLower().Equals(model.vendeur.NomAffaires.ToLower())))
-               model.errorMessage = "Le nom d'entreprise existe déjà !";
+            {
+               ModelState["vendeur.NomAffaires"].Errors.Add("Le nom d'entreprise existe déjà !");
+               model.errorMessage = " ";
+            }
 
             //Stop right there if theres an error
             if (model.errorMessage != "") return View(model);
@@ -158,8 +201,12 @@ namespace PetitesPuces.Controllers
                   context.PPVendeurs.InsertOnSubmit(model.vendeur);
 
                   context.SubmitChanges();
-                  model.okMessage = "L'ajout dans la base de données a réussi. ";
                   transaction.Complete();
+
+                  ModelState.Clear();
+
+                  context.Connection.Close();
+                  return View(new PPClientViewModel() { okMessage = "L'ajout dans la base de données a réussi. " });
                }
                catch (Exception ex)
                {
@@ -168,8 +215,6 @@ namespace PetitesPuces.Controllers
             }
 
             context.Connection.Close();
-
-            model = new PPClientViewModel() { errorMessage = model.errorMessage, okMessage = model.okMessage, vendeur = null };
          }
 
          return View(model);

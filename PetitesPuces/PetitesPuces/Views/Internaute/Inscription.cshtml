@@ -43,8 +43,8 @@
             });
 
             $('#tbCodePostal').mask('S0S 0S0');
-            $('#tbTel1').mask('(000) 000-0000');
-            $('#tbTel2').mask('(000) 000-0000');
+           $('#tbTel1').mask('(000) 000-0000');
+           $('#tbTel2').mask('(000) 000-0000');
             $('#tbLivraisonGratuite').mask('000.00');
 
         });
@@ -66,7 +66,21 @@
             left: 105%;
         }
 
-        .tooltipB:hover .tooltiptext {
+       .tooltiptexterror {
+          visibility: hidden;
+          width: fit-content;
+          background-color: orangered;
+          color: #fff;
+          border-radius: 6px;
+          opacity: 0.90;
+          position: absolute;
+          z-index: 1;
+          top: 105%;
+          left: 10px;
+          text-align: center;
+       }
+
+        .tooltipB:hover .tooltiptext, .tooltipB:hover .tooltiptexterror{
             visibility: visible;
         }
 
@@ -105,126 +119,131 @@
                 {
                     @Html.AntiForgeryToken()
                 <div class="container">
-                    <!-- Email -->
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 45px">
-                                <i class="fa fa-at" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        @Html.EditorFor(x => x.vendeur.AdresseEmail, new {
-                       htmlAttributes = new {
-                           @class = "form-control",
-                           @placeholder = "Inscrivez votre courriel"
-                       }})
-                    </div>
+                   <!-- Email -->
+                   <div class="input-group mb-3 tooltipB">
+                      <div class="input-group-prepend">
+                         <span class="input-group-text text-center" style="width: 45px">
+                            <i class="fa fa-at" aria-hidden="true"></i>
+                         </span>
+                      </div>
+                      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.AdresseEmail)</span>
+                      @Html.EditorFor(x => x.vendeur.AdresseEmail, new {
+                    htmlAttributes = new {
+                       @class = "form-control ",
+                       @placeholder = "Inscrivez votre courriel"
+                    }
+                   })
 
-                    <!-- Confirm Email-->
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 45px">
-                                <i class="fa fa-at" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        @Html.EditorFor(x => x.confirmUsername, new {
-                       htmlAttributes = new
-                       {
-                           @class = "form-control",
-                           @placeholder = "Inscrivez votre courriel une autre fois"
-                       }})
+                   </div>
 
-                    </div>
+                   <!-- Confirm Email-->
+                   <div class="input-group mb-3 tooltipB">
+                      <div class="input-group-prepend">
+                         <span class="input-group-text text-center" style="width: 45px">
+                            <i class="fa fa-at" aria-hidden="true"></i>
+                         </span>
+                      </div>
+                      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.confirmUsername)</span>
+                      @Html.EditorFor(x => x.confirmUsername, new {
+                     htmlAttributes = new
+                     {
+                         @class = "form-control",
+                         @placeholder = "Inscrivez votre courriel une autre fois"
+                     }})
 
-                    <!-- Password -->
-                    <div class="input-group mb-3 has-feedback">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 45px">
-                                <i class="fa fa-unlock-alt" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        @Html.EditorFor(x => x.vendeur.MotDePasse, new {
-                       htmlAttributes = new
-                       {
-                           @id = "tbPassword",
-                           @class = "form-control",
-                           @placeholder = "Inscrivez votre mot de passe"
+                   </div>
 
-                       }})
-                        <span class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
-                                <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
-                            </button>
-                        </span>
-                    </div>
+                   <!-- Password -->
+                   <div class="input-group mb-3 has-feedback tooltipB">
+                      <div class="input-group-prepend">
+                         <span class="input-group-text text-center" style="width: 45px">
+                            <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                         </span>
+                      </div>
+                      @Html.EditorFor(x => x.vendeur.MotDePasse, new {
+                     htmlAttributes = new
+                     {
+                         @id = "tbPassword",
+                         @class = "form-control",
+                         @placeholder = "Inscrivez votre mot de passe"
+                     }})
+                      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.MotDePasse)</span>
+                      <span class="input-group-append">
+                         <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
+                            <i class="fa fa-eye form-control-feedback" id="iconVisible"></i>
+                         </button>
+                      </span>
 
-                    <!-- Confirm Password-->
-                    <div class="input-group mb-3 has-feedback">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text text-center" style="width: 45px">
-                                <i class="fa fa-unlock-alt" aria-hidden="true"></i>
-                            </span>
-                        </div>
-                        @Html.EditorFor(x => x.confirmPassword, new {
-                       htmlAttributes = new
-                       {
-                           @id = "tbPassword2",
-                           @class = "form-control",
-                           @placeholder = "Inscrivez votre mot de passe une autre fois"
-                       }})
-                        <span class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible2">
-                                <i class="fa fa-eye form-control-feedback" id="iconVisible2"></i>
-                            </button>
-                        </span>
-                    </div>
+                   </div>
 
-                    <br />
+                   <!-- Confirm Password-->
+                   <div class="input-group mb-3 has-feedback tooltipB">
+                      <div class="input-group-prepend">
+                         <span class="input-group-text text-center" style="width: 45px">
+                            <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                         </span>
+                      </div>
+                      @Html.EditorFor(x => x.confirmPassword, new {
+                     htmlAttributes = new
+                     {
+                         @id = "tbPassword2",
+                         @class = "form-control",
+                         @placeholder = "Inscrivez votre mot de passe une autre fois"
+                     }})
+                      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.confirmPassword)</span>
+                      <span class="input-group-append">
+                         <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible2">
+                            <i class="fa fa-eye form-control-feedback" id="iconVisible2"></i>
+                         </button>
+                      </span>
+                   </div>
 
-                    <!-- Accordion for vendeur-->
-                    <div class="card">
-                        <div class="card-header">
+                   <br />
 
-                            <div class="custom-control-lg custom-control custom-checkbox ">
-                                @Html.CheckBoxFor(x => x.boolVendeur, new {
-                                   @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
-                                   ,data_target="#sectionVendeur", aria_expanded = Model?.boolVendeur ?? false } )
-                                <label class="custom-control-label " for="cbVendeur">
-                                    <span style="font-weight:bold">Je veux être un vendeur</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div id="sectionVendeur" class="collapse @(Model != null && Model.boolVendeur ? "show" : "hide")" aria-labelledby="vendeurHeading">
-                            <div class="card-body">
+                   <!-- Accordion for vendeur-->
+                   <div class="card">
+                      <div class="card-header">
 
-                                @Html.Partial("~/Views/Internaute/partialVendeurInformations.cshtml", Model)
-                            </div>
-                        </div>
-                    </div>
+                         <div class="custom-control-lg custom-control custom-checkbox ">
+                            @Html.CheckBoxFor(x => x.boolVendeur, new {
+                               @id ="cbVendeur", @class= "custom-control-input", data_toggle="collapse"
+                               ,data_target="#sectionVendeur", aria_expanded = Model?.boolVendeur ?? false } )
+                            <label class="custom-control-label " for="cbVendeur">
+                               <span style="font-weight:bold">Je veux être un vendeur</span>
+                            </label>
+                         </div>
+                      </div>
+                      <div id="sectionVendeur" class="collapse @(Model != null && Model.boolVendeur ? "show" : "hide")" aria-labelledby="vendeurHeading">
+                         <div class="card-body">
+                            @Html.Partial("~/Views/Internaute/partialVendeurInformations.cshtml", Model)
+                         </div>
+                      </div>
+                   </div>
 
 
-                    <br />
-                    <br />
-                    <p style="color:red">@Html.ValidationSummary()</p>
-                    <p style="color:red" class="text-align">@Html.DisplayFor(x => x.errorMessage)</p>
-                    <p style="color:greenyellow">@Html.DisplayFor(x => x.okMessage)</p>
-                    <div>
-                        <input type="submit" value="S'inscrire" class="btn btn-primary btn-block" />
-                    </div>
-                    <br />
-                    <div>
-                        <a href="/Connexion" style="text-decoration: none;">
-                            <input type="button" value="Retour à la page de connexion" class="btn btn-primary btn-block" />
-                        </a>
-                    </div>
-                    <hr />
-                    <br />
-                    <div>
-                        <p>
-                            <a href="/Connexion/RecupererMDP">
-                                Oublié votre mot de passe?
-                            </a>
-                        </p>
-                    </div>
+                   <br />
+                   <br />
+                   <!--<p style="color:red">@Html.ValidationSummary()</p>-->
+                   <p style="color:red" class="text-align:center">@Html.DisplayFor(x => x.errorMessage)</p>
+                   <p style="color:greenyellow" class="text-align:center">@Html.DisplayFor(x => x.okMessage)</p>
+                   <div>
+                      <input type="submit" value="S'inscrire" class="btn btn-primary btn-block" />
+                   </div>
+                   <br />
+                   <div>
+                      <a href="/Connexion" style="text-decoration: none;">
+                         <input type="button" value="Retour à la page de connexion" class="btn btn-primary btn-block" />
+                      </a>
+                   </div>
+                   <hr />
+                   <br />
+                   <div>
+                      <p>
+                         <a href="/Connexion/RecupererMDP">
+                            Oublié votre mot de passe?
+                         </a>
+                      </p>
+                   </div>
                 </div>
                 }
             </div>
