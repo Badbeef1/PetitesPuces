@@ -218,6 +218,7 @@
     <Content Include="Views\Vendeur\ModificationMDP.cshtml" />
     <Content Include="Views\Internaute\partialVendeurInformations.cshtml" />
     <Content Include="Views\Shared\Client\Panier.cshtml" />
+    <Content Include="Views\Shared\Client\PanierAccueil.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

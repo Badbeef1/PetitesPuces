@@ -86,6 +86,25 @@
    </style>
 
     <script type="text/javascript">
+       /* //permet d'augmenter le nombre d'item dans le panier
+        function incrementerPanier(id) {
+            console.log(id + ' jaugmente')
+            var nbItem = ($('#' + id).val()) + 1;
+            $('#' + id).val(nbItem);
+        }
+
+        //permet de diminuer le nombre d'item dans le panier
+        function decrementerPanier(id) {
+            console.log(id + ' je diminue')
+            var nbItem = ($('#' + id).val()) - 1;
+            $('#' + id).val(nbItem);
+        }*/
+        function quantitechange(e) {
+            if (e.which == 13) {
+                e.preventDefault();
+            }
+        }
+
         function supprimerProduit(id) {
 
             $.ajax({
@@ -95,13 +114,26 @@
                 error: error,
             });
         }
+        function updateCart(noPanier) {
+            var quantite = $('#' + noPanier).val();
+            console.log('J\'update le cart');
+            $.ajax({
+                url: "/Client/UpdatePanier",
+                data: { "noPanier": noPanier, "quantite": quantite},
+                success: success,
+                error: error,
+            });
+        }
+
+
         function success(model) {
             $("#panier").html(model)
-            console.log(model);
+            //console.log(model);
         }
 
         function error(error) {
-            console.log(error)
+            console.log('erreur : ' + error);
+            location.href = '/Client/AccueilClient';
         }
        
     </script>

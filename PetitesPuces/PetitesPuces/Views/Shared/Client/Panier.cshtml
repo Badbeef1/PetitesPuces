@@ -11,13 +11,14 @@
             <!-- PRODUCT -->
             @{
                 double dblPrixTotal = 0.0;
+                double dblPrixProduitCourant = 0.0;
                 int compteur = 0;
             }
 
 
             @for (int x = 0; x < Model.Count(); x++)
             {
-
+                dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
                 dblPrixTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
                 @Html.HiddenFor(lst => lst[x].DateCreation)
                 @Html.HiddenFor(lst => lst[x].NoClient)
@@ -26,6 +27,7 @@
                 @Html.HiddenFor(lst => lst[x].NoVendeur)
                 @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
                 @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
+                @Html.HiddenFor(lst => lst[x].NbItems)
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-2 text-center">
                         <img class="img-responsive" src="http://placehold.it/120x80" alt="prewiew" width="120" height="80">
@@ -39,20 +41,23 @@
                     <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
                         <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
                             <h6><strong>@Model[x].PPProduits.PrixDemande $ <span class="text-muted">x</span></strong></h6>
+                            
                         </div>
-                        <div class="col-4 col-sm-4 col-md-4">
+                        <div class="col-2 col-sm-2 col-md-2">
                             <div class="quantity">
-                                <!---<input type="button" value="+" class="plus">-->
-                                <!---<input type="button" value="-" class="minus">-->
+                                <!--<input type="button" value="+" class="plus" onclick="incrementerPanier('@Model[x].NoPanier')">-->
+                                <!--<input type="button" value="-" class="minus" onclick="decrementerPanier('@Model[x].NoPanier')">-->
+                                <input id="@Model[x].NoPanier" type="number" min="1" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                @*Html.TextBoxFor(lst => lst[x].NbItems, new { @type = "number", @min = "0", @max = "99", @step = "1", @class = "qty" })*@
                             </div>
                         </div>
-                        @Html.TextBoxFor(lst => lst[x].NbItems, new { @type = "number", @min = "0", @max = "99", @step = "1", @class = "qty" })
-                        <div class="col-2 col-sm-2 col-md-2 text-right">
+                        
+                        <div class="col-4 col-sm-4 col-md-4 text-right">
+                            <h6>&nbsp;<strong>@dblPrixProduitCourant.ToString("0.00")$</strong></h6>
                             <button type="button" class="btn btn-outline-danger btn-xs" id="btnSupprimmer_@Model[x].NoPanier" onclick="supprimerProduit(@Model[x].NoPanier)">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                                 @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
                             </button>
-
                         </div>
                     </div>
                 </div>
@@ -69,7 +74,7 @@
 
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <button class="btn btn-primary" type="submit">Mettre à jour le panier</button>
+                        <!--<button class="btn btn-primary" type="submit">Mettre à jour le panier</button>-->
                     </div>
                 </div>
             </div>
@@ -84,7 +89,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <a href="" class="btn btn-success">Passer une commande</a>
+                        <button id="btnPasserCommande" class="btn btn-success" type="submit">
+                            Passer une commande
+                        </button>
                     </div>
                 </div>
             </div>

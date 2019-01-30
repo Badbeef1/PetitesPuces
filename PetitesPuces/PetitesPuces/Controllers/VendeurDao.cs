@@ -9,13 +9,18 @@ namespace PetitesPuces.Controllers
     public class VendeurDao : IVendeur
     {
         private DataClasses1DataContext contextPP = new DataClasses1DataContext();
-        private PPVendeurs unVendeur;
+        public PPVendeurs unVendeur { get; }
 
         public VendeurDao()
         {
             String strAdresseCourrielVendeur = "L.CHAPLEAU@TOTO.COM";
 
             unVendeur = contextPP.PPVendeurs.FirstOrDefault(vendeur => vendeur.AdresseEmail == strAdresseCourrielVendeur);
+        }
+
+        public VendeurDao(long lngNoVendeur)
+        {
+            unVendeur = contextPP.PPVendeurs.FirstOrDefault(vendeur => vendeur.NoVendeur == lngNoVendeur);
         }
 
         public void modifierProfilInformationPersonnel(PPVendeurs nouveauVendeur)
@@ -60,6 +65,8 @@ namespace PetitesPuces.Controllers
                 unVendeur.Tel2 = nouveauVendeur.Tel2;
             }
 
+            unVendeur.DateMAJ = DateTime.Now;
+
             try
             {
                 contextPP.SubmitChanges();
@@ -73,6 +80,8 @@ namespace PetitesPuces.Controllers
         public void modifierProfilMDP(string strNouveauMDP)
         {
             unVendeur.MotDePasse = strNouveauMDP;
+
+            unVendeur.DateMAJ = DateTime.Now;
 
             try
             {
@@ -105,6 +114,8 @@ namespace PetitesPuces.Controllers
             {
                 unVendeur.Taxes = nouveauVendeur.Taxes;
             }
+
+            unVendeur.DateMAJ = DateTime.Now;
 
             try
             {
