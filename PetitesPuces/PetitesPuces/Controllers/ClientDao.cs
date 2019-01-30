@@ -28,50 +28,25 @@ namespace PetitesPuces.Controllers
 
         public void modifierProfilInformationPersonnel(PPClients nouveauClient)
         {
-            //Penser a si le client veux juste retirer une information sans la remplacer
-
             //penser aussi si les données envoyer sont identique (pas de modification)
 
+            unClient.Prenom = nouveauClient.Prenom;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Prenom))
-            {
-                unClient.Prenom = nouveauClient.Prenom;
-            }
+            unClient.Nom = nouveauClient.Nom;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Nom))
-            {
-                unClient.Nom = nouveauClient.Nom;
-            }
+            unClient.Rue = nouveauClient.Rue;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Rue))
-            {
-                unClient.Rue = nouveauClient.Rue;
-            }
+            unClient.Ville = nouveauClient.Ville;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Ville))
-            {
-                unClient.Ville = nouveauClient.Ville;
-            }
+            unClient.Province = nouveauClient.Province;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Province))
-            {
-                unClient.Province = nouveauClient.Province;
-            }
+            unClient.CodePostal = nouveauClient.CodePostal;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.CodePostal))
-            {
-                unClient.CodePostal = nouveauClient.CodePostal;
-            }
+            unClient.Tel1 = nouveauClient.Tel1;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Tel1))
-            {
-                unClient.Tel1 = nouveauClient.Tel1;
-            }
+            unClient.Tel2 = nouveauClient.Tel2;
 
-            if (!string.IsNullOrWhiteSpace(nouveauClient.Tel2))
-            {
-                unClient.Tel2 = nouveauClient.Tel2;
-            }
+            unClient.DateMAJ = DateTime.Now;
 
             try
             {
@@ -86,6 +61,8 @@ namespace PetitesPuces.Controllers
         public void modifierProfilMDP(string strNouveauMDP)
         {
             unClient.MotDePasse = strNouveauMDP;
+
+            unClient.DateMAJ = DateTime.Now;
 
             try
             {

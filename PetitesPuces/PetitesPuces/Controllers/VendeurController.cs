@@ -29,10 +29,7 @@ namespace PetitesPuces.Controllers
         {
             String strAdresseCourrielVendeur = "L.CHAPLEAU@TOTO.COM";
 
-            var vendeur = from unVendeur in contextPP.PPVendeurs
-                         where unVendeur.AdresseEmail == strAdresseCourrielVendeur
-                         select unVendeur;
-            //vendeur.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine(x.AdresseEmail));
+            vendeurDao = new VendeurDao((Session["vendeurObj"] as PPVendeurs).NoVendeur);
 
             List<Province> lstProvinces = new List<Province>
             {
@@ -43,7 +40,7 @@ namespace PetitesPuces.Controllers
 
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-            return View(vendeur.First());
+            return View(vendeurDao.unVendeur);
         }
 
         [HttpPost]
@@ -56,18 +53,43 @@ namespace PetitesPuces.Controllers
                 new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
+            List<string> lstChampsInfoPersonnel = new List<string>
+            {
+                nameof(vendeur.Prenom),
+                nameof(vendeur.Nom),
+                nameof(vendeur.Rue),
+                nameof(vendeur.Ville),
+                nameof(vendeur.Pays),
+                nameof(vendeur.Province),
+                nameof(vendeur.Tel1),
+                nameof(vendeur.CodePostal)
+            };
+
+            List<string> lstChampsSectionVendeur = new List<string>
+            {
+                nameof(vendeur.NomAffaires),
+                nameof(vendeur.PoidsMaxLivraison),
+                nameof(vendeur.Taxes),
+                nameof(vendeur.LivraisonGratuite)
+            };
+
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-            vendeurDao = new VendeurDao();
+            vendeurDao = new VendeurDao(vendeur.NoVendeur);
 
             PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo(vendeur.NoVendeur);
 
             if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
             {
+                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+
                 vendeurDao.modifierProfilInformationPersonnel(vendeur);
             }
             else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
             {
+                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+
                 String strAncientMDP = Request["tbAncienMdp"];
                 String strNouveauMDP = Request["tbNouveauMdp"];
                 String strConfirmationMDP = Request["tbConfirmationMdp"];
@@ -116,6 +138,8 @@ namespace PetitesPuces.Controllers
             }
             else
             {
+                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+
                 vendeurDao.modifierProfilSpecificVendeur(vendeur);
             }
 
