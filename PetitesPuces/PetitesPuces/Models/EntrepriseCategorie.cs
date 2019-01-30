@@ -7,8 +7,8 @@ namespace PetitesPuces.Models
 {
     public class EntrepriseCategorie
     {
-        Models.PPCategories categorie { get; set; }
-        List<Models.PPVendeurs> lstVendeurs { get; set;}
+        public Models.PPCategories categorie { get; set; }
+        public List<Models.PPVendeurs> lstVendeurs { get; set;}
 
         public EntrepriseCategorie(PPCategories categorie, List<PPVendeurs> lstVendeurs)
         {

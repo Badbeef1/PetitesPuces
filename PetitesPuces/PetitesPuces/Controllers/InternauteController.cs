@@ -41,7 +41,6 @@ namespace PetitesPuces.Controllers
                 lstEntreCate.Add(new Models.EntrepriseCategorie(cat, lstVendeurs));
             }
             return View(lstEntreCate);
-
         }
 
         public ActionResult CatalogueNouveaute() => View();
