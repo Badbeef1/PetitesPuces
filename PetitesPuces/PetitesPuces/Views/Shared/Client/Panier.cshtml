@@ -58,7 +58,6 @@
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                                 @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
                             </button>
-
                         </div>
                     </div>
                 </div>
@@ -90,7 +89,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <a href="" class="btn btn-success">Passer une commande</a>
+                        <button id="btnPasserCommande" class="btn btn-success" type="submit">
+                            Passer une commande
+                        </button>
                     </div>
                 </div>
             </div>

@@ -57,10 +57,11 @@ namespace PetitesPuces.Controllers
             return View(items);
         }
 
-        /*
+        
         [HttpPost]
         public ActionResult PanierDetail(long id,List<PPArticlesEnPanier> model)
         {
+            /*
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             String noClient = "10000";
@@ -90,9 +91,9 @@ namespace PetitesPuces.Controllers
                                               select panier).ToList();
 
             db.Connection.Close();
-
-            return View(items);
-        }*/
+            */
+            return View("SaisieCommande", model);
+        }
 
         /// <summary>
         /// Cette fonction du controleur permet d'actualiser 
