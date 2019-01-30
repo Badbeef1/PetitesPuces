@@ -6,7 +6,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-
         // Bouton final
         $("#btnConfirmer").click(function () {
             var countClientCocher = 0
@@ -20,20 +19,21 @@
                 if (document.getElementById("cbVendeurs_" + i + "__IsSelected").checked) {
                     countVendeurCocher++;
                 };
-                if (countVendeurCocher > 0 || countClientCocher > 0) {
+            };
+            if (countVendeurCocher > 0 || countClientCocher > 0) {
 
-                    if (confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?")) {
-                        return true;
-                    }
-                    else {
-                        event.preventDefault();
-                        return false;
-                    }
-                } else {
+                if (confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?")) {
+                    return true;
+                    $("#btnPDF").removeAttr("hidden");
+                }
+                else {
                     event.preventDefault();
                     return false;
                 }
-            };
+            } else {
+                event.preventDefault();
+                return false;
+            }
         });
 
         // Combo box de l'entête client
@@ -89,7 +89,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="~/Content/css/styleGeneral.css"/>
 </head>
 
 <body id="body">
@@ -102,9 +102,20 @@
     @using (Html.BeginForm("GestionInactivite", "Gestionnaire", FormMethod.Post))
     {
 
-        <div class="container">
+        <div class="container sEspaceBarNavigation" id="divPage" >
             <div id="infoPage" style="padding-left:10px;padding-right:10px">
                 <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
+                <div style="text-align:center">
+                    @if (Model.blnOpenPDF)
+                    {
+                        <input type="button" class="btn btn-primary" id="btnPDF" value="PDF : Désactivés récents" />
+                    }
+                    else
+                    {
+
+                        <input type="button" class="btn btn-primary" id="btnPDF" value="Désactivés récents" hidden />
+                    }
+                </div>
                 <div id="divClient">
                     <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
                     <br />
@@ -178,7 +189,7 @@
                             <option value="3">3 ans et +</option>
                         </select>
                         <span style="display:inline;float:right;padding-right:10px;">Inactivité depuis : </span>
-</div>
+                    </div>
                     <br />
                     <div id="tableauVendeur">
                         <table class="table table-bordered">
