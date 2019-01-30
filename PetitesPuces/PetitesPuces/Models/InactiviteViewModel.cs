@@ -11,8 +11,16 @@ namespace PetitesPuces.Models
         public List<PPClients> clients { get; set; }
         public List<PPVendeurs> vendeurs { get; set; }
 
-        public IList<SelectListItem> cbClients { get; set; }
-        public IList<SelectListItem> cbVendeurs { get; set; }
+        public List<Inactiver> cbClients { get; set; }
+        public List<Inactiver> cbVendeurs { get; set; }
+    }
+
+
+    public class Inactiver
+    {
+        public int ID { get; set; }
+        public string idClient { get; set; }
+        public bool IsSelected { get; set; }
     }
 
 

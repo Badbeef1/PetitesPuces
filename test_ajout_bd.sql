@@ -11,10 +11,6 @@ select * from PPArticlesEnPanier
 --Ajouter un vendeur
 insert into PPVendeurs values(1,'Childish', 'Blanchet-Plante', 'Kevin','Notre-Dame', 'Montréal','QC','J7W8H5', 'Canada','514-453-8546',null,'kev@gmail.com','Password1',10,20,1,10,null,GETDATE(),GETDATE(),1)
 
---Ajouter des catégories
-insert into PPCategories values(1,'Sport et Loisir', 'Équipement sportif')
-insert into PPCategories values(2,'Voiture', 'Voiture d''occasion')
-insert into PPCategories values(3,'Électronique','Produit Électronique')
 /* Rajouter des paniers aux utilisateurs*/
 INSERT INTO PPArticlesEnPanier
 VALUES (1, 10000, 10, 1000010, GETDATE(), 1);

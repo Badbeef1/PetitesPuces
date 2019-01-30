@@ -1,6 +1,4 @@
 ﻿@model PetitesPuces.Models.InactiviteViewModel
-@using PetitesPuces.Models
-@using System.Linq
 @{
     Layout = null;
 }
@@ -11,12 +9,19 @@
         $("#btnConfirmer").click(function () {
             confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?")
         })
+        $('#cbClientAll').click(function () {
+
+            var arrCbClient = document.getElementsByName("cbClientNom")
+            for (var i = 0; i < arrCbClient.length; i++) {
+                arrCbClient[i].checked = ($('#cbClientAll').prop('checked'));
+            }
+        })
     });
 </script>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Gestion de l'inactivité</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
@@ -24,12 +29,17 @@
 </head>
 
 <body>
+
+
     <div id="navigation">
         @RenderPage("~/Views/Gestionnaire/index.cshtml")
     </div>
 
-    @using (Html.BeginForm("GestionInactivite", "Gestionnaire"))
+    @using (Html.BeginForm("GestionInactivite", "Gestionnaire", FormMethod.Post))
     {
+
+        @Html.HiddenFor(vide1 => vide1.clients)
+        @Html.HiddenFor(vide1 => vide1.vendeurs)
         <div class="container">
             <div id="infoPage" style="padding-left:10px;padding-right:10px">
                 <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
@@ -55,21 +65,24 @@
                                 <th style="width: 30%">Nom</th>
                                 <th style="width: 30%">Prénom</th>
                                 <th style="width: 30%;text-align:right">Dernière présence</th>
-                                <th style="width: 5%" class="text-center">Détruire</th>
+                                <th style="width: 5%" class="text-center"><input type="checkbox" id="cbClientAll" onclick="" /></th>
                             </tr>
 
                             @{
-                                for (int i = 0; i < @Model.cbClients.Count-1; i++)
+                                for (int i = 0; i < @Model.cbClients.Count; i++)
                                 {
-                                    <tr>
-                                        <th style="text-align:right">@(i + 1)</th>
-                                        <td>@Model.clients[i].Nom</td>
-                                        <td>@Model.clients[i].Prenom</td>
-                                        <td style="text-align:right">@Model.clients[i].Nom</td>
-                                        <td class="text-center">
-                                            <input type="checkbox" id="cbClient@(Model.cbClients[i].Value)" style="width:inherit" />
-                                        </td>
-                                    </tr>
+                            <tr>
+                                <th style="text-align:right">@(i + 1)</th>
+                                <td>@Model.clients[i].Nom</td>
+                                <td>@Model.clients[i].Prenom</td>
+                                <td style="text-align:right">@Model.clients[i].Nom</td>
+                                <td class="text-center">
+                                    @Html.HiddenFor(x => Model.cbClients[i].ID)
+                                    @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected, new { Name = "cbClientNom" })
+                                    @Html.HiddenFor(x => Model.cbClients[i].idClient)
+                                </td>
+
+                            </tr>
                                 }
                             }
 
@@ -99,7 +112,7 @@
 
 
                             @{
-                                for (int i = 0; i < @Model.cbVendeurs.Count - 1; i++)
+                                for (int i = 0; i < @Model.cbVendeurs.Count; i++)
                                 {
                                     <tr>
                                         <th style="text-align:right">@(i + 1)</th>
@@ -107,7 +120,9 @@
                                         <td>@Model.vendeurs[i].Prenom</td>
                                         <td style="text-align:right">@Model.vendeurs[i].Nom</td>
                                         <td class="text-center">
-                                            <input type="checkbox" id="cbVendeurs@(Model.cbVendeurs[i].Value)" style="width:inherit" />
+                                            @Html.HiddenFor(x => Model.cbVendeurs[i].ID)
+                                            @Html.CheckBoxFor(x => Model.cbVendeurs[i].IsSelected)
+                                            @Html.HiddenFor(x => Model.cbVendeurs[i].idClient)
                                         </td>
                                     </tr>
                                 }
@@ -119,9 +134,9 @@
             <br />
             <br />
             <div id="divConfirmation" style="text-align:center">
-                <input id="btnConfirmer" type="submit" value="Confirmer" class="btn btn-primary"  />
+                <input id="btnConfirmer" type="submit" value="Confirmer" class="btn btn-primary" />
             </div>
         </div>
-                                }
-    </body>
+    }
+</body>
 </html>

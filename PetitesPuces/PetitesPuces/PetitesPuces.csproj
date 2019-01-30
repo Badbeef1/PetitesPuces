@@ -131,11 +131,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ClientDao.cs" />
     <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\IClient.cs" />
     <Compile Include="Controllers\InternauteController.cs" />
     <Compile Include="Controllers\ConnexionController.cs" />
+    <Compile Include="Controllers\IVendeur.cs" />
     <Compile Include="Controllers\VendeurController.cs" />
+    <Compile Include="Controllers\VendeurDao.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -213,6 +217,7 @@
     <Content Include="Views\Vendeur\InformationPersonnel.cshtml" />
     <Content Include="Views\Vendeur\ModificationMDP.cshtml" />
     <Content Include="Views\Internaute\partialVendeurInformations.cshtml" />
+    <Content Include="Views\Shared\Client\Panier.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

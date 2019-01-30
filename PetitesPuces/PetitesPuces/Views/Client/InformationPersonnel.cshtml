@@ -2,6 +2,8 @@
 
 @using (Html.BeginForm())
 {
+    @Html.HiddenFor(x => x.NoClient)
+    @Html.Hidden("strProvenence", "informationPersonnel");
     <div class="card">
         <h5 class="card-header">Modification du profil de <span>@Html.DisplayFor(model => Model.AdresseEmail)</span></h5>
         <div class="card-body">
@@ -34,20 +36,20 @@
                 </div>
                 <div class="col-2">
                     <label class="col-form-label">Code postal</label>
-                    @Html.TextBoxFor(model => Model.CodePostal, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => Model.CodePostal, new { @class = "form-control", placeholder = "A9A 9A9", @id = "codePostal" })
                 </div>
                 <div class="col-2">
                     <label class="col-form-label">Téléphone #1</label>
-                    @Html.TextBoxFor(model => Model.Tel1, new { @class = "form-control", placeholder = "(999) 999-9999" })
+                    @Html.TextBoxFor(model => Model.Tel1, new { @class = "form-control", placeholder = "(999) 999-9999" , @id = "tel1"})
                 </div>
                 <div class="col-2">
                     <label class="col-form-label">Téléphone #2</label>
-                    @Html.TextBoxFor(model => Model.Tel2, new { @class = "form-control", placeholder = "(999) 999-9999" })
+                    @Html.TextBoxFor(model => Model.Tel2, new { @class = "form-control", placeholder = "(999) 999-9999", @id = "tel2" })
                 </div>
             </div>
         </div>
         <div class="card-footer btn-group sPiedPageBouton">
-            <button type="button" class="btn btn-outline-success">Sauvegarder</button>
+            <button type="submit" class="btn btn-outline-success">Sauvegarder</button>
             <a href="#" class="btn btn-outline-primary">Retour</a>
         </div>
     </div>
