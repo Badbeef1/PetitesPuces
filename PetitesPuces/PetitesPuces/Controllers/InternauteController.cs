@@ -28,8 +28,7 @@ namespace PetitesPuces.Controllers
         }
 
         public ActionResult CatalogueNouveaute() => View();
-
-
+        
 
         //GET
         public ActionResult Inscription() => View();
@@ -44,28 +43,25 @@ namespace PetitesPuces.Controllers
             var confUsername = model.confirmUsername;
             var password = model.vendeur.MotDePasse;
             var confPassword = model.confirmPassword;
-
-            /* Variables required for seller registration */
-
-            var clientSectionValid = (username != null &&  password != null);
+            var clientSectionValid = (username != null && password != null);
             var usernameConfirmValid = username == confUsername;
             var passwordConfirmValid = password == confPassword;
-            
-            var etreVendeur = model.boolVendeur;
 
+            /* Variables required for seller registration */
+            var etreVendeur = model.boolVendeur;
+            
+            //reset
             model.errorMessage = "";
+            model.okMessage = "";
 
             /* Some validations */
             try
-            { MailAddress ma = new MailAddress(username); }
-            catch (Exception ex)
-            {
-                model.errorMessage = "Le format de l'adresse courriel n'est pas valide !";
-            }
+            { MailAddress ma = new MailAddress(username); } catch (Exception ex) { model.errorMessage = "Le format de l'adresse courriel n'est pas valide !"; }
 
             model.errorMessage = usernameConfirmValid ?
-                (passwordConfirmValid ? "" : "Le deuxième mot de passe doit correspondre au premier.") : "Le deuxième courriel doit correspondre au premier.";
-
+                (passwordConfirmValid ? model.errorMessage : "Le deuxième mot de passe doit correspondre au premier.") : "Le deuxième courriel doit correspondre au premier.";
+            
+            
             if (!etreVendeur) // "Je veux etre vendeur" is not checked
             {
                 //Clear errors in Vendeur section
@@ -77,7 +73,6 @@ namespace PetitesPuces.Controllers
             }
 
             /* Database section */
-
             var context = new DataClasses1DataContext();
 
             if (clientSectionValid && !etreVendeur && usernameConfirmValid && passwordConfirmValid)
@@ -100,6 +95,7 @@ namespace PetitesPuces.Controllers
                 //Stop right there if theres an error
                 if (model.errorMessage != "") return View(model);
 
+                //Transaction
                 using (var transaction = new TransactionScope())
                 {
                     try
@@ -144,12 +140,11 @@ namespace PetitesPuces.Controllers
                 //Company name exists
                 else if (context.PPVendeurs.Any(x => x.NomAffaires.ToLower().Equals(model.vendeur.NomAffaires.ToLower())))
                     model.errorMessage = "Le nom d'entreprise existe déjà !";
-
-
+                
                 //Stop right there if theres an error
                 if (model.errorMessage != "") return View(model);
 
-
+                //Transaction
                 using (var transaction = new TransactionScope())
                 {
                     try
