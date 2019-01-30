@@ -1,3 +1,4 @@
+
 @using PetitesPuces.Models
 @model List<EntrepriseCategorie>
    <!DOCTYPE html>
@@ -109,9 +110,12 @@
 
                   @foreach (var item in Model)
                   {
-                     <li class="nav-item">
-                        <a class="nav-link" href="#cat_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
-                     </li>
+                     if(item.lstVendeurs.Count() > 0)
+                     {
+                        <li class="nav-item">
+                           <a class="nav-link" href="#cat_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
+                        </li>
+                     }
                   }
                </ul>
             </nav>
@@ -122,136 +126,8 @@
                   <br /><br />
                   <hr />
                   <!--Première catégorie-->
-                  @foreach (var item in Model)
-                  {
-                     <h2 id="cat_@item.categorie.NoCategorie" class="text-center">@item.categorie.Description</h2>
-                     <br />
-                     <div id="carouselCat_@item.categorie.NoCategorie" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                           <div class="carousel-item active">
-                              <div class="row">
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 1 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 2 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 3 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 4 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="carousel-item">
-                              <div class="row">
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 5 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 6 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 7 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-3">
-                                    <div class="card">
-                                       <div class="card-header">
-                                          <h5>Entreprise 8 (X Produits)</h5>
-                                       </div>
-                                       <div class="card-body">
-                                          <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                                       </div>
-                                       <div class="card-footer">
-                                          <button class="btn btn-success">Voir l'entreprise</button>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselCat_@item.categorie.NoCategorie" role="button" data-slide="prev">
-                           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                           <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselCat_@item.categorie.NoCategorie" role="button" data-slide="next">
-                           <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                           <span class="sr-only">Next</span>
-                        </a>
-                     </div>
-                     <hr />
-                  }
+                  @Html.Partial("Client/Categories", Model)
+
 
                   <!-- Deuxième catégorie -->
                   <!--

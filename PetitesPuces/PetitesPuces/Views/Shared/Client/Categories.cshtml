@@ -1,0 +1,64 @@
+﻿@using PetitesPuces.Models
+@model List<EntrepriseCategorie>
+
+<div id="accordion">
+   @foreach (var entrepriseCat in Model)
+   {
+      if (entrepriseCat.lstVendeurs.Count > 0)
+      {
+         <div class="card">
+            <div class="card-header" id="heading_@entrepriseCat.categorie.NoCategorie">
+               <div class="float-left">
+                  <img src="~/Content/images/categorie.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
+               </div>
+
+               <div class="float-center">
+                  <h5 class="mb-0">
+                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@entrepriseCat.categorie.NoCategorie" aria-expanded="true" aria-controls="collapse_@entrepriseCat.categorie.NoCategorie">
+                        @entrepriseCat.categorie.Description
+                     </button>
+                  </h5>
+               </div>
+            </div>
+
+            <div id="collapse_@entrepriseCat.categorie.NoCategorie" class="collapse show" aria-labelledby="heading_@entrepriseCat.categorie.NoCategorie" data-parent="#accordion">
+
+               <div class="card-body">
+                  <div class="card">
+                     <div class="card-header">
+                        <h4>@entrepriseCat.categorie.Description</h4>
+                     </div>
+                     <div class="card-body">
+                        <div class="row">
+                           @foreach (var entreprises in entrepriseCat.lstVendeurs)
+                           {
+                              <div class="col-sm-3">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>@entreprises.NomAffaires</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/icon.png" alt="entreprise" width="75px" height="75px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <button id="btn_@entreprises.NoVendeur" class="btn btn-success">Voir l'entreprise</button>
+                                    </div>
+                                 </div>
+                              </div>
+                           }
+                        </div>
+                     </div>
+                     <div class="card-footer">
+                        @*Html.ActionLink("Détail du panier", "PanierDetail", "Client", new { id = articlesVendeur.Key.NoVendeur }, new { @class = "btn btn-primary" })*@
+                        <!-- <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>-->
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <hr />
+      }
+   }
+</div>

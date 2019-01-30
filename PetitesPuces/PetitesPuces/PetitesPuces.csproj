@@ -157,7 +157,6 @@
     <Compile Include="Models\EntrepriseCategorie.cs" />
     <Compile Include="Models\InactiviteViewModel.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
-	<Compile Include="Models\EntrepriseCategorie.cs" />
     <Compile Include="Models\ProduitPanier.cs" />
     <Compile Include="Models\Province.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -224,6 +223,7 @@
     <Content Include="Views\Internaute\partialVendeurInformations.cshtml" />
     <Content Include="Views\Shared\Client\Panier.cshtml" />
     <Content Include="Views\Shared\Client\PanierAccueil.cshtml" />
+    <Content Include="Views\Shared\Client\Categories.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
