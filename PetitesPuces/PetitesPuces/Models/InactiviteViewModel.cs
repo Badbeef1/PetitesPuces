@@ -8,9 +8,6 @@ namespace PetitesPuces.Models
 {
     public class InactiviteViewModel
     {
-        public List<PPClients> clients { get; set; }
-        public List<PPVendeurs> vendeurs { get; set; }
-
         public List<Inactiver> cbClients { get; set; }
         public List<Inactiver> cbVendeurs { get; set; }
     }
@@ -19,8 +16,13 @@ namespace PetitesPuces.Models
     public class Inactiver
     {
         public int ID { get; set; }
+        public string Nom { get; set; }
+        public string Prenom { get; set; }
         public string idClient { get; set; }
+        public DateTime dernierPresence { get; set; }
         public bool IsSelected { get; set; }
+
+
     }
 
 

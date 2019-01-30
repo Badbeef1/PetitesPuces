@@ -6,16 +6,58 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#btnConfirmer").click(function () {
-            confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?")
-        })
-        $('#cbClientAll').click(function () {
 
-            var arrCbClient = document.getElementsByName("cbClientNom")
-            for (var i = 0; i < arrCbClient.length; i++) {
-                arrCbClient[i].checked = ($('#cbClientAll').prop('checked'));
-            }
-        })
+        // Bouton final
+        $("#btnConfirmer").click(function () {
+            confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?");
+        });
+
+        // Combo box de l'entête client
+        $('#cbClientAll').click(function () {
+            for (var i = 0; i < @Model.cbClients.Count; i++) {
+                // Ce qui arrive quand Nic est tanner de niaiser avec de la...
+                document.getElementById("cbClients_" + i + "__IsSelected").checked = $('#cbClientAll').prop("checked");
+            };
+        });
+        
+         // Combo box de l'entête vendeur
+        $('#cbVendeurAll').click(function () {
+            for (var i = 0; i < @Model.cbVendeurs.Count; i++) {
+                // Ce qui arrive quand Nic est tanner de niaiser avec de la...
+                document.getElementById("cbVendeurs_" + i + "__IsSelected").checked = $('#cbVendeurAll').prop("checked");
+            };
+        });
+        var ddlClient = $('#ddlClient');
+        var ddlVendeur = $('#ddlVendeur');
+        $('#ddlClient').change(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ddlChanger", "Gestionnaire")',
+                data: { "id": ddlClient.val() + ";" + ddlVendeur.val() },
+                success: success,
+                error: error,
+            });
+        });
+        $('#ddlVendeur').change(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("ddlChanger", "Gestionnaire")',
+                data: { "id": ddlClient.val()+";"+ddlVendeur.val() },
+                success: success,
+                error: error,
+            });
+        });
+        function success(model) {
+            var valDDLCli = ddlClient.val();
+            var valDDLVen = ddlVendeur.val();
+            $("#body").html(model);
+            $('#ddlClient').val(valDDLCli)
+            $('#ddlVendeur').val(valDDLVen)
+        }
+
+        function error(error) {
+            console.log("ERROR " + error)
+        }
     });
 </script>
 <html>
@@ -28,7 +70,7 @@
 
 </head>
 
-<body>
+<body id="body">
 
 
     <div id="navigation">
@@ -38,8 +80,6 @@
     @using (Html.BeginForm("GestionInactivite", "Gestionnaire", FormMethod.Post))
     {
 
-        @Html.HiddenFor(vide1 => vide1.clients)
-        @Html.HiddenFor(vide1 => vide1.vendeurs)
         <div class="container">
             <div id="infoPage" style="padding-left:10px;padding-right:10px">
                 <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
@@ -47,14 +87,14 @@
                     <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
                     <br />
                     <select id="ddlClient" style="display:inline;float:right">
-                        <option selected>Tous</option>
-                        <option>1 mois</option>
-                        <option>3 mois</option>
-                        <option>6 mois</option>
-                        <option>1 an</option>
-                        <option>2 ans</option>
-                        <option>3 ans</option>
-                        <option>Début du site Web</option>
+                        <option selected value="0">Tous</option>
+                        <option value="1">1 mois</option>
+                        <option value="2">3 mois</option>
+                        <option value="3">6 mois</option>
+                        <option value="4">1 an</option>
+                        <option value="5">2 ans</option>
+                        <option value="6">3 ans</option>
+                        <option value="7">Aucune activité enregistrée</option>
                     </select>
 
                     <br />
@@ -64,8 +104,8 @@
                                 <th style="width: 5%;text-align:right">#</th>
                                 <th style="width: 30%">Nom</th>
                                 <th style="width: 30%">Prénom</th>
-                                <th style="width: 30%;text-align:right">Dernière présence</th>
-                                <th style="width: 5%" class="text-center"><input type="checkbox" id="cbClientAll" onclick="" /></th>
+                                <th style="width: 30%;text-align:right">Dernière activité</th>
+                                <th style="width: 5%" class="text-center"><input type="checkbox" id="cbClientAll" /></th>
                             </tr>
 
                             @{
@@ -73,13 +113,16 @@
                                 {
                             <tr>
                                 <th style="text-align:right">@(i + 1)</th>
-                                <td>@Model.clients[i].Nom</td>
-                                <td>@Model.clients[i].Prenom</td>
-                                <td style="text-align:right">@Model.clients[i].Nom</td>
-                                <td class="text-center">
+                                <td>@Model.cbClients[i].Nom</td>
+                                <td>@Model.cbClients[i].Prenom</td>
+                                <td style="text-align:right">@Model.cbClients[i].dernierPresence</td>
+                                <td class="text-center" >
                                     @Html.HiddenFor(x => Model.cbClients[i].ID)
-                                    @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected, new { Name = "cbClientNom" })
+                                    @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected)
                                     @Html.HiddenFor(x => Model.cbClients[i].idClient)
+                                    @Html.HiddenFor(x => Model.cbClients[i].dernierPresence)
+                                    @Html.HiddenFor(x => Model.cbClients[i].Nom)
+                                    @Html.HiddenFor(x => Model.cbClients[i].Prenom)
                                 </td>
 
                             </tr>
@@ -93,11 +136,11 @@
                     <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
                     <br />
                     <select id="ddlVendeur" style="display:inline; float:right">
-                        <option selected>Tous</option>
-                        <option>1 an</option>
-                        <option>2 ans</option>
-                        <option>3 ans</option>
-                        <option>Début du site Web</option>
+                        <option selected value="0">Tous</option>
+                        <option value="1">1 an</option>
+                        <option value="2">2 ans</option>
+                        <option value="3">3 ans</option>
+                        <option value="4">Aucune activité enregistrée</option>
                     </select>
                     <br />
                     <div id="tableauVendeur">
@@ -107,7 +150,7 @@
                                 <th style="width: 30%">Nom</th>
                                 <th style="width: 30%">Prénom</th>
                                 <th style="width: 30%;text-align:right">Dernière activité</th>
-                                <th style="width: 5%" class="text-center">Détruire</th>
+                                <th style="width: 5%" class="text-center"><input type="checkbox" id="cbVendeurAll" /></th>
                             </tr>
 
 
@@ -116,13 +159,16 @@
                                 {
                                     <tr>
                                         <th style="text-align:right">@(i + 1)</th>
-                                        <td>@Model.vendeurs[i].Nom</td>
-                                        <td>@Model.vendeurs[i].Prenom</td>
-                                        <td style="text-align:right">@Model.vendeurs[i].Nom</td>
+                                        <td>@Model.cbVendeurs[i].Nom</td>
+                                        <td>@Model.cbVendeurs[i].Prenom</td>
+                                        <td style="text-align:right">@Model.cbVendeurs[i].dernierPresence</td>
                                         <td class="text-center">
                                             @Html.HiddenFor(x => Model.cbVendeurs[i].ID)
                                             @Html.CheckBoxFor(x => Model.cbVendeurs[i].IsSelected)
                                             @Html.HiddenFor(x => Model.cbVendeurs[i].idClient)
+                                            @Html.HiddenFor(x => Model.cbVendeurs[i].dernierPresence)
+                                            @Html.HiddenFor(x => Model.cbVendeurs[i].Nom)
+                                            @Html.HiddenFor(x => Model.cbVendeurs[i].Prenom)
                                         </td>
                                     </tr>
                                 }
