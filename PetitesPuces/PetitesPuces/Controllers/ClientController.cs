@@ -9,8 +9,7 @@ namespace PetitesPuces.Controllers
 {
     public class ClientController : Controller
     {
-        DataClasses1DataContext contextPP = new DataClasses1DataContext();
-        PPClients unClient;
+        DataClasses1DataContext contextPP = new DataClasses1DataContext();   
         ClientDao clientDao;
 
         public ActionResult Index() => View("AccueilClient");
@@ -132,9 +131,9 @@ namespace PetitesPuces.Controllers
             //HttpContext.User.Identity.Name
             String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
 
-            unClient = (from unClient in contextPP.PPClients
-                        where unClient.AdresseEmail == strAdresseCourrielClient
-                        select unClient).First();
+            clientDao = new ClientDao();
+
+            PPClients leClient = clientDao.rechecheClientParCourriel(strAdresseCourrielClient);
 
             List<Province> lstProvinces = new List<Province>
             {
@@ -144,7 +143,7 @@ namespace PetitesPuces.Controllers
             };
 
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-            return View(unClient);
+            return View(leClient);
         }
 
         //Vue partiel Information personnel
@@ -176,7 +175,7 @@ namespace PetitesPuces.Controllers
 
             if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
             {
-                clientDao.modifierProfilInformationPersonnel(unClient);
+                clientDao.modifierProfilInformationPersonnel(client);
             }
             else
             {
@@ -229,7 +228,7 @@ namespace PetitesPuces.Controllers
                 TempData["msgConfirmation"] = leClient.MotDePasse != strAncientMDP ? "succes" : "echec";
             }
 
-            return View();
+            return View(leClient);
         }
     }
 }

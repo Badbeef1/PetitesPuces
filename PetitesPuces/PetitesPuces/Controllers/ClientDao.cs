@@ -26,9 +26,61 @@ namespace PetitesPuces.Controllers
                         select unClient).First();
         }
 
-        public void modifierProfilInformationPersonnel(PPClients unClient)
+        public void modifierProfilInformationPersonnel(PPClients nouveauClient)
         {
-            throw new NotImplementedException();
+            //Penser a si le client veux juste retirer une information sans la remplacer
+
+            //penser aussi si les données envoyer sont identique (pas de modification)
+
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Prenom))
+            {
+                unClient.Prenom = nouveauClient.Prenom;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Nom))
+            {
+                unClient.Nom = nouveauClient.Nom;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Rue))
+            {
+                unClient.Rue = nouveauClient.Rue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Ville))
+            {
+                unClient.Ville = nouveauClient.Ville;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Province))
+            {
+                unClient.Province = nouveauClient.Province;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.CodePostal))
+            {
+                unClient.CodePostal = nouveauClient.CodePostal;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Tel1))
+            {
+                unClient.Tel1 = nouveauClient.Tel1;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nouveauClient.Tel2))
+            {
+                unClient.Tel2 = nouveauClient.Tel2;
+            }
+
+            try
+            {
+                contextPP.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public void modifierProfilMDP(string strNouveauMDP)

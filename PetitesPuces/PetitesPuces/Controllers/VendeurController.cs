@@ -9,7 +9,8 @@ namespace PetitesPuces.Controllers
 {
     public class VendeurController : Controller
     {
-        Models.DataClasses1DataContext contextPP = new Models.DataClasses1DataContext();
+        DataClasses1DataContext contextPP = new DataClasses1DataContext();
+        VendeurDao vendeurDao;
 
         public ActionResult Index() => View("AccueilVendeur");
 
@@ -45,8 +46,84 @@ namespace PetitesPuces.Controllers
             return View(vendeur.First());
         }
 
+        [HttpPost]
+        public ActionResult GestionProfilVendeur(PPVendeurs vendeur, String strProvenence)
+        {
+            List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+            vendeurDao = new VendeurDao();
+
+            PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo(vendeur.NoVendeur);
+
+            if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
+            {
+                vendeurDao.modifierProfilInformationPersonnel(vendeur);
+            }
+            else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
+            {
+                String strAncientMDP = Request["tbAncienMdp"];
+                String strNouveauMDP = Request["tbNouveauMdp"];
+                String strConfirmationMDP = Request["tbConfirmationMdp"];
+
+                String strMessageErreurVide = "Le champs doit être rempli!";
+                bool booValide = true;
+                if (string.IsNullOrWhiteSpace(strAncientMDP))
+                {
+                    ViewBag.MessageErreurAncient = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(strNouveauMDP))
+                {
+                    ViewBag.MessageErreurNouveau = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(strConfirmationMDP))
+                {
+                    ViewBag.MessageErreurConfirmation = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                //Tous les champs ne sont pas vide
+                if (booValide)
+                {
+                    //Valide que le mot de passe est bien l'ancien mdp.
+                    if (vendeurOriginel.MotDePasse.Equals(strAncientMDP))
+                    {
+                        //Valide que le nouveau mdp est identique a celui de confirmation
+                        if (strNouveauMDP.Equals(strConfirmationMDP))
+                        {
+                            vendeurDao.modifierProfilMDP(strNouveauMDP);
+                        }
+                        else
+                        {
+                            ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                    }
+                }
+            }
+            else
+            {
+                vendeurDao.modifierProfilSpecificVendeur(vendeur);
+            }
+
+            return View(vendeurOriginel);
+        }
+
         [ChildActionOnly]
-        public ActionResult InformayionPersonnel()
+        public ActionResult InformationPersonnel()
         {
             return PartialView();
         }

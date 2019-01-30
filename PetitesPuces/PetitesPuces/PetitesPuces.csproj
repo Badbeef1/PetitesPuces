@@ -137,7 +137,9 @@
     <Compile Include="Controllers\IClient.cs" />
     <Compile Include="Controllers\InternauteController.cs" />
     <Compile Include="Controllers\ConnexionController.cs" />
+    <Compile Include="Controllers\IVendeur.cs" />
     <Compile Include="Controllers\VendeurController.cs" />
+    <Compile Include="Controllers\VendeurDao.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
