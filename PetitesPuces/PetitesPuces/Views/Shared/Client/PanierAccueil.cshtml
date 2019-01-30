@@ -1,0 +1,85 @@
+﻿@model IQueryable<IGrouping<PetitesPuces.Models.PPVendeurs, PetitesPuces.Models.PPArticlesEnPanier>>
+<div class="row">
+    <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+        <h4>Les paniers</h4>
+        <ul class="nav nav-pills flex-column">
+            @{
+                int compteur = 1;
+                foreach (var item in Model)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @compteur<span class="sr-only">(current)</span></a>
+                    </li>
+                    compteur++;
+                }
+            }
+        </ul>
+    </nav>
+
+    <!--Les catégories avec entreprises-->
+    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+        <br />
+        <hr>
+        <h3>Bienvenue !</h3>
+        <hr />
+        <h4>Voici vos paniers</h4>
+        <div id="accordion">
+            @foreach (var articlesVendeur in Model)
+            {
+                <div class="card">
+                    <div class="card-header" id="heading_@articlesVendeur.Key.NoVendeur">
+                        <div class="float-left">
+                            <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
+                        </div>
+
+                        <div class="float-center">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@articlesVendeur.Key.NoVendeur" aria-expanded="true" aria-controls="collapse_@articlesVendeur.Key.NoVendeur">
+                                    @articlesVendeur.Key.NomAffaires
+                                </button>
+                            </h5>
+                        </div>
+                    </div>
+
+                    <div id="collapse_@articlesVendeur.Key.NoVendeur" class="collapse show" aria-labelledby="heading_@articlesVendeur.Key.NoVendeur" data-parent="#accordion">
+
+                        <div class="card-body">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>@articlesVendeur.Key.NomAffaires</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        @foreach (var article in articlesVendeur)
+                                        {
+                                            <div class="col-sm-2">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5>@article.PPProduits.Nom</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="float-center">
+                                                            <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-footer">
+                                                        <h5>@article.PPProduits.PrixVente $</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    @Html.ActionLink("Détail du panier", "PanierDetail", "Client", new { id = articlesVendeur.Key.NoVendeur }, new { @class = "btn btn-primary" })
+                                    <!-- <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            }
+        </div>
+    </main>
+</div>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using PetitesPuces.Models;
@@ -56,7 +57,7 @@ namespace PetitesPuces.Controllers
             return View(items);
         }
 
-        
+        /*
         [HttpPost]
         public ActionResult PanierDetail(long id,List<PPArticlesEnPanier> model)
         {
@@ -91,8 +92,54 @@ namespace PetitesPuces.Controllers
             db.Connection.Close();
 
             return View(items);
-        }
+        }*/
 
+        /// <summary>
+        /// Cette fonction du controleur permet d'actualiser 
+        /// la quantité d'item d'un produit dans le panier.
+        /// </summary>
+        /// <param name="noPanier"></param>
+        /// <param name="quantite"></param>
+        /// <returns></returns>
+        
+        public ActionResult UpdatePanier(int noPanier, int quantite)
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            String noClient = "10000";
+            int noVendeur;
+            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+
+            var articlesPanier = (from articlePanier in db.GetTable<PPArticlesEnPanier>()
+                                  where articlePanier.NoPanier.Equals(noPanier)
+                                  select articlePanier
+                                  );
+
+            noVendeur = (int)articlesPanier.First().NoVendeur;
+            articlesPanier.First().NbItems = (short)quantite;
+
+            // Submit the changes to the database.
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            //Requête qui va permettre d'aller chercher les paniers du client
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              select panier).ToList();
+
+            db.Connection.Close();
+            return PartialView("Client/Panier",items);
+        }
+        /// <summary>
+        /// Permet de supprimer le produit passé en paramètre
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult SupprimerProduit(int id)
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
@@ -122,8 +169,12 @@ namespace PetitesPuces.Controllers
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
                                               where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
                                               select panier).ToList();
+            if (items.Count() == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
             db.Connection.Close();
-            return PartialView("Client/Panier",items);
+            return PartialView("Client/Panier", items);
         }
 
         public ActionResult GestionProfilClient()
