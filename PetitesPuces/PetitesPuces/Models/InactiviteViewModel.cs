@@ -10,6 +10,8 @@ namespace PetitesPuces.Models
     {
         public List<Inactiver> cbClients { get; set; }
         public List<Inactiver> cbVendeurs { get; set; }
+
+        public bool blnOpenPDF { get; set; }
     }
 
 

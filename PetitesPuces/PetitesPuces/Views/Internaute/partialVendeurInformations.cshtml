@@ -2,113 +2,125 @@
 @model PetitesPuces.Models.PPClientViewModel
 
 <div class="form-row">
-    <div class="form-group col-md-12">
-        <label for="tbNomAffaires">Nom de l'entreprise</label>
-        @Html.EditorFor(x => x.vendeur.NomAffaires, new {
-       htmlAttributes = new {
-           @id = "tbNomAffaires",
-           @class = "form-control",
-           @placeholder = "Nom de l'entreprise"
-       }})
-    </div>
+   <div class="form-group col-md-12 tooltipB">
+      <label for="tbNomAffaires">Nom de l'entreprise</label>
+      @Html.EditorFor(x => x.vendeur.NomAffaires, new {
+     htmlAttributes = new {
+         @id = "tbNomAffaires",
+         @class = "form-control",
+         @placeholder = "Nom de l'entreprise"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.NomAffaires)</span>
+   </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-md-6">
-        <label for="tbNom">Nom</label>
-        @Html.EditorFor(x => x.vendeur.Nom, new {
-       htmlAttributes = new {
-           @id = "tbNom",
-           @class = "form-control",
-           @placeholder = "Nom"
-       }})
-    </div>
-    <div class="form-group col-md-6">
-        <label for="prenom">Prénom</label>
-        @Html.EditorFor(x => x.vendeur.Prenom, new {
-       htmlAttributes = new {
-           @id = "tbPrenom",
-           @class = "form-control",
-           @placeholder = "Prénom"
-       }})
-    </div>
+   <div class="form-group col-md-6 ">
+      <label for="tbNom">Nom</label>
+      <div class="tooltipB">
+      @Html.EditorFor(x => x.vendeur.Nom, new {
+     htmlAttributes = new {
+         @id = "tbNom",
+         @class = "form-control",
+         @placeholder = "Nom"
+     }})
+         <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Nom)</span>
+      </div>
+   </div>
+   <div class="form-group col-md-6 tooltipB">
+      <label for="prenom">Prénom</label>
+      @Html.EditorFor(x => x.vendeur.Prenom, new {
+     htmlAttributes = new {
+         @id = "tbPrenom",
+         @class = "form-control",
+         @placeholder = "Prénom"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Prenom)</span>
+   </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-md-10">
-        <label for="tbRue">Rue</label>
-        @Html.EditorFor(x => x.vendeur.Rue, new {
-       htmlAttributes = new {
-           @id = "tbRue",
-           @class = "form-control",
-           @placeholder = "15615 Boul Gouin"
-       }})
-    </div>
-    <div class="form-group col-md-2">
-        <label for="ddlPays">Pays</label>
-        @Html.DropDownListFor(x => x.vendeur.Pays, new SelectList(
-              new List<Object>{
-                   new { value = "Canada" , text = "Canada"  }
-                }, "value", "text", null
-        ),new { @id= "ddlPays", @class = "form-control"})
-    </div>
+   <div class="form-group col-md-10 tooltipB">
+      <label for="tbRue">Rue</label>
+      @Html.EditorFor(x => x.vendeur.Rue, new {
+     htmlAttributes = new {
+         @id = "tbRue",
+         @class = "form-control",
+         @placeholder = "15615 Boul Gouin"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Rue)</span>
+   </div>
+   <div class="form-group col-md-2 tooltipB">
+      <label for="ddlPays">Pays</label>
+      @Html.DropDownListFor(x => x.vendeur.Pays, new SelectList(
+            new List<Object>{
+                 new { value = "Canada" , text = "Canada"  }
+              }, "value", "text", null
+      ),new { @id= "ddlPays", @class = "form-control"}
+         )
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Pays)</span>
+   </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-md-6">
-        <label for="tbVille">Ville</label>
-        @Html.EditorFor(x => x.vendeur.Ville, new {
-       htmlAttributes = new {
-           @id = "tbVille",
-           @class = "form-control",
-           @placeholder = "Dollard-des-Ormeaux"
-       }})
-    </div>
-    <div class="form-group col-md-4">
-        <label for="ddlProvince">Province</label>
-        @Html.DropDownListFor(x => x.vendeur.Province, new SelectList(
-               new List<Object>{
-                    new { value = "" , text = "Choisir..."  },
-                    new { value = "NB" , text = "Nouveau-Brunswick"  },
-                    new { value = "ON" , text = "Ontario"  },
-                    new { value = "QC" , text = "Québec"  },
-                 }, "value", "text", ""
-         ),new { @id= "ddlProvince", @class = "form-control"})
-    </div>
-    <div class="form-group col-md-2">
-        <label for="tbCodePostal">Code postal</label>
-        @Html.EditorFor(x => x.vendeur.CodePostal, new {
-       htmlAttributes = new {
-           @id = "tbCodePostal",
-           @class = "form-control",
-           @placeholder = "H9H 2A5"
-       }})
-    </div>
+   <div class="form-group col-md-6 tooltipB">
+      <label for="tbVille">Ville</label>
+      @Html.EditorFor(x => x.vendeur.Ville, new {
+     htmlAttributes = new {
+         @id = "tbVille",
+         @class = "form-control",
+         @placeholder = "Dollard-des-Ormeaux"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Ville)</span>
+   </div>
+   <div class="form-group col-md-4 tooltipB">
+      <label for="ddlProvince">Province</label>
+      @Html.DropDownListFor(x => x.vendeur.Province, new SelectList(
+             new List<Object>{
+                  new { value = "" , text = "Choisir..."  },
+                  new { value = "NB" , text = "Nouveau-Brunswick"  },
+                  new { value = "ON" , text = "Ontario"  },
+                  new { value = "QC" , text = "Québec"  },
+               }, "value", "text", ""
+       ),new { @id= "ddlProvince", @class = "form-control"})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Province)</span>
+   </div>
+   <div class="form-group col-md-2 tooltipB">
+      <label for="tbCodePostal">Code postal</label>
+      @Html.EditorFor(x => x.vendeur.CodePostal, new {
+     htmlAttributes = new {
+         @id = "tbCodePostal",
+         @class = "form-control",
+         @placeholder = "H9H 2A5"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.CodePostal)</span>
+   </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-md-6">
-        <label for="tbTel1">Téléphone 1</label>
-        @Html.EditorFor(x => x.vendeur.Tel1, new {
-       htmlAttributes = new {
-           @id = "tbTel1",
-           @class = "form-control",
-           @placeholder = "(514) 222-2222"
-       }})
-    </div>
-    <div class="form-group col-md-6">
-        <label for="tbTel2">Téléphone 2</label>
-        @Html.EditorFor(x => x.vendeur.Tel2, new {
-       htmlAttributes = new {
-           @id = "tbTel2",
-           @class = "form-control",
-           @placeholder = "(514) 555-5555"
-       }})
-    </div>
+   <div class="form-group col-md-6 tooltipB">
+      <label for="tbTel1">Téléphone 1</label>
+      @Html.EditorFor(x => x.vendeur.Tel1, new {
+     htmlAttributes = new {
+         @id = "tbTel1",
+         @class = "form-control",
+         @placeholder = "(514) 222-2222"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Tel1)</span>
+   </div>
+   <div class="form-group col-md-6 tooltipB">
+      <label for="tbTel2">Téléphone 2</label>
+      @Html.EditorFor(x => x.vendeur.Tel2, new {
+     htmlAttributes = new {
+         @id = "tbTel2",
+         @class = "form-control",
+         @placeholder = "(514) 555-5555"
+     }})
+      <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Tel2)</span>
+   </div>
 </div>
 
 <div class="form-row">
-
     <div class="form-group col-md-3">
         <label for="tbPoidsMaxLivraison">
             <span style="font-size: 12px">
@@ -119,18 +131,19 @@
                 <span class="tooltiptext"> Le poids maximal permis pour une commande</span>
             </span>
         </label>
-        <div class="input-group">
-            @Html.EditorFor(x => x.vendeur.PoidsMaxLivraison, new {
-           htmlAttributes = new {
-               @id = "tbPoidsMaxLivraison",
-               @class = "form-control",
-               @placeholder = "00"
-           }})
-            <div class="input-group-append">
-                <span class="input-group-text">
-                    Lbs
-                </span>
-            </div>
+        <div class="input-group tooltipB">
+           @Html.EditorFor(x => x.vendeur.PoidsMaxLivraison, new {
+          htmlAttributes = new {
+              @id = "tbPoidsMaxLivraison",
+              @class = "form-control",
+              @placeholder = "000000"
+          }})
+           <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.PoidsMaxLivraison)</span>
+           <div class="input-group-append">
+              <span class="input-group-text">
+                 Lbs
+              </span>
+           </div>
         </div>
     </div>
 
@@ -144,31 +157,34 @@
                 <span class="tooltiptext"> Le prix minimum d’une commande permettant au client de recevoir gratuitement son colis</span>
             </span>
         </label>
-        <div class="input-group">
-            @Html.EditorFor(x => x.vendeur.LivraisonGratuite, new {
-           htmlAttributes = new {
-               @id = "tbLivraisonGratuite",
-               @class = "form-control",
-               @placeholder = "000.00"
-           }})
-            <div class="input-group-append">
-                <span class="input-group-text">
-                    $
-                </span>
-            </div>
+        <div class="input-group tooltipB">
+           @Html.EditorFor(x => x.vendeur.LivraisonGratuite, new {
+          htmlAttributes = new {
+              @id = "tbLivraisonGratuite",
+              @class = "form-control",
+              @placeholder = "000.00"
+          }})
+           <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.LivraisonGratuite)</span>
+           <div class="input-group-append">
+              <span class="input-group-text">
+                 $
+              </span>
+           </div>
         </div>
     </div>
 
-    <div class="form-group col-md-6">
-        <label for="ddlTaxes">
-            Taxes
-        </label>
-        @Html.DropDownListFor(x => x.vendeur.Taxes, new SelectList(
-              new List<Object>{
-                   new { value = true , text = "Oui" },
-                   new { value = false , text = "Non" }
-                }, "value", "text", true
-        ),new { @id= "ddlTaxes", @class = "form-control"})
+    <div class="form-group col-md-6 tooltipB">
+       <label for="ddlTaxes">
+          Taxes
+       </label>
+       @Html.DropDownListFor(x => x.vendeur.Taxes, new SelectList(
+             new List<Object>{
+                  new { value = true , text = "Oui" },
+                  new { value = false , text = "Non" }
+               }, "value", "text", true
+       ),new { @id= "ddlTaxes", @class = "form-control"}
+          )
+       <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Taxes)</span>
     </div>
 
 </div>
