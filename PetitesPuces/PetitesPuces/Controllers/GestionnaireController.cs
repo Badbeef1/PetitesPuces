@@ -5,6 +5,8 @@ using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using PetitesPuces.Models;
 
 namespace PetitesPuces.Controllers
@@ -24,7 +26,8 @@ namespace PetitesPuces.Controllers
             InactiviteViewModel iVM = new InactiviteViewModel
             {
                 cbClients = lstClient,
-                cbVendeurs = lstVendeur
+                cbVendeurs = lstVendeur,
+                blnOpenPDF = false
             };
             return View("GestionInactivite", iVM);
 
@@ -36,14 +39,28 @@ namespace PetitesPuces.Controllers
         {
             List<Inactiver> lstClients = new List<Inactiver>();
             List<Inactiver> lstVendeurs = new List<Inactiver>();
+            List<Inactiver> lstClientsDeleter = new List<Inactiver>();
+            List<Inactiver> lstVendeursDeleter = new List<Inactiver>();
             List<PPArticlesEnPanier> lstPanierAVider = new List<PPArticlesEnPanier>();
             List<PPProduits> lstProduitNonCommander = new List<PPProduits>();
+
+            List<PPClients> lstClientsPDF = new List<PPClients>();
+            Dictionary<string, List<PPCommandes>> lstClientsCommandesPDF = new Dictionary<string, List<PPCommandes>>();
+            Dictionary<string, int> lstClientsVisitesPDF = new Dictionary<string, int>();
+            Dictionary<PPCommandes, List<PPDetailsCommandes>> lstCommandesDtail = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+
+            List<PPCommandes> lstCommDynamique = new List<PPCommandes>();
+            List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
+            
 
             //Retirer client
             foreach (Inactiver client in form.cbClients)
             {
                 if (client.IsSelected == true)
                 {
+                    lstClientsPDF.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient.ToString()).First());
+                    lstClientsVisitesPDF.Add(client.idClient, 0);
+                    lstClientsCommandesPDF.Add(client.idClient, null);
                     dc.Connection.Open();
 
                     // On vide le panier
@@ -59,12 +76,14 @@ namespace PetitesPuces.Controllers
                     // On retire les visites
                     foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
                     {
+                        lstClientsVisitesPDF[client.idClient]++;
                         dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
                     }
 
                     // Client ayant une commande, donc le plus d'endroit dans la BDD
                     if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
                     {
+
                         // Si la table HistoCommandes n'existe pas on la crée et y met les informations qu'on retire
                         try
                         {
@@ -79,6 +98,7 @@ namespace PetitesPuces.Controllers
                         // On retire les commandes actives
                         foreach (PPCommandes comm in dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
                         {
+                            lstCommDynamique.Add(comm);
                             //Même chose, mais pour HistoDetailsCommandes
                             try
                             {
@@ -90,14 +110,36 @@ namespace PetitesPuces.Controllers
 
                             }
                             // Puis on supprime
+                            lstDetCommDynamique = new List<PPDetailsCommandes>();
                             foreach (PPDetailsCommandes det in dc.GetTable<PPDetailsCommandes>().Where(m => m.NoCommande == comm.NoCommande).ToList())
                             {
+                                lstDetCommDynamique.Add(det);
                                 dc.GetTable<PPDetailsCommandes>().DeleteOnSubmit(det);
                             }
+                            lstCommandesDtail.Add(comm, lstDetCommDynamique);
                             dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
 
                         }
+                        lstClientsCommandesPDF.Add(client.idClient, lstCommDynamique);
 
+                        Document pdf = new Document();
+                        PdfPTable pTable = new PdfPTable(3);
+                        int pdfCounter = 0;
+                        foreach (PPClients clientPDF in lstClientsPDF) {
+                            PdfPCell pNumero = new PdfPCell(new Phrase(pdfCounter + 1));
+                            pNumero.HorizontalAlignment = 2;
+                            PdfPCell pNom = new PdfPCell(new Phrase(clientPDF.Nom + ", " + clientPDF.Prenom));
+                            pNom.HorizontalAlignment = 0;
+                            PdfPCell pVisite = new PdfPCell(new Phrase("Nombre de vendeurs visités " + lstClientsVisitesPDF[clientPDF.NoClient.ToString()]));
+                            pVisite.HorizontalAlignment = 0;
+                            pTable.AddCell(pNumero);
+                            pTable.AddCell(pNom);
+                            pTable.AddCell(pVisite);
+                            foreach(PPCommandes commPDF in lstClientsCommandesPDF[clientPDF.NoClient.ToString()])
+                            {
+
+                            }
+                        }
                         // On met le statut à 2 (Intégrité)
                         dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
@@ -150,7 +192,8 @@ namespace PetitesPuces.Controllers
             InactiviteViewModel renvoyer = new InactiviteViewModel
             {
                 cbClients = lstClients,
-                cbVendeurs = lstVendeurs
+                cbVendeurs = lstVendeurs,
+                blnOpenPDF = true
             };
             return View("GestionInactivite", renvoyer);
         }
