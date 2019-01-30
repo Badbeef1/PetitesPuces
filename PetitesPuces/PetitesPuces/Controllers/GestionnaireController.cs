@@ -190,15 +190,24 @@ namespace PetitesPuces.Controllers
             switch (id.Split(';')[1])
             {
                 case "1":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
+                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
                     break;
                 case "2":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
+                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
                     break;
                 case "3":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
+                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
                     break;
                 case "4":
+                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
+                    break;
+                case "5":
+                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
+                    break;
+                case "6":
+                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
+                    break;
+                case "7":
                     cbVendeur = cbVendeur.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
                     break;
                 default:
