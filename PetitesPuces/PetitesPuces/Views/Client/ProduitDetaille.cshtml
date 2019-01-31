@@ -20,46 +20,9 @@
     <div id="navigation">
         @RenderPage("~/Views/Client/index.cshtml")
     </div>
+    <br /><br /><br />
     <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Crayon en bois</h3>
-                <div class="d-flex justify-content-between">
-                    <small>#245786654</small>
-                    <span class="badge badge-success" style="font-size: 15px;">Fourniture de bureau</span>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="media">
-                    <div class="media-left">
-                        <img class="media-object" src="~/Content/images/stylo-plume.jpg" alt="produit ...." style="max-width: 35rem; min-width: 35rem;">
-                    </div>
-                    <div class="media-body">
-                        <p>
-                            <h1 id="spPrix">5,00$</h1>
-                            <span><span class="font-weight-bold">Vendu par:</span> <a href="#">Bureau en gros</a></span><br />
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star"></span><br />
-                        </p>
-                        <hr>
-                        <p>
-                            <button type="button" class="btn btn-outline-primary">Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
-                            <span id="spQqt"><span class="font-weight-bold">&nbsp;&nbsp;Quantité restant:</span> 5</span>
-                        </p>
-                        <hr>
-                        <p class="font-weight-bold">Description:</p>
-                        <p>Plume à l'encre de longue durée pour une utilisation quotidienne. La coque en banbou est fabriquée avec des matériaux éco-responsable. Attention à ne pas consommer l'encre et tenir loin des enfants de moins de 3 ans. </p>
-                        <p>
-                            <span class="font-weight-bold">Poids:</span><span> 1 lb</span><br />
-                            <span><span class="font-weight-bold">En vente depuis:</span> 24-01-2019</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+       @Html.Partial("Client/DetailProduit")
     </div>
 </body>
 </html>

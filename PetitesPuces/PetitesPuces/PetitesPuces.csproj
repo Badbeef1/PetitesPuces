@@ -224,6 +224,8 @@
     <Content Include="Views\Shared\Client\Panier.cshtml" />
     <Content Include="Views\Shared\Client\PanierAccueil.cshtml" />
     <Content Include="Views\Shared\Client\Categories.cshtml" />
+    <Content Include="Views\Shared\Client\DetailProduit.cshtml" />
+    <Content Include="Views\Internaute\ProduitDetaille.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
