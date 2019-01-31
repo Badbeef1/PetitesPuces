@@ -223,7 +223,7 @@ namespace PetitesPuces.Controllers
             //HttpContext.User.Identity.Name
             String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
 
-            //clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
+            clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
 
             PPClients leClient = clientDao.rechecheClientParCourriel(strAdresseCourrielClient);
 
