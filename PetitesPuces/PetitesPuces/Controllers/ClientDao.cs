@@ -11,11 +11,9 @@ namespace PetitesPuces.Controllers
         private DataClasses1DataContext contextPP = new DataClasses1DataContext();
         private PPClients unClient;
 
-        public ClientDao(int intNoClient)
+        public ClientDao(long lngNoClient)
         {
-            unClient = (from unClient in contextPP.PPClients
-                        where unClient.NoClient == intNoClient
-                        select unClient).First();
+            unClient = contextPP.PPClients.FirstOrDefault(client => client.NoClient == lngNoClient);
         }
 
         public ClientDao()

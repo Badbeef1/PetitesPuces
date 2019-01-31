@@ -13,10 +13,29 @@ namespace PetitesPuces.Controllers
         DataClasses1DataContext contextPP = new DataClasses1DataContext();   
         ClientDao clientDao;
 
-        public ActionResult Index() => View("AccueilClient");
+        public ActionResult Index()
+      {
+         String noClient = "10000";
+
+         //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+         /* Compare data with Database */
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+
+         //Requête qui va permettre d'aller chercher les paniers du client
+         var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                       where panier.NoClient.Equals(noClient)
+                       group panier by panier.PPVendeurs;
+
+         db.Connection.Close();
+
+         return View("AccueilPanier",paniers);
+      }
+         
 
         public ActionResult AccueilClient()
         {
+            List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
             String noClient = "10000";
 
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
@@ -28,8 +47,28 @@ namespace PetitesPuces.Controllers
             var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
                           where panier.NoClient.Equals(noClient)
                           group panier by panier.PPVendeurs;
+         var toutesCategories = (from cat in db.GetTable<Models.PPCategories>()
+                                 select cat
+                              );
+         foreach (var cat in toutesCategories)
+         {
+            List<PPVendeurs> lstVendeurs = new List<PPVendeurs>();
+            var query = (from prod in db.GetTable<Models.PPProduits>()
+                         where prod.NoCategorie.Equals(cat.NoCategorie)
+                         select prod
+                         );
+            foreach (var item in query)
+            {
+               if (!lstVendeurs.Contains(item.PPVendeurs))
+               {
+                  lstVendeurs.Add(item.PPVendeurs);
+               }
+            }
+            lstEntreCate.Add(new Models.EntrepriseCategorie(cat, lstVendeurs));
+         }
+         //Tuple<IGrouping<PPVendeurs, PPArticlesEnPanier>, List<EntrepriseCategorie>> tupleData = new Tuple<IGrouping<PPVendeurs, PPArticlesEnPanier>, List<EntrepriseCategorie>(paniers, lstEntreCate);
 
-            db.Connection.Close();
+         db.Connection.Close();
 
             return View(paniers);
         }
@@ -183,7 +222,7 @@ namespace PetitesPuces.Controllers
             //HttpContext.User.Identity.Name
             String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
 
-            clientDao = new ClientDao();
+            //clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
 
             PPClients leClient = clientDao.rechecheClientParCourriel(strAdresseCourrielClient);
 
@@ -223,7 +262,7 @@ namespace PetitesPuces.Controllers
 
             clientDao = new ClientDao();
 
-            PPClients leClient = clientDao.rechecheClientParNo(client.NoClient);
+            PPClients clientOriginal = clientDao.rechecheClientParNo(client.NoClient);
 
             if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
             {
@@ -259,7 +298,7 @@ namespace PetitesPuces.Controllers
                 if (booValide)
                 {
                     //Valide que le mot de passe est bien l'ancien mdp.
-                    if (leClient.MotDePasse.Equals(strAncientMDP))
+                    if (clientOriginal.MotDePasse.Equals(strAncientMDP))
                     {
                         //Valide que le nouveau mdp est identique a celui de confirmation
                         if (strNouveauMDP.Equals(strConfirmationMDP))
@@ -277,10 +316,10 @@ namespace PetitesPuces.Controllers
                     }
                 }
 
-                TempData["msgConfirmation"] = leClient.MotDePasse != strAncientMDP ? "succes" : "echec";
+                TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
             }
 
-            return View(leClient);
+            return View(clientOriginal);
         }
     }
 }
