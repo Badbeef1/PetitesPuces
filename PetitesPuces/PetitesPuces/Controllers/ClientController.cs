@@ -13,7 +13,25 @@ namespace PetitesPuces.Controllers
         DataClasses1DataContext contextPP = new DataClasses1DataContext();   
         ClientDao clientDao;
 
-        public ActionResult Index() => View("AccueilClient");
+        public ActionResult Index()
+      {
+         String noClient = "10000";
+
+         //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+         /* Compare data with Database */
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+
+         //Requête qui va permettre d'aller chercher les paniers du client
+         var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                       where panier.NoClient.Equals(noClient)
+                       group panier by panier.PPVendeurs;
+
+         db.Connection.Close();
+
+         return View("AccueilPanier",paniers);
+      }
+         
 
         public ActionResult AccueilClient()
         {
