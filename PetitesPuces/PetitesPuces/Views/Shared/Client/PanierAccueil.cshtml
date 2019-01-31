@@ -1,11 +1,12 @@
-﻿@model IQueryable<IGrouping<PetitesPuces.Models.PPVendeurs, PetitesPuces.Models.PPArticlesEnPanier>>
+﻿@using PetitesPuces.Models
+@model AccueilClientViewModel
 <div class="row">
     <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
         <h4>Les paniers</h4>
         <ul class="nav nav-pills flex-column">
             @{
                 int compteur = 1;
-                foreach (var item in Model)
+                foreach (var item in Model.lstPanierVendeur)
                 {
                     <li class="nav-item">
                         <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @compteur<span class="sr-only">(current)</span></a>
@@ -24,7 +25,7 @@
         <hr />
         <h4>Voici vos paniers</h4>
         <div id="accordion">
-            @foreach (var articlesVendeur in Model)
+            @foreach (var articlesVendeur in Model.lstPanierVendeur)
             {
                 <div class="card">
                     <div class="card-header" id="heading_@articlesVendeur.Key.NoVendeur">
@@ -59,7 +60,7 @@
                                                     </div>
                                                     <div class="card-body">
                                                         <div class="float-center">
-                                                            <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                                            <img src="~/Content/images/@article.PPProduits.Photo" alt="mac" width="125px" height="125px" class="rounded-circle">
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -81,5 +82,7 @@
                 <hr />
             }
         </div>
+        <h3>Les catégories</h3>
+        @Html.Partial("Client/Categories", Model.lstEntreCategories)
     </main>
 </div>
