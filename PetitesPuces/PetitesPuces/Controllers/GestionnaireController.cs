@@ -123,13 +123,13 @@ namespace PetitesPuces.Controllers
 
                         }
                         lstClientsCommandesPDF[client.idClient] =  lstCommDynamique;
-                        if (!Directory.Exists("~/Inactiver"))
+                        if (!Directory.Exists(Server.MapPath("~/Inactiver")))
                         {
                             Directory.CreateDirectory(Server.MapPath("~/Inactiver"));
                         }
-                        /*String path = "~/Inactiver/"+DateTime.ParseExact(DateTime.Today.ToString(), "yyyyMMddHHmmssfff",CultureInfo.InvariantCulture)+".pdf";
+                        String path = "~/Inactiver/"+DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0] + ".pdf";
                         Document pdf = new Document();
-                        PdfWriter writer = PdfWriter.GetInstance(pdf, new FileStream(path, FileMode.Create));
+                        PdfWriter wri = PdfWriter.GetInstance(pdf, new FileStream(Server.MapPath(path), FileMode.Create));
                         pdf.Open();
                         PdfPTable pTable = new PdfPTable(3);
                         int pdfCounter = 0;
@@ -154,8 +154,9 @@ namespace PetitesPuces.Controllers
                                 }
                             }
                         }
+                        pdf.Add(pTable);
                         pdf.Close();
-                        System.Web.HttpContext.Current.Response.Write(pdf);*/
+                        System.Web.HttpContext.Current.Response.Write(pdf);
                         // On met le statut à 2 (Intégrité)
                         dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
