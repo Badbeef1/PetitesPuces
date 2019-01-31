@@ -9,7 +9,7 @@ namespace PetitesPuces.Controllers
     public class VendeurDao : IVendeur
     {
         private DataClasses1DataContext contextPP = new DataClasses1DataContext();
-        public PPVendeurs unVendeur { get; }
+        private PPVendeurs unVendeur;
 
         public VendeurDao()
         {
