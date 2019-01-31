@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Transactions;
 using System.Web;
@@ -120,9 +122,15 @@ namespace PetitesPuces.Controllers
                             dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
 
                         }
-                        lstClientsCommandesPDF.Add(client.idClient, lstCommDynamique);
-
+                        lstClientsCommandesPDF[client.idClient] =  lstCommDynamique;
+                        if (!Directory.Exists("~/Inactiver"))
+                        {
+                            Directory.CreateDirectory(Server.MapPath("~/Inactiver"));
+                        }
+                        /*String path = "~/Inactiver/"+DateTime.ParseExact(DateTime.Today.ToString(), "yyyyMMddHHmmssfff",CultureInfo.InvariantCulture)+".pdf";
                         Document pdf = new Document();
+                        PdfWriter writer = PdfWriter.GetInstance(pdf, new FileStream(path, FileMode.Create));
+                        pdf.Open();
                         PdfPTable pTable = new PdfPTable(3);
                         int pdfCounter = 0;
                         foreach (PPClients clientPDF in lstClientsPDF) {
@@ -140,6 +148,8 @@ namespace PetitesPuces.Controllers
 
                             }
                         }
+                        pdf.Close();
+                        System.Web.HttpContext.Current.Response.Write(pdf);*/
                         // On met le statut à 2 (Intégrité)
                         dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
