@@ -53,7 +53,10 @@ namespace PetitesPuces.Controllers
 
             List<PPCommandes> lstCommDynamique = new List<PPCommandes>();
             List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
-            
+
+            String path = "";
+            String date = "";
+
 
             //Retirer client
             foreach (Inactiver client in form.cbClients)
@@ -127,7 +130,8 @@ namespace PetitesPuces.Controllers
                         {
                             Directory.CreateDirectory(Server.MapPath("~/Inactiver"));
                         }
-                        String path = "~/Inactiver/"+DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0] + ".pdf";
+                        date = DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0];
+                        path = "~/Inactiver/"+ date + ".pdf";
                         Document pdf = new Document();
                         PdfWriter wri = PdfWriter.GetInstance(pdf, new FileStream(Server.MapPath(path), FileMode.Create));
                         pdf.Open();
@@ -210,11 +214,23 @@ namespace PetitesPuces.Controllers
             {
                 cbClients = lstClients,
                 cbVendeurs = lstVendeurs,
-                blnOpenPDF = true
+                blnOpenPDF = true,
+                lastPDF = date
             };
+
             return View("GestionInactivite", renvoyer);
         }
 
+        public ActionResult seePDF(string date)
+        {
+
+            string filePath =  "~/Inactiver/"+date+".pdf";
+
+            Response.AddHeader("Content-Disposition", "inline; filename=" + date+".pdf");
+            System.Diagnostics.Debug.WriteLine(date);
+            return File(filePath, "application/pdf");
+
+        }
         public ActionResult Statistiques() => View();
         public ActionResult ddlChanger(string id)
         {

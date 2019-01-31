@@ -36,6 +36,16 @@
             }
         });
 
+        $("#btnPDF").click(function () {
+                $.ajax({
+                type: "GET",
+                url: '@Url.Action("seePDF", "Gestionnaire")',
+                data: { "date" : '@Model.lastPDF' },
+                success: success,
+                error: error,
+            });
+        });
+
         // Combo box de l'entête client
         $('#cbClientAll').click(function () {
             for (var i = 0; i < @Model.cbClients.Count; i++) {
@@ -108,7 +118,7 @@
                 <div style="text-align:center">
                     @if (Model.blnOpenPDF)
                     {
-                        <input type="button" class="btn btn-primary" id="btnPDF" value="PDF : Désactivés récents" />
+                        <input type="button" class="btn btn-primary" id="btnPDF" value="PDF : Désactivés récents"/>
                     }
                     else
                     {
