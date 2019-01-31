@@ -183,7 +183,7 @@ namespace PetitesPuces.Controllers
             //HttpContext.User.Identity.Name
             String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
 
-            clientDao = new ClientDao();
+            //clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
 
             PPClients leClient = clientDao.rechecheClientParCourriel(strAdresseCourrielClient);
 
@@ -223,7 +223,7 @@ namespace PetitesPuces.Controllers
 
             clientDao = new ClientDao();
 
-            PPClients leClient = clientDao.rechecheClientParNo(client.NoClient);
+            PPClients clientOriginal = clientDao.rechecheClientParNo(client.NoClient);
 
             if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
             {
@@ -259,7 +259,7 @@ namespace PetitesPuces.Controllers
                 if (booValide)
                 {
                     //Valide que le mot de passe est bien l'ancien mdp.
-                    if (leClient.MotDePasse.Equals(strAncientMDP))
+                    if (clientOriginal.MotDePasse.Equals(strAncientMDP))
                     {
                         //Valide que le nouveau mdp est identique a celui de confirmation
                         if (strNouveauMDP.Equals(strConfirmationMDP))
@@ -277,10 +277,10 @@ namespace PetitesPuces.Controllers
                     }
                 }
 
-                TempData["msgConfirmation"] = leClient.MotDePasse != strAncientMDP ? "succes" : "echec";
+                TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
             }
 
-            return View(leClient);
+            return View(clientOriginal);
         }
     }
 }

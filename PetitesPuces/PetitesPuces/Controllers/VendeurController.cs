@@ -27,9 +27,7 @@ namespace PetitesPuces.Controllers
 
         public ActionResult GestionProfilVendeur()
         {
-            String strAdresseCourrielVendeur = "L.CHAPLEAU@TOTO.COM";
-
-            vendeurDao = new VendeurDao((Session["vendeurObj"] as PPVendeurs).NoVendeur);
+            //String strAdresseCourrielVendeur = "L.CHAPLEAU@TOTO.COM";
 
             List<Province> lstProvinces = new List<Province>
             {
@@ -40,7 +38,7 @@ namespace PetitesPuces.Controllers
 
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-            return View(vendeurDao.unVendeur);
+            return View(vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur));
         }
 
         [HttpPost]
@@ -143,6 +141,7 @@ namespace PetitesPuces.Controllers
                 vendeurDao.modifierProfilSpecificVendeur(vendeur);
             }
 
+            //est-ce qu'il y a la mise a jour des donnée (meme si variable local?)
             return View(vendeurOriginel);
         }
 
