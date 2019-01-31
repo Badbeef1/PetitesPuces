@@ -48,13 +48,13 @@ namespace PetitesPuces.Controllers
             {
                 clientLogged.MotDePasse = "";
                 Session["clientObj"] = clientLogged;
-                return RedirectToAction("Index", "Client");
+                return RedirectToAction("AccueilClient", "Client");
             }
             else if (vendeurLogged != null)
             {
                 vendeurLogged.MotDePasse = "";
                 Session["vendeurObj"] = vendeurLogged;
-                return RedirectToAction("Index", "Vendeur");
+                return RedirectToAction("AccueilVendeur", "Vendeur");
             }
             else
             {

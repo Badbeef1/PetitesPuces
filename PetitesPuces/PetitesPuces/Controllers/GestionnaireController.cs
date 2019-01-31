@@ -145,7 +145,13 @@ namespace PetitesPuces.Controllers
                             pTable.AddCell(pVisite);
                             foreach(PPCommandes commPDF in lstClientsCommandesPDF[clientPDF.NoClient.ToString()])
                             {
+                                PdfPCell pTitreCommande = new PdfPCell(new Phrase("Numéro de commande: " + commPDF.NoCommande));
+                                pTitreCommande.Colspan = 3;
+                                pTable.AddCell(pTitreCommande);
+                                foreach(PPDetailsCommandes detComm in lstCommandesDtail[commPDF])
+                                {
 
+                                }
                             }
                         }
                         pdf.Close();
