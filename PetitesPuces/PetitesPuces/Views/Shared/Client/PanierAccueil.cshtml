@@ -9,10 +9,22 @@
                 foreach (var item in Model.lstPanierVendeur)
                 {
                     <li class="nav-item">
-                        <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @compteur<span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @item.Key.NomAffaires<span class="sr-only">(current)</span></a>
                     </li>
                     compteur++;
                 }
+                <h3>Catégories</h3>
+                foreach (var item in Model.lstEntreCategories)
+                {
+                    if (item.lstVendeurs.Count() > 0)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="#heading_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
+                        </li>
+                    }
+                }
+
+
             }
         </ul>
     </nav>

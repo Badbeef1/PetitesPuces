@@ -75,7 +75,10 @@ namespace PetitesPuces.Controllers
         }
 
         // GET: Client
-        public ActionResult SaisieCommande() => View();
+        public ActionResult SaisieCommande(List<PPArticlesEnPanier> lst)
+        {
+            return View(lst);
+        }
 
         // GET: Cataloguess
         public ActionResult Catalogue() => View();
@@ -101,37 +104,19 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult PanierDetail(long id, List<PPArticlesEnPanier> model)
         {
-            /*
+            
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
-            String noClient = "10000";
+            long noClient = 10000;
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
-            foreach (var articlepanier in model)
-            {
-                var query = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                             where panier.NoPanier.Equals(articlepanier.NoPanier)
-                             select panier
-                             );
-                query.First().NbItems = articlepanier.NbItems;
-            }
-
-            // Submit the changes to the database.
-            try
-            {
-                db.SubmitChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e); 
-            }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
+                                              where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id)
                                               select panier).ToList();
 
             db.Connection.Close();
-            */
+            
             return View("SaisieCommande", model);
         }
 
@@ -223,7 +208,7 @@ namespace PetitesPuces.Controllers
             //HttpContext.User.Identity.Name
             String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
 
-            //clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
+            clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
 
             PPClients leClient = clientDao.rechecheClientParCourriel(strAdresseCourrielClient);
 

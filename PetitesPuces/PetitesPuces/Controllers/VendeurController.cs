@@ -28,6 +28,7 @@ namespace PetitesPuces.Controllers
         public ActionResult GestionProfilVendeur()
         {
             //String strAdresseCourrielVendeur = "L.CHAPLEAU@TOTO.COM";
+            vendeurDao = new VendeurDao((Session["vendeurObj"] as PPVendeurs).NoVendeur);
 
             List<Province> lstProvinces = new List<Province>
             {
