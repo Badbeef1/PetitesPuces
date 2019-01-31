@@ -1,4 +1,5 @@
-﻿
+﻿@using PetitesPuces.Models
+@model List<PPProduits>
 @{
    ViewBag.Title = "CatalogueNouveaute";
 }
@@ -85,19 +86,22 @@
 
       <br />
       <div class="card-columns">
-         @for (int i = 0; i < 15; i++)
+         @for (int i = 0; (i < 15) && (i < Model.Count()); i++)
          {
             <a href="/Client/ProduitDetaille" class="custom-card">
                <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                  <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
+                  <img class="card-img-top" src="~/Content/images/@Model[i].Photo" alt="produit ...." width="250px" height="250px">
                   <div class="card-body">
-                     <h5 class="card-title">Crayon en bois</h5>
+                     <h5 class="card-title">@Model[i].Nom</h5>
                      <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
+                        <span id="spPrix">@Model[i].PrixVente $</span><br />
+                        <span id="spQqt">Quantité restant: @Model[i].NombreItems</span><br />
+                        <small>
+                           #@Model[i].NoProduit
+                        </small>
                      </p>
-                     <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+                     <p class="text-right"><span class="badge badge-success">@Model[i].PPCategories.Description</span></p>
+                     <img src="~/Content/images/new_item.jpg" width="45px" height="45px">
                   </div>
                </div>
             </a>
