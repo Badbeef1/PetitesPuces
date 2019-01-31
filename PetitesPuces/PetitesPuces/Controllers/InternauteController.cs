@@ -13,7 +13,33 @@ namespace PetitesPuces.Controllers
    public class InternauteController : Controller
    {
       // GET: Inscription
-      public ActionResult Index() => View("AccueilInternaute");
+      public ActionResult Index()
+      {
+         List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
+         /* Compare data with Database */
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         var toutesCategories = (from cat in db.GetTable<Models.PPCategories>()
+               select cat
+            );
+         foreach (var cat in toutesCategories)
+         {
+            List<PPVendeurs> lstVendeurs = new List<PPVendeurs>();
+            var query = (from prod in db.GetTable<Models.PPProduits>()
+                  where prod.NoCategorie.Equals(cat.NoCategorie)
+                  select prod
+               );
+            foreach (var item in query)
+            {
+               if (!lstVendeurs.Contains(item.PPVendeurs))
+               {
+                  lstVendeurs.Add(item.PPVendeurs);
+               }
+            }
+            lstEntreCate.Add(new Models.EntrepriseCategorie(cat, lstVendeurs));
+         }
+         return View("AccueilInternaute",lstEntreCate);
+      }
 
       public ActionResult AccueilInternaute()
       {
