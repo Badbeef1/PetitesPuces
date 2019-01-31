@@ -51,10 +51,26 @@ namespace PetitesPuces.Controllers
                                orderby prod.DateCreation descending
                                select prod
                                ).ToList();
+         db.Connection.Close();
 
          return View(nouveauProduit);
       }
 
+      public ActionResult ProduitDetaille(long noProduit)
+      {
+         PPProduits produitDetail;
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+
+         var produit = (from prod in db.GetTable<PPProduits>()
+                        where prod.NoProduit.Equals(noProduit)
+                        select prod
+                        );
+         produitDetail = produit.First();
+
+         db.Connection.Close();
+         return View(produitDetail);
+      }
 
       //GET
       public ActionResult Inscription() => View();

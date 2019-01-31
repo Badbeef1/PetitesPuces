@@ -34,3 +34,28 @@ INSERT INTO PPArticlesEnPanier
 VALUES (7, 10000, 20, 2000040, GETDATE(), 1);
 
 delete PPVendeurs
+
+
+--Ajouter des produits
+insert into PPProduits 
+values(2000050,20,3,'Apple Watch série 3','(GPS + cellulaire) 38 mm boîtier aluminium doré + bracelet sport rose des sables','2000050.jpg',430.24,3,1,NULL,430.24,2.0,2018-02-30,NULL)
+
+insert into PPProduits 
+values(3000010,10,3,'Appareil photo','sans miroir X-T20 de Fujifilm avec objectif OIS XC 15-45 mm - Argenté','3000010.jpg',1050.24,3,1,NULL,1050.24,2.0,2018-03-30,NULL)
+
+insert into PPProduits 
+values(3000020,10,1,'Planche de Skateboard','Ribeiro Morty Pro Foil Rick and Morty 8.0','3000020.jpg',80.00,5,1,NULL,80.00,2.0,2018-03-01,NULL)
+
+insert into PPProduits 
+values(3000030,10,80,'Soulier','Vans Souliers Chima Pro 2','3000030.jpg',90.00,5,1,NULL,90.00,5.0,2019-01-01,NULL)
+
+insert into PPProduits 
+values(3000040,10,80,'Cotons ouatés','Thrasher Hoodie China Banks','3000040.jpg',65.00,5,1,NULL,65.00,5.0,2019-01-05,NULL)
+
+insert into PPProduits 
+values(3000050,20,80,'Boxer','Undz Boxer Print','3000050.jpg',15.00,10,1,NULL,15.00,5.0,2019-01-30,NULL)
+
+insert into PPProduits 
+values(4000010,20,80,'Bracelet','Rastaclat Bracelet Miniclat','4000020.jpg',20.00,10,1,NULL,20.00,5.0,2006-01-30,NULL)
+
+update PPProduits set Photo = '3000050.jpg' where NoProduit = 3000050

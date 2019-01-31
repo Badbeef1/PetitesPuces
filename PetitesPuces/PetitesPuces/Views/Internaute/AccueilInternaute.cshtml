@@ -1,269 +1,137 @@
 
 @using PetitesPuces.Models
 @model List<EntrepriseCategorie>
-   <!DOCTYPE html>
+<!DOCTYPE html>
 
-   <html>
-   <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Petites Puces</title>
+<html>
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>Petites Puces</title>
 
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
-      <style>
-          body {
-             position: relative;
-          }
+   <style>
+      body {
+         position: relative;
+      }
 
-          #navbarCategorie {
-             position: fixed;
-          }
+      #navbarCategorie {
+         position: fixed;
+      }
 
-          <style >
-          /*
+      <style >
+      /*
          * Base structure
          */
-          /* Move down content because we have a fixed navbar that is 50px tall */
-          body {
-             padding-top: 50px;
-          }
+      /* Move down content because we have a fixed navbar that is 50px tall */
+      body {
+         padding-top: 50px;
+      }
 
-          /*
+      /*
          * Typography
          */
 
-          h1 {
-             margin-bottom: 20px;
-             padding-bottom: 9px;
-             border-bottom: 1px solid #eee;
-          }
+      h1 {
+         margin-bottom: 20px;
+         padding-bottom: 9px;
+         border-bottom: 1px solid #eee;
+      }
 
-          /*
+      /*
          * Sidebar
          */
 
-          .sidebar {
-             position: fixed;
-             top: 51px;
-             bottom: 0;
-             left: 0;
-             z-index: 1000;
-             padding: 20px;
-             overflow-x: hidden;
-             overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-             border-right: 1px solid #eee;
-          }
+      .sidebar {
+         position: fixed;
+         top: 51px;
+         bottom: 0;
+         left: 0;
+         z-index: 1000;
+         padding: 20px;
+         overflow-x: hidden;
+         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+         border-right: 1px solid #eee;
+      }
 
-          /* Sidebar navigation */
-          .sidebar {
-             padding-left: 0;
-             padding-right: 0;
-          }
+      /* Sidebar navigation */
+      .sidebar {
+         padding-left: 0;
+         padding-right: 0;
+      }
 
-             .sidebar .nav {
-                margin-bottom: 20px;
-             }
+         .sidebar .nav {
+            margin-bottom: 20px;
+         }
 
-             .sidebar .nav-item {
-                width: 100%;
-             }
+         .sidebar .nav-item {
+            width: 100%;
+         }
 
-                .sidebar .nav-item + .nav-item {
-                   margin-left: 0;
-                }
+            .sidebar .nav-item + .nav-item {
+               margin-left: 0;
+            }
 
-             .sidebar .nav-link {
-                border-radius: 0;
-             }
+         .sidebar .nav-link {
+            border-radius: 0;
+         }
 
-          /*
+      /*
          * Dashboard
          */
 
-          /* Placeholders */
-          .placeholders {
-             padding-bottom: 3rem;
-          }
+      /* Placeholders */
+      .placeholders {
+         padding-bottom: 3rem;
+      }
 
-          .placeholder img {
-             padding-top: 1.5rem;
-             padding-bottom: 1.5rem;
-          }
-      </style>
+      .placeholder img {
+         padding-top: 1.5rem;
+         padding-bottom: 1.5rem;
+      }
+   </style>
 
-   </head>
-   <body>
-      <!--Barre de navigation-->
-      <div id="navigation">
-         @RenderPage("~/Views/Internaute/index.cshtml")
-      </div>
-
-      <div class="container-fluid">
-         <div class="row">
-            <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-               <h4>Les cat&eacute;gories</h4>
-               <ul class="nav nav-pills flex-column">
-
-                  @foreach (var item in Model)
-                  {
-                     if(item.lstVendeurs.Count() > 0)
-                     {
-                        <li class="nav-item">
-                           <a class="nav-link" href="#cat_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
-                        </li>
-                     }
-                  }
-               </ul>
-            </nav>
-
-            <!--Les catégories avec entreprises-->
-            <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-               <div class="container">
-                  <br /><br />
-                  <hr />
-                  <!--Première catégorie-->
-                  @Html.Partial("Client/Categories", Model)
-
-
-                  <!-- Deuxième catégorie -->
-                  <!--
-   <h2 class="text-center">Voitures</h2>
-   <br />
-   <div id="carouselCat2" class="carousel slide" data-ride="carousel">
-      <div class="carousel-inner">
-         <div class="carousel-item active">
-            <div class="row">
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 1 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 2 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 3 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 4 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="carousel-item">
-            <div class="row">
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 5 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 6 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 7 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-3">
-                  <div class="card">
-                     <div class="card-header">
-                        <h5>Entreprise 8 (X Produits)</h5>
-                     </div>
-                     <div class="card-body">
-                        <img class="d-block w-50" src="~/Content/images/icon.png" alt="Entrprise">
-                     </div>
-                     <div class="card-footer">
-                        <button class="btn btn-success">Voir l'entreprise</button>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <a class="carousel-control-prev" href="#carouselCat2" role="button" data-slide="prev">
-         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-         <span class="sr-only">Previous</span>
-      </a>
-      <a class="carousel-control-next" href="#carouselCat2" role="button" data-slide="next">
-         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-         <span class="sr-only">Next</span>
-      </a>
+</head>
+<body>
+   <!--Barre de navigation-->
+   <div id="navigation">
+      @RenderPage("~/Views/Internaute/index.cshtml")
    </div>
-   <hr />
-      -->
-               </div>
-            </main>
 
-         </div>
+   <div class="container-fluid">
+      <div class="row">
+         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+            <h4>Les cat&eacute;gories</h4>
+            <ul class="nav nav-pills flex-column">
+
+               @foreach (var item in Model)
+               {
+                  if (item.lstVendeurs.Count() > 0)
+                  {
+                     <li class="nav-item">
+                        <a class="nav-link" href="#heading_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
+                     </li>
+                  }
+               }
+            </ul>
+         </nav>
+
+         <!--Les catégories avec entreprises-->
+         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <div class="container">
+               <br /><br />
+               <hr />
+               <!--Première catégorie-->
+               @Html.Partial("Client/Categories", Model)
+            </div>
+         </main>
+
       </div>
+   </div>
 
-   </body>
+</body>
 </html>
