@@ -35,6 +35,7 @@ namespace PetitesPuces.Controllers
 
         public ActionResult AccueilClient()
         {
+            List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
             String noClient = "10000";
 
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
@@ -46,8 +47,28 @@ namespace PetitesPuces.Controllers
             var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
                           where panier.NoClient.Equals(noClient)
                           group panier by panier.PPVendeurs;
+         var toutesCategories = (from cat in db.GetTable<Models.PPCategories>()
+                                 select cat
+                              );
+         foreach (var cat in toutesCategories)
+         {
+            List<PPVendeurs> lstVendeurs = new List<PPVendeurs>();
+            var query = (from prod in db.GetTable<Models.PPProduits>()
+                         where prod.NoCategorie.Equals(cat.NoCategorie)
+                         select prod
+                         );
+            foreach (var item in query)
+            {
+               if (!lstVendeurs.Contains(item.PPVendeurs))
+               {
+                  lstVendeurs.Add(item.PPVendeurs);
+               }
+            }
+            lstEntreCate.Add(new Models.EntrepriseCategorie(cat, lstVendeurs));
+         }
+         //Tuple<IGrouping<PPVendeurs, PPArticlesEnPanier>, List<EntrepriseCategorie>> tupleData = new Tuple<IGrouping<PPVendeurs, PPArticlesEnPanier>, List<EntrepriseCategorie>(paniers, lstEntreCate);
 
-            db.Connection.Close();
+         db.Connection.Close();
 
             return View(paniers);
         }
