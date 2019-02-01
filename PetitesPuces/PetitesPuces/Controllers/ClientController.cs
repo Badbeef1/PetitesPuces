@@ -324,18 +324,23 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string nbPage = "15",int noPage = 1)
+        public ActionResult Catalogue(string tri, string categorie, string vendeur,string nbPage = "15",int noPage = 1)
         {
             List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
 
+            //Si affichage d'un vendeur en particulier (pas encore tester)
+            if (!String.IsNullOrWhiteSpace(vendeur))
+            {
+                lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            }
+            
             //Si affichage d'une catégorie en particulier
             if (!String.IsNullOrWhiteSpace(categorie))
             {
                 lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase)).ToList();
-                ViewBag.infini = "parfait";
+                //ViewBag.infini = "parfait";
             }
-
-            
 
             //tri
             switch (tri)
