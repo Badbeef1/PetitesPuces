@@ -310,7 +310,7 @@ namespace PetitesPuces.Controllers
         }
 
         // Tout les produits (15 par pages).
-        public ActionResult Catalogue()
+        public ActionResult Cataloguesss()
         {
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
             {
@@ -324,21 +324,71 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(int nbPage)
+        public ActionResult Catalogue(string tri,string nbPage = "15",int noPage = 1)
         {
-            /*
-            if (nbPage.HasValue)
-            {*/
+            List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
 
-                var lstDesProduits = contextPP.PPProduits.ToList();
+            //tri
+            switch (tri)
+            {
+                case "numero":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit).ToList();
+                    break;
+                case "!numero":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit).ToList();
+                    break;
+                case "date":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation).ToList();
+                    break;
+                case "!date":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation).ToList();
+                    break;
+                case "categorie":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description).ToList();
+                    break;
+                case "!categorie":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description).ToList();
+                    break;
+            }
 
-                var lstDivParPage = lstDesProduits.Separe(2);
+            //Pagination
+            Dictionary<int, string> dicSelectionNbItems = new Dictionary<int, string>
+            {
+                { 1, "5" },
+                { 2, "10" },
+                { 3, "15" },
+                { 4, "20" },
+                { 5, "25" },
+                { 6, "tous" }
+            };
+            List<string> lstSelectionNbItems = new List<string>
+            {
+                "5","10","15","20","25","tous"
+            };
+            
+            ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
+            {
+                lstCategorie = contextPP.PPCategories.ToList()
+            };
 
-            int test = 10;
-            //}
+            if (nbPage != lstSelectionNbItems.Last())
+            {
+                List<List<PPProduits>> lstProdDiv = lstDesProduits.Separe(Convert.ToInt32(nbPage));
+                catVM.lstproduits = lstProdDiv[noPage - 1];
+            }
+            else
+            {
+                catVM.lstproduits = lstDesProduits;
+            }
+
+            //ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, nbPage);
 
 
-            return View();
+
+
+
+            return View(catVM);
         }
 
         

@@ -29,7 +29,7 @@
     <div class="container-fluid">
         <div class="row flex-xl-nowrap">
             <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-                <h4>Catégorie de produit</h4>
+                <h5>Catégorie de produit</h5>
                 <ul class="nav nav-pills flex-column">
                     @foreach (var categorie in Model.lstCategorie)
                     {
@@ -69,15 +69,8 @@
                                     <button type="button" class="btn btn-outline-primary">Date de parution <span class="fas fa-sort-alpha-up"></span></button>
                                 </div>
                                 <div class="ml-auto">
-                                    <label for="selPage" class="font-weight-bold">Par page</label><br /><br />
-                                    <select id="selPage" class="custom-select border-primary text-primary">
-                                        <option>5</option>
-                                        <option>10</option>
-                                        <option selected>15</option>
-                                        <option>20</option>
-                                        <option>25</option>
-                                        <option>tout</option>
-                                    </select>
+                                    <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
+                                    @Html.DropDownList("ProduitParPage", (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary"})
                                 </div>
                             </div>
                         </div>
