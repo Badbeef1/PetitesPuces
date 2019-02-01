@@ -5,12 +5,16 @@
 }
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 <script>
     $(document).ready(function () {
         $("#btnContinueMagasiner").click(function () {
             window.location.href = "/Client/Catalogue"
         });
+
         // Bouton poursuivre du première onglet
         $("#btnPoursuivre").click(function () {
             $("#btnTransactionTab").attr("disabled", false);
@@ -21,7 +25,7 @@
         // Bouton poursuivre du première onglet
         $("#btnConfirmer").click(function () {
             $("#btnFacturationTab").attr("disabled", false);
-            $("#divCommande").attr("hidden", true );
+            $("#divCommande").attr("hidden", true);
             $("#divTransaction").attr("hidden", true);
             $("#divFacturation").attr("hidden", false);
         });
@@ -45,7 +49,7 @@
                 $("#divCommande").attr("hidden", false);
                 $("#divTransaction").attr("hidden", true);
                 $("#divFacturation").attr("hidden", true);
-            },2000)
+            }, 2000)
         });
     });
 
@@ -94,44 +98,73 @@
     <title>SaisieCommande</title>
 </head>
 <body>
-        <!-- Barre de navigation -->
-    <!--Barre de navigation-->
-    
-    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-        <a class="navbar-brand" href="#">Petites Puces</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Barre de navigation -->
+    <div id="navigation">
+        @RenderPage("~/Views/Client/index.cshtml")
+    </div>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Administrateur/GestionInactivite">Gérer l'inactivité des clients/vendeurs <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Administrateur/Statistiques" id="navbarDropdown">
-                        Voir les statistiques
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Login/Index">
-                        Déconnexion
-                        <i class="fas fa-sign-out-alt"></i>
-                    </a>
+    <!-- Commande détaillée -->
+    <div class="card sEspaceBarNavigation" id="accordion">
+        <div class="card-header" id="heading_commande">
 
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-            </form>
+            <div class="float-center">
+                <h5 class="mb-0">
+                    <button id="btnCommande" class="btn btn-link" data-toggle="collapse" data-target="#collapse_zoneCommande" aria-expanded="true" aria-controls="#collapse_zoneCommande">
+                        Commande
+                    </button>
+                </h5>
+            </div>
         </div>
-    </nav>
 
-    <!-- Onglets -->
+        <div id="collapse_zoneCommande" class="collapse show" aria-labelledby="btnCommande" data-parent="#accordion">
+            @for (int x = 0; x < Model.Count; x++)
+            {
+                @Html.HiddenFor(lst => lst[x].DateCreation)
+                @Html.HiddenFor(lst => lst[x].NoClient)
+                @Html.HiddenFor(lst => lst[x].NoPanier)
+                @Html.HiddenFor(lst => lst[x].NoProduit)
+                @Html.HiddenFor(lst => lst[x].NoVendeur)
+                @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
+                @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
+                @Html.HiddenFor(lst => lst[x].NbItems)
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-2 text-center">
+                        <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
+                    </div>
+                    <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-6">
+                        <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                        <h4>
+                            <small>@Model[x].PPProduits.Description</small>
+                        </h4>
+                    </div>
+                    <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
+                        <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
+                            <h6><strong>@Model[x].PPProduits.PrixDemande $ <span class="text-muted">x</span></strong></h6>
+
+                        </div>
+                        <div class="col-2 col-sm-2 col-md-2">
+                            <div class="quantity">
+                                <!--<input type="button" value="+" class="plus" onclick="incrementerPanier('@Model[x].NoPanier')">-->
+                                <!--<input type="button" value="-" class="minus" onclick="decrementerPanier('@Model[x].NoPanier')">-->
+                                <input id="@Model[x].NoPanier" type="number" min="1" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                @*Html.TextBoxFor(lst => lst[x].NbItems, new { @type = "number", @min = "0", @max = "99", @step = "1", @class = "qty" })*@
+                            </div>
+                        </div>
+
+                        <div class="col-4 col-sm-4 col-md-4 text-right">
+                            <!--h6>&nbsp;<strong>dblPrixProduitCourant.ToString("0.00")$</strong></!--h6>-->
+                            <button type="button" class="btn btn-outline-danger btn-xs" id="btnSupprimmer_@Model[x].NoPanier" onclick="supprimerProduit(@Model[x].NoPanier)">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- Loop d'article -->
+            <p> Text</p>
+        </div>
+    </div>
     <div class="tab" style="padding-left:10px;padding-right:10px">
         <button id="btnCommandeTab" class="tablinks "><h4>Commande</h4></button>
         <button id="btnTransactionTab" class="tablinks " disabled><h4>Transaction</h4></button>
@@ -328,10 +361,6 @@
     <div id="divFacturation" style="padding-left:10px;padding-right:10px">
     </div>
     <div>
-        @foreach(var item in Model)
-        {
-            <h3>@item.NoProduit</h3>
-        }
     </div>
 </body>
 </html>
