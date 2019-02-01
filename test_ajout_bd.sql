@@ -7,6 +7,8 @@ select * from PPVendeurs
 select * from PPCategories
 select * from PPProduits
 select * from PPArticlesEnPanier
+SELECT * FROM PPTypesLivraison
+
 
 --Ajouter un vendeur
 insert into PPVendeurs values(1,'Childish', 'Blanchet-Plante', 'Kevin','Notre-Dame', 'Montréal','QC','J7W8H5', 'Canada','514-453-8546',null,'kev@gmail.com','Password1',10,20,1,10,null,GETDATE(),GETDATE(),1)
@@ -32,6 +34,9 @@ VALUES (6, 10000, 20, 2000030, GETDATE(), 1);
 
 INSERT INTO PPArticlesEnPanier
 VALUES (7, 10000, 20, 2000040, GETDATE(), 1);
+
+INSERT INTO PPArticlesEnPanier
+VALUES (8,10100,10,1000020,GETDATE(),1)
 
 delete PPVendeurs
 
@@ -59,3 +64,10 @@ insert into PPProduits
 values(4000010,20,80,'Bracelet','Rastaclat Bracelet Miniclat','4000020.jpg',20.00,10,1,NULL,20.00,5.0,2006-01-30,NULL)
 
 update PPProduits set Photo = '3000050.jpg' where NoProduit = 3000050
+
+--Ajouter des commandes
+INSERT INTO PPCommandes 
+VALUES(1,10000,10,GETDATE(),10.00,1,50.00,2.00,1.50,10.5,'N','CESTQUOICECHAMPS')
+
+INSERT INTO PPDetailsCommandes
+VALUES(1,1,1000010,20.00,2)

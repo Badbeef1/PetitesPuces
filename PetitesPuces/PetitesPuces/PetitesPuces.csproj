@@ -163,6 +163,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccueilClientViewModel.cs" />
+    <Compile Include="Models\AccueilVendeurViewModel.cs" />
     <Compile Include="Models\DataClasses1.cs">
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </Compile>
