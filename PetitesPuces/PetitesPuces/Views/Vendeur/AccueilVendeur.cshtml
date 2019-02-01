@@ -1,4 +1,6 @@
-﻿<!doctype html>
+﻿@using PetitesPuces.Models
+@model AccueilVendeurViewModel
+<!doctype html>
 <html lang="fr">
 <head>
    <meta charset="utf-8">
@@ -91,707 +93,364 @@
    </style>
 </head>
 <body>
-    <div id="navigation">
-        @RenderPage("~/Views/Vendeur/index.cshtml")
-    </div>
-    <div class="container-fluid">
-       <div class="row">
-          <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-             <h4>Menu vendeur</h4>
-             <ul class="nav nav-pills flex-column">
-                <li class="nav-item">
-                   <a class="nav-link active" href="#">Commande non traitée 1<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="#">Commande non traitée 2</a>
-                </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="#">Commande non traitée 3</a>
-                </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="#">
-                      Panier 1
-                   </a>
-                </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="#">
-                      Panier 2
-                   </a>
-                </li>
-                <li class="nav-item">
-                   <a class="nav-link" href="#">
-                      Panier 3
-                   </a>
-                </li>
-             </ul>
-          </nav>
+   <div id="navigation">
+      @RenderPage("~/Views/Vendeur/index.cshtml")
+   </div>
+   <div class="container-fluid">
+      <div class="row">
+         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+            <ul class="nav nav-pills flex-column">
+               <h4>Commandes non traités</h4>
+               @foreach (var commandes in Model.lstCommandesNonTraites)
+               {
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">@commandes.Key.PPClients.Prenom @commandes.Key.PPClients.Nom<span class="sr-only">(current)</span></a>
+                  </li>
+               }
 
-          <!--Les catégories avec entreprises-->
-          <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+               <h4>Paniers courants</h4>
+               @foreach (var panier in Model.lstClientPanier)
+               {
+                  <li class="nav-item">
+                     <a class="nav-link" href="#">@panier.Key.Prenom @panier.Key.Nom<span class="sr-only">(current)</span></a>
+                  </li>
+               }
 
-             <h3>Les Commandes non traitées</h3>
-             <br>
-             <div id="accordion">
-                <div class="card">
-                   <div class="card-header" id="commande1">
-                      <div class="float-left">
-                         <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
-                      </div>
+            </ul>
+         </nav>
 
-                      <div class="float-center">
-                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                               Commande non traités #1
-                            </button>
-                         </h5>
-                      </div>
+         <!--Les catégories avec entreprises-->
+         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
 
-                   </div>
-                   <!--Commande non traité 1-->
-                   <div id="collapse1" class="collapse show" aria-labelledby="commande1" data-parent="#accordion">
-                      <div class="card-body">
-                         <div class="card">
-                            <div class="card-header">
-                               <h4>Client: Simon Malboeuf</h4>
-                            </div>
-                            <div class="card-body">
-                               <div class="row">
-                                  <!--Produit 1-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>Macbook</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1500</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 2-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 3-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 4-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 5-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 6-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>MacBook</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                            <div class="card-footer">
-                               <button class="btn btn-primary">Voir la commande détaillée</button>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+            <h3>Les Commandes non traitées</h3>
+            <br>
+            <div id="accordion">
+               @foreach (var commande in Model.lstCommandesNonTraites)
+               {
+                  <div class="card">
+                     <div class="card-header" id="commande1">
+                        <div class="float-left">
+                           <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
+                        </div>
 
-                <!--Commande non traités 2-->
-                <div class="card">
-                   <div class="card-header" id="commande2">
-                      <div class="float-left">
-                         <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
-                      </div>
+                        <div class="float-center">
+                           <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                 Commande: @commande.Key.PPClients.NoClient
+                              </button>
+                           </h5>
+                        </div>
 
-                      <div class="float-center">
-                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
-                               Commande non traitée #2
-                            </button>
-                         </h5>
-                      </div>
-                   </div>
-                   <div id="collapse2" class="collapse" aria-labelledby="collapse2" data-parent="#accordion">
-                      <div class="card">
-                         <div class="card-header">
-                            <h4>Client: Samuel Ménard</h4>
-                         </div>
-                         <div class="card-body">
-                            <div class="row">
-                               <!--Produit 1-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>Macbook</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1500</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 2-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 3-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 4-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                         <div class="card-footer">
-                            <button class="btn btn-primary">Voir la commande détaillée</button>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-
-                <!--Commande non traitée 3-->
-                <div class="card">
-                   <div class="card-header" id="commande3">
-                      <div class="float-left">
-                         <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
-                      </div>
-                      <div>
-                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                               Commande non traitée #3
-                            </button>
-                         </h5>
-                      </div>
-
-                   </div>
-                   <div id="collapse3" class="collapse" aria-labelledby="commande3" data-parent="#accordion">
-                      <div class="card">
-                         <div class="card-header">
-                            <h4>Client: Julien Ménard</h4>
-                         </div>
-                         <div class="card-body">
-                            <div class="row">
-                               <!--Produit 1-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>Macbook</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1500</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 2-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 3-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 4-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                         <div class="card-footer">
-                            <button class="btn btn-primary">Voir la commande détaillée</button>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-
-                <hr>
-                <h3>Les Paniers courants</h3>
-                <div class="card">
-                   <div class="card-header" id="panier1">
-                      <div class="float-left">
-                         <img src="~/Content/images/cart.jpg" alt="panier1" class="rounded-circle" height="100px" width="100px">
-                      </div>
-
-                      <div class="float-center">
-                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4">
-                               Panier courant #1
-                            </button>
-                         </h5>
-                      </div>
-
-                   </div>
-
-                   <div id="collapse4" class="collapse show" aria-labelledby="panier1" data-parent="#accordion">
-                      <div class="card-body">
-                         <div class="card">
-                            <div class="card-header">
-                               <h4>Client: Simon Malboeuf</h4>
-                            </div>
-                            <div class="card-body">
-                               <div class="row">
-                                  <!--Produit 1-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>Macbook</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1500</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 2-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 3-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 4-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 5-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>DELL Laptop</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                                  <!--Produit 6-->
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>MacBook</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>$1200</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                            <div class="card-footer">
-                               <button class="btn btn-primary">Voir la commande détaillée</button>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-
-                <!--Panier non traités 2-->
-                <div class="card">
-                   <div class="card-header" id="panier2">
-                      <div class="float-left">
-                         <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
-                      </div>
-
-                      <div class="float-center">
-                         <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
-                               Panier courant #2
-                            </button>
-                         </h5>
-                      </div>
-                   </div>
-                   <div id="collapse5" class="collapse" aria-labelledby="panier2" data-parent="#accordion">
-                      <div class="card">
-                         <div class="card-header">
-                            <h4>Client: Samuel Ménard</h4>
-                         </div>
-                         <div class="card-body">
-                            <div class="row">
-                               <!--Produit 1-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>Macbook</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1500</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 2-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 3-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 4-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                         <div class="card-footer">
-                            <button class="btn btn-primary">Voir le panier</button>
-                         </div>
-                      </div>
-                   </div>
-
-                </div>
+                     </div>
+                     <!--Commande non traité 1-->
+                     <div id="collapse1" class="collapse show" aria-labelledby="commande1" data-parent="#accordion">
+                        <div class="card-body">
+                           <div class="card">
+                              <div class="card-header">
+                                 <h4>Client: @commande.Key.PPClients.Prenom @commande.Key.PPClients.Nom</h4>
+                              </div>
+                              <div class="card-body">
+                                 <div class="row">
+                                    @foreach (var produit in commande.Value)
+                                    {
+                                       <div class="col-sm-2">
+                                          <div class="card">
+                                             <div class="card-header">
+                                                <h5></h5>
+                                             </div>
+                                             <div class="card-body">
+                                                <div class="float-center">
+                                                   <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                                </div>
+                                             </div>
+                                             <div class="card-footer">
+                                                <h5>$1500</h5>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    }
+                                 </div>
+                              </div>
+                              <div class="card-footer">
+                                 <button class="btn btn-primary">Voir la commande détaillée</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               }
 
 
-                <div class="card">
-                   <div class="card-header" id="panier3">
-                      <div class="float-left">
-                         <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
-                      </div>
-                      <div>
-                         <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
-                               Panier courant #3
-                            </button>
-                         </h5>
-                      </div>
+               <!--Commande non traités 2-->
+               <div class="card">
+                  <div class="card-header" id="commande2">
+                     <div class="float-left">
+                        <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
+                     </div>
 
-                   </div>
-                   <div id="collapse6" class="collapse" aria-labelledby="panier3" data-parent="#accordion">
-                      <div class="card">
-                         <div class="card-header">
-                            <h4>Client: Julien Ménard</h4>
-                         </div>
-                         <div class="card-body">
-                            <div class="row">
-                               <!--Produit 1-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>Macbook</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1500</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 2-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 3-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                               <!--Produit 4-->
-                               <div class="col-sm-2">
-                                  <div class="card">
-                                     <div class="card-header">
-                                        <h5>DELL Laptop</h5>
-                                     </div>
-                                     <div class="card-body">
-                                        <div class="float-center">
-                                           <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
-                                        </div>
-                                     </div>
-                                     <div class="card-footer">
-                                        <h5>$1200</h5>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                         <div class="card-footer">
-                            <button class="btn btn-primary">Voir le panier</button>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             </div>
-             <hr>
-             <table>
-                <tr>
-                   <td>
-                      <img src="~/Content/images/visites.png" alt="visites" width="100px" height="100px">
-                   </td>
-                   <td>
-                      <h3>&nbsp;&nbsp; Nombres de visites clients quotidienne: </h3>
-                   </td>
-                   <td>
-                      <h4>&nbsp;<span style="color: red;">150</span></h4>
-                   </td>
-                </tr>
-             </table>
-          </main>
-       </div>
-    </div>
+                     <div class="float-center">
+                        <h5 class="mb-0">
+                           <button class="btn btn-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                              Commande non traitée #2
+                           </button>
+                        </h5>
+                     </div>
+                  </div>
+                  <div id="collapse2" class="collapse" aria-labelledby="collapse2" data-parent="#accordion">
+                     <div class="card">
+                        <div class="card-header">
+                           <h4>Client: Samuel Ménard</h4>
+                        </div>
+                        <div class="card-body">
+                           <div class="row">
+                              <!--Produit 1-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>Macbook</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1500</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Produit 2-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>DELL Laptop</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1200</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Produit 3-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>DELL Laptop</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/dell.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1200</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Produit 4-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>DELL Laptop</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1200</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="card-footer">
+                           <button class="btn btn-primary">Voir la commande détaillée</button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <!--Commande non traitée 3-->
+               <div class="card">
+                  <div class="card-header" id="commande3">
+                     <div class="float-left">
+                        <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="100px" width="100px">
+                     </div>
+                     <div>
+                        <h5 class="mb-0">
+                           <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                              Commande non traitée #3
+                           </button>
+                        </h5>
+                     </div>
+
+                  </div>
+                  <div id="collapse3" class="collapse" aria-labelledby="commande3" data-parent="#accordion">
+                     <div class="card">
+                        <div class="card-header">
+                           <h4>Client: Julien Ménard</h4>
+                        </div>
+                        <div class="card-body">
+                           <div class="row">
+                              <!--Produit 1-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>Macbook</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1500</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Produit 2-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>DELL Laptop</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1200</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Produit 3-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>DELL Laptop</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1200</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!--Produit 4-->
+                              <div class="col-sm-2">
+                                 <div class="card">
+                                    <div class="card-header">
+                                       <h5>DELL Laptop</h5>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="float-center">
+                                          <img src="~/Content/images/mac.jpg" alt="mac" width="125px" height="125px" class="rounded-circle">
+                                       </div>
+                                    </div>
+                                    <div class="card-footer">
+                                       <h5>$1200</h5>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="card-footer">
+                           <button class="btn btn-primary">Voir la commande détaillée</button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <hr>
+               <h3>Les Paniers courants</h3>
+               @foreach (var articlesPanier in Model.lstClientPanier)
+               {
+                  <div class="card">
+                     <div class="card-header" id="panier_@articlesPanier.Key.NoClient">
+                        <div class="float-left">
+                           <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="50px" width="50px">
+                        </div>
+
+                        <div class="float-center">
+                           <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@articlesPanier.Key.NoClient" aria-expanded="true" aria-controls="collapse_@articlesPanier.Key.NoClient">
+                                 Panier client: @articlesPanier.Key.NoClient
+                              </button>
+                           </h5>
+                        </div>
+
+                     </div>
+
+                     <div id="collapse_@articlesPanier.Key.NoClient" class="collapse" aria-labelledby="panier_@articlesPanier.Key.NoClient" data-parent="#accordion">
+                        <div class="card-body">
+                           <div class="card">
+                              <div class="card-header">
+                                 <h4>Client: @articlesPanier.Key.Prenom @articlesPanier.Key.Nom</h4>
+                              </div>
+                              <div class="card-body">
+                                 <div class="row">
+                                    <!--Tous les produits du panier-->
+                                    @foreach (var panierProduit in articlesPanier)
+                                    {
+                                       <div class="col-sm-2">
+                                          <div class="card">
+                                             <div class="card-header">
+                                                <h5>@panierProduit.PPProduits.Nom</h5>
+                                             </div>
+                                             <div class="card-body">
+                                                <div class="float-center">
+                                                   <img src="~/Content/images/@panierProduit.PPProduits.Photo" alt="" width="125px" height="125px" class="rounded-circle">
+                                                </div>
+                                             </div>
+                                             <div class="card-footer">
+                                                <h5>@panierProduit.PPProduits.PrixDemande $</h5>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    }
+                                    <!--Produit 1-->
+
+                                 </div>
+                              </div>
+                              <div class="card-footer">
+                                 <button class="btn btn-primary">Voir le panier détaillé</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               }
+
+
+
+            </div>
+            <hr>
+            <table>
+               <tr>
+                  <td>
+                     <img src="~/Content/images/visites.png" alt="visites" width="100px" height="100px">
+                  </td>
+                  <td>
+                     <h3>&nbsp;&nbsp; Nombres de visites clients quotidienne: </h3>
+                  </td>
+                  <td>
+                     <h4>&nbsp;<span style="color: red;">@Model.nbVisites</span></h4>
+                  </td>
+               </tr>
+            </table>
+         </main>
+      </div>
+   </div>
 
 </body>
 </html>
