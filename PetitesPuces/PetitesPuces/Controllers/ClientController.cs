@@ -77,7 +77,15 @@ namespace PetitesPuces.Controllers
         // GET: Client
         public ActionResult SaisieCommande(List<PPArticlesEnPanier> lst)
         {
-            return View(lst);
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            List<PPArticlesEnPanier> items = new List<PPArticlesEnPanier>();
+            foreach (PPArticlesEnPanier pppArtPan in lst)
+            {
+                items = ((from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                           where panier.NoClient.Equals(pppArtPan.NoClient) && panier.NoVendeur.Equals(pppArtPan.NoVendeur)
+                           select panier).ToList());
+            } 
+            return View(items);
         }
 
 
@@ -105,13 +113,12 @@ namespace PetitesPuces.Controllers
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
             //Requête qui va permettre d'aller chercher les paniers du client
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<PPArticlesEnPanier>()
                                               where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id)
                                               select panier).ToList();
-
             db.Connection.Close();
             
-            return View("SaisieCommande", model);
+            return View("SaisieCommande", items);
         }
 
         /// <summary>
