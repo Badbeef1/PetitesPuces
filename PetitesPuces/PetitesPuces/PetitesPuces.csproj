@@ -182,6 +182,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\CatalogueViewModel.cs" />
     <Compile Include="ViewModels\InformationPersonnelViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +244,7 @@
     <Content Include="Views\Shared\Client\Categories.cshtml" />
     <Content Include="Views\Shared\Client\DetailProduit.cshtml" />
     <Content Include="Views\Internaute\ProduitDetaille.cshtml" />
+    <Content Include="Views\Shared\Client\ProduitCatalogue.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
