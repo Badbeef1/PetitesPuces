@@ -324,9 +324,18 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri,string nbPage = "15",int noPage = 1)
+        public ActionResult Catalogue(string tri, string categorie, string nbPage = "15",int noPage = 1)
         {
             List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
+
+            //Si affichage d'une catégorie en particulier
+            if (!String.IsNullOrWhiteSpace(categorie))
+            {
+                lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase)).ToList();
+                ViewBag.infini = "parfait";
+            }
+
+            
 
             //tri
             switch (tri)
@@ -352,15 +361,6 @@ namespace PetitesPuces.Controllers
             }
 
             //Pagination
-            Dictionary<int, string> dicSelectionNbItems = new Dictionary<int, string>
-            {
-                { 1, "5" },
-                { 2, "10" },
-                { 3, "15" },
-                { 4, "20" },
-                { 5, "25" },
-                { 6, "tous" }
-            };
             List<string> lstSelectionNbItems = new List<string>
             {
                 "5","10","15","20","25","tous"
@@ -387,7 +387,7 @@ namespace PetitesPuces.Controllers
 
 
 
-
+            
             return View(catVM);
         }
 
@@ -398,5 +398,7 @@ namespace PetitesPuces.Controllers
 
         // GET: ProduitDetail
         public ActionResult ProduitDetaille() => View();
+
+        public ActionResult test() => View();
     }
 }
