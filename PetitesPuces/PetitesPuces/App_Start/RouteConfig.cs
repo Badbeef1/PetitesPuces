@@ -24,6 +24,13 @@ namespace PetitesPuces
             url: "{controller}/{action}/{id}",
             defaults: new { controller = "Administrateur", action = "GestionInactivite", id = UrlParameter.Optional }
             );
+
+            /*
+            routes.MapRoute(
+                name: "DemandeCatalogue",
+                url: "{controller}/{action}/{tri}/{nbPage}",
+                defaults: new { controller = "Client", action = "Index", tri = UrlParameter.Optional, nbPage = UrlParameter.Optional }
+            );*/
         }
     }
 }

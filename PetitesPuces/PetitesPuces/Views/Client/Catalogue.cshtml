@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PetitesPuces.ViewModels.CatalogueViewModel
+@{
     Layout = null;
 }
 
@@ -30,9 +31,12 @@
             <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
                 <h4>Catégorie de produit</h4>
                 <ul class="nav nav-pills flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Fourniture de bureau</a>
-                    </li>
+                    @foreach (var categorie in Model.lstCategorie)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">@categorie.Description</a>
+                        </li>
+                    }
                 </ul>
             </nav>
             <main class="container">
@@ -105,7 +109,7 @@
                 <br />
                 
 
-               
+               @Html.Partial("Client/ProduitCatalogue")
 
                 <div id="divPaginationBas" class="d-flex justify-content-center">
                     <nav>

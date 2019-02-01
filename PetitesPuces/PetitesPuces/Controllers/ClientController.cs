@@ -80,12 +80,6 @@ namespace PetitesPuces.Controllers
             return View(lst);
         }
 
-        // GET: Cataloguess
-        public ActionResult Catalogue() => View();
-
-        // GET: ProduitDetail
-        public ActionResult ProduitDetaille() => View();
-
 
         //Panier Détaillé du client
         public ActionResult PanierDetail(int id)
@@ -307,5 +301,45 @@ namespace PetitesPuces.Controllers
 
             return View(clientOriginal);
         }
+
+        // Tout les produits (15 par pages).
+        public ActionResult Catalogue()
+        {
+            ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
+            {
+                lstCategorie = contextPP.PPCategories.ToList(),
+                lstproduits = contextPP.PPProduits.ToList()
+            };
+
+            return View(catVM);
+        }
+
+
+        //Les produits avec une quantité défini par page
+
+        public ActionResult Catalogue(int nbPage)
+        {
+            /*
+            if (nbPage.HasValue)
+            {*/
+
+                var lstDesProduits = contextPP.PPProduits.ToList();
+
+                var lstDivParPage = lstDesProduits.Separe(2);
+
+            int test = 10;
+            //}
+
+
+            return View();
+        }
+
+        
+        
+
+
+
+        // GET: ProduitDetail
+        public ActionResult ProduitDetaille() => View();
     }
 }

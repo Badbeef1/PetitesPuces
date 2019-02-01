@@ -172,6 +172,7 @@
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </Compile>
     <Compile Include="Models\EntrepriseCategorie.cs" />
+    <Compile Include="Models\Extentions.cs" />
     <Compile Include="Models\InactiviteViewModel.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
     <Compile Include="Models\ProduitPanier.cs" />

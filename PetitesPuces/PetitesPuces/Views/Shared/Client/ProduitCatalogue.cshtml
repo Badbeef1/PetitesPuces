@@ -1,106 +1,21 @@
 ﻿@model PetitesPuces.ViewModels.CatalogueViewModel
 
-<div class="card-columns">
-
-
-    <a href="/Client/ProduitDetaille" class="custom-card">
-        <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-            <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-            <div class="card-body">
-                <h5 class="card-title">Crayon en bois</h5>
-                <p class="card-text">
-                    <span id="spPrix">5,00$</span><br />
-                    <span id="spQqt">Quantité restant: 5</span><br />
-                    <small>#245786654</small>
-                </p>
-                <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
+<div class="card-deck">
+    @for (var index = 0; index < Model.lstproduits.Count; index++)
+    {
+        <a href="/Client/ProduitDetaille" class="custom-card">
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/@Html.DisplayFor(x => x.lstproduits[index].Photo)" alt="produit ...." style="max-height: 14rem; min-height: 14rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(x => x.lstproduits[index].Nom)</h5>
+                    <p class="card-text">
+                        @Html.DisplayFor(x => x.lstproduits[index].PrixVente)<br />
+                        <span id="spQqt">Quantité restant: @Html.DisplayFor(x => x.lstproduits[index].NombreItems)</span><br />
+                        <small>#@Html.DisplayFor(x => x.lstproduits[index].NoProduit)</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">@Html.DisplayFor(x => x.lstproduits[index].PPCategories.Description)</span></p>
+                </div>
             </div>
-        </div>
-    </a>
-
-
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
-    <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-        <div class="card-body">
-            <h5 class="card-title">Crayon en bois</h5>
-            <p class="card-text">
-                <span id="spPrix">5,00$</span><br />
-                <span id="spQqt">Quantité restant: 5</span><br />
-                <small>#245786654</small>
-            </p>
-            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-        </div>
-    </div>
+        </a>
+    }
 </div>
