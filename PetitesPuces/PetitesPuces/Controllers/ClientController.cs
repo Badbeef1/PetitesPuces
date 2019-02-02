@@ -214,12 +214,17 @@ namespace PetitesPuces.Controllers
                          where articlePanier.NoPanier.Equals(id)
                          select articlePanier
                          );
-            foreach (var item in query)
+            noVendeur = (long)query.First().NoVendeur;
+
+            db.PPArticlesEnPanier.DeleteOnSubmit(query.First());
+
+            try
             {
-               if (!lstVendeurs.Contains(item.PPVendeurs))
-               {
-                  lstVendeurs.Add(item.PPVendeurs);
-               }
+                db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
@@ -286,56 +291,99 @@ namespace PetitesPuces.Controllers
                 new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
-         ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-         return View(leClient);
-      }
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+            return View(leClient);
+        }
 
-      //Vue partiel Information personnel
-      [ChildActionOnly]
-      public ActionResult InformationPersonnel()
-      {
-         return PartialView();
-      }
+        //Vue partiel Information personnel
+        [ChildActionOnly]
+        public ActionResult InformationPersonnel()
+        {
+            return PartialView();
+        }
 
-      //Vue partiel modification du mot de passe
-      [ChildActionOnly]
-      public ActionResult ModificationMDP() => PartialView();
+        //Vue partiel modification du mot de passe
+        [ChildActionOnly]
+        public ActionResult ModificationMDP() => PartialView();
 
-      [HttpPost]
-      public ActionResult GestionProfilClient(PPClients client, String strProvenence)
-      {
-         List<Province> lstProvinces = new List<Province>
+        [HttpPost]
+        public ActionResult GestionProfilClient(PPClients client, String strProvenence)
+        {
+            List<Province> lstProvinces = new List<Province>
             {
                 new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
                 new Province { Abreviation = "ON", Nom = "Ontario"},
                 new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
-         ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-         clientDao = new ClientDao();
+            clientDao = new ClientDao();
 
-         PPClients clientOriginal = clientDao.rechecheClientParNo(client.NoClient);
+            PPClients clientOriginal = clientDao.rechecheClientParNo(client.NoClient);
 
-         if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
-         {
-            clientDao.modifierProfilInformationPersonnel(client);
-         }
-         else
-         {
-            String strAncientMDP = Request["tbAncienMdp"];
-            String strNouveauMDP = Request["tbNouveauMdp"];
-            String strConfirmationMDP = Request["tbConfirmationMdp"];
-
-            String strMessageErreurVide = "Le champs doit être rempli!";
-            bool booValide = true;
-            if (string.IsNullOrWhiteSpace(strAncientMDP))
+            if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
             {
-               ViewBag.MessageErreurAncient = strMessageErreurVide;
-               booValide = false;
+                clientDao.modifierProfilInformationPersonnel(client);
+            }
+            else
+            {
+                String strAncientMDP = Request["tbAncienMdp"];
+                String strNouveauMDP = Request["tbNouveauMdp"];
+                String strConfirmationMDP = Request["tbConfirmationMdp"];
+
+                String strMessageErreurVide = "Le champs doit être rempli!";
+                bool booValide = true;
+                if (string.IsNullOrWhiteSpace(strAncientMDP))
+                {
+                    ViewBag.MessageErreurAncient = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(strNouveauMDP))
+                {
+                    ViewBag.MessageErreurNouveau = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(strConfirmationMDP))
+                {
+                    ViewBag.MessageErreurConfirmation = strMessageErreurVide;
+                    booValide = false;
+                }
+
+                //Tous les champs ne sont pas vide
+                if (booValide)
+                {
+                    //Valide que le mot de passe est bien l'ancien mdp.
+                    if (clientOriginal.MotDePasse.Equals(strAncientMDP))
+                    {
+                        //Valide que le nouveau mdp est identique a celui de confirmation
+                        if (strNouveauMDP.Equals(strConfirmationMDP))
+                        {
+                            clientDao.modifierProfilMDP(strNouveauMDP);
+                        }
+                        else
+                        {
+                            ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                    }
+                }
+
+                TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
             }
 
-            if (string.IsNullOrWhiteSpace(strNouveauMDP))
+            return View(clientOriginal);
+        }
+
+        // Tout les produits (15 par pages).
+        public ActionResult Cataloguesss()
+        {
+            ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
             {
                 lstCategorie = contextPP.PPCategories.ToList(),
                 lstproduits = contextPP.PPProduits.ToList()
@@ -368,119 +416,65 @@ namespace PetitesPuces.Controllers
             //tri
             switch (tri)
             {
-               //Valide que le mot de passe est bien l'ancien mdp.
-               if (clientOriginal.MotDePasse.Equals(strAncientMDP))
-               {
-                  //Valide que le nouveau mdp est identique a celui de confirmation
-                  if (strNouveauMDP.Equals(strConfirmationMDP))
-                  {
-                     clientDao.modifierProfilMDP(strNouveauMDP);
-                  }
-                  else
-                  {
-                     ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
-                  }
-               }
-               else
-               {
-                  ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
-               }
+                case "numero":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit).ToList();
+                    break;
+                case "!numero":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit).ToList();
+                    break;
+                case "date":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation).ToList();
+                    break;
+                case "!date":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation).ToList();
+                    break;
+                case "categorie":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description).ToList();
+                    break;
+                case "!categorie":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description).ToList();
+                    break;
             }
 
-            TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
-         }
-
-         return View(clientOriginal);
-      }
-
-      // Tout les produits (15 par pages).
-      public ActionResult Cataloguesss()
-      {
-         ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
-         {
-            lstCategorie = contextPP.PPCategories.ToList(),
-            lstproduits = contextPP.PPProduits.ToList()
-         };
-
-         return View(catVM);
-      }
-
-
-      //Les produits avec une quantité défini par page
-
-      public ActionResult Catalogue(string tri, string categorie, string nbPage = "15", int noPage = 1)
-      {
-         List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
-
-         //Si affichage d'une catégorie en particulier
-         if (!String.IsNullOrWhiteSpace(categorie))
-         {
-            lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase)).ToList();
-            ViewBag.infini = "parfait";
-         }
-
-
-
-         //tri
-         switch (tri)
-         {
-            case "numero":
-               lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit).ToList();
-               break;
-            case "!numero":
-               lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit).ToList();
-               break;
-            case "date":
-               lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation).ToList();
-               break;
-            case "!date":
-               lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation).ToList();
-               break;
-            case "categorie":
-               lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description).ToList();
-               break;
-            case "!categorie":
-               lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description).ToList();
-               break;
-         }
-
-         //Pagination
-         List<string> lstSelectionNbItems = new List<string>
+            //Pagination
+            List<string> lstSelectionNbItems = new List<string>
             {
                 "5","10","15","20","25","tous"
             };
+            
+            ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
+            {
+                lstCategorie = contextPP.PPCategories.ToList()
+            };
 
-         ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
-         {
-            lstCategorie = contextPP.PPCategories.ToList()
-         };
+            if (nbPage != lstSelectionNbItems.Last())
+            {
+                List<List<PPProduits>> lstProdDiv = lstDesProduits.Separe(Convert.ToInt32(nbPage));
+                catVM.lstproduits = lstProdDiv[noPage - 1];
+            }
+            else
+            {
+                catVM.lstproduits = lstDesProduits;
+            }
 
-         if (nbPage != lstSelectionNbItems.Last())
-         {
-            List<List<PPProduits>> lstProdDiv = lstDesProduits.Separe(Convert.ToInt32(nbPage));
-            catVM.lstproduits = lstProdDiv[noPage - 1];
-         }
-         else
-         {
-            catVM.lstproduits = lstDesProduits;
-         }
-
-         //ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-         ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, nbPage);
-
-
+            //ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, nbPage);
 
 
 
-         return View(catVM);
-      }
+
+            
+            return View(catVM);
+        }
+
+        
+        
 
 
-      // GET: ProduitDetail
-      public ActionResult ProduitDetaille() => View();
 
+        // GET: ProduitDetail
+        public ActionResult ProduitDetaille() => View();
 
-
-      public ActionResult test() => View();
-   }
+        public ActionResult test() => View();
+    }
 }
