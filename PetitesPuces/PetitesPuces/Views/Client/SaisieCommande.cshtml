@@ -22,7 +22,8 @@
             $("#divTransaction").attr("hidden", false);
             $("#divFacturation").attr("hidden", true);
             $("#collapse_zoneCommande").collapse();
-            $("#btnContinueMagasiner").attr("hidden", true);
+            $("#collapse_zoneInfos").collapse("show");
+            $("#btnInformationLivraison").removeClass("disabled");
         });
 
         // Bouton première onglet
@@ -210,7 +211,7 @@
                             Commande
                         </button>
                     </h5>
-                </div>                
+                </div>
                 <div class="float-right">
                     <button id="btnContinueMagasiner" type="button" class="btn btn-primary btn-sm btn-block">
                         <span class="glyphicon glyphicon-share-alt"></span> Continuer à magasiner
@@ -226,9 +227,11 @@
                         double dblPrixTotal = 0.0;
                         double dblPrixProduitCourant = 0.0;
                         int compteur = 0;
+                        double poidsKg = 0;
                     }
                     @for (int x = 0; x < Model.Count; x++)
                     {
+                        poidsKg += (int)Model[x].NbItems * (double)Model[x].PPProduits.Poids;
                         dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
                         double dblPrixStdUnit = 1 * (double)Model[x].PPProduits.PrixDemande;
                         dblPrixTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
@@ -278,147 +281,181 @@
                         <hr />
                         compteur++;
                     }
-                        <div class="card-footer">
-                            <div class="row text-right" style="padding:0px;margin:0px">
-                                <div class="col-10" style="padding-right:0px">
-                                    <h5>Sous-total</h5>
-                                    <h5>TPS (5%)</h5>
-                                    @{
-                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                        {
-                                            <h5> TVQ(9.975 %) </h5>
+                    <div class="card-footer">
+                        <div class="row" style="padding:0px;margin:0px">
+                            <div class="col-4 text-left">
+                                Poids de la livraison : 
+                                @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
+                                {
+                                    <span style="color:green" class="border border-success"> @poidsKg Kg/ @Model[0].PPVendeurs.PoidsMaxLivraison Kg</span>
+                                }
+                                else
+                                {
+                                    <span class="border border-danger" style="color:red"> @poidsKg Kg / @Model[0].PPVendeurs.PoidsMaxLivraison Kg</span>
+                                }
+                                    </div>
+                                    <div class="col-6 text-right" style="padding-right:0px">
+                                        <h5>Sous-total</h5>
+                                        <h5>TPS (5%)</h5>
+                                        @{
+                                            if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                            {
+                                                <h5> TVQ(9.975 %) </h5>
+                                            }
                                         }
-                                    }
-                                    
-                                    <h5>Total</h5>
-                                </div>
-                                <div class="col-2">
-                                    <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
-                                    @{
-                                        double totalTps = (dblPrixTotal * 0.05);
-                                    }
 
-                                    @{
-                                        <h5>
-                                            <strong>
-                                                @totalTps.ToString("0.00") $
-                                            </strong>
-                                        </h5>
-                                    }
-                                    @{
-                                        double totalTvq = 0;
-                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                        {
-                                            totalTvq = (dblPrixTotal * 0.09975);
+                                        <h5>Total</h5>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
+                                        @{
+                                            double totalTps = (dblPrixTotal * 0.05);
+                                        }
+
+                                        @{
                                             <h5>
                                                 <strong>
-                                                    @totalTvq.ToString("0.00") $
+                                                    @totalTps.ToString("0.00") $
                                                 </strong>
                                             </h5>
                                         }
-                                    }
+                                        @{
+                                            double totalTvq = 0;
+                                            if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                            {
+                                                totalTvq = (dblPrixTotal * 0.09975);
+                                                <h5>
+                                                    <strong>
+                                                        @totalTvq.ToString("0.00") $
+                                                    </strong>
+                                                </h5>
+                                            }
+                                        }
 
-                                    <h5>
-                                        <strong>
-                                            @{
-                                                double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
-                                            }@totalAvecTaxes.ToString("0.00") $
-                                        </strong>
-                                    </h5>
+                                        <h5>
+                                            <strong>
+                                                @{
+                                                    double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
+                                                }@totalAvecTaxes.ToString("0.00") $
+                                            </strong>
+                                        </h5>
+                                    </div>
                                 </div>
+                        <div class="row" style="padding:15px">
+
+                            <div class="col-sm-6">
                             </div>
-                            <div class="row" style="padding:15px">
+                            <div class="col-sm-6">
+                                <div class="d-flex justify-content-end">
+                                    @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
+                                    {
 
-                                <div class="col-sm-6">
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="d-flex justify-content-end">
                                         <button id="btnPasserCommande" class="btn btn-success" type="submit">
                                             Passer une commande
                                         </button>
-                                    </div>
+                                    }
+                                    else
+                                    {
+
+                                        <button id="btnPasserCommande" class="btn btn-success" disabled type="submit" tool>
+                                            Passer une commande
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- Second Onglet -->
-        <div id="divTransaction" hidden style="width:100%">
-            <div class="panel panel-info">
-                <div class="panel-heading" style="padding-left:20px;padding-right:20px">
-                    <h3><u>Information personnelle</u></h3>
-                    <div class="row">
-                        <label class="col-2" for="email">Courriel électronique</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-2" for="lastName">Nom</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-1" style="text-align:left" for="firstName">Prénom</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-1" for="tel1">Téléphone primaire</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-1" for="tel2">Téléphone secondaire</label>
-                    </div>
-                    <div class="row">
+        <div class="card shopping-cart" id="infoPerso" style="margin-top:0px;">
+            <div class="card-header" id="heading_infoPerso">
 
-                        <input class="col-2" id="email" style="margin-left:15px" type="text" />
-                        <div class="col-offset-1"></div>
-                        <input class="col-2" id="lastName" type="text" />
-                        <div class="col-offset-1"></div>
-                        <input class="col-1" id="firstName" type="text" />
-                        <div class="col-offset-1"></div>
-                        <input class="col-1" id="tel1" type="text" />
-                        <div class="col-offset-1"></div>
-                        <input class="col-1" id="tel2" type="text" />
-                    </div>
-                    <div class="row">
-                        <label class="col-2" for="rue">Rue</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-2" for="ville">Ville</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-1" for="province">Province</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-1" for="pays">Pays</label>
-                        <div class="col-offset-1"></div>
-                        <label class="col-1" for="codePostal">Code Postal</label>
-                    </div>
-                    <div class="row">
-
-                        <input class="col-2" style="margin-left:15px" id="rue" type="text" />
-                        <div class="col-offset-1"></div>
-                        <input class="col-2" id="ville" type="text" />
-                        <div class="col-offset-1"></div>
-                        <select class="col-1">
-                            <option value="0">Québec</option>
-                            <option value="1">Ontario</option>
-                            <option value="2">Nouveau-Brunswick</option>
-                        </select>
-                        <div class="col-offset-1"></div>
-                        <input class="col-1" id="pays" type="text" value="Canada" disabled />
-                        <div class="col-offset-1"></div>
-                        <input class="col-1" id="codePostal" type="text" />
-                    </div>
+                <div class="float-left">
+                    <h5 class="mb-0">
+                        <button id="btnInformationLivraison" class="btn btn-link text-s disabled" data-toggle="collapse" data-target="#collapse_zoneInfos" aria-expanded="true" aria-controls="#collapse_zoneInfos">
+                            Informations de livraison
+                        </button>
+                    </h5>
                 </div>
             </div>
-            <div class="container">
-                <div class="panel panel-info">
-                    <div class="panel-heading" style="padding-left:20px;padding-right:20px">
-                        <h3><u>Information de paiement</u></h3>
-                        <p>Informations nécessaires?</p>
+
+            <div id="collapse_zoneInfos" class="collapse" aria-labelledby="btnInformationLivraison" data-parent="#infoPerso">
+
+                <div class="card-body">
+                                <h3><u>Information personnelle</u></h3>
+                                <div class="row">
+                                    <label class="col-2" for="email">Courriel électronique</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-2" for="lastName">Nom</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-1" style="text-align:left" for="firstName">Prénom</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-1" for="tel1">Téléphone primaire</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-1" for="tel2">Téléphone secondaire</label>
+                                </div>
+                                <div class="row">
+
+                                    <input class="col-2" id="email" style="margin-left:15px" type="text" />
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-2" id="lastName" type="text" />
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-1" id="firstName" type="text" />
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-1" id="tel1" type="text" />
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-1" id="tel2" type="text" />
+                                </div>
+                                <div class="row">
+                                    <label class="col-2" for="rue">Rue</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-2" for="ville">Ville</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-1" for="province">Province</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-1" for="pays">Pays</label>
+                                    <div class="col-offset-1"></div>
+                                    <label class="col-1" for="codePostal">Code Postal</label>
+                                </div>
+                                <div class="row">
+
+                                    <input class="col-2" style="margin-left:15px" id="rue" type="text" />
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-2" id="ville" type="text" />
+                                    <div class="col-offset-1"></div>
+                                    <select class="col-1">
+                                        <option value="0">Québec</option>
+                                        <option value="1">Ontario</option>
+                                        <option value="2">Nouveau-Brunswick</option>
+                                    </select>
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-1" id="pays" type="text" value="Canada" disabled />
+                                    <div class="col-offset-1"></div>
+                                    <input class="col-1" id="codePostal" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="panel panel-info">
+                                <div class="panel-heading" style="padding-left:20px;padding-right:20px">
+                                    <h3><u>Information de paiement</u></h3>
+                                    <p>Informations nécessaires?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-4"></div>
+                            <input type="button" id="btnConfirmer" class="btn btn-success btn-block col-4" value="Confirmer" style="width:30%" />
+                            <div class="col-4"></div>
+                        </div>
+                    </div>
+                    <!-- Troisième et Dernier Onglet -->
+                    <div id="divFacturation" style="padding-left:10px;padding-right:10px">
+                    </div>
+                    <div>
                     </div>
                 </div>
-            </div>
-            <div class="row align-items-center">
-                <div class="col-4"></div>
-                <input type="button" id="btnConfirmer" class="btn btn-success btn-block col-4" value="Confirmer" style="width:30%" />
-                <div class="col-4"></div>
-            </div>
-        </div>
-        <!-- Troisième et Dernier Onglet -->
-        <div id="divFacturation" style="padding-left:10px;padding-right:10px">
-        </div>
-        <div>
-        </div>
-    </div>
 </body>
 </html>
