@@ -381,7 +381,7 @@ namespace PetitesPuces.Controllers
         }
 
         // Tout les produits (15 par pages).
-        public ActionResult Catalogue()
+        public ActionResult Cataloguesss()
         {
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
             {
@@ -395,21 +395,76 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(int nbPage)
+        public ActionResult Catalogue(string tri, string categorie, string vendeur,string nbPage = "15",int noPage = 1)
         {
-            /*
-            if (nbPage.HasValue)
-            {*/
+            List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
 
-                var lstDesProduits = contextPP.PPProduits.ToList();
+            //Si affichage d'un vendeur en particulier (pas encore tester)
+            if (!String.IsNullOrWhiteSpace(vendeur))
+            {
+                lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                var lstDivParPage = lstDesProduits.Separe(2);
+            }
+            
+            //Si affichage d'une catégorie en particulier
+            if (!String.IsNullOrWhiteSpace(categorie))
+            {
+                lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase)).ToList();
+                //ViewBag.infini = "parfait";
+            }
 
-            int test = 10;
-            //}
+            //tri
+            switch (tri)
+            {
+                case "numero":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit).ToList();
+                    break;
+                case "!numero":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit).ToList();
+                    break;
+                case "date":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation).ToList();
+                    break;
+                case "!date":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation).ToList();
+                    break;
+                case "categorie":
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description).ToList();
+                    break;
+                case "!categorie":
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description).ToList();
+                    break;
+            }
+
+            //Pagination
+            List<string> lstSelectionNbItems = new List<string>
+            {
+                "5","10","15","20","25","tous"
+            };
+            
+            ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
+            {
+                lstCategorie = contextPP.PPCategories.ToList()
+            };
+
+            if (nbPage != lstSelectionNbItems.Last())
+            {
+                List<List<PPProduits>> lstProdDiv = lstDesProduits.Separe(Convert.ToInt32(nbPage));
+                catVM.lstproduits = lstProdDiv[noPage - 1];
+            }
+            else
+            {
+                catVM.lstproduits = lstDesProduits;
+            }
+
+            //ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, nbPage);
 
 
-            return View();
+
+
+            
+            return View(catVM);
         }
 
         
@@ -419,5 +474,7 @@ namespace PetitesPuces.Controllers
 
         // GET: ProduitDetail
         public ActionResult ProduitDetaille() => View();
+
+        public ActionResult test() => View();
     }
 }
