@@ -162,6 +162,40 @@ namespace PetitesPuces.Controllers
             db.Connection.Close();
             return PartialView("Client/Panier", items);
         }
+
+        public ActionResult UpdatePanierSaisieCommande(int noPanier, int quantite)
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            String noClient = "10000";
+            int noVendeur;
+            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+
+            var articlesPanier = (from articlePanier in db.GetTable<PPArticlesEnPanier>()
+                                  where articlePanier.NoPanier.Equals(noPanier)
+                                  select articlePanier
+                                  );
+
+            noVendeur = (int)articlesPanier.First().NoVendeur;
+            articlesPanier.First().NbItems = (short)quantite;
+
+            // Submit the changes to the database.
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            //Requête qui va permettre d'aller chercher les paniers du client
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              select panier).ToList();
+
+            db.Connection.Close();
+            return PartialView("SaisieCommande", items);
+        }
         /// <summary>
         /// Permet de supprimer le produit passé en paramètre
         /// </summary>
@@ -202,6 +236,43 @@ namespace PetitesPuces.Controllers
             }
             db.Connection.Close();
             return PartialView("Client/Panier", items);
+        }
+
+        public ActionResult SupprimerProduitSaisieCommande(int id)
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            long noVendeur;
+            String noClient = "10000";
+            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
+
+            //Aller chercher le panier à supprimer
+            var query = (from articlePanier in db.GetTable<Models.PPArticlesEnPanier>()
+                         where articlePanier.NoPanier.Equals(id)
+                         select articlePanier
+                         );
+            noVendeur = (long)query.First().NoVendeur;
+
+            db.PPArticlesEnPanier.DeleteOnSubmit(query.First());
+
+            try
+            {
+                db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            //Requête qui va permettre d'aller chercher les paniers du client
+            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              select panier).ToList();
+            if (items.Count() == 0)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+            db.Connection.Close();
+            return View("SaisieCommande", items);
         }
 
         public ActionResult GestionProfilClient()
