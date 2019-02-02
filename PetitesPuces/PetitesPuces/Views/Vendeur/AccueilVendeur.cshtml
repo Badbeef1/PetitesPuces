@@ -7,6 +7,7 @@
    <title>Petites Puces</title>
    <!--Librairies externes (Bootstrap 4.2)-->
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
@@ -69,9 +70,9 @@
             width: 100%;
          }
 
-            .sidebar .nav-item + .nav-item {
-               margin-left: 0;
-            }
+         .sidebar .nav-item + .nav-item {
+            margin-left: 0;
+         }
 
          .sidebar .nav-link {
             border-radius: 0;
@@ -93,13 +94,14 @@
    </style>
 </head>
 <body>
-   <div id="navigation">
+   
       @RenderPage("~/Views/Vendeur/index.cshtml")
-   </div>
+   
    <div class="container-fluid">
       <div class="row">
          <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
             <ul class="nav nav-pills flex-column">
+               <br /><br />
                <h4>Commandes non traités</h4>
                @foreach (var commandes in Model.lstCommandesNonTraites)
                {
@@ -171,7 +173,18 @@
                                  </div>
                               </div>
                               <div class="card-footer">
-                                 <button class="btn btn-primary">Voir la commande détaillée</button>
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <button class="btn btn-primary">Voir la commande détaillée</button>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <button class="btn btn-success">Voir le pdf de la commande</button>
+                                       </div>
+                                    </div>
+                                 </div>  
                               </div>
                            </div>
                         </div>
@@ -231,7 +244,10 @@
                                  </div>
                               </div>
                               <div class="card-footer">
-                                 <button class="btn btn-primary">Voir le panier détaillé</button>
+                                 <div class="d-flex justify-content-start">
+                                    <button class="btn btn-primary">Voir le panier détaillé</button>
+                                 </div>
+                                 
                               </div>
                            </div>
                         </div>

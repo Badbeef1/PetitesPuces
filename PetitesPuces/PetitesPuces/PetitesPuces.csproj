@@ -248,6 +248,7 @@
     <Content Include="Views\Internaute\ProduitDetaille.cshtml" />
     <Content Include="Views\Shared\Client\ProduitCatalogue.cshtml" />
     <Content Include="Views\Client\test.cshtml" />
+    <Content Include="Views\Vendeur\CommandeDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

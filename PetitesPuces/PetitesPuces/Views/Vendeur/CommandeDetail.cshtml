@@ -1,0 +1,65 @@
+﻿@using PetitesPuces.Models
+@model AccueilVendeurViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>Petites Puces</title>
+   <!--Librairies externes (Bootstrap 4.2)-->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+</head>
+<body>
+   <div id="navigation">
+      @RenderPage("~/Views/Client/index.cshtml")
+   </div>
+   <br /><br />
+   <div class="container">
+      <h3>Détail de la commande @Model.lstCommandesNonTraites.Keys.First().NoCommande</h3>
+      <table class="table">
+         <thead>
+            <tr>
+               <th scope="col"># Produit</th>
+               <th scope="col">Nom</th>
+               <th scope="col">Quanité</th>
+               <th scope="col">Prix de vente</th>
+               <th scope="col">Prix total</th>
+            </tr>
+         </thead>
+         <tbody>
+
+            @foreach (var produit in Model.lstCommandesNonTraites.Values)
+            {
+               <tr>
+                  <th scope="row"></th>
+                  <td>Mark</td>
+                  <td>Otto</td>
+                  <td>zouzou senti</td>
+               </tr>
+            }
+
+            <tr>
+               <th scope="row">2</th>
+               <td>Jacob</td>
+               <td>Thornton</td>
+               <td>zouzou senti</td>
+            </tr>
+            <tr>
+               <th scope="row">3</th>
+               <td>Larry</td>
+               <td>the Bird</td>
+               <td>zouzou</td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</body>
+</html>

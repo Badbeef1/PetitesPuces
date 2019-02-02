@@ -183,6 +183,38 @@ namespace PetitesPuces.Controllers
          return View(vendeurOriginel);
       }
 
+
+      public ActionResult CommandeDetail(long id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+
+         //Aller chercher la commande
+         var commandes = (from commande in db.GetTable<PPCommandes>()
+                          where commande.NoCommande.Equals(id)
+                          select commande
+                          ).ToList();
+
+         //Aller chercher les details cette commande
+         var detailsCommandes = (from details in db.GetTable<PPDetailsCommandes>()
+                                 where details.NoCommande.Equals(commandes.First().NoCommande)
+                                 select details
+                                 ).ToList();
+
+         Dictionary<PPCommandes, List<PPDetailsCommandes>> dictionnaire = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+         dictionnaire.Add(commandes.First(), detailsCommandes);
+
+         //Aller chercher l'historique de commande
+         var historique = (from histoCommande in db.GetTable<PPHistoriquePaiements>()
+                           where histoCommande.NoCommande.Equals(id)
+                           select histoCommande
+                           ).ToList();
+
+         AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, historique.First());
+         db.Connection.Close();
+         return View(accueilVendeurViewModel);
+      }
+
       [ChildActionOnly]
       public ActionResult InformationPersonnel()
       {
