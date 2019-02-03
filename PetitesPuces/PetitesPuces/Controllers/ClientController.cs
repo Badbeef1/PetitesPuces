@@ -5,6 +5,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using PetitesPuces.Models;
+using PagedList;
 
 namespace PetitesPuces.Controllers
 {
@@ -395,43 +396,94 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string vendeur,string nbPage = "15",int noPage = 1)
+        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche , int? page, int pageDimension = 5,int noPage = 1, int typeRech = 1 )
         {
+            
+            const String strTriNum = "numero";
+            const String strTriCat = "categorie";
+            const String strTriDate = "date";
+            ViewBag.TriActuel = tri;
+            if (!String.IsNullOrEmpty(tri))
+            {
+                bool booOrdre = tri[0] == '!';
+                
+                ViewBag.TriNum = tri.Contains(strTriNum) ? (booOrdre ? strTriNum : "!" + strTriNum) : ViewBag.TriNum;
+                ViewBag.TriCat = tri.Contains(strTriCat) ? (booOrdre ? strTriCat : "!" + strTriCat) : ViewBag.TriCat;
+                ViewBag.triDate = tri.Contains(strTriDate) ? (booOrdre ? strTriDate : "!" + strTriDate) : ViewBag.TriDate;
+            }
+
+            
+
             List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
+
+            //Si recherche dans le catalogue
+            if (!String.IsNullOrWhiteSpace(recherche))
+            {
+                string strMotRecherche = recherche.ToLower();
+
+                switch (typeRech)
+                {
+                    case 1:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.Nom.ToString().ToLower().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                    case 2:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.NoProduit.ToString().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                    case 3:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.Description.ToString().ToLower().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                    case 4:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.DateCreation.Value.ToString("yyyy-MM-dd").Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                }
+
+                
+            }
 
             //Si affichage d'un vendeur en particulier (pas encore tester)
             if (!String.IsNullOrWhiteSpace(vendeur))
             {
-                lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase)).ToList();
+                lstDesProduits = lstDesProduits
+                    .Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
 
             }
             
             //Si affichage d'une catégorie en particulier
             if (!String.IsNullOrWhiteSpace(categorie))
             {
-                lstDesProduits = lstDesProduits.Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase)).ToList();
-                //ViewBag.infini = "parfait";
+                lstDesProduits = lstDesProduits
+                    .Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
 
             //tri
             switch (tri)
             {
-                case "numero":
+                case strTriNum:
                     lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit).ToList();
                     break;
-                case "!numero":
+                case "!" + strTriNum:
                     lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit).ToList();
                     break;
-                case "date":
+                case strTriDate:
                     lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation).ToList();
                     break;
-                case "!date":
+                case "!" + strTriDate:
                     lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation).ToList();
                     break;
-                case "categorie":
+                case strTriCat:
                     lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description).ToList();
                     break;
-                case "!categorie":
+                case "!" + strTriCat:
                     lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description).ToList();
                     break;
             }
@@ -441,12 +493,23 @@ namespace PetitesPuces.Controllers
             {
                 "5","10","15","20","25","tous"
             };
-            
+
+            int intNumeroPage = (page ?? 1);
+
+
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
             {
-                lstCategorie = contextPP.PPCategories.ToList()
+                lstCategorie = contextPP.PPCategories.ToList(),
+                strTri = tri,
+                strCategorie = categorie,
+                strRecherche = recherche,
+                pageDimension = pageDimension,
+                intNoPage = noPage,
+                intTypeRecherche = typeRech,
+                iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension)
             };
 
+            /*
             if (nbPage != lstSelectionNbItems.Last())
             {
                 List<List<PPProduits>> lstProdDiv = lstDesProduits.Separe(Convert.ToInt32(nbPage));
@@ -455,10 +518,9 @@ namespace PetitesPuces.Controllers
             else
             {
                 catVM.lstproduits = lstDesProduits;
-            }
+            }*/
 
-            //ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, nbPage);
+            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
 
 
 
@@ -468,10 +530,6 @@ namespace PetitesPuces.Controllers
         }
 
         
-        
-
-
-
         // GET: ProduitDetail
         public ActionResult ProduitDetaille() => View();
 
