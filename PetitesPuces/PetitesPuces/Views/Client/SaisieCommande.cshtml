@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 <script>
+    @{ 
+        double poidsKg = 0;
+    }
     $(document).ready(function () {
         $("#btnContinueMagasiner").click(function () {
             window.location.href = "/Client/Catalogue"
@@ -18,35 +21,25 @@
 
         // Bouton poursuivre du première onglet
         $("#btnPasserCommande").click(function () {
-            $("#divCommande").attr("hidden", true);
-            $("#divTransaction").attr("hidden", false);
-            $("#divFacturation").attr("hidden", true);
             $("#collapse_zoneCommande").collapse();
             $("#collapse_zoneInfos").collapse("show");
+            $("#btnContinueMagasiner").attr("hidden", true);
             $("#btnInformationLivraison").removeClass("disabled");
         });
 
-        // Bouton première onglet
-        $("#btnCommandeTab").click(function () {
-            $("#divCommande").attr("hidden", false);
-            $("#divTransaction").attr("hidden", true);
-            $("#divFacturation").attr("hidden", true);
+        // Bouton choix de poste, second onglet
+        $("#btnChoixDePoste").click(function () {
+            var poids = @poidsKg;
+            var panier = @Model[0].NoPanier;
+            $.ajax({
+                url: "/Client/RecevoirPrixLivraison",
+                data: { "poids": poids, "panier": panier},
+                success: successPoids,
+                error: errorPoids,
+            });
+            $("#collapse_zoneInfos").collapse();
+            $("#collapse_typeLivraison").collapse("show");
         });
-        // Bouton deuxième onglet
-        $("#btnTransactionTab").click(function () {
-            $("#divCommande").attr("hidden", true);
-            $("#divTransaction").attr("hidden", false);
-            $("#divFacturation").attr("hidden", true);
-        });
-        // Bouton troisième onglet
-        $("#btnFacturationTab").click(function () {
-            setTimeout(function () {
-                $("#divCommande").attr("hidden", false);
-                $("#divTransaction").attr("hidden", true);
-                $("#divFacturation").attr("hidden", true);
-            }, 2000)
-        });
-
 
     });
     function quantitechange(e) {
@@ -80,10 +73,17 @@
         $("#body").html(model)
         //console.log(model);
     }
+    function successPoids() {
+    }
 
     function error(error) {
         console.log('erreur : ' + error);
         location.href = '/Client/AccueilClient';
+    }
+
+    function errorPoids(error) {
+        console.log('erreur : ' + error);
+        //location.href = '/Client/AccueilClient';
     }
 </script>
 <style>
@@ -225,7 +225,6 @@
                         double dblPrixTotal = 0.0;
                         double dblPrixProduitCourant = 0.0;
                         int compteur = 0;
-                        double poidsKg = 0;
                     }
                     @for (int x = 0; x < Model.Count; x++)
                     {
@@ -282,7 +281,7 @@
                     <div class="card-footer">
                         <div class="row" style="padding:0px;margin:0px">
                             <div class="col-4 text-left">
-                                Poids de la livraison : 
+                                Poids de la livraison :
                                 @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
                                 {
                                     <span style="color:green" class="border border-success"> @poidsKg Kg/ @Model[0].PPVendeurs.PoidsMaxLivraison Kg</span>
@@ -291,54 +290,54 @@
                                 {
                                     <span class="border border-danger" style="color:red"> @poidsKg Kg / @Model[0].PPVendeurs.PoidsMaxLivraison Kg</span>
                                 }
-                                    </div>
-                                    <div class="col-6 text-right" style="padding-right:0px">
-                                        <h5>Sous-total</h5>
-                                        <h5>TPS (5%)</h5>
-                                        @{
-                                            if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                            {
-                                                <h5> TVQ(9.975 %) </h5>
-                                            }
-                                        }
+                            </div>
+                            <div class="col-6 text-right" style="padding-right:0px">
+                                <h5>Sous-total</h5>
+                                <h5>TPS (5%)</h5>
+                                @{
+                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                    {
+                                        <h5> TVQ(9.975 %) </h5>
+                                    }
+                                }
 
-                                        <h5>Total</h5>
-                                    </div>
-                                    <div class="col-2 text-right">
-                                        <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
-                                        @{
-                                            double totalTps = (dblPrixTotal * 0.05);
-                                        }
+                                <h5>Total</h5>
+                            </div>
+                            <div class="col-2 text-right">
+                                <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
+                                @{
+                                    double totalTps = (dblPrixTotal * 0.05);
+                                }
 
-                                        @{
-                                            <h5>
-                                                <strong>
-                                                    @totalTps.ToString("0.00") $
-                                                </strong>
-                                            </h5>
-                                        }
-                                        @{
-                                            double totalTvq = 0;
-                                            if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                            {
-                                                totalTvq = (dblPrixTotal * 0.09975);
-                                                <h5>
-                                                    <strong>
-                                                        @totalTvq.ToString("0.00") $
-                                                    </strong>
-                                                </h5>
-                                            }
-                                        }
-
+                                @{
+                                    <h5>
+                                        <strong>
+                                            @totalTps.ToString("0.00") $
+                                        </strong>
+                                    </h5>
+                                }
+                                @{
+                                    double totalTvq = 0;
+                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                    {
+                                        totalTvq = (dblPrixTotal * 0.09975);
                                         <h5>
                                             <strong>
-                                                @{
-                                                    double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
-                                                }@totalAvecTaxes.ToString("0.00") $
+                                                @totalTvq.ToString("0.00") $
                                             </strong>
                                         </h5>
-                                    </div>
-                                </div>
+                                    }
+                                }
+
+                                <h5>
+                                    <strong>
+                                        @{
+                                            double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
+                                        }@totalAvecTaxes.ToString("0.00") $
+                                    </strong>
+                                </h5>
+                            </div>
+                        </div>
                         <div class="row" style="padding:15px">
 
                             <div class="col-sm-6">
@@ -501,8 +500,12 @@
 
             <div id="collapse_typeLivraison" class="collapse" aria-labelledby="btnTypeLivraison" data-parent="#divLivraison">
 
-                <div class="card-body  align-items-center" style="padding:0px">
+                <div class="card-body align-items-center">
+                    <input type="radio" name="typePoste" value="1" checked />Poste régulière <br />
+                    <input type="radio" name="typePoste" value="2" checked />Poste prioritaire <br />
+                    <input type="radio" name="typePoste" value="3" checked />Transport privé <br />
                     <br />
+                    <span>@ViewData["CodePoids"]</span>
                 </div>
 
             </div>
