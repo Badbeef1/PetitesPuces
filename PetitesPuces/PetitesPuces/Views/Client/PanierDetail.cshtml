@@ -139,9 +139,7 @@
     </script>
 </head>
 <body>
-   <div id="navigation">
-      @RenderPage("~/Views/Client/index.cshtml")
-   </div>
+   @Html.Partial("test")
    <br /><br /><br />
    <div id="panier" class="container">
      @Html.Partial("Client/Panier", Model)

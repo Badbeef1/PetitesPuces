@@ -103,11 +103,7 @@
 </head>
 
 <body id="body">
-
-
-    <div id="navigation">
-        @RenderPage("~/Views/Gestionnaire/index.cshtml")
-    </div>
+    @Html.Partial("index")
 
     @using (Html.BeginForm("GestionInactivite", "Gestionnaire", FormMethod.Post))
     {
