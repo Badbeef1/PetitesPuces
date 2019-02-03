@@ -75,7 +75,6 @@ namespace PetitesPuces.Controllers
             };
 
          ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-
          return View(vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur));
       }
 
@@ -278,6 +277,18 @@ namespace PetitesPuces.Controllers
          db.Connection.Close();
 
          return View("AccueilVendeur",model);
+      }
+
+      public ActionResult PanierDetailVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //requête pour aller chercher les produits à l'aide d'un vendeur
+         List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                           where panier.NoClient.Equals(id) && panier.NoVendeur.Equals(10)
+                                           select panier).ToList();
+         db.Connection.Close();
+         return View(items);
       }
 
       [ChildActionOnly]
