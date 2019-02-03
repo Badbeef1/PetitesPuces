@@ -23,9 +23,7 @@
     </style>
 </head>
 <body>
-    <div id="navigation">
-        @RenderPage("~/Views/Vendeur/index.cshtml")
-    </div>
+    @Html.Partial("index")
     <div class="container sEspaceBarNavigation">
         @Html.Partial("InformationPersonnel", Model)        
         <br />

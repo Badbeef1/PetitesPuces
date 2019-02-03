@@ -13,6 +13,7 @@
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
    <style>
+
       body {
          position: relative;
       }
@@ -21,14 +22,14 @@
          position: fixed;
       }
 
-
       /*
         * Base structure
         */
       /* Move down content because we have a fixed navbar that is 50px tall */
-      body {
+
+      /*body {
          padding-top: 50px;
-      }
+      }*/
 
       /*
         * Typography
@@ -94,19 +95,18 @@
    </style>
 </head>
 <body>
-   
-      @RenderPage("~/Views/Vendeur/index.cshtml")
-   
+
+   @Html.Partial("index")
+
    <div class="container-fluid">
       <div class="row">
          <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
             <ul class="nav nav-pills flex-column">
-               <br /><br />
                <h4>Commandes non traités</h4>
                @foreach (var commandes in Model.lstCommandesNonTraites)
                {
                   <li class="nav-item">
-                     <a class="nav-link" href="#">@commandes.Key.PPClients.Prenom @commandes.Key.PPClients.Nom<span class="sr-only">(current)</span></a>
+                     <a class="nav-link" href="#commande_@commandes.Key.NoCommande">@commandes.Key.PPClients.Prenom @commandes.Key.PPClients.Nom<span class="sr-only">(current)</span></a>
                   </li>
                }
 
@@ -130,21 +130,21 @@
                @foreach (var commande in Model.lstCommandesNonTraites)
                {
                   <div class="card">
-                     <div class="card-header" id="commande1">
+                     <div class="card-header" id="commande_@commande.Key.NoCommande">
                         <div class="float-left">
                            <img src="~/Content/images/order.jpg" alt="panier" class="rounded-circle" height="50px" width="50px">
                         </div>
 
                         <div class="float-center">
                            <h5 class="mb-0">
-                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCom_@commande.Key.NoCommande" aria-expanded="true" aria-controls="collapseCom_@commande.Key.NoCommande">
                                  Commande: @commande.Key.PPClients.NoClient
                               </button>
                            </h5>
                         </div>
                      </div>
                      <!--Commande non traité 1-->
-                     <div id="collapse1" class="collapse" aria-labelledby="commande1" data-parent="#accordion">
+                     <div id="collapseCom_@commande.Key.NoCommande" class="collapse" aria-labelledby="commande_@commande.Key.NoCommande" data-parent="#accordion">
                         <div class="card-body">
                            <div class="card">
                               <div class="card-header">
@@ -154,6 +154,7 @@
                                  <div class="row">
                                     @foreach (var produit in commande.Value)
                                     {
+                                       double dblPrixVente = (double)produit.PPProduits.PrixVente;
                                        <div class="col-sm-2">
                                           <div class="card">
                                              <div class="card-header">
@@ -165,7 +166,7 @@
                                                 </div>
                                              </div>
                                              <div class="card-footer">
-                                                <h5>@produit.PrixVente $</h5>
+                                                <h5>@dblPrixVente.ToString("0.00") $</h5>
                                              </div>
                                           </div>
                                        </div>
@@ -176,7 +177,7 @@
                                  <div class="row">
                                     <div class="col-sm-6">
                                        <div class="d-flex justify-content-start">
-                                          <button class="btn btn-primary">Voir la commande détaillée</button>
+                                          @Html.ActionLink("Voir la commande détaillée", "CommandeDetail", "Vendeur", new { id = commande.Key.NoCommande }, new { @class = "btn btn-primary" })
                                        </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -184,7 +185,7 @@
                                           <button class="btn btn-success">Voir le pdf de la commande</button>
                                        </div>
                                     </div>
-                                 </div>  
+                                 </div>
                               </div>
                            </div>
                         </div>
@@ -223,6 +224,7 @@
                                     <!--Tous les produits du panier-->
                                     @foreach (var panierProduit in articlesPanier)
                                     {
+                                       double dblPriDemande = (double)panierProduit.PPProduits.PrixDemande;
                                        <div class="col-sm-2">
                                           <div class="card">
                                              <div class="card-header">
@@ -234,28 +236,24 @@
                                                 </div>
                                              </div>
                                              <div class="card-footer">
-                                                <h5>@panierProduit.PPProduits.PrixDemande $</h5>
+                                                <h5>@dblPriDemande.ToString("0.00") $</h5>
                                              </div>
                                           </div>
                                        </div>
                                     }
                                     <!--Produit 1-->
-
                                  </div>
                               </div>
                               <div class="card-footer">
                                  <div class="d-flex justify-content-start">
-                                    <button class="btn btn-primary">Voir le panier détaillé</button>
+                                    @Html.ActionLink("Voir le panier détaillé", "PanierDetailVendeur", "Vendeur", new { id = articlesPanier.Key.NoClient}, new { @class="btn btn-primary"})
                                  </div>
-                                 
                               </div>
                            </div>
                         </div>
                      </div>
                   </div>
                }
-
-
 
             </div>
             <hr>

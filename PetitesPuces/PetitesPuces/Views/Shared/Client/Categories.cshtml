@@ -43,7 +43,16 @@
                                        </div>
                                     </div>
                                     <div class="card-footer">
-                                       @Html.ActionLink("Voir l'entreprise", "CatalogueNouveaute", "Internaute", new { @class = "btn btn-success" })
+                                       @{
+                                          if ((PPClients)Session["clientObj"] != null)
+                                          {
+                                             @Html.ActionLink("Voir l'entreprise", "Catalogue", "Client", new { @class = "btn btn-success" })
+                                          }
+                                          else
+                                          {
+                                             @Html.ActionLink("Voir l'entreprise", "CatalogueNouveaute", "Internaute", new { @class = "btn btn-success" })
+                                          }
+                                       }
                                        <!--<button id="btn_@entreprises.NoVendeur" class="btn btn-success">Voir l'entreprise</button>-->
                                     </div>
                                  </div>

@@ -1,7 +1,7 @@
 ﻿@using PetitesPuces.Models
 @model AccueilVendeurViewModel
 @{
-    Layout = null;
+   Layout = null;
 }
 
 <!DOCTYPE html>
@@ -18,48 +18,205 @@
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 </head>
 <body>
-   <div id="navigation">
-      @RenderPage("~/Views/Client/index.cshtml")
-   </div>
-   <br /><br />
-   <div class="container">
-      <h3>Détail de la commande @Model.lstCommandesNonTraites.Keys.First().NoCommande</h3>
-      <table class="table">
-         <thead>
-            <tr>
-               <th scope="col"># Produit</th>
-               <th scope="col">Nom</th>
-               <th scope="col">Quanité</th>
-               <th scope="col">Prix de vente</th>
-               <th scope="col">Prix total</th>
-            </tr>
-         </thead>
-         <tbody>
+   @Html.Partial("index")
+   <br />
+         <div class="container">
 
-            @foreach (var produit in Model.lstCommandesNonTraites.Values)
+            @foreach (var commande in Model.lstCommandesNonTraites)
             {
-               <tr>
-                  <th scope="row"></th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>zouzou senti</td>
-               </tr>
-            }
 
-            <tr>
-               <th scope="row">2</th>
-               <td>Jacob</td>
-               <td>Thornton</td>
-               <td>zouzou senti</td>
-            </tr>
-            <tr>
-               <th scope="row">3</th>
-               <td>Larry</td>
-               <td>the Bird</td>
-               <td>zouzou</td>
-            </tr>
-         </tbody>
-      </table>
-   </div>
+               <h3>Détail commande: @commande.Key.NoCommande (Client: @commande.Key.PPClients.Prenom @commande.Key.PPClients.Nom)</h3>
+               <br />
+               <table class="table">
+                  <thead>
+                     <tr>
+                        <th scope="col"># Produit</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Quanité</th>
+                        <th scope="col">Prix de vente</th>
+                        <th scope="col">Prix total</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+
+
+                     @foreach (var detailsCommande in commande.Value)
+                     {
+                        double dblPrixVente = (double)detailsCommande.PrixVente;
+                        double dblPrixTotal = dblPrixVente * (int)detailsCommande.Quantité;
+                        <tr>
+                           <td> @detailsCommande.PPProduits.NoProduit </td>
+                           <td>@detailsCommande.PPProduits.Nom</td>
+                           <td>@detailsCommande.Quantité</td>
+                           <td>@dblPrixVente.ToString("0.00") $</td>
+                           <td>@dblPrixTotal.ToString("0.00") $</td>
+                        </tr>
+                     }
+                  </tbody>
+               </table>
+               //déclarations des nécessaire
+               double dblMontantTotAvTaxes = (double)commande.Key.MontantTotAvantTaxes;
+               double dblTPS = (double)commande.Key.TPS;
+               double dblTVQ = (double)commande.Key.TVQ;
+               double dblLivraison = (double)Model.historique.FraisLivraison;
+               double dblPoids = (double)commande.Key.PoidsTotal;
+               double dblRedevence = (double)Model.historique.Redevance;
+               double dblFraisLesi = (double)Model.historique.FraisLesi;
+               double dblPrixTotalTotal = dblMontantTotAvTaxes + dblTPS + dblTVQ + dblLivraison + dblFraisLesi;
+
+               <hr />
+               <br />
+               <div class="row">
+                  <!--Informations sur les frais-->
+                  <div class="col-sm-6">
+                     <div class="card">
+                        <div class="card-header">
+                           <h4>Frais de commandes</h4>
+                        </div>
+                        <div class="card-body">
+                           <ul class="list-group list-group-flush">
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>Prix Avant Taxe: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblMontantTotAvTaxes.ToString("0.00") $</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>TPS: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblTPS.ToString("0.00") $</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>TVQ: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblTVQ.ToString("0.00") $</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>Frais de livraison: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblLivraison.ToString("0.00") $</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="col-sm-6">
+                     <div class="card">
+                        <div class="card-header">
+                           <h4>Informations Supplémentaires</h4>
+                        </div>
+                        <div class="card-body">
+                           <ul class="list-group list-group-flush">
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>Poids: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblPoids (lbs)</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>Type de livraison: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@commande.Key.PPTypesLivraison.Description</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>Redevance: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblRedevence.ToString("0.00") $</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                              <li class="list-group-item">
+                                 <div class="row">
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-start">
+                                          <h6>Frais de Lesi: </h6>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                       <div class="d-flex justify-content-end">
+                                          <h6>@dblFraisLesi.ToString("0.00") $</h6>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <br />
+               <h3>Prix Total: @dblPrixTotalTotal.ToString("0.00") $</h3>
+               <hr />
+               <div class="row">
+                  <div class="col-sm-6">
+                     <button class="btn btn-primary" style="width: 100%">Envoyer un courriel au client</button>
+                  </div>
+                  <div class="col-sm-6">
+                     @Html.ActionLink("Livrer", "Livrer", "Vendeur", new { id = commande.Key.NoCommande }, new { @class = "btn btn-success", @style = "width:100%" })
+                     <!--<button class="btn btn-success" style="width : 100%">Livrer</button>-->
+                  </div>
+               </div>
+            }
+         </div>
 </body>
 </html>

@@ -104,8 +104,10 @@ namespace PetitesPuces.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult PanierDetail(long id, List<PPArticlesEnPanier> model)
+        /* Fonction qui servait a rediriger par le form à la page SaisieCommande 
+         * Je l'ai enlever pcq ça servait à rien en fait (NJ 2019-02-02)
+         * [HttpPost]
+        public void PanierDetail(long id, List<PPArticlesEnPanier> model)
         {
             
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
@@ -119,8 +121,8 @@ namespace PetitesPuces.Controllers
                                               select panier).ToList();
             db.Connection.Close();
             
-            return View("SaisieCommande", items);
-        }
+            RedirectToAction("SaisieCommande", items);
+        }*/
 
         /// <summary>
         /// Cette fonction du controleur permet d'actualiser 
@@ -529,7 +531,32 @@ namespace PetitesPuces.Controllers
             return View(catVM);
         }
 
-        
+
+
+        public ActionResult RecevoirPrixLivraison(string poids, string panier)
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            Decimal dclPoids = Decimal.Parse(poids);
+            db.Connection.Open();
+            var poidsLivraison = from pLiv in db.GetTable<PPTypesPoids>()
+                                  where pLiv.PoidsMin <= dclPoids && pLiv.PoidsMax >= dclPoids
+                                 orderby pLiv.CodePoids
+                                  select pLiv;
+
+            var numPourPanierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
+                             where ppArtEnPan.NoPanier.ToString().Equals(panier)
+                             select new { ppArtEnPan.PPClients, ppArtEnPan.PPVendeurs };
+
+            var panierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
+                             where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients)
+                             && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs)
+                             select ppArtEnPan;
+
+                ViewData["CodePoids"] = poidsLivraison.First().CodePoids;
+            return View("SaisieCommande",panierList);
+        }
+
+
         // GET: ProduitDetail
         public ActionResult ProduitDetaille() => View();
 

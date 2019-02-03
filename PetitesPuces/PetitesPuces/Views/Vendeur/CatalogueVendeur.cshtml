@@ -10,6 +10,7 @@
     <title>Catalogue du vendeur</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
     <style>
         .sCardItemCatalogue {
             max-width: 17rem;
@@ -22,9 +23,7 @@
     </style>
 </head>
 <body>
-    <div id="navigation">
-        @RenderPage("~/Views/Vendeur/index.cshtml")
-    </div>
+    @Html.Partial("index")
     <div class="container">
         <h1>Catalogue du vendeur Bureau en gros</h1>
         <div class="row">

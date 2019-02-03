@@ -47,37 +47,19 @@
                             <div class="quantity">
                                 <!--<input type="button" value="+" class="plus" onclick="incrementerPanier('@Model[x].NoPanier')">-->
                                 <!--<input type="button" value="-" class="minus" onclick="decrementerPanier('@Model[x].NoPanier')">-->
-                                <input id="@Model[x].NoPanier" type="number" min="1" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                <input id="@Model[x].NoPanier" type="number" min="1" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="" disabled="disabled">
                                 @*Html.TextBoxFor(lst => lst[x].NbItems, new { @type = "number", @min = "0", @max = "99", @step = "1", @class = "qty" })*@
                             </div>
                         </div>
                         
                         <div class="col-4 col-sm-4 col-md-4 text-right">
                             <h6>&nbsp;<strong>@dblPrixProduitCourant.ToString("0.00")$</strong></h6>
-                            <button type="button" class="btn btn-outline-danger btn-xs" id="btnSupprimmer_@Model[x].NoPanier" onclick="supprimerProduit(@Model[x].NoPanier)">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
-                            </button>
                         </div>
                     </div>
                 </div>
                 <hr>
                 compteur++;
             }
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="d-flex justify-content-start">
-                        <button class="btn btn-primary">Afficher le catalogue du vendeur</button>
-                    </div>
-
-                </div>
-
-                <div class="col-sm-6">
-                    <div class="d-flex justify-content-end">
-                        <!--<button class="btn btn-primary" type="submit">Mettre à jour le panier</button>-->
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="card-footer">
@@ -89,8 +71,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <button id="btnPasserCommande" class="btn btn-success" type="submit">
-                            Passer une commande
+                        <button id="btnPasserCommande" class="btn btn-primary" type="submit">
+                            Envoyer un courriel au client
                         </button>
                     </div>
                 </div>

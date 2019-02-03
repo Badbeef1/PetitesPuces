@@ -9,15 +9,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
     <style>
         /*
         * Base structure
         */
 
         /* Move down content because we have a fixed navbar that is 50px tall */
-        body {
+        
+        /*body {
             padding-top: 50px;
-        }
+        }*/
 
         /*
         * Typography
@@ -84,9 +86,7 @@
 </head>
 <body>
     <!--Barre de navigation-->
-    <div id="navigation">
-        @RenderPage("~/Views/Gestionnaire/index.cshtml")
-    </div>
+    @Html.Partial("index")
     <div class="container-fluid">
             <div class="row">    
               <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">

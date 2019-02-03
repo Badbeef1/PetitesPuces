@@ -75,7 +75,6 @@ namespace PetitesPuces.Controllers
             };
 
          ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-
          return View(vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur));
       }
 
@@ -184,7 +183,7 @@ namespace PetitesPuces.Controllers
       }
 
 
-      public ActionResult CommandeDetail(long id)
+      public ActionResult CommandeDetail(int id)
       {
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
@@ -210,9 +209,86 @@ namespace PetitesPuces.Controllers
                            select histoCommande
                            ).ToList();
 
-         AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, historique.First());
+         PPHistoriquePaiements histo = historique.First();
+         AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, histo);
          db.Connection.Close();
          return View(accueilVendeurViewModel);
+      }
+
+      public ActionResult Livrer(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         /*
+          * Aller changer le statut de commande du id passé en paramètre pour enlever la commande
+          * de la liste des commandes non traités 
+         */
+
+         var commandes = (from com in db.GetTable<PPCommandes>()
+                         where com.NoCommande.Equals(id)
+                         select com
+                         );
+
+         //Changer le status de la commande 
+         commandes.First().Statut = 'L';
+
+         //Changer la valeur dans la base de données
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+         }
+
+         //Model page d'accueil vendeur
+         int noVendeur = 10;
+         Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+         //Aller chercher les commandes non traités
+         var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
+                                   where commande.NoVendeur.Equals(10) && commande.Statut.Equals('N')
+                                   select commande
+                                   ).ToList();
+
+         foreach (var commande in commandesNonTraite)
+         {
+            List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>();
+            var query = (from detailsCommande in db.PPDetailsCommandes
+                         where detailsCommande.NoCommande.Equals(commande.NoCommande)
+                         select detailsCommande
+                         ).ToList();
+            lstDetailCommandes = query;
+            lstDetailsProduitsCommandes.Add(commande, lstDetailCommandes);
+         }
+
+         //Aller chercher les paniers du vendeur
+         var paniers = (from panier in db.GetTable<PPArticlesEnPanier>()
+                        where panier.NoVendeur.Equals(noVendeur)
+                        group panier by panier.PPClients
+                        );
+
+         //TODO : Aller chercher le nombres de visites quotidienne
+
+         //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
+         AccueilVendeurViewModel model = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, 10);
+
+
+         db.Connection.Close();
+
+         return View("AccueilVendeur",model);
+      }
+
+      public ActionResult PanierDetailVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //requête pour aller chercher les produits à l'aide d'un vendeur
+         List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                           where panier.NoClient.Equals(id) && panier.NoVendeur.Equals(10)
+                                           select panier).ToList();
+         db.Connection.Close();
+         return View(items);
       }
 
       [ChildActionOnly]

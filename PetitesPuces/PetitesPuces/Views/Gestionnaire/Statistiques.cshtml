@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width" />
     <title>TestStatistiques</title>
 
-
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 
@@ -35,9 +34,7 @@
 
 </head>
 <body>
-   <div id="navigation">
-      @RenderPage("~/Views/Gestionnaire/index.cshtml")
-   </div>
+   @Html.Partial("index")
    <div class="container text-center">
       <div class="header m-5">
          <h2> Statistiques et rapports</h2>
