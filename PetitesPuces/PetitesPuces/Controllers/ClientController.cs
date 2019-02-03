@@ -103,8 +103,10 @@ namespace PetitesPuces.Controllers
         }
 
 
-        [HttpPost]
-        public ActionResult PanierDetail(long id, List<PPArticlesEnPanier> model)
+        /* Fonction qui servait a rediriger par le form à la page SaisieCommande 
+         * Je l'ai enlever pcq ça servait à rien en fait (NJ 2019-02-02)
+         * [HttpPost]
+        public void PanierDetail(long id, List<PPArticlesEnPanier> model)
         {
             
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
@@ -118,8 +120,8 @@ namespace PetitesPuces.Controllers
                                               select panier).ToList();
             db.Connection.Close();
             
-            return View("SaisieCommande", items);
-        }
+            RedirectToAction("SaisieCommande", items);
+        }*/
 
         /// <summary>
         /// Cette fonction du controleur permet d'actualiser 
