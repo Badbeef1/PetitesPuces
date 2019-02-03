@@ -8,6 +8,7 @@ select * from PPCategories
 select * from PPProduits
 select * from PPArticlesEnPanier
 SELECT * FROM PPTypesLivraison
+select * from PPCommandes
 
 
 --Ajouter un vendeur
@@ -71,3 +72,9 @@ VALUES(1,10000,10,GETDATE(),10.00,1,50.00,2.00,1.50,10.5,'N','CESTQUOICECHAMPS')
 
 INSERT INTO PPDetailsCommandes
 VALUES(1,1,1000010,20.00,2)
+
+--Ajouter un historique de paiement
+INSERT INTO PPHistoriquePaiements
+VALUES(1,45.00,10,10000,1,GETDATE(),'FSJGFD545GDFG',10.00,10.00,5.00,2.00,1.50)
+
+update PPCommandes set Statut = 'N' where NoCommande = 1
