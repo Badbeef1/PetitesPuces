@@ -25,7 +25,7 @@ namespace PetitesPuces.Controllers
          db.Connection.Open();
          //Aller chercher toutes les demandes de vendeurs
          var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
-                         where vendeur.Statut.Equals(null)
+                         where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
 
@@ -33,6 +33,68 @@ namespace PetitesPuces.Controllers
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
 
          return View(accueilGestionnaireViewModel);
+      }
+
+      public ActionResult AccepterVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller changer le status du vendeur
+         var vendeurAccepter = (from vendeur in db.GetTable<PPVendeurs>()
+                                where vendeur.NoVendeur.Equals(id)
+                                select vendeur
+                                ).ToList();
+
+         //changer le status du vendeur.
+         vendeurAccepter.First().Statut = 1;
+         // Submit the changes to the database.
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+         }
+         //Aller chercher toutes les demandes de vendeurs
+         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                         where vendeur.Statut.Equals(0)
+                         select vendeur
+                         ).ToList();
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         db.Connection.Close();
+         return View("AccueilGestionnaire", accueilGestionnaireViewModel);
+      }
+
+      public ActionResult RefuserVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller changer le status du vendeur
+         var vendeurAccepter = (from vendeur in db.GetTable<PPVendeurs>()
+                                where vendeur.NoVendeur.Equals(id)
+                                select vendeur
+                                ).ToList();
+
+         //changer le status du vendeur.
+         vendeurAccepter.First().Statut = 2;
+         // Submit the changes to the database.
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+         }
+         //Aller chercher toutes les demandes de vendeurs
+         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                         where vendeur.Statut.Equals(0)
+                         select vendeur
+                         ).ToList();
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         db.Connection.Close();
+         return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
 
       public ActionResult DetailVendeur(int id)

@@ -16,6 +16,30 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+   <script type="text/javascript">
+      function accepter() {
+         console.log($('#saisie_courriel').css("visibility") == "hidden");
+         if ($('#saisie_courriel').css("visibility") == "hidden") {
+            var objSaisieMessage = document.getElementById('saisie_courriel');
+            objSaisieMessage.style.visibility = "visible";
+            var message = 'Bonjour M.@Model.Nom, j\'aimerais ';
+            $('#form_message').text('Accepter');
+         }
+      }
+      function refuser() {
+         if ($('#saisie_courriel').css("visibility") == "hidden") {
+            var objSaisieMessage = document.getElementById('saisie_courriel');
+            objSaisieMessage.style.visibility = "visible";
+           
+            $('#form_message').text('Refuser');
+         }
+      }
+      function annuler() {
+         var objSaisieMessage = document.getElementById('saisie_courriel');
+         objSaisieMessage.style.visibility = "hidden";
+      }
+   </script>
 </head>
 <body>
    @Html.Partial("index")
@@ -139,16 +163,39 @@
                   <h4>% de redevances:</h4>
                </div>
                <div class="col-sm-4">
-                  <input type="number" min="0" max="100" step="1">
+                  <input type="number" min="0" max="100" step="0.25">
                </div>
                <div class="col-sm-4">
-                  <button class="btn btn-success">
-                     Accepter
-                  </button>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <div class="d-flex justify-content-start">
+                           <button class="btn btn-success" style="width:100%;" onclick="accepter()">Accepter</button>
+                           @*Html.ActionLink("Accepter", "AccepterVendeur", "Gestionnaire", new { id = Model.NoVendeur }, new { @class = "btn btn-success", @style = "width:100%;" })*@
+                        </div>
+                     </div>
+                     <div class="col-sm-6">
+                        <div class="d-flex justify-content-end">
+                           <button class="btn btn-danger" style="width:100%" onclick="refuser()">Refuser</button>
+                           @*Html.ActionLink("Refuser", "RefuserVendeur", "Gestionnaire", new { id = Model.NoVendeur }, new { @class = "btn btn-danger", @style = "width:100%" })*@
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
          </div>
       </div>
+      @{
+         MessageViewModel message = new MessageViewModel((int)Model.NoVendeur, 1, Model.Prenom + " " + Model.Nom, "Simon le King", "Bienvenue dans le système ... à générer");
+      }
+
+      <div id="saisie_courriel" style="visibility:hidden">
+
+         <br />
+         <h4>Saisie du message de confirmation</h4>
+         @Html.Partial("Courriel/Message", message);
+      </div>
+      
+      
    </div>
 </body>
 </html>
