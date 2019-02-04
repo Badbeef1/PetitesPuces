@@ -553,7 +553,7 @@ namespace PetitesPuces.Controllers
                              select ppArtEnPan;
 
                 ViewData["CodePoids"] = poidsLivraison.First().CodePoids;
-            return View("SaisieCommande",panierList);
+            return View("SaisieCommande",panierList.ToList());
         }
 
 
