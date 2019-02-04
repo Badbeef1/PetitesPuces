@@ -14,384 +14,416 @@ using PetitesPuces.Models;
 namespace PetitesPuces.Controllers
 {
 
-    public class GestionnaireController : Controller
-    {
-        DataClasses1DataContext dc = new DataClasses1DataContext();
-        public ActionResult Index() => View("AccueilGestionnaire");
+   public class GestionnaireController : Controller
+   {
+      DataClasses1DataContext dc = new DataClasses1DataContext();
+      public ActionResult Index() => View("AccueilGestionnaire");
 
-        public ActionResult AccueilGestionnaire() => View();
+      public ActionResult AccueilGestionnaire()
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller chercher toutes les demandes de vendeurs
+         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                         where vendeur.Statut.Equals(null)
+                         select vendeur
+                         ).ToList();
 
-        public ActionResult GestionInactivite()
-        {
-            List<Inactiver> lstClient = creeClient();
-            List<Inactiver> lstVendeur = creeVendeur();
-            InactiviteViewModel iVM = new InactiviteViewModel
+         db.Connection.Close();
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+
+         return View(accueilGestionnaireViewModel);
+      }
+
+      public ActionResult DetailVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+
+         //Aller chercher le vendeur pour le NoVendeur passé en paramètre
+         var vendeur = (from ven in db.GetTable<PPVendeurs>()
+                        where ven.NoVendeur.Equals(id)
+                        select ven
+                        ).ToList();
+
+         db.Connection.Close();
+
+         return View(vendeur.First());
+      }
+
+      public ActionResult GestionInactivite()
+      {
+         List<Inactiver> lstClient = creeClient();
+         List<Inactiver> lstVendeur = creeVendeur();
+         InactiviteViewModel iVM = new InactiviteViewModel
+         {
+            cbClients = lstClient,
+            cbVendeurs = lstVendeur,
+            blnOpenPDF = false
+         };
+         return View("GestionInactivite", iVM);
+
+      }
+
+      [HttpPost]
+      // Bouton confirmer
+      public ActionResult GestionInactivite(InactiviteViewModel form)
+      {
+         List<Inactiver> lstClients = new List<Inactiver>();
+         List<Inactiver> lstVendeurs = new List<Inactiver>();
+         List<Inactiver> lstClientsDeleter = new List<Inactiver>();
+         List<Inactiver> lstVendeursDeleter = new List<Inactiver>();
+         List<PPArticlesEnPanier> lstPanierAVider = new List<PPArticlesEnPanier>();
+         List<PPProduits> lstProduitNonCommander = new List<PPProduits>();
+
+         List<PPClients> lstClientsPDF = new List<PPClients>();
+         Dictionary<string, List<PPCommandes>> lstClientsCommandesPDF = new Dictionary<string, List<PPCommandes>>();
+         Dictionary<string, int> lstClientsVisitesPDF = new Dictionary<string, int>();
+         Dictionary<PPCommandes, List<PPDetailsCommandes>> lstCommandesDtail = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+
+         List<PPCommandes> lstCommDynamique = new List<PPCommandes>();
+         List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
+
+         String path = "";
+         String date = "";
+
+
+         //Retirer client
+         foreach (Inactiver client in form.cbClients)
+         {
+            if (client.IsSelected == true)
             {
-                cbClients = lstClient,
-                cbVendeurs = lstVendeur,
-                blnOpenPDF = false
-            };
-            return View("GestionInactivite", iVM);
+               lstClientsPDF.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient.ToString()).First());
+               lstClientsVisitesPDF.Add(client.idClient, 0);
+               lstClientsCommandesPDF.Add(client.idClient, null);
+               dc.Connection.Open();
 
-        }
+               // On vide le panier
+               foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+               {
+                  lstPanierAVider.Add(art);
+               }
+               if (lstPanierAVider.Count > 0)
+               {
+                  dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
+               }
 
-        [HttpPost]
-        // Bouton confirmer
-        public ActionResult GestionInactivite(InactiviteViewModel form)
-        {
-            List<Inactiver> lstClients = new List<Inactiver>();
-            List<Inactiver> lstVendeurs = new List<Inactiver>();
-            List<Inactiver> lstClientsDeleter = new List<Inactiver>();
-            List<Inactiver> lstVendeursDeleter = new List<Inactiver>();
-            List<PPArticlesEnPanier> lstPanierAVider = new List<PPArticlesEnPanier>();
-            List<PPProduits> lstProduitNonCommander = new List<PPProduits>();
+               // On retire les visites
+               foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+               {
+                  lstClientsVisitesPDF[client.idClient]++;
+                  dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
+               }
 
-            List<PPClients> lstClientsPDF = new List<PPClients>();
-            Dictionary<string, List<PPCommandes>> lstClientsCommandesPDF = new Dictionary<string, List<PPCommandes>>();
-            Dictionary<string, int> lstClientsVisitesPDF = new Dictionary<string, int>();
-            Dictionary<PPCommandes, List<PPDetailsCommandes>> lstCommandesDtail = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+               // Client ayant une commande, donc le plus d'endroit dans la BDD
+               if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
+               {
 
-            List<PPCommandes> lstCommDynamique = new List<PPCommandes>();
-            List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
+                  // Si la table HistoCommandes n'existe pas on la crée et y met les informations qu'on retire
+                  try
+                  {
+                     dc.ExecuteCommand("SELECT * INTO HistoCommandes FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
+                  }
+                  // Sinon on insère simplement les données
+                  catch (Exception e)
+                  {
+                     dc.ExecuteCommand("INSERT INTO HistoCommandes SELECT * FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
+                  }
 
-            String path = "";
-            String date = "";
+                  // On retire les commandes actives
+                  foreach (PPCommandes comm in dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+                  {
+                     lstCommDynamique.Add(comm);
+                     //Même chose, mais pour HistoDetailsCommandes
+                     try
+                     {
+                        dc.ExecuteCommand("SELECT * INTO HistoDetailsCommandes FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
+                     }
+                     catch (Exception e)
+                     {
+                        dc.ExecuteCommand("INSERT INTO HistoDetailsCommandes SELECT * FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
 
+                     }
+                     // Puis on supprime
+                     lstDetCommDynamique = new List<PPDetailsCommandes>();
+                     foreach (PPDetailsCommandes det in dc.GetTable<PPDetailsCommandes>().Where(m => m.NoCommande == comm.NoCommande).ToList())
+                     {
+                        lstDetCommDynamique.Add(det);
+                        dc.GetTable<PPDetailsCommandes>().DeleteOnSubmit(det);
+                     }
+                     lstCommandesDtail.Add(comm, lstDetCommDynamique);
+                     dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
 
-            //Retirer client
-            foreach (Inactiver client in form.cbClients)
-            {
-                if (client.IsSelected == true)
-                {
-                    lstClientsPDF.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient.ToString()).First());
-                    lstClientsVisitesPDF.Add(client.idClient, 0);
-                    lstClientsCommandesPDF.Add(client.idClient, null);
-                    dc.Connection.Open();
-
-                    // On vide le panier
-                    foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                    {
-                        lstPanierAVider.Add(art);
-                    }
-                    if (lstPanierAVider.Count > 0)
-                    {
-                        dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
-                    }
-
-                    // On retire les visites
-                    foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                    {
-                        lstClientsVisitesPDF[client.idClient]++;
-                        dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
-                    }
-
-                    // Client ayant une commande, donc le plus d'endroit dans la BDD
-                    if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
-                    {
-
-                        // Si la table HistoCommandes n'existe pas on la crée et y met les informations qu'on retire
-                        try
+                  }
+                  lstClientsCommandesPDF[client.idClient] = lstCommDynamique;
+                  if (!Directory.Exists(Server.MapPath("~/Inactiver")))
+                  {
+                     Directory.CreateDirectory(Server.MapPath("~/Inactiver"));
+                  }
+                  date = DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0];
+                  path = "~/Inactiver/" + date + ".pdf";
+                  Document pdf = new Document();
+                  PdfWriter wri = PdfWriter.GetInstance(pdf, new FileStream(Server.MapPath(path), FileMode.Create));
+                  pdf.Open();
+                  PdfPTable pTable = new PdfPTable(3);
+                  int pdfCounter = 0;
+                  foreach (PPClients clientPDF in lstClientsPDF)
+                  {
+                     PdfPCell pNumero = new PdfPCell(new Phrase(pdfCounter + 1));
+                     pNumero.HorizontalAlignment = 2;
+                     PdfPCell pNom = new PdfPCell(new Phrase(clientPDF.Nom + ", " + clientPDF.Prenom));
+                     pNom.HorizontalAlignment = 0;
+                     PdfPCell pVisite = new PdfPCell(new Phrase("Nombre de vendeurs visités " + lstClientsVisitesPDF[clientPDF.NoClient.ToString()]));
+                     pVisite.HorizontalAlignment = 0;
+                     pTable.AddCell(pNumero);
+                     pTable.AddCell(pNom);
+                     pTable.AddCell(pVisite);
+                     foreach (PPCommandes commPDF in lstClientsCommandesPDF[clientPDF.NoClient.ToString()])
+                     {
+                        PdfPCell pTitreCommande = new PdfPCell(new Phrase("Numéro de commande: " + commPDF.NoCommande));
+                        pTitreCommande.Colspan = 3;
+                        pTable.AddCell(pTitreCommande);
+                        foreach (PPDetailsCommandes detComm in lstCommandesDtail[commPDF])
                         {
-                            dc.ExecuteCommand("SELECT * INTO HistoCommandes FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
-                        }
-                        // Sinon on insère simplement les données
-                        catch (Exception e)
-                        {
-                            dc.ExecuteCommand("INSERT INTO HistoCommandes SELECT * FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
-                        }
-
-                        // On retire les commandes actives
-                        foreach (PPCommandes comm in dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                        {
-                            lstCommDynamique.Add(comm);
-                            //Même chose, mais pour HistoDetailsCommandes
-                            try
-                            {
-                                dc.ExecuteCommand("SELECT * INTO HistoDetailsCommandes FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
-                            }
-                            catch (Exception e)
-                            {
-                                dc.ExecuteCommand("INSERT INTO HistoDetailsCommandes SELECT * FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
-
-                            }
-                            // Puis on supprime
-                            lstDetCommDynamique = new List<PPDetailsCommandes>();
-                            foreach (PPDetailsCommandes det in dc.GetTable<PPDetailsCommandes>().Where(m => m.NoCommande == comm.NoCommande).ToList())
-                            {
-                                lstDetCommDynamique.Add(det);
-                                dc.GetTable<PPDetailsCommandes>().DeleteOnSubmit(det);
-                            }
-                            lstCommandesDtail.Add(comm, lstDetCommDynamique);
-                            dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
 
                         }
-                        lstClientsCommandesPDF[client.idClient] =  lstCommDynamique;
-                        if (!Directory.Exists(Server.MapPath("~/Inactiver")))
-                        {
-                            Directory.CreateDirectory(Server.MapPath("~/Inactiver"));
-                        }
-                        date = DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0];
-                        path = "~/Inactiver/"+ date + ".pdf";
-                        Document pdf = new Document();
-                        PdfWriter wri = PdfWriter.GetInstance(pdf, new FileStream(Server.MapPath(path), FileMode.Create));
-                        pdf.Open();
-                        PdfPTable pTable = new PdfPTable(3);
-                        int pdfCounter = 0;
-                        foreach (PPClients clientPDF in lstClientsPDF) {
-                            PdfPCell pNumero = new PdfPCell(new Phrase(pdfCounter + 1));
-                            pNumero.HorizontalAlignment = 2;
-                            PdfPCell pNom = new PdfPCell(new Phrase(clientPDF.Nom + ", " + clientPDF.Prenom));
-                            pNom.HorizontalAlignment = 0;
-                            PdfPCell pVisite = new PdfPCell(new Phrase("Nombre de vendeurs visités " + lstClientsVisitesPDF[clientPDF.NoClient.ToString()]));
-                            pVisite.HorizontalAlignment = 0;
-                            pTable.AddCell(pNumero);
-                            pTable.AddCell(pNom);
-                            pTable.AddCell(pVisite);
-                            foreach(PPCommandes commPDF in lstClientsCommandesPDF[clientPDF.NoClient.ToString()])
-                            {
-                                PdfPCell pTitreCommande = new PdfPCell(new Phrase("Numéro de commande: " + commPDF.NoCommande));
-                                pTitreCommande.Colspan = 3;
-                                pTable.AddCell(pTitreCommande);
-                                foreach(PPDetailsCommandes detComm in lstCommandesDtail[commPDF])
-                                {
+                     }
+                  }
+                  pdf.Add(pTable);
+                  pdf.Close();
+                  System.Web.HttpContext.Current.Response.Write(pdf);
+                  // On met le statut à 2 (Intégrité)
+                  dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
-                                }
-                            }
-                        }
-                        pdf.Add(pTable);
-                        pdf.Close();
-                        System.Web.HttpContext.Current.Response.Write(pdf);
-                        // On met le statut à 2 (Intégrité)
-                        dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
+                  // Stats? 
 
-                        // Stats? 
-
-                    }
-                    // Client n'ayant pas de commande (Avec ou sans panier)
-                    else
-                    {
-                        // On delete (Déjà retiré des autres tables)
-                        dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
-                    }
-                    dc.SubmitChanges();
-                    dc.Connection.Close();
-                } else
-                {
-                    lstClients.Add(client);
-                }
+               }
+               // Client n'ayant pas de commande (Avec ou sans panier)
+               else
+               {
+                  // On delete (Déjà retiré des autres tables)
+                  dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
+               }
+               dc.SubmitChanges();
+               dc.Connection.Close();
             }
-
-            //Retirer vendeur
-            foreach (Inactiver vendeur in form.cbVendeurs)
+            else
             {
-                if (vendeur.IsSelected == true)
-                {
-                    dc.Connection.Open();
-                    foreach (PPProduits produitNonCommande in dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).ToList())
-                    {
-                        if(produitNonCommande.DateVente == null)
-                        {
-                            lstProduitNonCommander.Add(produitNonCommande);
-                        }
-                        else
-                        {
-                            produitNonCommande.Disponibilité = false;
-                        }
-                    }
-                    dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
-                    dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
-                    dc.SubmitChanges();
-                    dc.Connection.Close();
-                }
-                else
-                {
-                    lstVendeurs.Add(vendeur);
-                }
+               lstClients.Add(client);
             }
-            ModelState.Clear();
-            dc = new DataClasses1DataContext();
-            InactiviteViewModel renvoyer = new InactiviteViewModel
+         }
+
+         //Retirer vendeur
+         foreach (Inactiver vendeur in form.cbVendeurs)
+         {
+            if (vendeur.IsSelected == true)
             {
-                cbClients = lstClients,
-                cbVendeurs = lstVendeurs,
-                blnOpenPDF = true,
-                lastPDF = date
-            };
-
-            return View("GestionInactivite", renvoyer);
-        }
-
-        public ActionResult seePDF(string date)
-        {
-
-            string filePath =  "~/Inactiver/"+date+".pdf";
-
-            Response.AddHeader("Content-Disposition", "inline; filename=" + date+".pdf");
-            System.Diagnostics.Debug.WriteLine(date);
-            return File(filePath, "application/pdf");
-
-        }
-        public ActionResult Statistiques() => View();
-        public ActionResult ddlChanger(string id)
-        {
-            List<Inactiver> cbClients = creeClient();
-            List<Inactiver> cbVendeur = creeVendeur();
-            
-            switch (id.Split(';')[0])
-            {
-                case "1":
-                    cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
-                    break;
-                case "2":
-                    cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
-                    break;
-                case "3":
-                    cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
-                    break;
-                case "4":
-                    cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
-                    break;
-                case "5":
-                    cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
-                    break;
-                case "6":
-                    cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
-                    break;
-                case "7":
-                    cbClients = cbClients.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
-                    break;
-                default:
-                    break;
+               dc.Connection.Open();
+               foreach (PPProduits produitNonCommande in dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).ToList())
+               {
+                  if (produitNonCommande.DateVente == null)
+                  {
+                     lstProduitNonCommander.Add(produitNonCommande);
+                  }
+                  else
+                  {
+                     produitNonCommande.Disponibilité = false;
+                  }
+               }
+               dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
+               dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
+               dc.SubmitChanges();
+               dc.Connection.Close();
             }
-            switch (id.Split(';')[1])
+            else
             {
-                case "1":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
-                    break;
-                case "2":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
-                    break;
-                case "3":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
-                    break;
-                case "4":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
-                    break;
-                case "5":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
-                    break;
-                case "6":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
-                    break;
-                case "7":
-                    cbVendeur = cbVendeur.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
-                    break;
-                default:
-                    break;
+               lstVendeurs.Add(vendeur);
             }
-            ModelState.Clear();
-            InactiviteViewModel renvoyer = new InactiviteViewModel
+         }
+         ModelState.Clear();
+         dc = new DataClasses1DataContext();
+         InactiviteViewModel renvoyer = new InactiviteViewModel
+         {
+            cbClients = lstClients,
+            cbVendeurs = lstVendeurs,
+            blnOpenPDF = true,
+            lastPDF = date
+         };
+
+         return View("GestionInactivite", renvoyer);
+      }
+
+      public ActionResult seePDF(string date)
+      {
+
+         string filePath = "~/Inactiver/" + date + ".pdf";
+
+         Response.AddHeader("Content-Disposition", "inline; filename=" + date + ".pdf");
+         System.Diagnostics.Debug.WriteLine(date);
+         return File(filePath, "application/pdf");
+
+      }
+      public ActionResult Statistiques() => View();
+      public ActionResult ddlChanger(string id)
+      {
+         List<Inactiver> cbClients = creeClient();
+         List<Inactiver> cbVendeur = creeVendeur();
+
+         switch (id.Split(';')[0])
+         {
+            case "1":
+               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
+               break;
+            case "2":
+               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
+               break;
+            case "3":
+               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
+               break;
+            case "4":
+               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
+               break;
+            case "5":
+               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
+               break;
+            case "6":
+               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
+               break;
+            case "7":
+               cbClients = cbClients.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
+               break;
+            default:
+               break;
+         }
+         switch (id.Split(';')[1])
+         {
+            case "1":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
+               break;
+            case "2":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
+               break;
+            case "3":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
+               break;
+            case "4":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
+               break;
+            case "5":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
+               break;
+            case "6":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
+               break;
+            case "7":
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
+               break;
+            default:
+               break;
+         }
+         ModelState.Clear();
+         InactiviteViewModel renvoyer = new InactiviteViewModel
+         {
+            cbClients = cbClients,
+            cbVendeurs = cbVendeur
+         };
+         return View("GestionInactivite", renvoyer);
+
+      }
+
+      public List<Inactiver> creeClient()
+      {
+         int counter = 0;
+         List<Inactiver> clients = new List<Inactiver>();
+         foreach (PPClients client in dc.GetTable<PPClients>().Where(m => m.Statut == 1).ToList())
+         {
+            DateTime dateDernierePresence = DateTime.MinValue;
+            PPCommandes derniereCommande = dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.NoClient.ToString()).OrderByDescending(m => m.DateCommande).FirstOrDefault();
+            PPArticlesEnPanier dernierPanier = dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.NoClient.ToString()).OrderByDescending(m => m.DateCreation).FirstOrDefault();
+            if (derniereCommande != null && dernierPanier != null)
             {
-                cbClients = cbClients,
-                cbVendeurs = cbVendeur
-            };
-            return View("GestionInactivite", renvoyer);
-
-        }
-
-        public List<Inactiver> creeClient()
-        {
-            int counter = 0;
-            List<Inactiver> clients = new List<Inactiver>();
-            foreach (PPClients client in dc.GetTable<PPClients>().Where(m => m.Statut == 1).ToList())
-            {
-                DateTime dateDernierePresence = DateTime.MinValue;
-                PPCommandes derniereCommande = dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.NoClient.ToString()).OrderByDescending(m => m.DateCommande).FirstOrDefault();
-                PPArticlesEnPanier dernierPanier = dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.NoClient.ToString()).OrderByDescending(m => m.DateCreation).FirstOrDefault();
-                if (derniereCommande != null && dernierPanier != null)
-                {
-                    if ((DateTime)derniereCommande.DateCommande > (DateTime)dernierPanier.DateCreation)
-                    {
-                        dateDernierePresence = (DateTime)derniereCommande.DateCommande;
-                    }
-                    else
-                    {
-                        dateDernierePresence = (DateTime)dernierPanier.DateCreation;
-                    }
-                }
-                else
-                {
-                    if (derniereCommande != null)
-                    {
-                        dateDernierePresence = (DateTime)derniereCommande.DateCommande;
-                    }
-                    else if (dernierPanier != null)
-                    {
-                        dateDernierePresence = (DateTime)dernierPanier.DateCreation;
-                    }
-
-                }
-                clients.Add(
-                    new Inactiver
-                    {
-                        ID = counter,
-                        IsSelected = false,
-                        idClient = client.NoClient.ToString(),
-                        Nom = client.Nom,
-                        Prenom = client.Prenom,
-                        dernierPresence = dateDernierePresence
-                    });
-                counter++;
+               if ((DateTime)derniereCommande.DateCommande > (DateTime)dernierPanier.DateCreation)
+               {
+                  dateDernierePresence = (DateTime)derniereCommande.DateCommande;
+               }
+               else
+               {
+                  dateDernierePresence = (DateTime)dernierPanier.DateCreation;
+               }
             }
-            return clients.OrderByDescending(m => m.dernierPresence).ToList();
-        }
-
-        public List<Inactiver> creeVendeur()
-        {
-            List<Inactiver> vendeurs = new List<Inactiver>();
-            int counter = 0;
-
-            foreach(PPVendeurs vendeur in dc.GetTable<PPVendeurs>().Where(m => m.Statut == 1).ToList())
+            else
             {
-                DateTime dateDernierePresence = DateTime.MinValue;
-                PPCommandes derniereCommande = dc.GetTable<PPCommandes>().Where(m => m.NoVendeur.ToString() == vendeur.NoVendeur.ToString()).OrderByDescending(m => m.DateCommande).FirstOrDefault();
-                PPProduits dernierProduit = dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.NoVendeur.ToString()).OrderByDescending(m => m.DateCreation).FirstOrDefault();
-                if (derniereCommande != null && dernierProduit != null)
-                {
-                    if ((DateTime)derniereCommande.DateCommande > (DateTime)dernierProduit.DateCreation)
-                    {
-                        dateDernierePresence = (DateTime)derniereCommande.DateCommande;
-                    }
-                    else
-                    {
-                        dateDernierePresence = (DateTime)dernierProduit.DateCreation;
-                    }
-                }
-                else
-                {
-                    if (derniereCommande != null)
-                    {
-                        dateDernierePresence = (DateTime)derniereCommande.DateCommande;
-                    }
-                    else if (dernierProduit != null)
-                    {
-                        dateDernierePresence = (DateTime)dernierProduit.DateCreation;
-                    }
+               if (derniereCommande != null)
+               {
+                  dateDernierePresence = (DateTime)derniereCommande.DateCommande;
+               }
+               else if (dernierPanier != null)
+               {
+                  dateDernierePresence = (DateTime)dernierPanier.DateCreation;
+               }
 
-                }
-                vendeurs.Add(
-                    new Inactiver
-                    {
-                        ID = counter,
-                        IsSelected = false,
-                        idClient = vendeur.NoVendeur.ToString(),
-                        Nom = vendeur.Nom,
-                        Prenom = vendeur.Prenom,
-                        dernierPresence = dateDernierePresence
-                    });
-                counter++;
             }
-            return vendeurs.OrderByDescending(m => m.dernierPresence).ToList();
-        }
-    }
+            clients.Add(
+                new Inactiver
+                {
+                   ID = counter,
+                   IsSelected = false,
+                   idClient = client.NoClient.ToString(),
+                   Nom = client.Nom,
+                   Prenom = client.Prenom,
+                   dernierPresence = dateDernierePresence
+                });
+            counter++;
+         }
+         return clients.OrderByDescending(m => m.dernierPresence).ToList();
+      }
+
+      public List<Inactiver> creeVendeur()
+      {
+         List<Inactiver> vendeurs = new List<Inactiver>();
+         int counter = 0;
+
+         foreach (PPVendeurs vendeur in dc.GetTable<PPVendeurs>().Where(m => m.Statut == 1).ToList())
+         {
+            DateTime dateDernierePresence = DateTime.MinValue;
+            PPCommandes derniereCommande = dc.GetTable<PPCommandes>().Where(m => m.NoVendeur.ToString() == vendeur.NoVendeur.ToString()).OrderByDescending(m => m.DateCommande).FirstOrDefault();
+            PPProduits dernierProduit = dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.NoVendeur.ToString()).OrderByDescending(m => m.DateCreation).FirstOrDefault();
+            if (derniereCommande != null && dernierProduit != null)
+            {
+               if ((DateTime)derniereCommande.DateCommande > (DateTime)dernierProduit.DateCreation)
+               {
+                  dateDernierePresence = (DateTime)derniereCommande.DateCommande;
+               }
+               else
+               {
+                  dateDernierePresence = (DateTime)dernierProduit.DateCreation;
+               }
+            }
+            else
+            {
+               if (derniereCommande != null)
+               {
+                  dateDernierePresence = (DateTime)derniereCommande.DateCommande;
+               }
+               else if (dernierProduit != null)
+               {
+                  dateDernierePresence = (DateTime)dernierProduit.DateCreation;
+               }
+
+            }
+            vendeurs.Add(
+                new Inactiver
+                {
+                   ID = counter,
+                   IsSelected = false,
+                   idClient = vendeur.NoVendeur.ToString(),
+                   Nom = vendeur.Nom,
+                   Prenom = vendeur.Prenom,
+                   dernierPresence = dateDernierePresence
+                });
+            counter++;
+         }
+         return vendeurs.OrderByDescending(m => m.dernierPresence).ToList();
+      }
+   }
 }
