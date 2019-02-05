@@ -5,7 +5,9 @@
 }
 
 <!DOCTYPE html>
-
+@{ 
+   bool booAccepter;
+}
 <html>
 <head>
    <meta name="viewport" content="width=device-width" />
@@ -16,6 +18,87 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+   <script type="text/javascript">
+      function accepter(id) {
+         console.log($('#saisie_courriel').css("visibility") == "hidden");
+         if ($('#saisie_courriel').css("visibility") == "hidden") {
+            var objSaisieMessage = document.getElementById('saisie_courriel');
+            objSaisieMessage.style.visibility = "visible";
+            var message = 'Bonjour M. @Model.Nom, j\'ai l\'honneur de vous annoncez que votre demande de vendeur a été accepté.';
+            $('#form_message').text(message);
+            $('#btn_accepter').prop("disabled", true);
+            $('#btn_refuser').prop("disabled", true);
+            var redevance = $('#redevance').val();
+            redevance = parseFloat(redevance);
+
+            $.ajax({
+               url: "/Gestionnaire/AccepterVendeur",
+               data: { "id": id, "redevance": redevance },
+               success: success,
+               error: error,
+            });
+         }
+      }
+      function refuser(id) {
+         if ($('#saisie_courriel').css("visibility") == "hidden") {
+            var objSaisieMessage = document.getElementById('saisie_courriel');
+            objSaisieMessage.style.visibility = "visible";
+
+            var strMessageAuto = 'Bonjour M. @Model.Nom, je suis désoler de vous annoncez que votre demande a été refusé.';
+            $('#form_message').text(strMessageAuto);
+            $('#btn_accepter').prop("disabled", true);
+            $('#btn_refuser').prop("disabled", true);
+
+            var redevance = $('#redevance').val();
+            redevance = parseFloat(redevance);
+
+
+            $.ajax({
+               url: "/Gestionnaire/RefuserVendeur",
+               data: { "id": id, "redevance": redevance },
+               success: success,
+               error: error,
+            });
+         }
+      }
+      //Cette fonction à l'aide d'une requête AJAX annule les modfications de la gestion des demadnes du vendeur
+      function annuler(id) {
+         $.ajax({
+            url: "/Gestionnaire/CancellerAjout",
+            data: { "id": id },
+            success: success,
+            error: error,
+         });
+      }
+      function confirmer(noExpediteur, noDestinataire){
+         //Aller chercher le message
+         var message = $('#form_message').text()
+         console.log('message: ' + message);
+         if (message.trim() != '') {
+            $.ajax({
+               url: "/Gestionnaire/EnvoyerMessageDemandeVendeur",
+               data: { "noDestinataire": noDestinataire, "noExpediteur": noExpediteur, "message": message },
+               success: retourAccueil,
+               error: error,
+            });
+         }
+         else {
+            console.log('écrit un message pour l\'envoyer');
+         }
+      }
+
+      function success() {
+         console.log('réussi');
+      }
+      function retourAccueil(){
+         console.log('skurrrrrr');
+         location.href = "/Gestionnaire/AccueilGestionnaire";
+      }
+      function error() {
+         console.log('erreur')
+      }
+   </script>
 </head>
 <body>
    @Html.Partial("index")
@@ -139,16 +222,39 @@
                   <h4>% de redevances:</h4>
                </div>
                <div class="col-sm-4">
-                  <input type="number" min="0" max="100" step="1">
+                  <input id="redevance" type="number" min="0" max="100" step="0.25">
                </div>
                <div class="col-sm-4">
-                  <button class="btn btn-success">
-                     Accepter
-                  </button>
+                  <div class="row">
+                     <div class="col-sm-6">
+                        <div class="d-flex justify-content-start">
+                           <button id="btn_accepter" class="btn btn-success" style="width:100%;" onclick="accepter(@Model.NoVendeur); @{booAccepter = true;}">Accepter</button>
+                           @*Html.ActionLink("Accepter", "AccepterVendeur", "Gestionnaire", new { id = Model.NoVendeur }, new { @class = "btn btn-success", @style = "width:100%;" })*@
+                        </div>
+                     </div>
+                     <div class="col-sm-6">
+                        <div class="d-flex justify-content-end">
+                           <button id="btn_refuser" class="btn btn-danger" style="width:100%" onclick="refuser(@Model.NoVendeur); @{booAccepter = false;}">Refuser</button>
+                           @*Html.ActionLink("Refuser", "RefuserVendeur", "Gestionnaire", new { id = Model.NoVendeur }, new { @class = "btn btn-danger", @style = "width:100%" })*@
+                        </div>
+                     </div>
+                  </div>
                </div>
             </div>
          </div>
       </div>
+      @{
+         MessageViewModel message = new MessageViewModel((int)Model.NoVendeur, 1, Model.Prenom + " " + Model.Nom, "Simon le King", "Bienvenue dans le système ... à générer");
+      }
+
+      <div id="saisie_courriel" style="visibility:hidden">
+
+         <br />
+         <h4>Saisie du message de confirmation</h4>
+         @Html.Partial("Courriel/Message", message);
+      </div>
+      
+      
    </div>
 </body>
 </html>

@@ -3,12 +3,18 @@ use BD6B8_424R_TESTS
 
 select * from PPClients
 select * from PPVendeurs
+select * from PPGestionnaire
 
 select * from PPCategories
 select * from PPProduits
 select * from PPArticlesEnPanier
 SELECT * FROM PPTypesLivraison
 select * from PPCommandes
+
+select * from PPMessages
+select * from PPDestinataires
+select * from PPLieu
+
 
 
 --Ajouter un vendeur
@@ -40,6 +46,8 @@ INSERT INTO PPArticlesEnPanier
 VALUES (8,10100,10,1000020,GETDATE(),1)
 
 delete PPVendeurs
+delete PPDestinataires
+delete PPMessages
 
 
 --Ajouter des produits
@@ -78,3 +86,19 @@ INSERT INTO PPHistoriquePaiements
 VALUES(1,45.00,10,10000,1,GETDATE(),'FSJGFD545GDFG',10.00,10.00,5.00,2.00,1.50)
 
 update PPCommandes set Statut = 'N' where NoCommande = 1
+
+--Ajouter les lieux dans la BD
+INSERT INTO PPLieu
+VALUES(1,'Boite de réception')
+
+INSERT INTO PPLieu
+VALUES(2,'Boite envoyé')
+
+INSERT INTO PPLieu
+VALUES(3,'Boite supprimé')
+
+INSERT INTO PPLieu
+VALUES(4,'Brouillon')
+
+INSERT INTO PPLieu
+VALUES(5,'Supprimé définitivement')

@@ -1,19 +1,27 @@
 ﻿@using PetitesPuces.Models
 @model List<PPArticlesEnPanier>
 @{
+    double poidsKg = 0;
+    string codePoids  = "";
     Layout = null;
+    if (ViewData["CodePoids"] != null && !ViewData["CodePoids"].ToString().Trim().Equals(""))
+    {
+        codePoids = ViewData["CodePoids"].ToString().Trim();
+    }
+    else
+    {
+        codePoids = "";
+    }
 }
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-<script>
-    @{ 
-        double poidsKg = 0;
-    }
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"/>
+
+<script type="text/javascript">
     $(document).ready(function () {
         $("#btnContinueMagasiner").click(function () {
             window.location.href = "/Client/Catalogue"
@@ -28,18 +36,7 @@
         });
 
         // Bouton choix de poste, second onglet
-        $("#btnChoixDePoste").click(function () {
-            var poids = @poidsKg;
-            var panier = @Model[0].NoPanier;
-            $.ajax({
-                url: "/Client/RecevoirPrixLivraison",
-                data: { "poids": poids, "panier": panier},
-                success: successPoids,
-                error: errorPoids,
-            });
-            $("#collapse_zoneInfos").collapse();
-            $("#collapse_typeLivraison").collapse("show");
-        });
+
 
     });
     function quantitechange(e) {
@@ -73,7 +70,16 @@
         $("#body").html(model)
         //console.log(model);
     }
-    function successPoids() {
+    function successPoids(model) {
+        // Rajouter la ligne de frais de livraison, modifier input pour texte (quantité), enlever btn supprimer
+        $("#radioButtonLivraison").attr("hidden", false);
+        $("#verifPoids").attr("hidden", true);
+        $("#itemEpurer").attr("hidden", false);
+        $("#itemComplet").attr("hidden", true);
+        $("#collapse_zoneCommande").collapse("show");
+        $("#infoPerso").attr("hidden", true);
+        $("#btnInformationLivraison").removeClass("disabled");
+        $("#btnTypeLivraison").removeClass("disabled");
     }
 
     function error(error) {
@@ -240,7 +246,35 @@
                         @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
                         @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
                         @Html.HiddenFor(lst => lst[x].NbItems)
-                        <div class="row">
+                        <div class="row" id="itemEpurer" hidden>
+                            <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
+                                <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
+                            </div>
+                            <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5 vertical-align-center">
+                                <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                            </div>
+                            <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
+                                <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
+                                    <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
+
+                                </div>
+                                <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
+                                    <div class="quantity">
+                                        <span id="@Model[x].NoPanier" type="text" >@Model[x].NbItems</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
+                                    <h6>
+                                        <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
+                                    </h6>
+                                </div>
+                                <div class="col-1 col-sm-1 col-md-1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="itemComplet">
                             <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
                                 <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
                             </div>
@@ -280,16 +314,51 @@
                     }
                     <div class="card-footer">
                         <div class="row" style="padding:0px;margin:0px">
-                            <div class="col-4 text-left">
-                                Poids de la livraison :
-                                @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
-                                {
-                                    <span style="color:green" class="border border-success"> @poidsKg Kg/ @Model[0].PPVendeurs.PoidsMaxLivraison Kg</span>
+                            <div class="col-4 text-left" hidden id="radioButtonLivraison">
+                                <div class="align-items-left ">
+                                    <input type="radio" name="typePoste" value="1" checked />Poste régulière <br />
+                                    <input type="radio" name="typePoste" value="2" />Poste prioritaire <br />
+                                    <input type="radio" name="typePoste" value="3" />Transport privé <br />
+                                    <br />
+                                    <span>@ViewData["CodePoids"]</span>
+                                </div>
+                            </div>
+                                
+                            <div class="col-4 text-left" id="verifPoids">
+                                <div class="row">
+                                @if (Model[0].PPVendeurs.PoidsMaxLivraison < poidsKg)
+                                {<br /> <br />
+                                    <span style="color:red">Le poids de livraison maximal est dépassé</span>
                                 }
-                                else
-                                {
-                                    <span class="border border-danger" style="color:red"> @poidsKg Kg / @Model[0].PPVendeurs.PoidsMaxLivraison Kg</span>
-                                }
+                                </div>
+                                <div class="row">
+                                    <div class="col-9 text-left">
+
+                                        <div class="row">
+                                            Poids de la livraison :
+                                        </div>
+
+                                        <div class="row">
+                                            Poids maximal :
+                                            </div>
+                                        </div>
+                                    <div class="col-3 text-right">
+                                        <div class="row">
+                                            @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
+                                            {
+                                                <span style="color:green"> @poidsKg Lbs</span>
+                                                <br />
+                                                <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
+                                            }
+                                            else
+                                            {
+                                                <span style="color:red"> @poidsKg Lbs</span>
+                                                <br />
+                                                <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
+                                            }
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
                             <div class="col-6 text-right" style="padding-right:0px">
                                 <h5>Sous-total</h5>
@@ -297,7 +366,7 @@
                                 @{
                                     if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
                                     {
-                                        <h5> TVQ(9.975 %) </h5>
+                                        <h5> TVQ (9.975%) </h5>
                                     }
                                 }
 
@@ -354,7 +423,7 @@
                                     else
                                     {
 
-                                        <button id="btnPasserCommande" class="btn btn-success" disabled type="submit" tool>
+                                        <button id="btnPasserCommande" class="btn btn-success" title="Veuillez diminuer le poids total de la livraison" disabled type="submit" tool>
                                             Passer aux informations de livraison
                                         </button>
                                     }
@@ -406,7 +475,7 @@
 
                     <div class="row">
                         <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" />
+                        <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled/>
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="rue" type="text" value="@Model[0].PPClients.Rue" />
                     </div>
@@ -481,35 +550,29 @@
                         <div class="offset-md-4"></div>
                         <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer au type de livraison" style="width:30%" />
                         <div class="offset-md-4"></div>
+                        <script>
+                                                $("#btnChoixDePoste").click(function () {
+                                                @{
+                                                <text>
+                                                var poids = @poidsKg.ToString();
+                                                var panier = @Model[0].NoPanier;
+                                                </text>
+                                                }
+                                                $.ajax({
+                                                    url: "/Client/RecevoirPrixLivraison",
+                                                    data: { "poids": poids, "panier": panier},
+                                                    success: successPoids,
+                                                    error: errorPoids,
+                                                });
+                                                $("#collapse_zoneInfos").collapse();
+                                                $("#collapse_typeLivraison").collapse("show");
+                                            });
+                        </script>
                     </div>
                 </div>
             </div>
         </div>
         <!-- Choix de type de livraison -->
-        <div id="divLivraison" class="card shopping-cart">
-            <div class="card-header" id="heading_typeLivraison">
-
-                <div class="float-left">
-                    <h5 class="mb-0">
-                        <button id="btnTypeLivraison" class="btn btn-link text-s disabled" data-toggle="collapse" data-target="#collapse_typeLivraison" aria-expanded="true" aria-controls="#collapse_typeLivraison">
-                            Type de livraison
-                        </button>
-                    </h5>
-                </div>
-            </div>
-
-            <div id="collapse_typeLivraison" class="collapse" aria-labelledby="btnTypeLivraison" data-parent="#divLivraison">
-
-                <div class="card-body align-items-center">
-                    <input type="radio" name="typePoste" value="1" checked />Poste régulière <br />
-                    <input type="radio" name="typePoste" value="2" checked />Poste prioritaire <br />
-                    <input type="radio" name="typePoste" value="3" checked />Transport privé <br />
-                    <br />
-                    <span>@ViewData["CodePoids"]</span>
-                </div>
-
-            </div>
-        </div>
     </div>
 </body>
 </html>

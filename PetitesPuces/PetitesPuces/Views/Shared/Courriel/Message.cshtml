@@ -1,0 +1,46 @@
+﻿@using PetitesPuces.Models
+@model MessageViewModel
+
+<div class="container-fluid bg-light py-3">
+   <!--<form id="contact-form" method="post" action="contact.php" role="form">-->
+   <div class="messages"></div>
+   <div class="controls">
+      <div class="row">
+         <div class="col-sm-6">
+            <div class="form-group">
+               <label for="form_name">Expéditeur</label>
+               <input id="form_name" type="text" name="surname" class="form-control" placeholder="" required="required" data-error="name is required." value="@Model.nomExpediteur">
+               <div class="help-block with-errors"></div>
+            </div>
+         </div>
+         <div class="col-sm-6">
+            <div class="form-group">
+               <label for="form_email">Destinataire</label>
+               <input id="form_email" type="email" name="email" class="form-control" placeholder="" required="required" data-error="Valid email is required." value="@Model.nomDestinataire">
+               <div class="help-block with-errors"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="clearfix"></div>
+
+   <div class="row">
+      <div class="col-md-12">
+         <div class="form-group">
+            <label for="form_message">Message</label>
+
+            <textarea id="form_message" name="message" class="form-control" placeholder="Entrez votre message" rows="4" required="required" data-error="send a message.">@Model.message</textarea>
+            <div class="help-block with-errors"></div>
+         </div>
+      </div>
+      <div class="col-md-6">
+         <button id="btn_confirmer" class="btn btn-success" onclick="confirmer(@Model.noExpediteur,@Model.noDestinataire)" style="width:100%;">Confirmer</button>
+      </div>
+      <div class="col-md-6">
+         <button id="btnCanceller" class="btn btn-danger" style="width:100%" onclick="document.getElementById('saisie_courriel').style.visibility = 'hidden'; $('#btn_accepter').prop('disabled', false);$('#btn_refuser').prop('disabled', false);annuler(@Model.noDestinataire)">
+            Annuler
+         </button>
+      </div>
+   </div>
+   <!--</form>-->
+</div>

@@ -552,12 +552,12 @@ namespace PetitesPuces.Controllers
                              select new { ppArtEnPan.PPClients, ppArtEnPan.PPVendeurs };
 
             var panierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
-                             where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients)
-                             && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs)
+                             where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients.NoClient)
+                             && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs.NoVendeur)
                              select ppArtEnPan;
 
                 ViewData["CodePoids"] = poidsLivraison.First().CodePoids;
-            return View("SaisieCommande",panierList);
+            return View("SaisieCommande",panierList.ToList());
         }
 
 

@@ -219,6 +219,7 @@
     <Compile Include="Models\EntrepriseCategorie.cs" />
     <Compile Include="Models\Extentions.cs" />
     <Compile Include="Models\InactiviteViewModel.cs" />
+    <Compile Include="Models\MessageViewModel.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
     <Compile Include="Models\ProduitPanier.cs" />
     <Compile Include="Models\Province.cs" />
@@ -303,6 +304,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Gestionnaire\DetailVendeur.cshtml" />
+    <Content Include="Views\Shared\Courriel\Message.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
