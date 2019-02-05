@@ -35,7 +35,7 @@ namespace PetitesPuces.Controllers
          return View(accueilGestionnaireViewModel);
       }
 
-      public ActionResult AccepterVendeur(int id)
+      public ActionResult AccepterVendeur(int id, decimal redevance)
       {
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
@@ -47,6 +47,7 @@ namespace PetitesPuces.Controllers
 
          //changer le status du vendeur.
          vendeurAccepter.First().Statut = 1;
+         vendeurAccepter.First().Pourcentage = redevance;
          // Submit the changes to the database.
          try
          {
@@ -66,7 +67,39 @@ namespace PetitesPuces.Controllers
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
 
-      public ActionResult RefuserVendeur(int id)
+      public ActionResult CancellerAjout(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller changer le status du vendeur
+         var vendeurAccepter = (from vendeur in db.GetTable<PPVendeurs>()
+                                where vendeur.NoVendeur.Equals(id)
+                                select vendeur
+                                ).ToList();
+
+         //changer le status du vendeur.
+         vendeurAccepter.First().Statut = 0;
+         vendeurAccepter.First().Pourcentage = (decimal)0.00;
+         // Submit the changes to the database.
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+         }
+         //Aller chercher toutes les demandes de vendeurs
+         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                         where vendeur.Statut.Equals(0)
+                         select vendeur
+                         ).ToList();
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         db.Connection.Close();
+         return View("AccueilGestionnaire", accueilGestionnaireViewModel);
+      }
+
+      public ActionResult RefuserVendeur(int id, decimal redevance)
       {
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
@@ -78,6 +111,7 @@ namespace PetitesPuces.Controllers
 
          //changer le status du vendeur.
          vendeurAccepter.First().Statut = 2;
+         vendeurAccepter.First().Pourcentage = redevance;
          // Submit the changes to the database.
          try
          {
@@ -87,6 +121,60 @@ namespace PetitesPuces.Controllers
          {
             Console.WriteLine(e);
          }
+         //Aller chercher toutes les demandes de vendeurs
+         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                         where vendeur.Statut.Equals(0)
+                         select vendeur
+                         ).ToList();
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         db.Connection.Close();
+         return View("AccueilGestionnaire", accueilGestionnaireViewModel);
+      }
+
+      public ActionResult EnvoyerMessageDemandeVendeur(int noDestinataire, int noExpediteur, string message)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller chercher le dernier noMessage
+         var messages = (from msg in db.GetTable<PPMessages>()
+                         select msg
+                         ).ToList();
+         int noMessages = messages.Count()+1;
+
+         //Ajouter un message
+         PPMessages ppMessage = new PPMessages
+         {
+            NoMsg = noMessages,
+            NoExpediteur = noExpediteur,
+            DescMsg = message,
+            FichierJoint = null,
+            Lieu = 2,
+            dateEnvoi = DateTime.Now,
+            objet = "Demande de vendeur"
+         };
+         //Ajouter un Destinataire
+         PPDestinataires ppDestinataires = new PPDestinataires
+         {
+            NoMsg = noMessages,
+            NoDestinataire = noDestinataire,
+            EtatLu = 0,
+            Lieu = 1
+         };
+
+         //Ajouter les nouveaux objets à leur collection
+         db.PPMessages.InsertOnSubmit(ppMessage);
+         db.PPDestinataires.InsertOnSubmit(ppDestinataires);
+         
+         // Submit the change to the database.
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch(Exception e)
+         {
+            Console.WriteLine(e);
+         }
+
          //Aller chercher toutes les demandes de vendeurs
          var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
                          where vendeur.Statut.Equals(0)

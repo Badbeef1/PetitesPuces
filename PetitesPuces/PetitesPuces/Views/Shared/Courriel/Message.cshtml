@@ -28,15 +28,16 @@
       <div class="col-md-12">
          <div class="form-group">
             <label for="form_message">Message</label>
+
             <textarea id="form_message" name="message" class="form-control" placeholder="Entrez votre message" rows="4" required="required" data-error="send a message.">@Model.message</textarea>
             <div class="help-block with-errors"></div>
          </div>
       </div>
       <div class="col-md-6">
-         <input type="submit" class="btn btn-success" value="Confirmer" style="width:100%">
+         <button id="btn_confirmer" class="btn btn-success" onclick="confirmer(@Model.noExpediteur,@Model.noDestinataire)" style="width:100%;">Confirmer</button>
       </div>
       <div class="col-md-6">
-         <button id="btnCanceller" class="btn btn-danger" style="width:100%" onclick="document.getElementById('saisie_courriel').style.visibility='hidden'">
+         <button id="btnCanceller" class="btn btn-danger" style="width:100%" onclick="document.getElementById('saisie_courriel').style.visibility = 'hidden'; $('#btn_accepter').prop('disabled', false);$('#btn_refuser').prop('disabled', false);annuler(@Model.noDestinataire)">
             Annuler
          </button>
       </div>

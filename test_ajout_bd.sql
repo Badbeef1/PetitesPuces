@@ -12,6 +12,7 @@ SELECT * FROM PPTypesLivraison
 select * from PPCommandes
 
 select * from PPMessages
+select * from PPDestinataires
 select * from PPLieu
 
 
@@ -45,6 +46,8 @@ INSERT INTO PPArticlesEnPanier
 VALUES (8,10100,10,1000020,GETDATE(),1)
 
 delete PPVendeurs
+delete PPDestinataires
+delete PPMessages
 
 
 --Ajouter des produits
