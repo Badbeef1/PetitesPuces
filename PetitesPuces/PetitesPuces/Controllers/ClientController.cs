@@ -539,7 +539,7 @@ namespace PetitesPuces.Controllers
 
         public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif)
         {
-            if (tarif != "0") ViewData["cbChecked"] = tarif;
+            ViewData["cbChecked"] = tarif;
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             Decimal dclPoids = Decimal.Parse(poids.Replace(".",","));
             db.Connection.Open();
@@ -562,6 +562,7 @@ namespace PetitesPuces.Controllers
                                 select typeLiv;
 
             ViewData["TypeLivraison"] = typeLivraison.ToList();
+
             var numPourPanierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
                              where ppArtEnPan.NoPanier.ToString().Equals(panier)
                              select new { ppArtEnPan.PPClients, ppArtEnPan.PPVendeurs };
