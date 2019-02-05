@@ -83,19 +83,25 @@
     </style>
     <script type="text/javascript">
         function rechercheChangement(optionSelection) {
-            var elementDate = document.getElementById("dtRecherche");
+            var divDateDebut = document.getElementById("divRechercheDateDebut");
+            var divDateFin = document.getElementById("divRechercheDateFin");
             var elementZonetext = document.getElementById("tbRecherche");
 
-            var strVisible = "display: block;";
+            var strVisibleDiv = "d-flex";
             var strInvisible = "display: none;";
+            var strVisibleInput = "display: block;";
 
             if (optionSelection == 4) {
-                elementDate.style = strVisible;
                 elementZonetext.style = strInvisible;
+
+                divDateDebut.classList.add(strVisibleDiv);
+                divDateFin.classList.add(strVisibleDiv);
             }
             else {
-                elementDate.style = strInvisible;
-                elementZonetext.style = strVisible;
+                elementZonetext.style = strVisibleInput;
+
+                divDateDebut.classList.remove(strVisibleDiv);
+                divDateFin.classList.remove(strVisibleDiv);
             }
         }
     </script>
@@ -127,14 +133,24 @@
                                 <h6 class="card-header">Recherche</h6>
                                 <div class="card-body d-flex flex-wrap">
                                     <input type="text" id="tbRecherche" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12">
-                                    <input type="date" id="dtRecherche" style="display: none;" class="form-control border-primary" /><br />
+                                    <div id="divRechercheDateDebut" style="display: none;">
+                                        <label for="dtRechercheDebut" class="col-form-label">Date de début</label>
+                                        <input type="date" id="dtRechercheDebut" class="form-control border-primary" />
+                                    </div>
+                                    <div id="divRechercheDateFin" style="display:none;">
+                                        <label for="dtRechercheFin" class="col-form-label">Date de fin</label>
+                                        <input type="date" id="dtRechercheFin" class="form-control border-primary" />
+                                    </div>
+                                    <br />
                                     <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3" onchange="rechercheChangement(this.value)">
                                         <option value="1" selected>Nom produit</option>
                                         <option value="2">Numéro produit</option>
                                         <option value="3">Description produit</option>
                                         <option value="4">Date de parution</option>
+                                        <option value="5">Catégorie</option>
                                     </select>
                                     <button type="submit" class="btn btn-outline-primary mt-3 ml-auto">Lancer recherche <span class="fas fa-search"></span></button>
+                                    <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriNum, @categorie = Model.strCategorie, @recherche = Model.strRecherche, Model.pageDimension, @typeRech = Model.intTypeRecherche})" class="btn btn-outline-primary">Numéro de produit </a>
                                 </div>
                             </div>
                         </div>
