@@ -5,7 +5,9 @@
 }
 
 <!DOCTYPE html>
-
+@{ 
+   bool booAccepter;
+}
 <html>
 <head>
    <meta name="viewport" content="width=device-width" />
@@ -23,16 +25,17 @@
          if ($('#saisie_courriel').css("visibility") == "hidden") {
             var objSaisieMessage = document.getElementById('saisie_courriel');
             objSaisieMessage.style.visibility = "visible";
-            var message = 'Bonjour M.@Model.Nom, j\'aimerais ';
-            $('#form_message').text('Accepter');
+            var message = 'Bonjour M. @Model.Nom, j\'ai l\'honneur de vous annoncez que votre demande de vendeur a été accepté.';
+            $('#form_message').text(message);
          }
       }
       function refuser() {
          if ($('#saisie_courriel').css("visibility") == "hidden") {
             var objSaisieMessage = document.getElementById('saisie_courriel');
             objSaisieMessage.style.visibility = "visible";
-           
-            $('#form_message').text('Refuser');
+
+            var strMessageAuto = 'Bonjour M. @Model.Nom, je suis désoler de vous annoncez que votre demande a été refusé.';
+            $('#form_message').text(strMessageAuto);
          }
       }
       function annuler() {
@@ -169,13 +172,13 @@
                   <div class="row">
                      <div class="col-sm-6">
                         <div class="d-flex justify-content-start">
-                           <button class="btn btn-success" style="width:100%;" onclick="accepter()">Accepter</button>
+                           <button class="btn btn-success" style="width:100%;" onclick="accepter(); @{booAccepter = true;}">Accepter</button>
                            @*Html.ActionLink("Accepter", "AccepterVendeur", "Gestionnaire", new { id = Model.NoVendeur }, new { @class = "btn btn-success", @style = "width:100%;" })*@
                         </div>
                      </div>
                      <div class="col-sm-6">
                         <div class="d-flex justify-content-end">
-                           <button class="btn btn-danger" style="width:100%" onclick="refuser()">Refuser</button>
+                           <button class="btn btn-danger" style="width:100%" onclick="refuser(); @{booAccepter = false;}">Refuser</button>
                            @*Html.ActionLink("Refuser", "RefuserVendeur", "Gestionnaire", new { id = Model.NoVendeur }, new { @class = "btn btn-danger", @style = "width:100%" })*@
                         </div>
                      </div>
