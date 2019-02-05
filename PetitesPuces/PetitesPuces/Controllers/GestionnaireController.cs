@@ -21,6 +21,7 @@ namespace PetitesPuces.Controllers
 
       public ActionResult AccueilGestionnaire()
       {
+         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
          //Aller chercher toutes les demandes de vendeurs
@@ -29,9 +30,28 @@ namespace PetitesPuces.Controllers
                          select vendeur
                          ).ToList();
 
-         db.Connection.Close();
-         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         var categories = (from categorie in db.GetTable<PPCategories>()
+                           select categorie
+                           ).ToList();
 
+         foreach(PPCategories cat in categories)
+         {
+            var query = (from produit in db.GetTable<PPProduits>()
+                         where produit.NoCategorie.Equals(cat.NoCategorie)
+                         select produit
+                         ).ToList();
+            if (query.Count() > 0)
+            {
+               dicCategories.Add(cat, false);
+            }
+            else
+            {
+               dicCategories.Add(cat, true);
+            }
+         }
+         
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories);
+         db.Connection.Close();
          return View(accueilGestionnaireViewModel);
       }
 
@@ -62,7 +82,29 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
-         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+
+         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
+         var categories = (from categorie in db.GetTable<PPCategories>()
+                           select categorie
+                           ).ToList();
+
+         foreach (PPCategories cat in categories)
+         {
+            var query = (from produit in db.GetTable<PPProduits>()
+                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         select produit
+                         ).ToList();
+            if (query.Count() > 0)
+            {
+               dicCategories.Add(cat, false);
+            }
+            else
+            {
+               dicCategories.Add(cat, true);
+            }
+         }
+
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories);
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -94,7 +136,28 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
-         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
+         var categories = (from categorie in db.GetTable<PPCategories>()
+                           select categorie
+                           ).ToList();
+
+         foreach (PPCategories cat in categories)
+         {
+            var query = (from produit in db.GetTable<PPProduits>()
+                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         select produit
+                         ).ToList();
+            if (query.Count() > 0)
+            {
+               dicCategories.Add(cat, false);
+            }
+            else
+            {
+               dicCategories.Add(cat, true);
+            }
+         }
+
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories);
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -126,7 +189,81 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
-         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
+         var categories = (from categorie in db.GetTable<PPCategories>()
+                           select categorie
+                           ).ToList();
+
+         foreach (PPCategories cat in categories)
+         {
+            var query = (from produit in db.GetTable<PPProduits>()
+                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         select produit
+                         ).ToList();
+            if (query.Count() > 0)
+            {
+               dicCategories.Add(cat, false);
+            }
+            else
+            {
+               dicCategories.Add(cat, true);
+            }
+         }
+
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories);
+         db.Connection.Close();
+         return View("AccueilGestionnaire", accueilGestionnaireViewModel);
+      }
+
+      public ActionResult SupprimerCategorie(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller changer le status du vendeur
+         var categorie = (from cat in db.GetTable<PPCategories>()
+                          where cat.NoCategorie.Equals(id)
+                          select cat
+                           ).ToList();
+
+         db.PPCategories.DeleteOnSubmit(categorie.First());
+
+         //Faire les modifications dans la base de données
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+         }
+
+         //Aller chercher toutes les demandes de vendeurs
+         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                         where vendeur.Statut.Equals(0)
+                         select vendeur
+                         ).ToList();
+         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
+         var categories = (from cat in db.GetTable<PPCategories>()
+                           select cat
+                           ).ToList();
+
+         foreach (PPCategories cat in categories)
+         {
+            var query = (from produit in db.GetTable<PPProduits>()
+                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         select produit
+                         ).ToList();
+            if (query.Count() > 0)
+            {
+               dicCategories.Add(cat, false);
+            }
+            else
+            {
+               dicCategories.Add(cat, true);
+            }
+         }
+
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories);
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -180,7 +317,27 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
-         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs);
+         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
+         var categories = (from cat in db.GetTable<PPCategories>()
+                           select cat
+                           ).ToList();
+
+         foreach (PPCategories cat in categories)
+         {
+            var query = (from produit in db.GetTable<PPProduits>()
+                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         select produit
+                         ).ToList();
+            if (query.Count() > 0)
+            {
+               dicCategories.Add(cat, false);
+            }
+            else
+            {
+               dicCategories.Add(cat, true);
+            }
+         }
+         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories);
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }

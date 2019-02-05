@@ -30,6 +30,7 @@
             $('#btn_accepter').prop("disabled", true);
             $('#btn_refuser').prop("disabled", true);
             var redevance = $('#redevance').val();
+            redevance = redevance.replace(",", ".");
             redevance = parseFloat(redevance);
 
             $.ajax({
@@ -51,6 +52,7 @@
             $('#btn_refuser').prop("disabled", true);
 
             var redevance = $('#redevance').val();
+            redevance = redevance.replace(",", ".");
             redevance = parseFloat(redevance);
 
 
@@ -73,7 +75,7 @@
       }
       function confirmer(noExpediteur, noDestinataire){
          //Aller chercher le message
-         var message = $('#form_message').text()
+         var message = $('#form_message').text();
          console.log('message: ' + message);
          if (message.trim() != '') {
             $.ajax({
@@ -244,7 +246,7 @@
          </div>
       </div>
       @{
-         MessageViewModel message = new MessageViewModel((int)Model.NoVendeur, 1, Model.Prenom + " " + Model.Nom, "Simon le King", "Bienvenue dans le système ... à générer");
+         MessageViewModel message = new MessageViewModel(1, (int)Model.NoVendeur, Model.Prenom + " " + Model.Nom, "Simon le King", "Bienvenue dans le système ... à générer");
       }
 
       <div id="saisie_courriel" style="visibility:hidden">

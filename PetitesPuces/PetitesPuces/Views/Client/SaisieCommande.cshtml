@@ -2,7 +2,6 @@
 @model List<PPArticlesEnPanier>
 @{
     double poidsKg = 0;
-    string codePoids  = "";
     Layout = null;
 
 }
@@ -85,7 +84,7 @@
     function checkBoxFraisLivraison(tarif) {
         @{
         <text>
-        var poids = @poidsKg.ToString().Replace(",",".");
+        var poids = @poidsKg.ToString().Replace(",", ".");
         var panier = @Model[0].NoPanier;
         </text>
         }
@@ -206,10 +205,15 @@
     <title>Saisie d'une commande</title>
 </head>
 <body id="body">
-    @{ 
+    @{
 
-        var lstTypeLivraison = (List<PPTypesLivraison>) ViewData["TypeLivraison"];
-        var lstMontantLivraison = (List<PPPoidsLivraisons>) ViewData["MontantLivraison"];
+        var lstTypeLivraison = (List<PPTypesLivraison>)ViewData["TypeLivraison"];
+        var lstMontantLivraison = (List<PPPoidsLivraisons>)ViewData["MontantLivraison"];
+        double dblPrixTotal = 0.0;
+        double dblSousTotal = 0.0;
+        double frais = 0.0;
+        double dblPrixProduitCourant = 0.0;
+        int compteur = 0;
     }
 
     <!-- Barre de navigation -->
@@ -238,17 +242,12 @@
 
                 <div class="card-body">
                     <!-- Loop d'article -->
-                    @{
-                        double dblPrixTotal = 0.0;
-                        double dblPrixProduitCourant = 0.0;
-                        int compteur = 0;
-                    }
                     @for (int x = 0; x < Model.Count; x++)
                     {
                         poidsKg += (int)Model[x].NbItems * (double)Model[x].PPProduits.Poids;
                         dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
                         double dblPrixStdUnit = 1 * (double)Model[x].PPProduits.PrixDemande;
-                        dblPrixTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                        dblSousTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
                         @Html.HiddenFor(lst => lst[x].DateCreation)
                         @Html.HiddenFor(lst => lst[x].NoClient)
                         @Html.HiddenFor(lst => lst[x].NoPanier)
@@ -328,7 +327,7 @@
                         <hr />
                         compteur++;
                     }
-                    
+
                     <div class="card-footer">
                         <div class="row" style="padding:0px;margin:0px">
                             @if (lstMontantLivraison != null)
@@ -340,27 +339,30 @@
                                         {
                                             //En temps normal j'essaie de pas "Hardcoder" de valeur, mais le document précise que la Poste Régulière est automatiquement sélectionnée.
                                             // Donc, au cas ou quelqu'un décide de jouer avec les liaisons ID-Description dans la BDD ou dans ajouter...
-                                        <div class="row">
-                                            <div class="col-8 text-left">
-                                                @if (ViewData["cbChecked"].ToString() != "0" && ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())
-                                                {
-                                                    @dblPrixTotal+= Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
-                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
-                                                }
-                                                else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
-                                        {
-                                            @dblPrixTotal += Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
-                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m=> m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
-                                        }
-                                        else
-                                        {
-                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" /> <span><strong>@ppTypeLivraison.Description</strong></span>
-                                        }
-                                                <br /> <br />
+                                            <div class="row">
+                                                <div class="col-8 text-left">
+                                                    @if (ViewData["cbChecked"] != null)
+                                                    {
+                                                        if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && ViewData["cbChecked"].ToString().Replace(".",",") == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())
+                                                        {
+                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                        }
+                                                        else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                        {
+                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                        }
+                                                        else
+                                                        {
+                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                        }
+                                                        <br /> <br />
+                                                    }
+                                                </div>
+                                                <div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
+
                                             </div>
-                                            <div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
-                                                
-                                        </div>
                                         }
                                         <br />
                                     </div>
@@ -412,55 +414,70 @@
                                 {
                                     <h5>Frais de livraison</h5>
                                 }
-                                    <h5>Sous-total</h5>
-                                    <h5>TPS (5%)</h5>
-                                    @{
-                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                        {
-                                            <h5> TVQ (9.975%) </h5>
-                                        }
+                                <h5>Sous-total</h5>
+                                <h5>TPS (5%)</h5>
+                                @{
+                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                    {
+                                        <h5> TVQ (9.975%) </h5>
                                     }
+                                }
 
-                                    <h5>Total</h5>
-                                </div>
+                                <h5>Total</h5>
+                            </div>
                             <div class="col-2 text-right">
+                                 @{ double totalTps = 0;
+                                     double totalTvq = 0;}
                                 @if (lstMontantLivraison != null)
                                 {
-                                    <h5><strong><span id="fraisDeLivraison"></span></strong></h5>
+                                    <h5><strong><span id="fraisDeLivraison">@frais.ToString("0.00") $</span></strong></h5>
+                                    dblPrixTotal = dblSousTotal + frais;
+                                    totalTps = dblPrixTotal * 0.05;
+                                    totalTvq = dblPrixTotal * 0.09975;
                                 }
-                                    <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
-                                    @{
-                                        double totalTps = (dblPrixTotal * 0.05);
-                                    }
+                                <h5><strong>@((dblSousTotal + frais).ToString("0.00")) $</strong></h5>
+                                @{ if (totalTps == 0) { totalTps = (dblSousTotal * 0.05); } }
 
-                                    @{
+                                @{
+                                    <h5>
+                                        <strong>
+                                            @totalTps.ToString("0.00") $
+                                        </strong>
+                                    </h5>
+                                }
+                                @{
+                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                    {
+                                        if (totalTvq == 0)
+                                        {
+                                            totalTvq = (dblSousTotal * 0.09975);
+                                        }
                                         <h5>
                                             <strong>
-                                                @totalTps.ToString("0.00") $
+                                                @totalTvq.ToString("0.00") $
                                             </strong>
                                         </h5>
                                     }
-                                    @{
-                                        double totalTvq = 0;
-                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                        {
-                                            totalTvq = (dblPrixTotal * 0.09975);
-                                            <h5>
-                                                <strong>
-                                                    @totalTvq.ToString("0.00") $
-                                                </strong>
-                                            </h5>
-                                        }
-                                    }
+                                }
 
-                                    <h5>
-                                        <strong>
-                                            @{
-                                                double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
-                                            }@totalAvecTaxes.ToString("0.00") $
-                                        </strong>
-                                    </h5>
-                                </div>
+                                <h5>
+                                    <strong>
+                                        @{
+                                            double totalAvecTaxes = 0;
+                                            if(dblPrixTotal == 0)
+                                            {
+
+                                                totalAvecTaxes = dblSousTotal + totalTps + totalTvq;
+                                            }
+                                            else
+                                            {
+
+                                                totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
+                                            }
+                                        }@(totalAvecTaxes.ToString("0.00")) $
+                                    </strong>
+                                </h5>
+                            </div>
                         </div>
                         <div class="row" style="padding:15px">
 
@@ -530,7 +547,7 @@
 
                     <div class="row">
                         <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled/>
+                        <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled />
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="rue" type="text" value="@Model[0].PPClients.Rue" />
                     </div>
