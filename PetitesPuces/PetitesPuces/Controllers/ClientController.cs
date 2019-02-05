@@ -398,23 +398,59 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche , string recherche2, int? page, int pageDimension = 5,int noPage = 1, int typeRech = 1 )
+        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche , string recherche2, int? typeRech, int? page, int pageDimension = 5,int noPage = 1 )
         {
-            
             const String strTriNum = "numero";
             const String strTriCat = "categorie";
             const String strTriDate = "date";
             ViewBag.TriActuel = tri;
+
+            bool booOrdre = false;
             if (!String.IsNullOrEmpty(tri))
             {
-                bool booOrdre = tri[0] == '!';
-                
-                ViewBag.TriNum = tri.Contains(strTriNum) ? (booOrdre ? strTriNum : "!" + strTriNum) : ViewBag.TriNum;
-                ViewBag.TriCat = tri.Contains(strTriCat) ? (booOrdre ? strTriCat : "!" + strTriCat) : ViewBag.TriCat;
-                ViewBag.triDate = tri.Contains(strTriDate) ? (booOrdre ? strTriDate : "!" + strTriDate) : ViewBag.TriDate;
+                booOrdre = tri[0] == '!';
             }
+            
+                
+            ViewBag.TriNum = !String.IsNullOrEmpty(tri) && tri.Contains(strTriNum) ? (booOrdre ? strTriNum : "!" + strTriNum) : ViewBag.TriNum ?? strTriNum;
+            ViewBag.TriCat = !String.IsNullOrEmpty(tri) && tri.Contains(strTriCat) ? (booOrdre ? strTriCat : "!" + strTriCat) : ViewBag.TriCat ?? strTriCat;
+            ViewBag.TriDate = !String.IsNullOrEmpty(tri) && tri.Contains(strTriDate) ? (booOrdre ? strTriDate : "!" + strTriDate) : ViewBag.TriDate ?? strTriDate;
+            System.Diagnostics.Debug.WriteLine("tri1: " + (ViewBag.TriNum as String)+ " Tri2: " + (ViewBag.TriCat as String) + " Tri3: " + (ViewBag.TriDate as String));
 
             List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
+
+            //tri
+            switch (tri)
+            {
+                case strTriNum:
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit)
+                        .ToList();
+                    break;
+                case "!" + strTriNum:
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit)
+                        .ToList();
+                    break;
+                case strTriDate:
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+                case "!" + strTriDate:
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+                case strTriCat:
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+                case "!" + strTriCat:
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+            }
 
             //Si affichage d'un vendeur en particulier (pas encore tester)
             if (!String.IsNullOrWhiteSpace(vendeur))
@@ -433,7 +469,7 @@ namespace PetitesPuces.Controllers
             }
 
             //Si recherche dans le catalogue
-            if (!String.IsNullOrWhiteSpace(recherche))
+            if (!String.IsNullOrWhiteSpace(recherche) && typeRech.HasValue && typeRech != 0)
             {
                 string strMotRecherche = recherche.ToLower();
 
@@ -455,21 +491,28 @@ namespace PetitesPuces.Controllers
                             .ToList();
                         break;
                     case 4:
-                        var possDtDebut = Request["dtRechercheDebut"];
-                        var possDtFin = Request["dtRechercheFin"];
                         DateTime dtDebut;
                         DateTime dtFin;
+                        /*
+                        System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Avant)");
+                        lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
 
-                        //try
-                        //{
-                            dtDebut = Convert.ToDateTime(possDtDebut);
-                        dtFin = Convert.ToDateTime(possDtFin);
-                        //}catch ()
+                        try
+                        {
+                            dtDebut = Convert.ToDateTime(recherche);
+                            dtFin = Convert.ToDateTime(recherche2);
 
+                            lstDesProduits = lstDesProduits
+                                .FindAll( pro => pro.DateCreation.Value >= dtDebut && pro.DateCreation.Value <= dtFin);
+                            /*
+                            System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Après)");
+                            lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
+                        }
+                        catch (FormatException fe)
+                        {
+                            System.Diagnostics.Debug.WriteLine(fe);
+                        }
 
-                        lstDesProduits = lstDesProduits
-                            .Where(predicate: pro => pro.DateCreation.Value.ToString("yyyy-MM-dd").Contains(strMotRecherche))
-                            .ToList();
                         break;
                     case 5:
                         lstDesProduits = lstDesProduits
@@ -477,31 +520,6 @@ namespace PetitesPuces.Controllers
                             .ToList();
                             break;
                 }
-
-                
-            }
-
-            //tri
-            switch (tri)
-            {
-                case strTriNum:
-                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit).ToList();
-                    break;
-                case "!" + strTriNum:
-                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit).ToList();
-                    break;
-                case strTriDate:
-                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation).ToList();
-                    break;
-                case "!" + strTriDate:
-                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation).ToList();
-                    break;
-                case strTriCat:
-                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description).ToList();
-                    break;
-                case "!" + strTriCat:
-                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description).ToList();
-                    break;
             }
 
             //Pagination
@@ -518,19 +536,19 @@ namespace PetitesPuces.Controllers
                 lstCategorie = contextPP.PPCategories.ToList(),
                 strTri = tri,
                 strCategorie = categorie,
-                strRecherche = recherche,
+                recherche = recherche,
+                recherche2 = recherche2,
                 pageDimension = pageDimension,
                 intNoPage = noPage,
-                intTypeRecherche = typeRech,
                 iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension)
             };
 
+            if (typeRech.HasValue)
+            {
+                catVM.typeRech = typeRech.Value;
+            }
 
             ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
-
-
-
-
             
             return View(catVM);
         }
