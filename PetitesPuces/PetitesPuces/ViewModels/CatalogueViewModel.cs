@@ -12,10 +12,11 @@ namespace PetitesPuces.ViewModels
         public List<Models.PPProduits> lstproduits { get; set; }
         public String strTri { get; set; }
         public String strCategorie { get; set; }
-        public String strRecherche { get; set; }
+        public String recherche { get; set; }
+        public String recherche2 { get; set; }
         public int pageDimension { get; set; }
         public int intNoPage { get; set; }
-        public int intTypeRecherche { get; set; }
+        public int typeRech { get; set; }
         public IPagedList<Models.PPProduits> iplProduits { get; set; }
     }
 }
