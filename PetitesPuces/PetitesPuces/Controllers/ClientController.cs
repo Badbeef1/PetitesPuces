@@ -398,7 +398,7 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche , int? page, int pageDimension = 5,int noPage = 1, int typeRech = 1 )
+        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche , string recherche2, int? page, int pageDimension = 5,int noPage = 1, int typeRech = 1 )
         {
             
             const String strTriNum = "numero";
@@ -414,9 +414,23 @@ namespace PetitesPuces.Controllers
                 ViewBag.triDate = tri.Contains(strTriDate) ? (booOrdre ? strTriDate : "!" + strTriDate) : ViewBag.TriDate;
             }
 
-            
-
             List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
+
+            //Si affichage d'un vendeur en particulier (pas encore tester)
+            if (!String.IsNullOrWhiteSpace(vendeur))
+            {
+                lstDesProduits = lstDesProduits
+                    .Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+            }
+            //Si affichage d'une catégorie en particulier
+            else if (!String.IsNullOrWhiteSpace(categorie))
+            {
+                lstDesProduits = lstDesProduits
+                    .Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
 
             //Si recherche dans le catalogue
             if (!String.IsNullOrWhiteSpace(recherche))
@@ -441,30 +455,30 @@ namespace PetitesPuces.Controllers
                             .ToList();
                         break;
                     case 4:
+                        var possDtDebut = Request["dtRechercheDebut"];
+                        var possDtFin = Request["dtRechercheFin"];
+                        DateTime dtDebut;
+                        DateTime dtFin;
+
+                        //try
+                        //{
+                            dtDebut = Convert.ToDateTime(possDtDebut);
+                        dtFin = Convert.ToDateTime(possDtFin);
+                        //}catch ()
+
+
                         lstDesProduits = lstDesProduits
                             .Where(predicate: pro => pro.DateCreation.Value.ToString("yyyy-MM-dd").Contains(strMotRecherche))
                             .ToList();
                         break;
+                    case 5:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.PPCategories.Description.ToLower().Contains(strMotRecherche))
+                            .ToList();
+                            break;
                 }
 
                 
-            }
-
-            //Si affichage d'un vendeur en particulier (pas encore tester)
-            if (!String.IsNullOrWhiteSpace(vendeur))
-            {
-                lstDesProduits = lstDesProduits
-                    .Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-
-            }
-            
-            //Si affichage d'une catégorie en particulier
-            if (!String.IsNullOrWhiteSpace(categorie))
-            {
-                lstDesProduits = lstDesProduits
-                    .Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
             }
 
             //tri
@@ -511,16 +525,6 @@ namespace PetitesPuces.Controllers
                 iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension)
             };
 
-            /*
-            if (nbPage != lstSelectionNbItems.Last())
-            {
-                List<List<PPProduits>> lstProdDiv = lstDesProduits.Separe(Convert.ToInt32(nbPage));
-                catVM.lstproduits = lstProdDiv[noPage - 1];
-            }
-            else
-            {
-                catVM.lstproduits = lstDesProduits;
-            }*/
 
             ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
 
