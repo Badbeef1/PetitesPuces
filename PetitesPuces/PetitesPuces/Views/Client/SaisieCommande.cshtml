@@ -64,11 +64,12 @@
     function successPoids(model) {
         // Rajouter la ligne de frais de livraison, modifier input pour texte (quantité), enlever btn supprimer, ajouter en tp
 
-        $("#body").html(model)
         $("#collapse_zoneCommande").collapse("show");
         $("#infoPerso").attr("hidden", true);
         $("#btnInformationLivraison").removeClass("disabled");
         $("#btnTypeLivraison").removeClass("disabled");
+
+        $("#body").html(model)
     }
 
     function error(error) {
@@ -81,20 +82,6 @@
         //location.href = '/Client/AccueilClient';
     }
 
-    function checkBoxFraisLivraison(tarif) {
-        @{
-        <text>
-        var poids = @poidsKg.ToString().Replace(",", ".");
-        var panier = @Model[0].NoPanier;
-        </text>
-        }
-        $.ajax({
-            url: "/Client/RecevoirPrixLivraison",
-            data: { "poids": poids, "panier": panier,"tarif" : tarif},
-            success: success,
-            error: error,
-        });
-    }
 </script>
 <style>
     .quantity {
@@ -343,7 +330,7 @@
                                                 <div class="col-8 text-left">
                                                     @if (ViewData["cbChecked"] != null)
                                                     {
-                                                        if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && ViewData["cbChecked"].ToString().Replace(".",",") == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())
+                                                        if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && Double.Parse(ViewData["cbChecked"].ToString()) == Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
                                                         {
                                                             frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
                                                 <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
@@ -432,11 +419,14 @@
                                 {
                                     <h5><strong><span id="fraisDeLivraison">@frais.ToString("0.00") $</span></strong></h5>
                                     dblPrixTotal = dblSousTotal + frais;
-                                    totalTps = dblPrixTotal * 0.05;
-                                    totalTvq = dblPrixTotal * 0.09975;
+                                    if (Model[0].PPVendeurs.Taxes == true)
+                                    {
+                                        totalTps = dblPrixTotal * 0.05;
+                                        totalTvq = dblPrixTotal * 0.09975;
+                                    }
                                 }
                                 <h5><strong>@((dblSousTotal + frais).ToString("0.00")) $</strong></h5>
-                                @{ if (totalTps == 0) { totalTps = (dblSousTotal * 0.05); } }
+                                @{ if (totalTps == 0  && Model[0].PPVendeurs.Taxes == true) { totalTps = (dblSousTotal * 0.05); } }
 
                                 @{
                                     <h5>
@@ -448,7 +438,7 @@
                                 @{
                                     if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
                                     {
-                                        if (totalTvq == 0)
+                                        if (totalTvq == 0 && Model[0].PPVendeurs.Taxes == true)
                                         {
                                             totalTvq = (dblSousTotal * 0.09975);
                                         }
@@ -639,7 +629,21 @@
                                                 });
                                                 $("#collapse_zoneInfos").collapse();
                                                 $("#collapse_typeLivraison").collapse("show");
-                                            });
+                            });
+                                function checkBoxFraisLivraison(tarif) {
+                                    @{
+                                    <text>
+                                    var poids = @poidsKg.ToString().Replace(",", ".");
+                                    var panier = @Model[0].NoPanier;
+                                    </text>
+                                    }
+                                    $.ajax({
+                                        url: "/Client/RecevoirPrixLivraison",
+                                        data: { "poids": poids, "panier": panier,"tarif" : tarif},
+                                        success: success,
+                                        error: error,
+                                    });
+                                }
                         </script>
                     </div>
                 </div>

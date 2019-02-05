@@ -80,12 +80,9 @@ namespace PetitesPuces.Controllers
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             List<PPArticlesEnPanier> items = new List<PPArticlesEnPanier>();
-            foreach (PPArticlesEnPanier pppArtPan in lst)
-            {
-                items = ((from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                           where panier.NoClient.Equals(pppArtPan.NoClient) && panier.NoVendeur.Equals(pppArtPan.NoVendeur)
-                           select panier).ToList());
-            } 
+        items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                    where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur)
+                    select panier).ToList();
             return View(items);
         }
 
