@@ -4,14 +4,7 @@
     double poidsKg = 0;
     string codePoids  = "";
     Layout = null;
-    if (ViewData["CodePoids"] != null && !ViewData["CodePoids"].ToString().Trim().Equals(""))
-    {
-        codePoids = ViewData["CodePoids"].ToString().Trim();
-    }
-    else
-    {
-        codePoids = "";
-    }
+
 }
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -68,14 +61,11 @@
 
     function success(model) {
         $("#body").html(model)
-        //console.log(model);
     }
     function successPoids(model) {
-        // Rajouter la ligne de frais de livraison, modifier input pour texte (quantité), enlever btn supprimer
-        $("#radioButtonLivraison").attr("hidden", false);
-        $("#verifPoids").attr("hidden", true);
-        $("#itemEpurer").attr("hidden", false);
-        $("#itemComplet").attr("hidden", true);
+        // Rajouter la ligne de frais de livraison, modifier input pour texte (quantité), enlever btn supprimer, ajouter en tp
+
+        $("#body").html(model)
         $("#collapse_zoneCommande").collapse("show");
         $("#infoPerso").attr("hidden", true);
         $("#btnInformationLivraison").removeClass("disabled");
@@ -90,6 +80,21 @@
     function errorPoids(error) {
         console.log('erreur : ' + error);
         //location.href = '/Client/AccueilClient';
+    }
+
+    function checkBoxFraisLivraison(tarif) {
+        @{
+        <text>
+        var poids = @poidsKg.ToString().Replace(",",".");
+        var panier = @Model[0].NoPanier;
+        </text>
+        }
+        $.ajax({
+            url: "/Client/RecevoirPrixLivraison",
+            data: { "poids": poids, "panier": panier,"tarif" : tarif},
+            success: success,
+            error: error,
+        });
     }
 </script>
 <style>
@@ -201,6 +206,12 @@
     <title>Saisie d'une commande</title>
 </head>
 <body id="body">
+    @{ 
+
+        var lstTypeLivraison = (List<PPTypesLivraison>) ViewData["TypeLivraison"];
+        var lstMontantLivraison = (List<PPPoidsLivraisons>) ViewData["MontantLivraison"];
+    }
+
     <!-- Barre de navigation -->
     @Html.Partial("test")
     <!-- Ensemble de collapsable -->
@@ -246,166 +257,210 @@
                         @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
                         @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
                         @Html.HiddenFor(lst => lst[x].NbItems)
-                        <div class="row" id="itemEpurer" hidden>
-                            <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
-                                <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
-                            </div>
-                            <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5 vertical-align-center">
-                                <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
-                            </div>
-                            <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
-                                <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
-                                    <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
-
+                        if (lstMontantLivraison != null)
+                        {
+                            <div class="row" id="itemEpurer">
+                                <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
+                                    <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
                                 </div>
-                                <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
-                                    <div class="quantity">
-                                        <span id="@Model[x].NoPanier" type="text" >@Model[x].NbItems</span>
+                                <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5 vertical-align-center">
+                                    <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                                </div>
+                                <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
+                                    <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
+                                        <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
+
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
+                                        <div class="quantity">
+                                            <span id="@Model[x].NoPanier" type="text">@Model[x].NbItems</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
+                                        <h6>
+                                            <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-1 col-sm-1 col-md-1">
                                     </div>
                                 </div>
-
-                                <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
-                                    <h6>
-                                        <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
-                                    </h6>
-                                </div>
-                                <div class="col-1 col-sm-1 col-md-1">
-                                </div>
                             </div>
-                        </div>
-
-                        <div class="row" id="itemComplet">
-                            <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
-                                <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
-                            </div>
-                            <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5">
-                                <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
-                                <small>Poids unitaire : @Model[x].PPProduits.Poids Kg</small>
-                                <h4>
-                                    <small>@Model[x].PPProduits.Description</small>
-                                </h4>
-                            </div>
-                            <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
-                                <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
-                                    <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
-
+                        }
+                        else
+                        {
+                            <div class="row" id="itemComplet">
+                                <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
+                                    <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
                                 </div>
-                                <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
-                                    <div class="quantity">
-                                        <input id="@Model[x].NoPanier" type="number" min="0" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5">
+                                    <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                                    <small>Poids unitaire : @Model[x].PPProduits.Poids Kg</small>
+                                    <h4>
+                                        <small>@Model[x].PPProduits.Description</small>
+                                    </h4>
+                                </div>
+                                <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
+                                    <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
+                                        <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
+
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
+                                        <div class="quantity">
+                                            <input id="@Model[x].NoPanier" type="number" min="0" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
+                                        <h6>
+                                            <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-1 col-sm-1 col-md-1">
+                                        <button type="button" class="btn btn-outline-danger btn-xs" id="btnSupprimmer_@Model[x].NoPanier" onclick="supprimerProduit(@Model[x].NoPanier)">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                            @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
-                                    <h6>
-                                        <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
-                                    </h6>
-                                </div>
-                                <div class="col-1 col-sm-1 col-md-1">
-                                    <button type="button" class="btn btn-outline-danger btn-xs" id="btnSupprimmer_@Model[x].NoPanier" onclick="supprimerProduit(@Model[x].NoPanier)">
-                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                        @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
-                                    </button>
-                                </div>
                             </div>
-                        </div>
+                        }
                         <hr />
                         compteur++;
                     }
+                    
                     <div class="card-footer">
                         <div class="row" style="padding:0px;margin:0px">
-                            <div class="col-4 text-left" hidden id="radioButtonLivraison">
-                                <div class="align-items-left ">
-                                    <input type="radio" name="typePoste" value="1" checked />Poste régulière <br />
-                                    <input type="radio" name="typePoste" value="2" />Poste prioritaire <br />
-                                    <input type="radio" name="typePoste" value="3" />Transport privé <br />
-                                    <br />
-                                    <span>@ViewData["CodePoids"]</span>
-                                </div>
-                            </div>
-                                
-                            <div class="col-4 text-left" id="verifPoids">
-                                <div class="row">
-                                @if (Model[0].PPVendeurs.PoidsMaxLivraison < poidsKg)
-                                {<br /> <br />
-                                    <span style="color:red">Le poids de livraison maximal est dépassé</span>
-                                }
-                                </div>
-                                <div class="row">
-                                    <div class="col-9 text-left">
+                            @if (lstMontantLivraison != null)
+                            {
 
+                                <div class="col-4 text-left" id="radioButtonLivraison">
+                                    <div class="align-items-left ">
+                                        @foreach (PPTypesLivraison ppTypeLivraison in lstTypeLivraison)
+                                        {
+                                            //En temps normal j'essaie de pas "Hardcoder" de valeur, mais le document précise que la Poste Régulière est automatiquement sélectionnée.
+                                            // Donc, au cas ou quelqu'un décide de jouer avec les liaisons ID-Description dans la BDD ou dans ajouter...
                                         <div class="row">
-                                            Poids de la livraison :
+                                            <div class="col-8 text-left">
+                                                @if (ViewData["cbChecked"].ToString() != "0" && ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())
+                                                {
+                                                    @dblPrixTotal+= Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                }
+                                                else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                        {
+                                            @dblPrixTotal += Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m=> m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                        }
+                                        else
+                                        {
+                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                        }
+                                                <br /> <br />
+                                            </div>
+                                            <div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
+                                                
                                         </div>
+                                        }
+                                        <br />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-4 text-left" id="verifPoids">
+                                    <div class="row">
+                                        @if (Model[0].PPVendeurs.PoidsMaxLivraison < poidsKg)
+                                        {
+                                            <br /> <br />
+                                            <span style="color:red">Le poids de livraison maximal est dépassé</span>
+                                        }
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-9 text-left">
 
-                                        <div class="row">
-                                            Poids maximal :
+                                            <div class="row">
+                                                Poids de la livraison :
+                                            </div>
+
+                                            <div class="row">
+                                                Poids maximal :
                                             </div>
                                         </div>
-                                    <div class="col-3 text-right">
-                                        <div class="row">
-                                            @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
-                                            {
-                                                <span style="color:green"> @poidsKg Lbs</span>
-                                                <br />
-                                                <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
-                                            }
-                                            else
-                                            {
-                                                <span style="color:red"> @poidsKg Lbs</span>
-                                                <br />
-                                                <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
-                                            }
+                                        <div class="col-3 text-right">
+                                            <div class="row">
+                                                @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
+                                                {
+                                                    <span style="color:green"> @poidsKg Lbs</span>
+                                                    <br />
+                                                    <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color:red"> @poidsKg Lbs</span>
+                                                    <br />
+                                                    <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
+                                                }
                                             </div>
                                         </div>
                                     </div>
-                            </div>
-                            <div class="col-6 text-right" style="padding-right:0px">
-                                <h5>Sous-total</h5>
-                                <h5>TPS (5%)</h5>
-                                @{
-                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                    {
-                                        <h5> TVQ (9.975%) </h5>
+                                </div>
+                            }
+                            <div class="col-3">&nbsp;</div>
+                            <div class="col-3 text-left" style="padding-right:0px">
+                                @if (lstMontantLivraison != null)
+                                {
+                                    <h5>Frais de livraison</h5>
+                                }
+                                    <h5>Sous-total</h5>
+                                    <h5>TPS (5%)</h5>
+                                    @{
+                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                        {
+                                            <h5> TVQ (9.975%) </h5>
+                                        }
                                     }
-                                }
 
-                                <h5>Total</h5>
-                            </div>
+                                    <h5>Total</h5>
+                                </div>
                             <div class="col-2 text-right">
-                                <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
-                                @{
-                                    double totalTps = (dblPrixTotal * 0.05);
+                                @if (lstMontantLivraison != null)
+                                {
+                                    <h5><strong><span id="fraisDeLivraison"></span></strong></h5>
                                 }
+                                    <h5><strong>@dblPrixTotal.ToString("0.00") $</strong></h5>
+                                    @{
+                                        double totalTps = (dblPrixTotal * 0.05);
+                                    }
 
-                                @{
-                                    <h5>
-                                        <strong>
-                                            @totalTps.ToString("0.00") $
-                                        </strong>
-                                    </h5>
-                                }
-                                @{
-                                    double totalTvq = 0;
-                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                    {
-                                        totalTvq = (dblPrixTotal * 0.09975);
+                                    @{
                                         <h5>
                                             <strong>
-                                                @totalTvq.ToString("0.00") $
+                                                @totalTps.ToString("0.00") $
                                             </strong>
                                         </h5>
                                     }
-                                }
+                                    @{
+                                        double totalTvq = 0;
+                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                        {
+                                            totalTvq = (dblPrixTotal * 0.09975);
+                                            <h5>
+                                                <strong>
+                                                    @totalTvq.ToString("0.00") $
+                                                </strong>
+                                            </h5>
+                                        }
+                                    }
 
-                                <h5>
-                                    <strong>
-                                        @{
-                                            double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
-                                        }@totalAvecTaxes.ToString("0.00") $
-                                    </strong>
-                                </h5>
-                            </div>
+                                    <h5>
+                                        <strong>
+                                            @{
+                                                double totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
+                                            }@totalAvecTaxes.ToString("0.00") $
+                                        </strong>
+                                    </h5>
+                                </div>
                         </div>
                         <div class="row" style="padding:15px">
 
@@ -554,13 +609,14 @@
                                                 $("#btnChoixDePoste").click(function () {
                                                 @{
                                                 <text>
-                                                var poids = @poidsKg.ToString();
+                                                var poids = @poidsKg.ToString().Replace(",",".");
                                                 var panier = @Model[0].NoPanier;
                                                 </text>
                                                 }
                                                 $.ajax({
                                                     url: "/Client/RecevoirPrixLivraison",
-                                                    data: { "poids": poids, "panier": panier},
+                                                    data: {
+                                                        "poids": poids, "panier": panier, "tarif": "0"},
                                                     success: successPoids,
                                                     error: errorPoids,
                                                 });

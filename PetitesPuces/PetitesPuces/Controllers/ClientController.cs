@@ -533,16 +533,31 @@ namespace PetitesPuces.Controllers
 
 
 
-        public ActionResult RecevoirPrixLivraison(string poids, string panier)
+        public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif)
         {
+            if (tarif != "0") ViewData["cbChecked"] = tarif;
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            Decimal dclPoids = Decimal.Parse(poids);
+            Decimal dclPoids = Decimal.Parse(poids.Replace(".",","));
             db.Connection.Open();
+
+            // On trouve le code poids
             var poidsLivraison = from pLiv in db.GetTable<PPTypesPoids>()
                                   where pLiv.PoidsMin <= dclPoids && pLiv.PoidsMax >= dclPoids
                                  orderby pLiv.CodePoids
                                   select pLiv;
 
+            // On checher la liste des livraisons offertes pour ce code poids
+            var montantLivraison = from monLivraison in db.GetTable<PPPoidsLivraisons>()
+                                   where monLivraison.CodePoids.Equals(poidsLivraison.First().CodePoids)
+                                   select monLivraison;
+
+            // On envoie le résultats des type de livraison
+            ViewData["MontantLivraison"] = montantLivraison.ToList();
+
+            var typeLivraison = from typeLiv in db.GetTable<PPTypesLivraison>()
+                                select typeLiv;
+
+            ViewData["TypeLivraison"] = typeLivraison.ToList();
             var numPourPanierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
                              where ppArtEnPan.NoPanier.ToString().Equals(panier)
                              select new { ppArtEnPan.PPClients, ppArtEnPan.PPVendeurs };
@@ -551,8 +566,7 @@ namespace PetitesPuces.Controllers
                              where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients.NoClient)
                              && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs.NoVendeur)
                              select ppArtEnPan;
-
-                ViewData["CodePoids"] = poidsLivraison.First().CodePoids;
+            
             return View("SaisieCommande",panierList.ToList());
         }
 
