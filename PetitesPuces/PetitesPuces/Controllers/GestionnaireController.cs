@@ -96,7 +96,7 @@ namespace PetitesPuces.Controllers
          foreach (PPCategories cate in categories)
          {
             var query2 = (from produit in db.GetTable<PPProduits>()
-                          where produit.PPCategories.Equals(cate.NoCategorie)
+                          where produit.NoCategorie.Equals(cate.NoCategorie)
                           select produit
                          ).ToList();
             if (query2.Count() > 0)
@@ -150,7 +150,7 @@ namespace PetitesPuces.Controllers
          foreach (PPCategories cat in categories)
          {
             var query = (from produit in db.GetTable<PPProduits>()
-                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         where produit.NoCategorie.Equals(cat.NoCategorie)
                          select produit
                          ).ToList();
             if (query.Count() > 0)
@@ -204,7 +204,7 @@ namespace PetitesPuces.Controllers
          foreach (PPCategories cat in categories)
          {
             var query = (from produit in db.GetTable<PPProduits>()
-                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         where produit.NoCategorie.Equals(cat.NoCategorie)
                          select produit
                          ).ToList();
             if (query.Count() > 0)
@@ -258,7 +258,7 @@ namespace PetitesPuces.Controllers
          foreach (PPCategories cat in categories)
          {
             var query = (from produit in db.GetTable<PPProduits>()
-                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         where produit.NoCategorie.Equals(cat.NoCategorie)
                          select produit
                          ).ToList();
             if (query.Count() > 0)
@@ -312,7 +312,7 @@ namespace PetitesPuces.Controllers
          foreach (PPCategories cat in categories)
          {
             var query = (from produit in db.GetTable<PPProduits>()
-                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         where produit.NoCategorie.Equals(cat.NoCategorie)
                          select produit
                          ).ToList();
             if (query.Count() > 0)
@@ -388,7 +388,7 @@ namespace PetitesPuces.Controllers
          foreach (PPCategories cat in categories)
          {
             var query = (from produit in db.GetTable<PPProduits>()
-                         where produit.PPCategories.Equals(cat.NoCategorie)
+                         where produit.NoCategorie.Equals(cat.NoCategorie)
                          select produit
                          ).ToList();
             if (query.Count() > 0)
