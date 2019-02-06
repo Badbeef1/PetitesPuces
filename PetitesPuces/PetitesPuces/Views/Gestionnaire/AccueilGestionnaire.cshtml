@@ -1,4 +1,8 @@
 ﻿@using PetitesPuces.Models
+@using System.Globalization
+@{
+   Culture = UICulture = "en-US";
+}
 @model AccueilGestionnaireViewModel
 <!doctype html>
 <html lang="fr">
@@ -84,6 +88,11 @@
          padding-top: 1.5rem;
          padding-bottom: 1.5rem;
       }
+
+      .input-validation-error {
+         border: 1px solid #ff0000;
+         background-color: white;
+      }
    </style>
    <script type="text/javascript">
       //fonction qui permet de supprimer une catégorie
@@ -110,218 +119,280 @@
    </script>
 </head>
 <body>
-    <!--Barre de navigation-->
-    @Html.Partial("index")
-    <div class="container-fluid">
-            <div class="row">    
-              <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-                  <ul class="nav nav-pills flex-column">
-                      <li class="nav-item">
-                          <a class="nav-link active" href="#">Accueil <span class="sr-only">(current)</span></a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="#">Statistiques</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="#">Demandes de vendeurs</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="#">
-                              Les Redevances
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="#">
-                              Ajouter une cat&eacute;gorie
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="#">
-                              Supression de cat&eacute;gorie 
-                          </a>
-                      </li>
-                  </ul>
-              </nav>
-      
-              <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-                <h1>Statistiques</h1>
-      
-                <section class="row text-center placeholders">
-                  <div class="col-6 col-sm-3 placeholder">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <div class="text-muted">Stats #1</div>
-                  </div>
-                  <div class="col-6 col-sm-3 placeholder">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Stats #2</span>
-                  </div>
-                  <div class="col-6 col-sm-3 placeholder">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Stats #3</span>
-                  </div>
-                  <div class="col-6 col-sm-3 placeholder">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                    <h4>Label</h4>
-                    <span class="text-muted">Stats #4</span>
-                  </div>
-                </section>
-      
-                <h2>G&eacute;rer les nouvelles demandes de vendeur</h2>
-                <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
+   <!--Barre de navigation-->
+   @Html.Partial("index")
+   <div class="container-fluid">
+      <div class="row">
+         <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+            <ul class="nav nav-pills flex-column">
+               <li class="nav-item">
+                  <a class="nav-link active" href="#">Accueil <span class="sr-only">(current)</span></a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Statistiques</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Demandes de vendeurs</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">
+                     Les Redevances
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">
+                     Ajouter une cat&eacute;gorie
+                  </a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">
+                     Supression de cat&eacute;gorie
+                  </a>
+               </li>
+            </ul>
+         </nav>
+
+         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1>Statistiques</h1>
+
+            <section class="row text-center placeholders">
+               <div class="col-6 col-sm-3 placeholder">
+                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+                  <h4>Label</h4>
+                  <div class="text-muted">Stats #1</div>
+               </div>
+               <div class="col-6 col-sm-3 placeholder">
+                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+                  <h4>Label</h4>
+                  <span class="text-muted">Stats #2</span>
+               </div>
+               <div class="col-6 col-sm-3 placeholder">
+                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+                  <h4>Label</h4>
+                  <span class="text-muted">Stats #3</span>
+               </div>
+               <div class="col-6 col-sm-3 placeholder">
+                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+                  <h4>Label</h4>
+                  <span class="text-muted">Stats #4</span>
+               </div>
+            </section>
+
+            <h2>G&eacute;rer les nouvelles demandes de vendeur</h2>
+            <div class="table-responsive">
+               <table class="table table-striped">
+                  <thead>
+                     <tr>
                         <th>#Vendeur</th>
                         <th>Nom d'affaires</th>
                         <th>Nom Complet</th>
                         <th>Province</th>
                         <th>No Tel&eacute;phone</th>
                         <th>Détails Demande</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                       @foreach (var vendeur in Model.lstDemandesVendeurs)
-                       {
-                          <tr>
-                             <td>@vendeur.NoVendeur</td>
-                             <td>@vendeur.NomAffaires</td>
-                             <td>@vendeur.Prenom @vendeur.Nom</td>
-                             <td>@vendeur.Province</td>
-                             <td>@vendeur.Tel1</td>
-                             <td>
-                                @Html.ActionLink("Détails du vendeur", "DetailVendeur", "Gestionnaire", new { id = vendeur.NoVendeur}, new { @class= "btn btn-primary" })
-                             </td>
-                          </tr>
-                       }
+                     </tr>
+                  </thead>
+                  <tbody>
+                     @foreach (var vendeur in Model.lstDemandesVendeurs)
+                     {
+                        <tr>
+                           <td>@vendeur.NoVendeur</td>
+                           <td>@vendeur.NomAffaires</td>
+                           <td>@vendeur.Prenom @vendeur.Nom</td>
+                           <td>@vendeur.Province</td>
+                           <td>@vendeur.Tel1</td>
+                           <td>
+                              @Html.ActionLink("Détails du vendeur", "DetailVendeur", "Gestionnaire", new { id = vendeur.NoVendeur }, new { @class = "btn btn-primary" })
+                           </td>
+                        </tr>
+                     }
 
-                    </tbody>
-                  </table>
-                </div>
-                <hr>
-                <h2>Les redevances dues</h2>
-                    <div class="d-flex flex-row">
-                        <div class="p-2"><input type="checkbox" class="form-check-input" id="cbParMois"></div>
-                        <div class="p-2"><label class="form-check-label" for="exampleCheck1">Tri par mois</label></div>
-                        <div class="p-2">&nbsp;&nbsp;<input type="checkbox" class="form-check-input" id="cbParClient"></div>
-                        <div class="p-2"><label class="form-check-label" for="exampleCheck1">Tri par Client</label></div>
-                    </div>
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                        <th>No de Vendeur</th>
-                        <th>Nom d'affaires</th>
-                        <th>Nom Complet</th>
-                        <th>Province</th>
-                        <th>No T&eacute;l&eacute;phone</th>
-                        <th>Montant ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Cax Co</td>
-                            <td>Simon Malboeuf</td>
-                            <td>QC</td>
-                            <td>(514) 453-2564</td>
-                            <td>$450</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Ipso</td>
-                            <td>Nicolas Jouanique</td>
-                            <td>QC</td>
-                            <td>(514) 453-6666</td>
-                            <td>$69</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Bell</td>
-                            <td>Alexander Jouanique</td>
-                            <td>QC</td>
-                            <td>(514) 453-6969</td>
-                            <td>$80</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr>
-                <h2>Ajout d'une cat&eacute;gorie</h2>
-                <form>
-                    <br>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="container">
-                                <div class="form-group row">
-                                    <div class="col-sm-8">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Description</span>
-                                            </div>
-                                            <textarea class="form-control" aria-label="With textarea"></textarea>
-                                        </div>
-                                    </div>  
-                                </div>                            
-                                <div class="form-group row">
-                                    <div class="col-sm-8">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">D&eacute;tails</span>
-                                            </div>
-                                            <textarea class="form-control" aria-label="With textarea"></textarea>
-                                        </div>
-                                    </div>  
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-8">
-                                        <button id="btnAjouterCategorie" class="btn btn-success" style="width: 100%;">Ajouter Cat&eacute;gorie</button>
-                                    </div>  
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </form>
-                <hr>
-                <h2>Suppression d'une cat&eacute;gorie</h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                        <th>No de Cat&eacute;gorie</th>
-                        <th>Description</th>
-                        <th>D&eacute;tails</th>
-                        <th>Supprimer</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       @foreach (var cat in Model.lstCategories)
-                       {
-                       <tr>
-                          <td>@cat.Key.NoCategorie</td>
-                          <td>@cat.Key.Description</td>
-                          <td>@cat.Key.Details</td>
-                          @{
-                             if (cat.Value.Equals(true))
-                             {
-                                <td><button id="btnSupprimer_@cat.Key.NoCategorie" class="btn btn-danger" onclick="supprimerCategorie(@cat.Key.NoCategorie)">Supprimer</button></td>
-                             }
-                             else
-                             {
-                                <td><button id="btnSupprimer_@cat.Key.NoCategorie" class="btn btn-danger" onclick="supprimerCategorie(@cat.Key.NoCategorie)" disabled="disabled">Supprimer</button></td>
-                             }
-                          }
-
-                       </tr>
-                       }
-
-                    </tbody>
-                </table>
-              </main>
+                  </tbody>
+               </table>
             </div>
-          </div>
+            <hr>
+            <h2>Les redevances dues</h2>
+            <div class="d-flex flex-row">
+               <div class="p-2"><input type="checkbox" class="form-check-input" id="cbParMois"></div>
+               <div class="p-2"><label class="form-check-label" for="exampleCheck1">Tri par mois</label></div>
+               <div class="p-2">&nbsp;&nbsp;<input type="checkbox" class="form-check-input" id="cbParClient"></div>
+               <div class="p-2"><label class="form-check-label" for="exampleCheck1">Tri par Client</label></div>
+            </div>
 
-          
-        </body>
-      </html>
+            <table class="table table-striped">
+               <thead>
+                  <tr>
+                     <th>No de Vendeur</th>
+                     <th>Nom d'affaires</th>
+                     <th>Nom Complet</th>
+                     <th>Province</th>
+                     <th>No T&eacute;l&eacute;phone</th>
+                     <th>Montant ($)</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td>1</td>
+                     <td>Cax Co</td>
+                     <td>Simon Malboeuf</td>
+                     <td>QC</td>
+                     <td>(514) 453-2564</td>
+                     <td>$450</td>
+                  </tr>
+                  <tr>
+                     <td>2</td>
+                     <td>Ipso</td>
+                     <td>Nicolas Jouanique</td>
+                     <td>QC</td>
+                     <td>(514) 453-6666</td>
+                     <td>$69</td>
+                  </tr>
+                  <tr>
+                     <td>3</td>
+                     <td>Bell</td>
+                     <td>Alexander Jouanique</td>
+                     <td>QC</td>
+                     <td>(514) 453-6969</td>
+                     <td>$80</td>
+                  </tr>
+               </tbody>
+            </table>
+            <hr>
+            <h3>Gérer les % de redevances</h3>
+            <table class="table table-striped">
+               <thead>
+                  <tr>
+                     <th>No de Vendeur</th>
+                     <th>Nom d'affaires</th>
+                     <th>Nom Complet</th>
+                     <th>No T&eacute;l&eacute;phone</th>
+                     <th>Pourcentage de redevance</th>
+                     <th>Modifier</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  @foreach (var vendeur in Model.lstVendeurs)
+                  {
+                     <tr>
+                        <td>@vendeur.Key.NoVendeur</td>
+                        <td>@vendeur.Key.NomAffaires</td>
+                        <td>@vendeur.Key.Prenom @vendeur.Key.Nom</td>
+                        <td>@vendeur.Key.Tel1</td>
+                        <td>
+                           @{
+                              string poucentage = vendeur.Key.Pourcentage.ToString();
+                              //poucentage.Replace(',', '.');
+                              //poucentage.Replace(CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator, ".");
+
+                              if (vendeur.Value.Equals(true))
+                              {
+
+                                 <input type="number" min="0" max="100" step="0.25" value="@poucentage" disabled="disabled">
+                              }
+                              else
+                              {
+                                 <input type="number" min="0" max="100" step="0.25" value="@poucentage">
+                              }
+                           }
+
+                        </td>
+                        <td>
+                           @{
+                              if (vendeur.Value.Equals(true))
+                              {
+                                 <button id="btn_modifier" class="btn btn-success" disabled="disabled">Modifier la redevance</button>
+                              }
+                              else
+                              {
+                                 <button id="btn_modifier" class="btn btn-success">Modifier la redevance</button>
+                              }
+                           }
+                        </td>
+                     </tr>
+                  }
+               </tbody>
+            </table>
+
+            <hr />
+            <h2>Ajout d'une cat&eacute;gorie</h2>
+            <!--<form>-->
+            @using (Html.BeginForm("AccueilGestionnaire", "Gestionnaire", FormMethod.Post))
+            {
+               @Html.AntiForgeryToken()
+               <br>
+               <div class="card">
+                  <div class="card-body">
+                     <div class="container">
+                        <div class="form-group row">
+                           <div class="col-sm-8">
+                              <div class="input-group">
+                                 <div class="input-group-prepend">
+                                    <span class="input-group-text">Description</span>
+                                 </div>
+                                 @Html.HiddenFor(cat => cat.categorie.NoCategorie)
+                                 @Html.EditorFor(cat => cat.categorie.Description, new { htmlAttributes = new { @class = "form-control" } })
+
+                                 <!--<textarea class="form-control" aria-label="With textarea"></textarea>-->
+                              </div>
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="col-sm-8">
+                              <div class="input-group">
+                                 <div class="input-group-prepend">
+                                    <span class="input-group-text">D&eacute;tails</span>
+                                 </div>
+                                 <!--<textarea class="form-control" aria-label="With textarea"></textarea>-->
+                                 @Html.EditorFor(cat => cat.categorie.Details, new { htmlAttributes = new { @class = "form-control" } })
+                              </div>
+                           </div>
+                        </div>
+                        <div class="form-group row">
+                           <div class="col-sm-8">
+                              <input type="submit" value="Ajouter Catégorie" class="btn btn-success" style="width:100%">
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+               </div>
+            }
+            <!--</form>-->
+            <hr>
+            <h2>Suppression d'une cat&eacute;gorie</h2>
+            <table class="table table-striped">
+               <thead>
+                  <tr>
+                     <th>No de Cat&eacute;gorie</th>
+                     <th>Description</th>
+                     <th>D&eacute;tails</th>
+                     <th>Supprimer</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  @foreach (var cat in Model.lstCategories)
+                  {
+                     <tr>
+                        <td>@cat.Key.NoCategorie</td>
+                        <td>@cat.Key.Description</td>
+                        <td>@cat.Key.Details</td>
+                        @{
+                           if (cat.Value.Equals(true))
+                           {
+                              <td><button id="btnSupprimer_@cat.Key.NoCategorie" class="btn btn-danger" onclick="supprimerCategorie(@cat.Key.NoCategorie)">Supprimer</button></td>
+                           }
+                           else
+                           {
+                              <td><button id="btnSupprimer_@cat.Key.NoCategorie" class="btn btn-danger" onclick="supprimerCategorie(@cat.Key.NoCategorie)" disabled="disabled">Supprimer</button></td>
+                           }
+                        }
+
+                     </tr>
+                  }
+
+               </tbody>
+            </table>
+         </main>
+      </div>
+   </div>
+</body>
+</html>

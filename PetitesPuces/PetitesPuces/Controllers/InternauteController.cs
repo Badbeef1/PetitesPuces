@@ -104,14 +104,25 @@ namespace PetitesPuces.Controllers
 
          var a = Session["vendeurObj"] as PPVendeurs;
          var b = Session["clientObj"] as PPClients;
-
-         if (a != null)
+         
+         if (b != null)
          {
-
-         }
-         else if (b != null)
-         {
-
+            var model = new PPClientViewModel()
+            {
+               vendeur = new PPVendeurs()
+               {
+                  Nom = b.Nom,
+                  Prenom = b.Prenom,
+                  Rue = b.Rue,
+                  Ville = b.Ville,
+                  Province = b.Province,
+                  CodePostal = b.CodePostal,
+                  Tel1 = b.Tel1,
+                  Tel2 = b.Tel2
+               },
+               boolVendeur = true
+            };
+            return View(model); // return model de client
          }
 
          return View();
