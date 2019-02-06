@@ -18,5 +18,6 @@ namespace PetitesPuces.ViewModels
         public int intNoPage { get; set; }
         public int typeRech { get; set; }
         public IPagedList<Models.PPProduits> iplProduits { get; set; }
+        public String strParent { get; set; }
     }
 }
