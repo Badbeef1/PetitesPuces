@@ -5,6 +5,7 @@ using System.Data.Linq;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 namespace PetitesPuces.Controllers
 {
    public class VendeurController : Controller
@@ -59,8 +60,162 @@ namespace PetitesPuces.Controllers
       //GET: GestionProduit
       public ActionResult GestionProduit() => View();
 
-      //GET: CatalogueVendeur
-      public ActionResult CatalogueVendeur() => View();
+        //GET: CatalogueVendeur
+        public ActionResult CatalogueVendeur(string tri, string categorie, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 5, int noPage = 1)
+        {
+            const String strTriNum = "numero";
+            const String strTriCat = "categorie";
+            const String strTriDate = "date";
+            ViewBag.TriActuel = tri;
+
+            bool booOrdre = false;
+            if (!String.IsNullOrEmpty(tri))
+            {
+                booOrdre = tri[0] == '!';
+            }
+
+            ViewBag.TriNum = !String.IsNullOrEmpty(tri) && tri.Contains(strTriNum) ? (booOrdre ? strTriNum : "!" + strTriNum) : ViewBag.TriNum ?? strTriNum;
+            ViewBag.TriCat = !String.IsNullOrEmpty(tri) && tri.Contains(strTriCat) ? (booOrdre ? strTriCat : "!" + strTriCat) : ViewBag.TriCat ?? strTriCat;
+            ViewBag.TriDate = !String.IsNullOrEmpty(tri) && tri.Contains(strTriDate) ? (booOrdre ? strTriDate : "!" + strTriDate) : ViewBag.TriDate ?? strTriDate;
+            //System.Diagnostics.Debug.WriteLine("tri1: " + (ViewBag.TriNum as String) + " Tri2: " + (ViewBag.TriCat as String) + " Tri3: " + (ViewBag.TriDate as String));
+
+            List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
+
+            vendeurDao = new VendeurDao((Session["vendeurObj"] as PPVendeurs).NoVendeur);
+            PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur);
+
+            //Produit du vendeur en particulier (pas encore tester)
+
+            lstDesProduits = lstDesProduits
+                .Where(predicate: pro => pro.NoVendeur == vendeurOriginel.NoVendeur)
+                .ToList();
+
+            //tri
+            switch (tri)
+            {
+                case strTriNum:
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.NoProduit)
+                        .ToList();
+                    break;
+                case "!" + strTriNum:
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.NoProduit)
+                        .ToList();
+                    break;
+                case strTriDate:
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.DateCreation)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+                case "!" + strTriDate:
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.DateCreation)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+                case strTriCat:
+                    lstDesProduits = lstDesProduits.OrderBy(pro => pro.PPCategories.Description)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+                case "!" + strTriCat:
+                    lstDesProduits = lstDesProduits.OrderByDescending(pro => pro.PPCategories.Description)
+                        .ThenBy(pro => pro.Nom)
+                        .ToList();
+                    break;
+            }
+
+            //Si affichage d'une catégorie en particulier
+            if (!String.IsNullOrWhiteSpace(categorie))
+            {
+                lstDesProduits = lstDesProduits
+                    .Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            //Si recherche dans le catalogue
+            if (!String.IsNullOrWhiteSpace(recherche) && typeRech.HasValue && typeRech != 0)
+            {
+                string strMotRecherche = recherche.ToLower();
+
+                switch (typeRech)
+                {
+                    case 1:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.Nom.ToString().ToLower().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                    case 2:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.NoProduit.ToString().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                    case 3:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.Description.ToString().ToLower().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                    case 4:
+                        DateTime dtDebut;
+                        DateTime dtFin;
+                        /*
+                        System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Avant)");
+                        lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
+
+                        try
+                        {
+                            dtDebut = Convert.ToDateTime(recherche);
+                            dtFin = Convert.ToDateTime(recherche2);
+
+                            lstDesProduits = lstDesProduits
+                                .FindAll(pro => pro.DateCreation.Value >= dtDebut && pro.DateCreation.Value <= dtFin);
+                            /*
+                            System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Après)");
+                            lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
+                        }
+                        catch (FormatException fe)
+                        {
+                            System.Diagnostics.Debug.WriteLine(fe);
+                        }
+
+                        break;
+                    case 5:
+                        lstDesProduits = lstDesProduits
+                            .Where(predicate: pro => pro.PPCategories.Description.ToLower().Contains(strMotRecherche))
+                            .ToList();
+                        break;
+                }
+            }
+
+            //Pagination
+            List<string> lstSelectionNbItems = new List<string>
+            {
+                "5","10","15","20","25","tous"
+            };
+
+            int intNumeroPage = (page ?? 1);
+
+
+            ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
+            {
+                lstCategorie = contextPP.PPCategories.ToList(),
+                strTri = tri,
+                strCategorie = categorie,
+                recherche = recherche,
+                recherche2 = recherche2,
+                pageDimension = pageDimension,
+                intNoPage = noPage,
+                iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension)
+            };
+
+            if (typeRech.HasValue)
+            {
+                catVM.typeRech = typeRech.Value;
+            }
+
+            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
+
+
+            return View(catVM);
+        }
 
       public ActionResult GestionProfilVendeur()
       {
