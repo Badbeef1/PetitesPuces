@@ -1,5 +1,15 @@
 USE [BD6B8_424R_TESTS]
 /*USE [BD6B8_424R]*/
+/* Table contenant des donnée (20XX)
+Catégorie
+Client
+Vendeur
+VendeursClients
+TypePoids
+TypeLivraison
+PoidsLivraison
+TaxeProvincial/Fédérale
+Produit */
 
 DROP TABLE PPTaxeFederale
 DROP TABLE PPTaxeProvinciale
@@ -11,6 +21,7 @@ DROP TABLE PPCommandes
 DROP TABLE PPTypesLivraison
 DROP TABLE PPArticlesEnPanier
 DROP TABLE PPVendeursClients
+DROP TABLE PPEvaluations
 DROP TABLE PPProduits
 DROP TABLE PPCategories
 DROP TABLE HistoCommandes
@@ -405,3 +416,11 @@ CREATE TABLE PPGestionnaire(
 	PRIMARY KEY(AdresseEmail)
 );
 
+CREATE TABLE PPEvaluations(
+	NoClient bigint NOT NULL,
+	NoProduit bigint NOT NULL,
+	Cote numeric(1,0),
+	Commentaire varchar(150),
+	DateMAJ smalldatetime,
+	DateCreation smalldatetime
+	);

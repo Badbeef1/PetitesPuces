@@ -99,7 +99,23 @@ namespace PetitesPuces.Controllers
       }
 
       //GET
-      public ActionResult Inscription() => View();
+      public ActionResult Inscription()
+      {
+
+         var a = Session["vendeurObj"] as PPVendeurs;
+         var b = Session["clientObj"] as PPClients;
+
+         if (a != null)
+         {
+
+         }
+         else if (b != null)
+         {
+
+         }
+
+         return View();
+      }
 
 
       [HttpPost] //POST

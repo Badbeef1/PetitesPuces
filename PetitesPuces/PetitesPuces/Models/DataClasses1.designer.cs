@@ -259,6 +259,14 @@ namespace PetitesPuces.Models
 				return this.GetTable<PPGestionnaire>();
 			}
 		}
+		
+		public System.Data.Linq.Table<PPEvaluations> PPEvaluations
+		{
+			get
+			{
+				return this.GetTable<PPEvaluations>();
+			}
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PPCategories")]
@@ -5046,6 +5054,123 @@ namespace PetitesPuces.Models
 			if ((this.PropertyChanged != null))
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PPEvaluations")]
+	public partial class PPEvaluations
+	{
+		
+		private long _NoClient;
+		
+		private long _NoProduit;
+		
+		private System.Nullable<decimal> _Cote;
+		
+		private string _Commentaire;
+		
+		private System.Nullable<System.DateTime> _DateMAJ;
+		
+		private System.Nullable<System.DateTime> _DateCreation;
+		
+		public PPEvaluations()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NoClient", DbType="BigInt NOT NULL")]
+		public long NoClient
+		{
+			get
+			{
+				return this._NoClient;
+			}
+			set
+			{
+				if ((this._NoClient != value))
+				{
+					this._NoClient = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NoProduit", DbType="BigInt NOT NULL")]
+		public long NoProduit
+		{
+			get
+			{
+				return this._NoProduit;
+			}
+			set
+			{
+				if ((this._NoProduit != value))
+				{
+					this._NoProduit = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Cote", DbType="Decimal(1,0)")]
+		public System.Nullable<decimal> Cote
+		{
+			get
+			{
+				return this._Cote;
+			}
+			set
+			{
+				if ((this._Cote != value))
+				{
+					this._Cote = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Commentaire", DbType="VarChar(150)")]
+		public string Commentaire
+		{
+			get
+			{
+				return this._Commentaire;
+			}
+			set
+			{
+				if ((this._Commentaire != value))
+				{
+					this._Commentaire = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateMAJ", DbType="SmallDateTime")]
+		public System.Nullable<System.DateTime> DateMAJ
+		{
+			get
+			{
+				return this._DateMAJ;
+			}
+			set
+			{
+				if ((this._DateMAJ != value))
+				{
+					this._DateMAJ = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateCreation", DbType="SmallDateTime")]
+		public System.Nullable<System.DateTime> DateCreation
+		{
+			get
+			{
+				return this._DateCreation;
+			}
+			set
+			{
+				if ((this._DateCreation != value))
+				{
+					this._DateCreation = value;
+				}
 			}
 		}
 	}

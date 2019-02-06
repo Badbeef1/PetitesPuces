@@ -228,4 +228,14 @@
       <Column Name="MotDePasse" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="dbo.PPEvaluations" Member="PPEvaluations">
+    <Type Name="PPEvaluations">
+      <Column Name="NoClient" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="NoProduit" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="Cote" Type="System.Decimal" DbType="Decimal(1,0)" CanBeNull="true" />
+      <Column Name="Commentaire" Type="System.String" DbType="VarChar(150)" CanBeNull="true" />
+      <Column Name="DateMAJ" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+      <Column Name="DateCreation" Type="System.DateTime" DbType="SmallDateTime" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>
