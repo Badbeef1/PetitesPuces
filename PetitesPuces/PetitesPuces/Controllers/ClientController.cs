@@ -530,7 +530,7 @@ namespace PetitesPuces.Controllers
             Dictionary<string,List<string>> dicCateAvecVendeur = contextPP.PPProduits
                 .GroupBy(pro => pro.PPCategories.Description.ToString(), pro => pro.PPVendeurs.NomAffaires.ToString())
                 .Distinct()
-                .ToDictionary(pro => pro.Key, pro => pro.ToList(), StringComparer.OrdinalIgnoreCase);
+                .ToDictionary(pro => pro.Key, pro => pro.Distinct().ToList(), StringComparer.OrdinalIgnoreCase);
 
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
             {
@@ -542,7 +542,8 @@ namespace PetitesPuces.Controllers
                 pageDimension = pageDimension,
                 intNoPage = noPage,
                 iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension),
-                dicVendeur = dicCateAvecVendeur
+                dicVendeur = dicCateAvecVendeur,
+                vendeur = vendeur
             };
 
             if (typeRech.HasValue)
