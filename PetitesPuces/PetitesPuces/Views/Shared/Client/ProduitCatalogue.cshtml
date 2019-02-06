@@ -1,10 +1,11 @@
 ﻿@model PagedList.IPagedList<PetitesPuces.Models.PPProduits>
 
 <div class="card-deck">
-    @foreach(var produit in Model)
+    @foreach (var produit in Model)
     {
-        <a href="/Client/ProduitDetaille" class="custom-card">
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue sCardItemCatalogue">
+
+        <div id="divItems" class="card border-dark mb-3 p-1 sCardItemCatalogue sCardItemCatalogue">
+            <a href="/Client/ProduitDetaille" class="custom-card">
                 <img class="card-img-top" src="~/Content/images/@Html.DisplayFor(x => produit.Photo)" alt="produit ...." style="max-height: 14rem; min-height: 14rem;">
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(x => produit.Nom)</h5>
@@ -15,7 +16,14 @@
                     </p>
                     <p class="text-right"><span class="badge badge-success">@Html.DisplayFor(x => produit.PPCategories.Description)</span></p>
                 </div>
+            </a>
+            @if (ViewBag.Provenance == "Vendeur")
+            {
+            <div class="card-footer btn-group" style="width:100%">
+                <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
+                <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
             </div>
-        </a>
+            }
+        </div>
     }
 </div>
