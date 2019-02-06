@@ -5,6 +5,7 @@
     const String strTriNum = "numero";
     const String strTriCat = "categorie";
     const String strTriDate = "date";
+    ViewBag.Provenance = "Vendeur";
 }
 
 <!DOCTYPE html>
@@ -62,7 +63,7 @@
             var categorie = '@Html.Raw(Model.strCategorie)';
             var dimension = @Model.pageDimension;
 
-            var lien = '/Client/Catalogue?' +
+            var lien = '/Vendeur/CatalogueVendeur?' +
                 (categorie != null ? 'categorie=' + categorie + '&' : '') +
                 ('recherche=' + recherche1 + '&') +
                 (recherche2 != null ? 'recherche2=' + recherche2 + '&' : '') +
@@ -80,7 +81,7 @@
             var tri = '@Model.strTri';
             var typeRecherche = '@Model.typeRech';
 
-            var lien = '/Client/Catalogue?' +
+            var lien = '/Vendeur/CatalogueVendeur?' +
                 (categorie != null ? 'categorie=' + categorie + '&' : '') +
                 (recherche != null ? 'recherche=' + recherche + '&' : '') +
                 (recherche2 != null ? 'recherche2=' + recherche2 + '&' : '') +
@@ -139,7 +140,7 @@
                                     strClasse += " focus";
                                 }
                             }
-                            <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriNum, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
+                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriNum, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
                                 Numéro de produit
                                 @if ("!" + strTriNum == Model.strTri)
                                 {
@@ -157,7 +158,7 @@
                                     strClasse += " focus";
                                 }
                             }
-                            <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriCat, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
+                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriCat, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
                                 Catégorie
                                 @if ("!" + strTriCat == Model.strTri)
                                 {
@@ -175,7 +176,7 @@
                                     strClasse += " focus";
                                 }
                             }
-                            <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse">
+                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse">
                                 Date de parution
                                 @if ("!" + strTriDate == Model.strTri)
                                 {
@@ -196,147 +197,11 @@
             </div>
         </div>
         <br />
-        @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
-
+        @Html.PagedListPager(Model.iplProduits, page => Url.Action("CatalogueVendeur", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
         <br />
-        <div class="card-columns">
-            <div id="divItems" class="card border-dark sCardItemCatalogue">
-                <a href="/Client/ProduitDetaille" class="custom-card">
-                    <div>
-                        <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                        <div class="card-body">
-                            <h5 class="card-title">Crayon en bois</h5>
-                            <p class="card-text">
-                                <span id="spPrix">5,00$</span><br />
-                                <span id="spQqt">Quantité restant: 5</span><br />
-                                <small>#245786654</small>
-                            </p>
-                            <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                        </div>
-                    </div>
-                </a>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
-                <img class="card-img-top" src="~/Content/images/stylo-plume.jpg" alt="produit ....">
-                <div class="card-body">
-                    <h5 class="card-title">Crayon en bois</h5>
-                    <p class="card-text">
-                        <span id="spPrix">5,00$</span><br />
-                        <span id="spQqt">Quantité restant: 5</span><br />
-                        <small>#245786654</small>
-                    </p>
-                    <p class="text-right"><span class="badge badge-success">Fourniture de bureau</span></p>
-                </div>
-                <div class="card-footer btn-group" style="width:100%">
-                    <button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>
-                    <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
-                </div>
-            </div>
-
-        </div>
-
-        @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
+        @Html.Partial("Client/ProduitCatalogue", Model.iplProduits)
+        <br />
+        @Html.PagedListPager(Model.iplProduits, page => Url.Action("CatalogueVendeur", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
     </main>
     }
 
