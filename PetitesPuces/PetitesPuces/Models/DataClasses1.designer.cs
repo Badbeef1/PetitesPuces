@@ -3881,7 +3881,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Taxes", DbType = "Bit")]
-        [Required(ErrorMessage = "Le champ taxes est requis.")]
+        [Required(ErrorMessage = "Le champ taxes est requis. ")]
         public System.Nullable<bool> Taxes
         {
             get
