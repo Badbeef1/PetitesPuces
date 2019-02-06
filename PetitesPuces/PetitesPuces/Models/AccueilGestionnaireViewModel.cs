@@ -8,8 +8,9 @@ namespace PetitesPuces.Models
    public class AccueilGestionnaireViewModel
    {
       public List<PPVendeurs> lstDemandesVendeurs { get; set; }
-      public Dictionary<PPCategories,bool> lstCategories { get; set; }
+      public Dictionary<PPCategories, bool> lstCategories { get; set; }
       public PPCategories categorie { get; set; }
+      public Dictionary<PPVendeurs,bool> lstVendeurs { get; set; }
       
       public AccueilGestionnaireViewModel(List<PPVendeurs> lstDemandesVendeurs, Dictionary<PPCategories, bool> lstCategories, PPCategories categorie)
       {

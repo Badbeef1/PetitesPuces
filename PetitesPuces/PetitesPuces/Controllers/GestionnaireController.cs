@@ -30,6 +30,31 @@ namespace PetitesPuces.Controllers
                          select vendeur
                          ).ToList();
 
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach(var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+            
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if(nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
+
          var categories = (from categorie in db.GetTable<PPCategories>()
                            select categorie
                            ).ToList();
@@ -51,6 +76,7 @@ namespace PetitesPuces.Controllers
          }
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories,c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          db.Connection.Close();
          return View(accueilGestionnaireViewModel);
       }
@@ -83,6 +109,31 @@ namespace PetitesPuces.Controllers
             }
          }
 
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach (var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if (nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
+
          //Aller chercher toutes les demandes de vendeurs
          var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
                          where vendeur.Statut.Equals(0)
@@ -110,6 +161,7 @@ namespace PetitesPuces.Controllers
          }
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -142,6 +194,30 @@ namespace PetitesPuces.Controllers
                          select vendeur
                          ).ToList();
 
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach (var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if (nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
          Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
          var categories = (from categorie in db.GetTable<PPCategories>()
                            select categorie
@@ -165,6 +241,7 @@ namespace PetitesPuces.Controllers
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -196,6 +273,31 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
+
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach (var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if (nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
          Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
          var categories = (from categorie in db.GetTable<PPCategories>()
                            select categorie
@@ -219,6 +321,7 @@ namespace PetitesPuces.Controllers
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -250,6 +353,30 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach (var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if (nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
          Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
          var categories = (from categorie in db.GetTable<PPCategories>()
                            select categorie
@@ -304,6 +431,30 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach (var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if (nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
          Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
          var categories = (from cat in db.GetTable<PPCategories>()
                            select cat
@@ -327,6 +478,7 @@ namespace PetitesPuces.Controllers
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -380,6 +532,31 @@ namespace PetitesPuces.Controllers
                          where vendeur.Statut.Equals(0)
                          select vendeur
                          ).ToList();
+
+         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+         //Aller chercher la liste des vendeurs admis dans la BD
+         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.Statut.Equals(1)
+                              select vendeur
+                              ).ToList();
+         foreach (var vendeurAdmis in vendeursAdmis)
+         {
+            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                               select commande
+                               ).ToList();
+
+            //Vérifier si le vendeur a déjà effectué des commandes.
+            if (nbCommandes.Count() > 0)
+            {
+               dicVendeurs.Add(vendeurAdmis, true);
+            }
+            else
+            {
+               dicVendeurs.Add(vendeurAdmis, false);
+            }
+         }
+
          Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
          var categories = (from cat in db.GetTable<PPCategories>()
                            select cat
@@ -402,6 +579,7 @@ namespace PetitesPuces.Controllers
          }
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
