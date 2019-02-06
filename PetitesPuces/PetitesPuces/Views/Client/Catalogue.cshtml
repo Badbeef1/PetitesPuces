@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
     <link rel="stylesheet" href="~/Content/css/Catalogue.css"/>
+    
     <style>
         
     </style>
@@ -106,11 +107,18 @@
             <div class="row flex-xl-nowrap">
                 <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
                     <h5>Catégorie de produit</h5>
-                    <ul class="nav nav-pills flex-column">
-                        @foreach (var categorie in Model.lstCategorie)
+                    <ul class="nav nav-pills flex-column" id="parentAccordeon">
+                        @foreach (var categorie in Model.dicVendeur)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Catalogue", new { categorie = categorie.Description, Model.pageDimension})">@categorie.Description</a>
+                                <a class="nav-link" href="@Url.Action("Catalogue", new { categorie = categorie.Key, Model.pageDimension})">@categorie.Key.ToString()</a>
+                                <a data-toggle="collapse" href="@("#accordeon" + categorie.Key)" aria-expanded="false" aria-controls="@("accordeon" + categorie.Key)" data-parent="parentAccordeon">+</a>
+                                <ul class="collapse" id="@("accordeon" + categorie.Key)">
+                                    @foreach (var vendeur in categorie.Value)
+                                    {
+                                        <li><a class="nav-link" href="#">@vendeur.ToString()</a></li>
+                                    }
+                                </ul>
                             </li>
                         }
                     </ul>
@@ -222,6 +230,8 @@
             </div>
         </div>
     }
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
 
 </body>
 </html>

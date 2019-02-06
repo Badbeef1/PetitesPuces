@@ -19,5 +19,6 @@ namespace PetitesPuces.ViewModels
         public int typeRech { get; set; }
         public IPagedList<Models.PPProduits> iplProduits { get; set; }
         public String strParent { get; set; }
+        public Dictionary<string, List<string>> dicVendeur { get; set; }
     }
 }
