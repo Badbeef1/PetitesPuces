@@ -1,56 +1,154 @@
-﻿
+﻿@using PetitesPuces.Models
+@model List<PPArticlesEnPanier>
 @{
+    double poidsKg = 0;
     Layout = null;
-}
 
+}
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-<script>
+<link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"/>
+
+<script type="text/javascript">
     $(document).ready(function () {
         $("#btnContinueMagasiner").click(function () {
             window.location.href = "/Client/Catalogue"
         });
+
         // Bouton poursuivre du première onglet
-        $("#btnPoursuivre").click(function () {
-            $("#btnTransactionTab").attr("disabled", false);
-            $("#divCommande").attr("hidden", true);
-            $("#divTransaction").attr("hidden", false);
-            $("#divFacturation").attr("hidden", true);
+        $("#btnPasserCommande").click(function () {
+            $("#collapse_zoneCommande").collapse();
+            $("#collapse_zoneInfos").collapse("show");
+            $("#btnContinueMagasiner").attr("hidden", true);
+            $("#btnInformationLivraison").removeClass("disabled");
+            $("#btnCommande").addClass("disabled");
         });
-        // Bouton poursuivre du première onglet
-        $("#btnConfirmer").click(function () {
-            $("#btnFacturationTab").attr("disabled", false);
-            $("#divCommande").attr("hidden", true );
-            $("#divTransaction").attr("hidden", true);
-            $("#divFacturation").attr("hidden", false);
-        });
-        // Bouton première onglet
-        $("#btnCommandeTab").click(function () {
-            $("#divCommande").attr("hidden", false);
-            $("#divTransaction").attr("hidden", true);
-            $("#divFacturation").attr("hidden", true);
-        });
-        // Bouton deuxième onglet
-        $("#btnTransactionTab").click(function () {
-            $("#divCommande").attr("hidden", true);
-            $("#divTransaction").attr("hidden", false);
-            $("#divFacturation").attr("hidden", true);
-        });
-        // Bouton troisième onglet
-        $("#btnFacturationTab").click(function () {
-            setTimeout(function () {
-                $("#btnTransactionTab").attr("disabled", true);
-                $("#btnFacturationTab").attr("disabled", true);
-                $("#divCommande").attr("hidden", false);
-                $("#divTransaction").attr("hidden", true);
-                $("#divFacturation").attr("hidden", true);
-            },2000)
-        });
+
+        // Bouton choix de poste, second onglet
+
+
     });
+    function quantitechange(e) {
+        if (e.which == 13) {
+            e.preventDefault();
+        }
+    }
+
+    function supprimerProduit(id) {
+
+        $.ajax({
+            url: "/Client/SupprimerProduitSaisieCommande",
+            data: { "id": id },
+            success: success,
+            error: error,
+        });
+    }
+    function updateCart(noPanier) {
+        var quantite = $('#' + noPanier).val();
+        console.log('J\'update le cart');
+        $.ajax({
+            url: "/Client/UpdatePanierSaisieCommande",
+            data: { "noPanier": noPanier, "quantite": quantite },
+            success: success,
+            error: error,
+        });
+    }
+
+
+    function success(model) {
+        $("#body").html(model)
+    }
+    function successPoids(model) {
+        $("#collapse_zoneCommande").collapse("show");
+        $("#infoPerso").attr("hidden", true);
+        $("#btnInformationLivraison").removeClass("disabled");
+        $("#btnTypeLivraison").removeClass("disabled");
+
+        $("#body").html(model)
+        $("#btnPasserCommande").prop('value', 'Passer au paiement')
+    }
+
+    function error(error) {
+        console.log('erreur : ' + error);
+        location.href = '/Client/AccueilClient';
+    }
+
+    function errorPoids(error) {
+        console.log('erreur : ' + error);
+        //location.href = '/Client/AccueilClient';
+    }
 
 </script>
 <style>
+    .quantity {
+        float: left;
+        background-color: #eee;
+        position: relative;
+        width: 80px;
+        overflow: hidden
+    }
+
+        .quantity input {
+            margin: 0;
+            text-align: center;
+            width: 15px;
+            height: 15px;
+            padding: 0;
+            float: right;
+            color: #000;
+            font-size: 20px;
+            border: 0;
+            outline: 0;
+            background-color: #F6F6F6
+        }
+
+            .quantity input.qty {
+                position: relative;
+                border: 0;
+                width: 100%;
+                height: 40px;
+                padding: 10px 25px 10px 10px;
+                text-align: center;
+                font-weight: 400;
+                font-size: 15px;
+                border-radius: 0;
+                background-clip: padding-box
+            }
+
+        .quantity .minus, .quantity .plus {
+            line-height: 0;
+            background-clip: padding-box;
+            -webkit-border-radius: 0;
+            -moz-border-radius: 0;
+            border-radius: 0;
+            -webkit-background-size: 6px 30px;
+            -moz-background-size: 6px 30px;
+            color: #bbb;
+            font-size: 20px;
+            position: absolute;
+            height: 50%;
+            border: 0;
+            right: 0;
+            padding: 0;
+            width: 25px;
+            z-index: 3
+        }
+
+            .quantity .minus:hover, .quantity .plus:hover {
+                background-color: #dad8da
+            }
+
+        .quantity .minus {
+            bottom: 0
+        }
+
+    .shopping-cart {
+        margin-top: 20px;
+    }
     button:disabled {
         background-color: #dddddd;
     }
@@ -91,241 +189,483 @@
 </style>
 <html>
 <head>
-    <title>SaisieCommande</title>
+    <title>Saisie d'une commande</title>
 </head>
-<body>
+<body id="body">
+    @{
+
+        var lstTypeLivraison = (List<PPTypesLivraison>)ViewData["TypeLivraison"];
+        var lstMontantLivraison = (List<PPPoidsLivraisons>)ViewData["MontantLivraison"];
+        double dblPrixTotal = 0.0;
+        double dblSousTotal = 0.0;
+        double frais = 0.0;
+        double dblPrixProduitCourant = 0.0;
+        int compteur = 0;
+    }
+
     <!-- Barre de navigation -->
-    <!--Barre de navigation-->
+    @Html.Partial("test")
+    <!-- Ensemble de collapsable -->
+    <div class="container sEspaceBarNavigation" id="bigDiv">
+        <!-- Section commande, prix/quantité/taxes/poids etc, validation de la commande-->
+        <div class="card shopping-cart" id="accordion">
+            <div class="card-header" id="heading_commande">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-        <a class="navbar-brand" href="#">Petites Puces</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/Administrateur/GestionInactivite">Gérer l'inactivité des clients/vendeurs <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Administrateur/Statistiques" id="navbarDropdown">
-                        Voir les statistiques
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/Login/Index">
-                        Déconnexion
-                        <i class="fas fa-sign-out-alt"></i>
-                    </a>
-
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-            </form>
-        </div>
-    </nav>
-
-    <!-- Onglets -->
-    <div class="tab" style="padding-left:10px;padding-right:10px">
-        <button id="btnCommandeTab" class="tablinks "><h4>Commande</h4></button>
-        <button id="btnTransactionTab" class="tablinks " disabled><h4>Transaction</h4></button>
-        <button id="btnFacturationTab" class="tablinks " disabled><h4>Obtenir une facture</h4></button>
-    </div>
-    <!-- Premier Onglet -->
-    <div id="divCommande" class="" style="padding-left:10px;padding-right:10px">
-        <div style="width:100%">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        <div class="row">
-                            <div class="col-9">
-                                <h5><span class="glyphicon glyphicon-shopping-cart"></span> Panier</h5>
-                            </div>
-                            <div class="col-3">
-                                <button id="btnContinueMagasiner" type="button" class="btn btn-primary btn-sm btn-block">
-                                    <h4><span class="glyphicon glyphicon-share-alt"></span> Continuer à magasiner</h4>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="float-left">
+                    <h5 class="mb-0">
+                        <button id="btnCommande" class="btn btn-link text-s" data-toggle="collapse" data-target="#collapse_zoneCommande" aria-expanded="true" aria-controls="#collapse_zoneCommande">
+                            Commande
+                        </button>
+                    </h5>
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-2">
-                            <img class="img-responsive" src="http://placehold.it/100x70">
-                        </div>
-                        <div class="col-4">
-                            <h4 class="product-name"><strong><a href="">Clou 15CMx0.1CM</a></strong></h4><h4><small>Clou de 15CM</small></h4>
-                        </div>
-                        <div class="col-6">
-                            <div class="col-6 text-right">
-                                <h4><strong>0.05 $<span class="text-muted">x</span></strong></h4>
-                            </div>
-                            <div class="col-4">
-                                <input type="number" step="1" class="form-control input-sm" value="100">
-                            </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-link btn-xs">
-                                    <span class="glyphicon glyphicon-trash"> </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-2">
-                            <img class="img-responsive" src="http://placehold.it/100x70">
-                        </div>
-                        <div class="col-4">
-                            <h4 class="product-name"><strong><a href="">Marteau</a></strong></h4><h4><small>Marteau avec tête en acier</small></h4>
-                        </div>
-                        <div class="col-6">
-                            <div class="col-6 text-right">
-                                <h4><strong>10.99 $ <span class="text-muted">x</span></strong></h4>
-                            </div>
-                            <div class="col-4">
-                                <input type="number" step="1" class="form-control input-sm" value="1">
-                            </div>
-                            <div class="col-2">
-                                <button type="button" class="btn btn-link btn-xs">
-                                    <span class="glyphicon glyphicon-trash"> </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="text-center">
-                            <div class="col-5">
-                                <h4>Ajouté des objets?</h4>
-                            </div>
-                            <div class="col-7">
-                                <button type="button" class="btn btn-primary btn-sm btn-block">
-                                    <h4>Mettre à jour le panier</h4>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="float-right">
+                    <button id="btnContinueMagasiner" type="button" class="btn btn-primary btn-sm btn-block">
+                        <span class="glyphicon glyphicon-share-alt"></span> Continuer à magasiner
+                    </button>
                 </div>
-                <div class="panel-footer">
-                    <div class="row text-right">
-                        <div class="col-10">
+            </div>
+
+            <div id="collapse_zoneCommande" class="collapse show" aria-labelledby="btnCommande" data-parent="#accordion">
+
+                <div class="card-body">
+                    <!-- Loop d'article -->
+                    @for (int x = 0; x < Model.Count; x++)
+                    {
+                        poidsKg += (int)Model[x].NbItems * (double)Model[x].PPProduits.Poids;
+                        dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                        double dblPrixStdUnit = 1 * (double)Model[x].PPProduits.PrixDemande;
+                        dblSousTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                        @Html.HiddenFor(lst => lst[x].DateCreation)
+                        @Html.HiddenFor(lst => lst[x].NoClient)
+                        @Html.HiddenFor(lst => lst[x].NoPanier)
+                        @Html.HiddenFor(lst => lst[x].NoProduit)
+                        @Html.HiddenFor(lst => lst[x].NoVendeur)
+                        @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
+                        @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
+                        @Html.HiddenFor(lst => lst[x].NbItems)
+                        if (lstMontantLivraison != null)
+                        {
+                            <div class="row" id="itemEpurer">
+                                <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
+                                    <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
+                                </div>
+                                <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5 vertical-align-center">
+                                    <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                                </div>
+                                <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
+                                    <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
+                                        <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
+
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
+                                        <div class="quantity">
+                                            <span id="@Model[x].NoPanier" type="text">@Model[x].NbItems</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
+                                        <h6>
+                                            <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-1 col-sm-1 col-md-1">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row" id="itemComplet">
+                                <div class="col-12 col-sm-12 col-md-2 my-auto justify-content-center">
+                                    <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
+                                </div>
+                                <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5">
+                                    <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                                    <small>Poids unitaire : @Model[x].PPProduits.Poids Kg</small>
+                                    <h4>
+                                        <small>@Model[x].PPProduits.Description</small>
+                                    </h4>
+                                </div>
+                                <div class="col-12 col-sm-12 text-sm-center col-md-5 text-md-right row align-items-center" style="padding-right:0px">
+                                    <div class="col-2 col-sm-2 col-md-4 text-md-left" style="padding-top: 10px;padding-right:0px">
+                                        <h6><strong>@dblPrixStdUnit.ToString("0.00")$ <span class="text-muted">x</span></strong></h6>
+
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
+                                        <div class="quantity">
+                                            <input id="@Model[x].NoPanier" type="number" min="0" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-3 col-sm-3 col-md-3 text-right" style="padding-top: 10px;padding-right:0px">
+                                        <h6>
+                                            <strong>@dblPrixProduitCourant.ToString("0.00")$</strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-1 col-sm-1 col-md-1">
+                                        <button type="button" class="btn btn-outline-danger btn-xs" id="btnSupprimmer_@Model[x].NoPanier" onclick="supprimerProduit(@Model[x].NoPanier)">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                            @*Html.ActionLink("Supprimer", "SupprimerProduit", "Client", new { id = Model[x].NoPanier}, new { })*@
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <hr />
+                        compteur++;
+                    }
+
+                    <div class="card-footer">
+                        <div class="row" style="padding:0px;margin:0px">
+                            @if (lstMontantLivraison != null)
+                            {
+
+                                <div class="col-4 text-left" id="radioButtonLivraison">
+                                    <div class="align-items-left ">
+                                        @foreach (PPTypesLivraison ppTypeLivraison in lstTypeLivraison)
+                                        {
+                                            //En temps normal j'essaie de pas "Hardcoder" de valeur, mais le document précise que la Poste Régulière est automatiquement sélectionnée.
+                                            // Donc, au cas ou quelqu'un décide de jouer avec les liaisons ID-Description dans la BDD ou dans ajouter...
+                                        <div class="row">
+                                            <div class="col-8 text-left">
+                                                @if (ViewData["cbChecked"] != null)
+                                                {
+                                                    if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && Double.Parse(ViewData["cbChecked"].ToString()) == Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                    {
+                                                        if (Double.Parse(Model[0].PPVendeurs.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
+                                                        {
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                        }
+
+                                                    }
+                                                    else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                    {
+                                                        if (Double.Parse(Model[0].PPVendeurs.LivraisonGratuite.ToString()) > dblSousTotal)
+                                                        {
+                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                                        }
+                                                        <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                    }
+                                                    <br /> <br />
+                                                }
+                                            </div>
+                                            @if (Double.Parse(Model[0].PPVendeurs.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
+                                            {<div class="col-4 text-right"><strong>(0.00 $)</strong><br /> <br /></div> <br />
+
+                                        }
+                                        else
+                                        {<div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
+
+                                    }
+
+                                        </div>
+                                        }
+                                        <br />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-4 text-left" id="verifPoids">
+                                    <div class="row">
+                                        @if (Model[0].PPVendeurs.PoidsMaxLivraison < poidsKg)
+                                        {
+                                            <br /> <br />
+                                            <span style="color:red">Le poids de livraison maximal est dépassé</span>
+                                        }
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-9 text-left">
+
+                                            <div class="row">
+                                                Poids de la livraison :
+                                            </div>
+
+                                            <div class="row">
+                                                Poids maximal :
+                                            </div>
+                                        </div>
+                                        <div class="col-3 text-right">
+                                            <div class="row">
+                                                @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
+                                                {
+                                                    <span style="color:green"> @poidsKg Lbs</span>
+                                                    <br />
+                                                    <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="color:red"> @poidsKg Lbs</span>
+                                                    <br />
+                                                    <span>@Model[0].PPVendeurs.PoidsMaxLivraison Lbs</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-3">&nbsp;</div>
+                            <div class="col-3 text-left" style="padding-right:0px">
+                                @if (lstMontantLivraison != null)
+                                {
+                                    <h5>Frais de livraison</h5>
+                                }
+                                <h5>Sous-total</h5>
+                                <h5>TPS (5%)</h5>
+                                @{
+                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                    {
+                                        <h5> TVQ (9.975%) </h5>
+                                    }
+                                }
+
+                                <h5>Total</h5>
+                            </div>
+                            <div class="col-2 text-right">
+                                 @{ double totalTps = 0;
+                                     double totalTvq = 0;}
+                                @if (lstMontantLivraison != null)
+                                {
+                                    <h5><strong><span id="fraisDeLivraison">@frais.ToString("0.00") $</span></strong></h5>
+                                    dblPrixTotal = dblSousTotal + frais;
+                                    if (Model[0].PPVendeurs.Taxes == true)
+                                    {
+                                        totalTps = dblPrixTotal * 0.05;
+                                        totalTvq = dblPrixTotal * 0.09975;
+                                    }
+                                }
+                                <h5><strong>@((dblSousTotal + frais).ToString("0.00")) $</strong></h5>
+                                @{ if (totalTps == 0  && Model[0].PPVendeurs.Taxes == true) { totalTps = (dblSousTotal * 0.05); } }
+
+                                @{
+                                    <h5>
+                                        <strong>
+                                            @totalTps.ToString("0.00") $
+                                        </strong>
+                                    </h5>
+                                }
+                                @{
+                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                    {
+                                        if (totalTvq == 0 && Model[0].PPVendeurs.Taxes == true)
+                                        {
+                                            totalTvq = (dblSousTotal * 0.09975);
+                                        }
+                                        <h5>
+                                            <strong>
+                                                @totalTvq.ToString("0.00") $
+                                            </strong>
+                                        </h5>
+                                    }
+                                }
+
+                                <h5>
+                                    <strong>
+                                        @{
+                                            double totalAvecTaxes = 0;
+                                            if(dblPrixTotal == 0)
+                                            {
+
+                                                totalAvecTaxes = dblSousTotal + totalTps + totalTvq;
+                                            }
+                                            else
+                                            {
+
+                                                totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
+                                            }
+                                        }@(totalAvecTaxes.ToString("0.00")) $
+                                    </strong>
+                                </h5>
+                            </div>
                         </div>
-                        <div class="col-2">
-                            <h4>
-                                <select>
-                                    <option value="0" selected>Poste régulière</option>
-                                    <option value="1">Poste prioritaire</option>
-                                    <option value="2">Compagnie de livraison</option>
-                                </select>
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="row text-center">
-                        <div class="col-8">
-                            <h4 class="text-right">Frais de livraison</h4>
-                            <h4 class="text-right">Sous-total</h4>
-                            <h4 class="text-right">TPS (5%)</h4>
-                            <h4 class="text-right">TVQ (9.975%)</h4>
-                            <h4 class="text-right">Total</h4>
-                        </div>
-                        <div class="col-2">
-                            <h4 class="text-right"><strong>5.00 $</strong></h4>
-                            <h4 class="text-right"><strong>20.99 $</strong></h4>
-                            <h4 class="text-right"><strong>1.05 $</strong></h4>
-                            <h4 class="text-right"><strong>2.10 $</strong></h4>
-                            <h4 class="text-right"><strong>24.14 $</strong></h4>
-                        </div>
-                        <div class="col-2">
-                            <button id="btnPoursuivre" type="button" class="btn btn-success btn-block">
-                                <h4> Poursuivre</h4>
-                            </button>
+                        <div class="row" style="padding:15px">
+
+                            <div class="col-sm-6">
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="d-flex justify-content-end">
+                                    @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
+                                    {
+
+                                        <input id="btnPasserCommande" class="btn btn-success" type="submit" value="Passer aux informations de livraison"/>
+                                    }
+                                    else
+                                    {
+
+                                        <input id="btnPasserCommande" class="btn btn-success" title="Veuillez diminuer le poids total de la livraison" disabled type="submit" value="Passer aux informations de livraison"/>
+                                    }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!-- Informations de livraison -->
+        <div class="card shopping-cart" id="infoPerso" style="margin-top:0px;">
+            <div class="card-header" id="heading_infoPerso">
 
-    <!-- Second Onglet -->
-    <div id="divTransaction" hidden style="width:100%">
-        <div class="panel panel-info">
-            <div class="panel-heading" style="padding-left:20px;padding-right:20px">
-                <h3><u>Information personnelle</u></h3>
-                <div class="row">
-                    <label class="col-2" for="email">Courriel électronique</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-2" for="lastName">Nom</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-1" style="text-align:left" for="firstName">Prénom</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-1" for="tel1">Téléphone primaire</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-1" for="tel2">Téléphone secondaire</label>
+                <div class="float-left">
+                    <h5 class="mb-0">
+                        <button id="btnInformationLivraison" class="btn btn-link text-s disabled" data-toggle="collapse" data-target="#collapse_zoneInfos" aria-expanded="true" aria-controls="#collapse_zoneInfos">
+                            Informations de livraison
+                        </button>
+                    </h5>
                 </div>
-                <div class="row">
+            </div>
 
-                    <input class="col-2" id="email" style="margin-left:15px" type="text" />
-                    <div class="col-offset-1"></div>
-                    <input class="col-2" id="lastName" type="text" />
-                    <div class="col-offset-1"></div>
-                    <input class="col-1" id="firstName" type="text" />
-                    <div class="col-offset-1"></div>
-                    <input class="col-1" id="tel1" type="text" />
-                    <div class="col-offset-1"></div>
-                    <input class="col-1" id="tel2" type="text" />
-                </div>
-                <div class="row">
-                    <label class="col-2" for="rue">Rue</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-2" for="ville">Ville</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-1" for="province">Province</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-1" for="pays">Pays</label>
-                    <div class="col-offset-1"></div>
-                    <label class="col-1" for="codePostal">Code Postal</label>
-                </div>
-                <div class="row">
+            <div id="collapse_zoneInfos" class="collapse" aria-labelledby="btnInformationLivraison" data-parent="#infoPerso">
 
-                    <input class="col-2" style="margin-left:15px" id="rue" type="text" />
-                    <div class="col-offset-1"></div>
-                    <input class="col-2" id="ville" type="text" />
-                    <div class="col-offset-1"></div>
-                    <select class="col-1">
-                        <option value="0">Québec</option>
-                        <option value="1">Ontario</option>
-                        <option value="2">Nouveau-Brunswick</option>
-                    </select>
-                    <div class="col-offset-1"></div>
-                    <input class="col-1" id="pays" type="text" value="Canada" disabled />
-                    <div class="col-offset-1"></div>
-                    <input class="col-1" id="codePostal" type="text" />
+                <div class="card-body  align-items-center" style="padding:0px">
+                    <br />
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Prénom</label>
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Nom</label>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-5 form-control" id="firstName" type="text" value="@Model[0].PPClients.Prenom" />
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Courriel électronique</label>
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Rue</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled />
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-4 form-control" id="rue" type="text" value="@Model[0].PPClients.Rue" />
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Ville</label>
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Province</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-5 form-control" id="ville" type="text" value="@Model[0].PPClients.Ville" />
+                        <div class="offset-md-1"></div>
+                        <select class="col-md-4 form-control">
+                            @switch (Model[0].PPClients.Province)
+                            {
+
+                                case "QC":
+
+                                    <option selected value="QC">Québec</option>
+                                    <option value="ON">Ontario</option>
+                                    <option value="NB">Nouveau-Brunswick</option>
+                                    break;
+                                case "ON":
+                                    <option value="QC">Québec</option>
+                                    <option selected value="ON">Ontario</option>
+                                    <option value="NB">Nouveau-Brunswick</option>
+                                    break;
+                                case "NB":
+                                    <option value="QC">Québec</option>
+                                    <option value="ON">Ontario</option>
+                                    <option selected value="NB">Nouveau-Brunswick</option>
+                                    break;
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Pays</label>
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Code Postal</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-5 form-control" id="pays" type="text" value="@Model[0].PPClients.Pays" disabled />
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Téléphone primaire</label>
+                        <div class="offset-md-1"></div>
+                        <label class="col-md-5">Téléphone secondaire</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value="@Model[0].PPClients.Tel1" />
+                        <div class="offset-md-1"></div>
+                        <input class="col-md-4 form-control" id="tel2" type="text" value="@Model[0].PPClients.Tel2" />
+                    </div>
+                </div>
+                <br />
+
+                <div class="card-footer">
+                    <div class="row align-items-center">
+                        <div class="offset-md-4"></div>
+                        <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer au type de livraison" style="width:30%" />
+                        <div class="offset-md-4"></div>
+                        <script>
+                                                $("#btnChoixDePoste").click(function () {
+                                                @{
+                                                <text>
+                                                var poids = @poidsKg.ToString().Replace(",",".");
+                                                var panier = @Model[0].NoPanier;
+                                                </text>
+                                                }
+                                                $.ajax({
+                                                    url: "/Client/RecevoirPrixLivraison",
+                                                    data: {
+                                                        "poids": poids, "panier": panier, "tarif": "0"},
+                                                    success: successPoids,
+                                                    error: errorPoids,
+                                                });
+                                                $("#collapse_zoneInfos").collapse();
+                                                $("#collapse_typeLivraison").collapse("show");
+                            });
+                                function checkBoxFraisLivraison(tarif) {
+                                    @{
+                                    <text>
+                                    var poids = @poidsKg.ToString().Replace(",", ".");
+                                    var panier = @Model[0].NoPanier;
+                                    </text>
+                                    }
+                                    $.ajax({
+                                        url: "/Client/RecevoirPrixLivraison",
+                                        data: { "poids": poids, "panier": panier,"tarif" : tarif},
+                                        success: success,
+                                        error: error,
+                                    });
+                                }
+                        </script>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="container">
-            <div class="panel panel-info">
-                <div class="panel-heading" style="padding-left:20px;padding-right:20px">
-                    <h3><u>Information de paiement</u></h3>
-                    <p>Informations nécessaires?</p>
-                </div>
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-4"></div>
-            <input type="button" id="btnConfirmer" class="btn btn-success btn-block col-4" value="Confirmer" style="width:30%" />
-            <div class="col-4"></div>
-        </div>
-    </div>
-    <!-- Troisième et Dernier Onglet -->
-    <div id="divFacturation" style="padding-left:10px;padding-right:10px">
+        <!-- Choix de type de livraison -->
     </div>
 </body>
 </html>

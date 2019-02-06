@@ -1,0 +1,82 @@
+﻿@using PetitesPuces.Models
+@model List<PPArticlesEnPanier>
+@using (Html.BeginForm("SaisieCommande", "Client", FormMethod.Post))
+{
+    <div class="card shopping-cart">
+        <div class="card-header">
+            <h3>Panier du vendeur: @Model.First().PPVendeurs.NomAffaires</h3>
+        </div>
+
+        <div class="card-body">
+            <!-- PRODUCT -->
+            @{
+                double dblPrixTotal = 0.0;
+                double dblPrixProduitCourant = 0.0;
+                int compteur = 0;
+            }
+
+            @for (int x = 0; x < Model.Count(); x++)
+            {
+                dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                dblPrixTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                @Html.HiddenFor(lst => lst[x].DateCreation)
+                @Html.HiddenFor(lst => lst[x].NoClient)
+                @Html.HiddenFor(lst => lst[x].NoPanier)
+                @Html.HiddenFor(lst => lst[x].NoProduit)
+                @Html.HiddenFor(lst => lst[x].NoVendeur)
+                @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
+                @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
+                @Html.HiddenFor(lst => lst[x].NbItems)
+                double dblPrixDemande = (double)Model[x].PPProduits.PrixDemande;
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-2 text-center">
+                        <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
+                    </div>
+                    <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-6">
+                        <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
+                        <h4>
+                            <small>@Model[x].PPProduits.Description</small>
+                        </h4>
+                    </div>
+                    <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
+                        <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
+                            <h6><strong>@dblPrixDemande.ToString("0.00") $ <span class="text-muted">x</span></strong></h6>
+                            
+                        </div>
+                        <div class="col-2 col-sm-2 col-md-2">
+                            <div class="quantity">
+                                <!--<input type="button" value="+" class="plus" onclick="incrementerPanier('@Model[x].NoPanier')">-->
+                                <!--<input type="button" value="-" class="minus" onclick="decrementerPanier('@Model[x].NoPanier')">-->
+                                <input id="@Model[x].NoPanier" type="number" min="1" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="" disabled="disabled">
+                                @*Html.TextBoxFor(lst => lst[x].NbItems, new { @type = "number", @min = "0", @max = "99", @step = "1", @class = "qty" })*@
+                            </div>
+                        </div>
+                        
+                        <div class="col-4 col-sm-4 col-md-4 text-right">
+                            <h6>&nbsp;<strong>@dblPrixProduitCourant.ToString("0.00")$</strong></h6>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                compteur++;
+            }
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="d-flex justify-content-start">
+                        <h4>Prix total: <b>@dblPrixTotal.ToString("0.00") $</b></h4>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex justify-content-end">
+                        <button id="btnPasserCommande" class="btn btn-primary" type="submit">
+                            Envoyer un courriel au client
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

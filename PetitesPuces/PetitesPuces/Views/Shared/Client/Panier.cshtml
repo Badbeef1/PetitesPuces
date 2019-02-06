@@ -1,6 +1,6 @@
 ﻿@using PetitesPuces.Models
 @model List<PPArticlesEnPanier>
-@using (Html.BeginForm("PanierDetail", "Client", FormMethod.Post))
+@using (Html.BeginForm("SaisieCommande", "Client", FormMethod.Post))
 {
     <div class="card shopping-cart">
         <div class="card-header">
@@ -15,7 +15,6 @@
                 int compteur = 0;
             }
 
-
             @for (int x = 0; x < Model.Count(); x++)
             {
                 dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
@@ -28,6 +27,7 @@
                 @Html.HiddenFor(lst => lst[x].PPClients.NoClient)
                 @Html.HiddenFor(lst => lst[x].PPVendeurs.NoVendeur)
                 @Html.HiddenFor(lst => lst[x].NbItems)
+                double dblPrixDemande = (double)Model[x].PPProduits.PrixDemande;
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-2 text-center">
                         <img class="img-responsive" src="~/Content/images/@Model[x].PPProduits.Photo" alt="prewiew" width="120" height="80">
@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
                         <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
-                            <h6><strong>@Model[x].PPProduits.PrixDemande $ <span class="text-muted">x</span></strong></h6>
+                            <h6><strong>@dblPrixDemande.ToString("0.00") $ <span class="text-muted">x</span></strong></h6>
                             
                         </div>
                         <div class="col-2 col-sm-2 col-md-2">

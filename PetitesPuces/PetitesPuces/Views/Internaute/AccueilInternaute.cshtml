@@ -28,14 +28,14 @@
          * Base structure
          */
       /* Move down content because we have a fixed navbar that is 50px tall */
-      body {
+      /*
+         body {
          padding-top: 50px;
       }
-
+      */
       /*
          * Typography
          */
-
       h1 {
          margin-bottom: 20px;
          padding-bottom: 9px;
@@ -98,9 +98,7 @@
 </head>
 <body>
    <!--Barre de navigation-->
-   <div id="navigation">
-      @RenderPage("~/Views/Internaute/index.cshtml")
-   </div>
+  @Html.Partial("index")
 
    <div class="container-fluid">
       <div class="row">
@@ -125,6 +123,8 @@
             <div class="container">
                <br /><br />
                <hr />
+               <h3>Les cat&eacute;gories</h3>
+               <br />
                <!--Première catégorie-->
                @Html.Partial("Client/Categories", Model)
             </div>

@@ -12,6 +12,8 @@ namespace PetitesPuces.Models
         public List<Inactiver> cbVendeurs { get; set; }
 
         public bool blnOpenPDF { get; set; }
+        
+        public string lastPDF { get; set; }
     }
 
 

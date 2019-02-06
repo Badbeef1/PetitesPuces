@@ -1,5 +1,10 @@
-﻿@{
+﻿@model PetitesPuces.ViewModels.CatalogueViewModel
+@using PagedList.Mvc;
+@{
     Layout = null;
+    const String strTriNum = "numero";
+    const String strTriCat = "categorie";
+    const String strTriDate = "date";
 }
 
 <!DOCTYPE html>
@@ -10,37 +15,114 @@
     <title>Catalogue du vendeur</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+    <link rel="stylesheet" href="~/Content/css/Catalogue.css" />
     <style>
-        .sCardItemCatalogue {
-            max-width: 17rem;
-            min-width: 17rem;
-        }
-        a.custom-card,
-        a.custom-card:hover {
-            color: inherit;
-        }
     </style>
+    <script type="text/javascript">
+        function rechercheChangement(optionSelection) {
+            var divDateDebut = document.getElementById("divRechercheDateDebut");
+            var divDateFin = document.getElementById("divRechercheDateFin");
+            var elementZonetext = document.getElementById("tbRecherche");
+
+            var strVisibleDiv = "d-flex";
+            var strInvisible = "display: none;";
+            var strVisibleInput = "display: block;";
+
+            if (optionSelection == 4) {
+                elementZonetext.style = strInvisible;
+
+                divDateDebut.classList.add(strVisibleDiv);
+                divDateFin.classList.add(strVisibleDiv);
+            }
+            else {
+                elementZonetext.style = strVisibleInput;
+
+                divDateDebut.classList.remove(strVisibleDiv);
+                divDateFin.classList.remove(strVisibleDiv);
+            }
+        }
+
+        function envoieRecherche() {
+            var typeRecherche = document.getElementById('selTypeRech').value;
+            var tbRecherche = document.getElementById('tbRecherche').value;
+            var dtRecherche1 = document.getElementById('dtRechercheDebut').value;
+            var dtRecherche2 = document.getElementById('dtRechercheFin').value;
+            var recherche1 = null;
+            var recherche2 = null;
+
+            if (typeRecherche == 4) {
+                recherche1 = dtRecherche1;
+                recherche2 = dtRecherche2;
+            }
+            else {
+                recherche1 = tbRecherche;
+            }
+
+            var categorie = '@Html.Raw(Model.strCategorie)';
+            var dimension = @Model.pageDimension;
+
+            var lien = '/Client/Catalogue?' +
+                (categorie != null ? 'categorie=' + categorie + '&' : '') +
+                ('recherche=' + recherche1 + '&') +
+                (recherche2 != null ? 'recherche2=' + recherche2 + '&' : '') +
+                ('pageDimension=' + dimension + '&') +
+                ('typeRech=' + typeRecherche);
+            location.href = lien;
+        }
+
+        //Recharge la page catalogue pour appliquer le changement du nombre de produits par page
+        function envoieNbProduit(intNbProduit) {
+
+            var categorie = '@Model.strCategorie';
+            var recherche = '@Model.recherche';
+            var recherche2 = '@Model.recherche2';
+            var tri = '@Model.strTri';
+            var typeRecherche = '@Model.typeRech';
+
+            var lien = '/Client/Catalogue?' +
+                (categorie != null ? 'categorie=' + categorie + '&' : '') +
+                (recherche != null ? 'recherche=' + recherche + '&' : '') +
+                (recherche2 != null ? 'recherche2=' + recherche2 + '&' : '') +
+                (tri != null ? 'tri=' + tri + '&' : '') +
+                ('pageDimension=' + intNbProduit + '&') +
+                ('typeRech=' + typeRecherche);
+
+            location.href = lien;
+
+        }
+    </script>
 </head>
 <body>
-    <div id="navigation">
-        @RenderPage("~/Views/Vendeur/index.cshtml")
-    </div>
-    <div class="container">
+    @Html.Partial("index")
+
+    @using (Html.BeginForm())
+    {
+    <main class="container">
         <h1>Catalogue du vendeur Bureau en gros</h1>
         <div class="row">
             <div class="col-5">
                 <div id="divRecherche" class="border-secondary card">
                     <h6 class="card-header">Recherche</h6>
                     <div class="card-body d-flex flex-wrap">
-                        <input type="text" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12"><br />
-                        <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3">
+                        <input type="text" id="tbRecherche" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12">
+                        <div id="divRechercheDateDebut" style="display: none;">
+                            <label for="dtRechercheDebut" class="col-form-label">Date de début</label>
+                            <input type="date" id="dtRechercheDebut" class="form-control border-primary" />
+                        </div>
+                        <div id="divRechercheDateFin" style="display:none;">
+                            <label for="dtRechercheFin" class="col-form-label">Date de fin</label>
+                            <input type="date" id="dtRechercheFin" class="form-control border-primary" />
+                        </div>
+                        <br />
+                        <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3" onchange="rechercheChangement(this.value)">
                             <option value="1" selected>Nom produit</option>
-                            <option value="2">Catégorie produit</option>
-                            <option value="3">Numéro produit</option>
-                            <option value="4">Description produit</option>
-                            <option value="5">Date de parution</option>
+                            <option value="2">Numéro produit</option>
+                            <option value="3">Description produit</option>
+                            <option value="4">Date de parution</option>
+                            <option value="5">Catégorie</option>
                         </select>
-                        <button type="button" class="btn btn-outline-primary mt-3 ml-auto">Lancer recherche <span class="fas fa-search"></span></button>
+                        <button type="button" class="btn btn-outline-primary mt-3 ml-auto" onclick="envoieRecherche()">Lancer recherche <span class="fas fa-search"></span></button>
                     </div>
                 </div>
             </div>
@@ -50,48 +132,71 @@
                     <div class="card-body d-flex">
                         <div class="">
                             <label class="font-weight-bold">Classer par </label><br /><br />
-                            <button type="button" class="btn btn-outline-primary">Numéro de produit <span class="fas fa-sort-alpha-up"></span></button>
-                            <button type="button" class="btn btn-outline-primary">Catégorie <span class="fas fa-sort-alpha-up"></span></button>
-                            <button type="button" class="btn btn-outline-primary">Date de parution <span class="fas fa-sort-alpha-up"></span></button>
+                            @{
+                                var strClasse = "btn btn-outline-primary";
+                                if (Model.strTri != null && Model.strTri.Contains(strTriNum))
+                                {
+                                    strClasse += " focus";
+                                }
+                            }
+                            <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriNum, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
+                                Numéro de produit
+                                @if ("!" + strTriNum == Model.strTri)
+                                {
+                                    <span class="fas fa-sort-numeric-down"></span>
+                                }
+                                else
+                                {
+                                    <span class="fas fa-sort-numeric-up"></span>
+                                }
+                            </a>
+                            @{
+                                strClasse = "btn btn-outline-primary";
+                                if (Model.strTri != null && Model.strTri.Contains(strTriCat))
+                                {
+                                    strClasse += " focus";
+                                }
+                            }
+                            <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriCat, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
+                                Catégorie
+                                @if ("!" + strTriCat == Model.strTri)
+                                {
+                                    <span class="fas fa-sort-alpha-down"></span>
+                                }
+                                else
+                                {
+                                    <span class="fas fa-sort-alpha-up"></span>
+                                }
+                            </a>
+                            @{
+                                strClasse = "btn btn-outline-primary";
+                                if (Model.strTri != null && Model.strTri.Contains(strTriDate))
+                                {
+                                    strClasse += " focus";
+                                }
+                            }
+                            <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse">
+                                Date de parution
+                                @if ("!" + strTriDate == Model.strTri)
+                                {
+                                    <span class="fas fa-sort-amount-down"></span>
+                                }
+                                else
+                                {
+                                    <span class="fas fa-sort-amount-up"></span>
+                                }
+                            </a>
                         </div>
                         <div class="ml-auto">
-                            <label for="selPage" class="font-weight-bold">Par page</label><br /><br />
-                            <select id="selPage" class="custom-select border-primary text-primary">
-                                <option>5</option>
-                                <option>10</option>
-                                <option selected>15</option>
-                                <option>20</option>
-                                <option>25</option>
-                                <option>tout</option>
-                            </select>
+                            <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
+                            @Html.DropDownListFor(x => x.pageDimension, (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary", @onchange = "envoieNbProduit(this.value)" })
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <br />
-        <div id="divPaginationHaut" class="d-flex justify-content-center">
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;&lsaquo;</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item"><a class="page-link" href="#">6</a></li>
-                    <li class="page-item"><a class="page-link" href="#">7</a></li>
-                    <li class="page-item"><a class="page-link" href="#">8</a></li>
-                    <li class="page-item"><a class="page-link" href="#">9</a></li>
-                    <li class="page-item"><a class="page-link" href="#">10</a></li>
-                    <li class="page-item"><a class="page-link" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&rsaquo;&rsaquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&rsaquo;</a></li>
-                </ul>
-            </nav>
-            <a href="/Vendeur/GestionProduit" class="btn btn-outline-primary ml-3 btn-sm">Ajouter un produit <span class="fas fa-plus"></span></a>
-        </div>
+        @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
 
         <br />
         <div class="card-columns">
@@ -231,28 +336,9 @@
 
         </div>
 
-        <div id="divPaginationBas" class="d-flex justify-content-center">
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;</a></li>
-                    <li class="page-item disabled"><a class="page-link" href="#">&lsaquo;&lsaquo;</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">4</a></li>
-                    <li class="page-item"><a class="page-link" href="#">5</a></li>
-                    <li class="page-item"><a class="page-link" href="#">6</a></li>
-                    <li class="page-item"><a class="page-link" href="#">7</a></li>
-                    <li class="page-item"><a class="page-link" href="#">8</a></li>
-                    <li class="page-item"><a class="page-link" href="#">9</a></li>
-                    <li class="page-item"><a class="page-link" href="#">10</a></li>
-                    <li class="page-item"><a class="page-link" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&rsaquo;&rsaquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="#">&rsaquo;</a></li>
-                </ul>
-            </nav>
-            <a href="/Vendeur/GestionProduit" class="btn btn-outline-primary ml-3 btn-sm">Ajouter un produit <span class="fas fa-plus"></span></a>
-        </div>
-    </div>
+        @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
+    </main>
+    }
+
 </body>
 </html>

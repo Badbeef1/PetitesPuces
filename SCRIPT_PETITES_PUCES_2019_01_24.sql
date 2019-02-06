@@ -1,5 +1,27 @@
 USE [BD6B8_424R_TESTS]
 /*USE [BD6B8_424R]*/
+
+DROP TABLE PPTaxeFederale
+DROP TABLE PPTaxeProvinciale
+DROP TABLE PPHistoriquePaiements
+DROP TABLE PPPoidsLivraisons
+DROP TABLE PPTypesPoids
+DROP TABLE PPDetailsCommandes
+DROP TABLE PPCommandes
+DROP TABLE PPTypesLivraison
+DROP TABLE PPArticlesEnPanier
+DROP TABLE PPVendeursClients
+DROP TABLE PPProduits
+DROP TABLE PPCategories
+DROP TABLE HistoCommandes
+DROP TABLE HistoDetailsCommandes
+DROP TABLE PPVendeurs
+DROP TABLE PPClients
+DROP TABLE PPGestionnaire
+DROP TABLE PPDestinataires
+DROP TABLE PPMessages
+DROP TABLE PPLieu
+
 GO
 /****** Object:  Table [dbo].[PPArticlesEnPanier]    Script Date: 2019-01-24 12:34:29 ******/
 SET ANSI_NULLS ON
@@ -349,3 +371,37 @@ REFERENCES [dbo].[PPVendeurs] ([NoVendeur])
 GO
 ALTER TABLE [dbo].[PPVendeursClients] CHECK CONSTRAINT [FK_PPVendeursClients_PPVendeurs]
 GO
+
+CREATE TABLE PPLieu(
+	NoLieu smallint,
+	Description nvarchar(50),
+	PRIMARY KEY(NoLieu)
+	);
+CREATE TABLE PPMessages(
+	NoMsg int,
+	NoExpediteur int,
+	DescMsg nvarchar(MAX),
+	FichierJoint sql_variant,
+	Lieu smallint,
+	dateEnvoi smalldatetime,
+	objet nvarchar(50),
+	PRIMARY KEY(NoMsg),
+	FOREIGN KEY(Lieu) REFERENCES PPLieu(NoLieu)
+);
+
+CREATE TABLE PPDestinataires (
+	NoMsg int,
+	NoDestinataire int,
+	EtatLu smallint,
+	Lieu smallint,
+	CONSTRAINT PK_Destinataire PRIMARY KEY (NoMsg,NoDestinataire),
+	CONSTRAINT FK_NoMsg FOREIGN KEY (NoMsg) REFERENCES PPMessages (NoMsg),
+	CONSTRAINT FK_Lieu FOREIGN KEY(Lieu) REFERENCES PPLieu(NoLieu)
+	);
+
+CREATE TABLE PPGestionnaire(
+	AdresseEmail varchar(100) NOT NULL,
+	MotDePasse varchar(50) NOT NULL,
+	PRIMARY KEY(AdresseEmail)
+);
+

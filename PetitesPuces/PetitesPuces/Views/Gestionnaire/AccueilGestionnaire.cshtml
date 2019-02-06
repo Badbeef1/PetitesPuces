@@ -1,92 +1,117 @@
-﻿<!doctype html>
+﻿@using PetitesPuces.Models
+@model AccueilGestionnaireViewModel
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Petites Puces</title>
-    <!--Librairies externes (Bootstrap 4.2)-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <style>
-        /*
+   <meta charset="UTF-8">
+   <title>Petites Puces</title>
+   <!--Librairies externes (Bootstrap 4.2)-->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+   <style>
+      /*
         * Base structure
         */
 
-        /* Move down content because we have a fixed navbar that is 50px tall */
-        body {
-            padding-top: 50px;
-        }
+      /* Move down content because we have a fixed navbar that is 50px tall */
 
-        /*
+      /*body {
+            padding-top: 50px;
+        }*/
+
+      /*
         * Typography
         */
 
-        h1 {
-            margin-bottom: 20px;
-            padding-bottom: 9px;
-            border-bottom: 1px solid #eee;
-        }
+      h1 {
+         margin-bottom: 20px;
+         padding-bottom: 9px;
+         border-bottom: 1px solid #eee;
+      }
 
-        /*
+      /*
         * Sidebar
         */
 
-        .sidebar {
-            position: fixed;
-            top: 51px;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            padding: 20px;
-            overflow-x: hidden;
-            overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-            border-right: 1px solid #eee;
-        }
+      .sidebar {
+         position: fixed;
+         top: 51px;
+         bottom: 0;
+         left: 0;
+         z-index: 1000;
+         padding: 20px;
+         overflow-x: hidden;
+         overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+         border-right: 1px solid #eee;
+      }
 
-        /* Sidebar navigation */
-        .sidebar {
-            padding-left: 0;
-            padding-right: 0;
-        }
+      /* Sidebar navigation */
+      .sidebar {
+         padding-left: 0;
+         padding-right: 0;
+      }
 
-            .sidebar .nav {
-                margin-bottom: 20px;
+         .sidebar .nav {
+            margin-bottom: 20px;
+         }
+
+         .sidebar .nav-item {
+            width: 100%;
+         }
+
+            .sidebar .nav-item + .nav-item {
+               margin-left: 0;
             }
 
-            .sidebar .nav-item {
-                width: 100%;
-            }
+         .sidebar .nav-link {
+            border-radius: 0;
+         }
 
-                .sidebar .nav-item + .nav-item {
-                    margin-left: 0;
-                }
-
-            .sidebar .nav-link {
-                border-radius: 0;
-            }
-
-        /*
+      /*
         * Dashboard
         */
 
-        /* Placeholders */
-        .placeholders {
-            padding-bottom: 3rem;
-        }
+      /* Placeholders */
+      .placeholders {
+         padding-bottom: 3rem;
+      }
 
-        .placeholder img {
-            padding-top: 1.5rem;
-            padding-bottom: 1.5rem;
-        }
-    </style>
+      .placeholder img {
+         padding-top: 1.5rem;
+         padding-bottom: 1.5rem;
+      }
+   </style>
+   <script type="text/javascript">
+      //fonction qui permet de supprimer une catégorie
+      function supprimerCategorie(id) {
+         if (confirm('Voulez-vous vraiment supprimer cette catégorie ?')) {
+            console.log('Supprimer');
+
+            //Requête AJAX pour aller supprimer la catégorie passé en paramètre
+            $.ajax({
+               url: "/Gestionnaire/SupprimerCategorie",
+               data: { "id": id },
+               success: success,
+               error: error,
+            });
+         }
+      }
+      function success() {
+         console.log('réussi');
+         location.href = "/Gestionnaire/AccueilGestionnaire";
+      }
+      function error() {
+         console.log('erreur');
+      }
+   </script>
 </head>
 <body>
     <!--Barre de navigation-->
-    <div id="navigation">
-        @RenderPage("~/Views/Gestionnaire/index.cshtml")
-    </div>
+    @Html.Partial("index")
     <div class="container-fluid">
             <div class="row">    
               <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
@@ -149,7 +174,7 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th># Demande Vendeur</th>
+                        <th>#Vendeur</th>
                         <th>Nom d'affaires</th>
                         <th>Nom Complet</th>
                         <th>Province</th>
@@ -158,167 +183,20 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1,001</td>
-                        <td>Lorem</td>
-                        <td>ipsum</td>
-                        <td>dolor</td>
-                        <td>sit</td>
-                        <td>
-                            <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,002</td>
-                        <td>amet</td>
-                        <td>consectetur</td>
-                        <td>adipiscing</td>
-                        <td>elit</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,003</td>
-                        <td>Integer</td>
-                        <td>nec</td>
-                        <td>odio</td>
-                        <td>Praesent</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,003</td>
-                        <td>libero</td>
-                        <td>Sed</td>
-                        <td>cursus</td>
-                        <td>ante</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
+                       @foreach (var vendeur in Model.lstDemandesVendeurs)
+                       {
+                          <tr>
+                             <td>@vendeur.NoVendeur</td>
+                             <td>@vendeur.NomAffaires</td>
+                             <td>@vendeur.Prenom @vendeur.Nom</td>
+                             <td>@vendeur.Province</td>
+                             <td>@vendeur.Tel1</td>
+                             <td>
+                                @Html.ActionLink("Détails du vendeur", "DetailVendeur", "Gestionnaire", new { id = vendeur.NoVendeur}, new { @class= "btn btn-primary" })
+                             </td>
+                          </tr>
+                       }
 
-                      </tr>
-                      <tr>
-                        <td>1,004</td>
-                        <td>dapibus</td>
-                        <td>diam</td>
-                        <td>Sed</td>
-                        <td>nisi</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,005</td>
-                        <td>Nulla</td>
-                        <td>quis</td>
-                        <td>sem</td>
-                        <td>at</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,006</td>
-                        <td>nibh</td>
-                        <td>elementum</td>
-                        <td>imperdiet</td>
-                        <td>Duis</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,007</td>
-                        <td>sagittis</td>
-                        <td>ipsum</td>
-                        <td>Praesent</td>
-                        <td>mauris</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,008</td>
-                        <td>Fusce</td>
-                        <td>nec</td>
-                        <td>tellus</td>
-                        <td>sed</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,009</td>
-                        <td>augue</td>
-                        <td>semper</td>
-                        <td>porta</td>
-                        <td>Mauris</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,010</td>
-                        <td>massa</td>
-                        <td>Vestibulum</td>
-                        <td>lacinia</td>
-                        <td>arcu</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,011</td>
-                        <td>eget</td>
-                        <td>nulla</td>
-                        <td>Class</td>
-                        <td>aptent</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,012</td>
-                        <td>taciti</td>
-                        <td>sociosqu</td>
-                        <td>ad</td>
-                        <td>litora</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,013</td>
-                        <td>torquent</td>
-                        <td>per</td>
-                        <td>conubia</td>
-                        <td>nostra</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,014</td>
-                        <td>per</td>
-                        <td>inceptos</td>
-                        <td>himenaeos</td>
-                        <td>Curabitur</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>1,015</td>
-                        <td>sodales</td>
-                        <td>ligula</td>
-                        <td>in</td>
-                        <td>libero</td>
-                        <td>
-                           <button class="btn btn-primary">Détails du vendeur</button>
-                        </td>
-                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -418,40 +296,32 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Sports et Loisirs</td>
-                            <td>&eacute;quipement de sport</td>
-                            <td><button id="btnSupprimer" class="btn btn-danger">Supprimer</button></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Voiture</td>
-                            <td>Voiture d'occasion</td>
-                            <td><button id="btnSupprimer" class="btn btn-danger">Supprimer</button></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>&eacute;lectronique</td>
-                            <td>&eacute;quipement d'&eacute;lectronique</td>
-                            <td><button id="btnSupprimer" class="btn btn-danger">Supprimer</button></td>
-                        </tr>
+                       @foreach (var cat in Model.lstCategories)
+                       {
+                       <tr>
+                          <td>@cat.Key.NoCategorie</td>
+                          <td>@cat.Key.Description</td>
+                          <td>@cat.Key.Details</td>
+                          @{
+                             if (cat.Value.Equals(true))
+                             {
+                                <td><button id="btnSupprimer_@cat.Key.NoCategorie" class="btn btn-danger" onclick="supprimerCategorie(@cat.Key.NoCategorie)">Supprimer</button></td>
+                             }
+                             else
+                             {
+                                <td><button id="btnSupprimer_@cat.Key.NoCategorie" class="btn btn-danger" onclick="supprimerCategorie(@cat.Key.NoCategorie)" disabled="disabled">Supprimer</button></td>
+                             }
+                          }
+
+                       </tr>
+                       }
+
                     </tbody>
                 </table>
               </main>
             </div>
           </div>
 
-        
-        
-          <!-- Bootstrap core JavaScript
-          ================================================== -->
-          <!-- Placed at the end of the document so the pages load faster -->
-          <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-          <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-          <script src="../../dist/js/bootstrap.min.js"></script>
-          <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-          <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+          
         </body>
       </html>

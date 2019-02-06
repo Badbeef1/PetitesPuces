@@ -1,0 +1,21 @@
+﻿@model PagedList.IPagedList<PetitesPuces.Models.PPProduits>
+
+<div class="card-deck">
+    @foreach(var produit in Model)
+    {
+        <a href="/Client/ProduitDetaille" class="custom-card">
+            <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue sCardItemCatalogue">
+                <img class="card-img-top" src="~/Content/images/@Html.DisplayFor(x => produit.Photo)" alt="produit ...." style="max-height: 14rem; min-height: 14rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(x => produit.Nom)</h5>
+                    <p class="card-text">
+                        @Html.DisplayFor(x => produit.PrixVente)<br />
+                        <span id="spQqt">Quantité restant: @Html.DisplayFor(x => produit.NombreItems)</span><br />
+                        <small>#@Html.DisplayFor(x => produit.NoProduit)</small>
+                    </p>
+                    <p class="text-right"><span class="badge badge-success">@Html.DisplayFor(x => produit.PPCategories.Description)</span></p>
+                </div>
+            </div>
+        </a>
+    }
+</div>

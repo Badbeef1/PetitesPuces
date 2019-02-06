@@ -6,13 +6,12 @@
 <html>
 <head>
     <meta charset="utf-8" />
+      <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
     <title></title>
     <!-- Latest compiled and minified CSS -->
 </head>
 <body>
-    <div id="navigation">
-        @RenderPage("~/Views/Vendeur/index.cshtml")
-    </div>
+    @Html.Partial("index")
     <div id="infoPage" style="padding-left:10px;padding-right:10px">
         <h1 style="text-align:center"><u>Gestion des commandes</u></h1>
         <!-- PAS SUR ENCORE SI JE VEUX METTRE UN BOUTON OU REFRESH À CHAQUE COCHE DE LIVRAISON

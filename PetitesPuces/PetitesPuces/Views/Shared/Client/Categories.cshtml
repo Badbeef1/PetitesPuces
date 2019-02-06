@@ -7,21 +7,21 @@
       if (entrepriseCat.lstVendeurs.Count > 0)
       {
          <div class="card">
-            <div class="card-header" id="heading_@entrepriseCat.categorie.NoCategorie">
+            <div class="card-header" id="headingCat_@entrepriseCat.categorie.NoCategorie">
                <div class="float-left">
-                  <img src="~/Content/images/categorie.jpg" alt="panier" class="rounded-circle" height="75px width="75px">
+                  <img src="~/Content/images/categorie.jpg" alt="panier" class="rounded-circle" height="50px" width="50px">
                </div>
 
                <div class="float-center">
                   <h5 class="mb-0">
-                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@entrepriseCat.categorie.NoCategorie" aria-expanded="true" aria-controls="collapse_@entrepriseCat.categorie.NoCategorie">
+                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapseCat_@entrepriseCat.categorie.NoCategorie" aria-expanded="true" aria-controls="collapseCat_@entrepriseCat.categorie.NoCategorie">
                         @entrepriseCat.categorie.Description
                      </button>
                   </h5>
                </div>
             </div>
 
-            <div id="collapse_@entrepriseCat.categorie.NoCategorie" class="collapse show" aria-labelledby="heading_@entrepriseCat.categorie.NoCategorie" data-parent="#accordion">
+            <div id="collapseCat_@entrepriseCat.categorie.NoCategorie" class="collapse" aria-labelledby="headingCat_@entrepriseCat.categorie.NoCategorie" data-parent="#accordion">
 
                <div class="card-body">
                   <div class="card">
@@ -43,7 +43,16 @@
                                        </div>
                                     </div>
                                     <div class="card-footer">
-                                       @Html.ActionLink("Voir l'entreprise", "CatalogueNouveaute", "Internaute", new { @class = "btn btn-success" })
+                                       @{
+                                          if ((PPClients)Session["clientObj"] != null)
+                                          {
+                                             @Html.ActionLink("Voir l'entreprise", "Catalogue", "Client", new { @class = "btn btn-success" })
+                                          }
+                                          else
+                                          {
+                                             @Html.ActionLink("Voir l'entreprise", "CatalogueNouveaute", "Internaute", new { @class = "btn btn-success" })
+                                          }
+                                       }
                                        <!--<button id="btn_@entreprises.NoVendeur" class="btn btn-success">Voir l'entreprise</button>-->
                                     </div>
                                  </div>
