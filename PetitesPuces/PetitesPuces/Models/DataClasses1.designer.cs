@@ -20,9 +20,9 @@ namespace PetitesPuces.Models
 	using System.Linq.Expressions;
 	using System.ComponentModel;
 	using System;
-	
-	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="BD6B8_424R_TESTS")]
+   using System.ComponentModel.DataAnnotations;
+
+   [global::System.Data.Linq.Mapping.DatabaseAttribute(Name="BD6B8_424R_TESTS")]
 	public partial class DataClasses1DataContext : System.Data.Linq.DataContext
 	{
 		
@@ -312,8 +312,11 @@ namespace PetitesPuces.Models
 				}
 			}
 		}
+
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="VarChar(50)")]
+      [Required(ErrorMessage = "La description ne peut pas être vide")]
+      [MaxLength(50)]
 		public string Description
 		{
 			get
@@ -333,6 +336,7 @@ namespace PetitesPuces.Models
 			}
 		}
 		
+      [Required(ErrorMessage = "Le champs détail ne peut pas être vide !")]
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Details", DbType="VarChar(MAX)")]
 		public string Details
 		{

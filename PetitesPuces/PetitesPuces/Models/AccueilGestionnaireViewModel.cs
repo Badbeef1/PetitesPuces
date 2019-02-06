@@ -9,11 +9,17 @@ namespace PetitesPuces.Models
    {
       public List<PPVendeurs> lstDemandesVendeurs { get; set; }
       public Dictionary<PPCategories,bool> lstCategories { get; set; }
-
-      public AccueilGestionnaireViewModel(List<PPVendeurs> lstDemandesVendeurs, Dictionary<PPCategories, bool> lstCategories)
+      public PPCategories categorie { get; set; }
+      
+      public AccueilGestionnaireViewModel(List<PPVendeurs> lstDemandesVendeurs, Dictionary<PPCategories, bool> lstCategories, PPCategories categorie)
       {
          this.lstDemandesVendeurs = lstDemandesVendeurs;
          this.lstCategories = lstCategories;
+         this.categorie = categorie;
+      }
+      public AccueilGestionnaireViewModel()
+      {
+
       }
    }
 }
