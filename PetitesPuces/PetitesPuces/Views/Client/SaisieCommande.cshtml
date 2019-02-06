@@ -25,6 +25,7 @@
             $("#collapse_zoneInfos").collapse("show");
             $("#btnContinueMagasiner").attr("hidden", true);
             $("#btnInformationLivraison").removeClass("disabled");
+            $("#btnCommande").addClass("disabled");
         });
 
         // Bouton choix de poste, second onglet
@@ -62,14 +63,13 @@
         $("#body").html(model)
     }
     function successPoids(model) {
-        // Rajouter la ligne de frais de livraison, modifier input pour texte (quantité), enlever btn supprimer, ajouter en tp
-
         $("#collapse_zoneCommande").collapse("show");
         $("#infoPerso").attr("hidden", true);
         $("#btnInformationLivraison").removeClass("disabled");
         $("#btnTypeLivraison").removeClass("disabled");
 
         $("#body").html(model)
+        $("#btnPasserCommande").prop('value', 'Passer au paiement')
     }
 
     function error(error) {
@@ -326,30 +326,50 @@
                                         {
                                             //En temps normal j'essaie de pas "Hardcoder" de valeur, mais le document précise que la Poste Régulière est automatiquement sélectionnée.
                                             // Donc, au cas ou quelqu'un décide de jouer avec les liaisons ID-Description dans la BDD ou dans ajouter...
-                                            <div class="row">
-                                                <div class="col-8 text-left">
-                                                    @if (ViewData["cbChecked"] != null)
+                                        <div class="row">
+                                            <div class="col-8 text-left">
+                                                @if (ViewData["cbChecked"] != null)
+                                                {
+                                                    if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && Double.Parse(ViewData["cbChecked"].ToString()) == Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
                                                     {
-                                                        if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && Double.Parse(ViewData["cbChecked"].ToString()) == Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                        if (Double.Parse(Model[0].PPVendeurs.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
                                                         {
-                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
-                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
-                                                        }
-                                                        else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
-                                                        {
-                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
-                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
                                                         }
                                                         else
                                                         {
-                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
                                                         }
-                                                        <br /> <br />
-                                                    }
-                                                </div>
-                                                <div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
 
+                                                    }
+                                                    else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                    {
+                                                        if (Double.Parse(Model[0].PPVendeurs.LivraisonGratuite.ToString()) > dblSousTotal)
+                                                        {
+                                                            frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
+                                                        }
+                                                        <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                    }
+                                                    <br /> <br />
+                                                }
                                             </div>
+                                            @if (Double.Parse(Model[0].PPVendeurs.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
+                                            {<div class="col-4 text-right"><strong>(0.00 $)</strong><br /> <br /></div> <br />
+
+                                        }
+                                        else
+                                        {<div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
+
+                                    }
+
+                                        </div>
                                         }
                                         <br />
                                     </div>
@@ -478,16 +498,12 @@
                                     @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
                                     {
 
-                                        <button id="btnPasserCommande" class="btn btn-success" type="submit">
-                                            Passer aux informations de livraison
-                                        </button>
+                                        <input id="btnPasserCommande" class="btn btn-success" type="submit" value="Passer aux informations de livraison"/>
                                     }
                                     else
                                     {
 
-                                        <button id="btnPasserCommande" class="btn btn-success" title="Veuillez diminuer le poids total de la livraison" disabled type="submit" tool>
-                                            Passer aux informations de livraison
-                                        </button>
+                                        <input id="btnPasserCommande" class="btn btn-success" title="Veuillez diminuer le poids total de la livraison" disabled type="submit" value="Passer aux informations de livraison"/>
                                     }
                                 </div>
                             </div>
