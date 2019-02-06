@@ -1,15 +1,26 @@
-﻿using System.Web.Mvc;
-using System.Linq;
+﻿using System.Linq;
+using System.Web.Mvc;
+using PetitesPuces.Models;
 
 namespace PetitesPuces.Controllers
 {
    public class ConnexionController : Controller
    {
       // GET: Login
-      public ActionResult Index() => View();
+      public ActionResult Index()
+      {
+         if (Session["clientObj"] != null)
+            return RedirectToAction("AccueilClient", "Client");
+         if (Session["vendeurObj"] != null)
+            return RedirectToAction("AccueilVendeur", "Vendeur");
+         if (Session["gestionnaireObj"] != null)
+            return RedirectToAction("AccueilGestionnaire", "Gestionnaire");
+
+         return View();
+      }
 
       [HttpPost]
-      public ActionResult VerifyLogin(Models.PPClientViewModel model)
+      public ActionResult VerifyLogin(PPClientViewModel model)
       {
          var username = model.client.AdresseEmail?.ToLower();
          var password = model.client.MotDePasse;
@@ -22,27 +33,22 @@ namespace PetitesPuces.Controllers
             model.client.MotDePasse = (password != null) ? "" : null;  // null = red outline, "" = none
             return View("Index", model);
          }
-         else if (username.ToLower().Equals("admin") && password == "Secret123")
-         {
-            Session["username"] = "Administrateur";
-            return RedirectToAction("Index", "Gestionnaire");
-         }
 
 
          /* Compare data with Database */
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         DataClasses1DataContext db = new DataClasses1DataContext();
          db.Connection.Open();
-         var clientLogged = (from cli in db.GetTable<Models.PPClients>()
+         var clientLogged = (from cli in db.GetTable<PPClients>()
                              where cli.AdresseEmail.ToLower() == username &&
                             cli.MotDePasse == password
                              select cli).FirstOrDefault();
 
-         var vendeurLogged = (from ven in db.GetTable<Models.PPVendeurs>()
+         var vendeurLogged = (from ven in db.GetTable<PPVendeurs>()
                               where ven.AdresseEmail.ToLower() == username.ToLower() &&
                              ven.MotDePasse == password
                               select ven).FirstOrDefault();
 
-         var gestionnaireLogged = (from gest in db.GetTable<Models.PPGestionnaire>()
+         var gestionnaireLogged = (from gest in db.GetTable<PPGestionnaire>()
                                    where gest.AdresseEmail.ToLower() == username.ToLower() &&
                                          gest.MotDePasse == password
                                    select gest).FirstOrDefault();
@@ -56,23 +62,23 @@ namespace PetitesPuces.Controllers
             Session["clientObj"] = clientLogged;
             return RedirectToAction("AccueilClient", "Client");
          }
-         else if (vendeurLogged != null && vendeurLogged.Statut == 1)
+
+         if (vendeurLogged != null && vendeurLogged.Statut == 1)
          {
             vendeurLogged.MotDePasse = "";
             Session["vendeurObj"] = vendeurLogged;
             return RedirectToAction("AccueilVendeur", "Vendeur");
          }
-         else if (gestionnaireLogged != null)
+
+         if (gestionnaireLogged != null)
          {
             gestionnaireLogged.MotDePasse = "";
             Session["gestionnaireObj"] = gestionnaireLogged;
             return RedirectToAction("AccueilGestionnaire", "Gestionnaire");
          }
-         else
-         {
-            model.errorMessage = "Le courriel ou le mot de passe n'est pas valide.";
-            model.client.MotDePasse = ""; //No red border
-         }
+
+         model.errorMessage = "Le courriel ou le mot de passe n'est pas valide.";
+         model.client.MotDePasse = ""; //No red border
 
          return View("Index", model);
       }
