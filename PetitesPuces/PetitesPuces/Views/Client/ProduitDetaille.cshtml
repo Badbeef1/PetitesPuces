@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PetitesPuces.Models.PPProduits
+@{
     Layout = null;
 }
 
@@ -22,7 +23,7 @@
     </div>
     <br /><br /><br />
     <div class="container">
-       @Html.Partial("Client/DetailProduit")
+       @Html.Partial("Client/DetailProduit", Model)
     </div>
 </body>
 </html>
