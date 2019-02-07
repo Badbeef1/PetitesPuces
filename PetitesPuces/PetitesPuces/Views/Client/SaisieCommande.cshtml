@@ -80,8 +80,8 @@
     }
 
     function passerPaiement() {
-        $("#collapse_zonePaiement").collapse("show");
-        $("#collapse_zoneCommande").collapse();
+        $("#collapse_zonePaiement").addClass("show");
+        $("#collapse_zoneCommande").removeClass("show");
         $("#btnCommande").addClass("disabled");
         $("#btnPaiement").removeClass("disabled");
 
@@ -216,10 +216,6 @@
         double dblPrixProduitCourant = 0.0;
         int compteur = 0;
     }
-    <input type="hidden" id="NoAutorisation" value="" />
-    <input type="hidden" id="DateAutorisation" value="" />
-    <input type="hidden" id="FraisMarchand" value="" />
-    <input type="hidden" id="InfoSuppl" value="" />
 
     <!-- Barre de navigation -->
     @Html.Partial("test")
@@ -778,21 +774,12 @@
                                 var PageRetour = document.createElement("input");
                                 PageRetour.setAttribute("type", "hidden");
                                 PageRetour.setAttribute("name", "NomPageRetour");
-                                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/SaisieCommande");
+                                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
                                 form.appendChild(PageRetour);
+                            
                                 document.body.appendChild(form);
                                 form.submit();
-
-                  /*
-                            $.ajax({
-                                data: {
-                                    "NoVendeur": vendeur, "NomVendeur": nomAffaire, "NoCarteCredit": $("#numCredit").value,
-                                    "": mois + '-' + $("#anneeExpireCredit").value, "NoSecuriteCarteCredit": $("#securiteCredit").value, "MontantPaiement": montant,
-                                    "NomPageRetour": ''
-                                },
-                                success: successPaiement(),
-                                error: errorPaiement(),
-                            });*/
+                                
                         }
                         </script>
                         <div class="row" style="margin: 0">

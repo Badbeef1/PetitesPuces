@@ -243,7 +243,6 @@
       <LastGenOutput>DataClasses1.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <None Include="Models\DataClasses1.dbml.layout">
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </None>
@@ -279,7 +278,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Client\InformationPersonnel.cshtml" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Client\ModificationMDP.cshtml" />
     <Content Include="Views\Vendeur\InformationPersonnel.cshtml" />
     <Content Include="Views\Vendeur\ModificationMDP.cshtml" />
@@ -309,6 +307,7 @@
     <Content Include="Views\Shared\Courriel\Message.cshtml" />
     <Content Include="Views\Connexion\Deconnexion.cshtml" />
     <Content Include="Views\Courriel\Index.cshtml" />
+    <Content Include="Views\Client\ConfirmationTransaction.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -318,6 +317,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="fonts\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

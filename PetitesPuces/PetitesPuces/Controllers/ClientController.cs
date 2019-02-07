@@ -601,5 +601,7 @@ namespace PetitesPuces.Controllers
         public ActionResult ProduitDetaille() => View();
 
         public ActionResult test() => View();
+
+        public ActionResult ConfirmationTransaction() => View();
     }
 }
