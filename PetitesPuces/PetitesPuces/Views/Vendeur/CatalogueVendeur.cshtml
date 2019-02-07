@@ -189,9 +189,11 @@
                             </a>
                         </div>
                         <div class="ml-auto">
-                            <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
-                            @Html.DropDownListFor(x => x.pageDimension, (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary", @onchange = "envoieNbProduit(this.value)" })
+                           <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
+                           @Html.DropDownListFor(x => x.pageDimension, (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary", @onchange = "envoieNbProduit(this.value)" })
+                           @Html.ActionLink("Ajouter un produit", "AjouterProduit", "Vendeur", new { }, new { @class = "btn btn-success" })
                         </div>
+                       
                     </div>
                 </div>
             </div>

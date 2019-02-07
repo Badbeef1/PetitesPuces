@@ -871,7 +871,6 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-
         public string Nom
         {
             get
@@ -893,7 +892,6 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Prenom", DbType = "VarChar(50)")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-
         public string Prenom
         {
             get
@@ -975,7 +973,6 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_CodePostal", DbType = "VarChar(7)")]
         [RegularExpression("[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]", ErrorMessage = "Le format du champs doit être A9A 9A9.")]
-
         public string CodePostal
         {
             get
@@ -1017,7 +1014,6 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel1", DbType = "VarChar(20)")]
         [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Le champs doit contenir seulement des chiffres et respecter le format (999) 999-9999.")]
-
         public string Tel1
         {
             get
@@ -1039,7 +1035,6 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel2", DbType = "VarChar(20)")]
         [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Le champs doit contenir seulement des chiffres et respecter le format (999) 999-9999.")]
-
         public string Tel2
         {
             get
