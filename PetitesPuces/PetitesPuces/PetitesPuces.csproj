@@ -153,6 +153,9 @@
     <Content Include="Content\scripts\morris.js" />
     <Content Include="Content\scripts\raphael.js" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\xml2003Speadsheet.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
@@ -194,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BDController.cs" />
     <Compile Include="Controllers\ClientDao.cs" />
     <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
@@ -310,6 +314,7 @@
     <Content Include="Views\Client\ConfirmationTransaction.cshtml" />
     <Content Include="Views\Courriel\ListeCourriel.cshtml" />
     <Content Include="Views\Courriel\RedactionMessage.cshtml" />
+    <Content Include="Views\BD\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
