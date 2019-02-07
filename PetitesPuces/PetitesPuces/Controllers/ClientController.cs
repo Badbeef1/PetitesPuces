@@ -532,6 +532,11 @@ namespace PetitesPuces.Controllers
                 .Distinct()
                 .ToDictionary(pro => pro.Key, pro => pro.Distinct().ToList(), StringComparer.OrdinalIgnoreCase);
 
+            //Liste des vendeurs
+            List<PPVendeurs> lstVendeur = contextPP.PPVendeurs
+                .Where(predicate: ven => ven.PPProduits.Count() > 0)
+                .ToList(); 
+
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
             {
                 lstCategorie = contextPP.PPCategories.ToList(),
@@ -543,7 +548,8 @@ namespace PetitesPuces.Controllers
                 intNoPage = noPage,
                 iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension),
                 dicVendeur = dicCateAvecVendeur,
-                vendeur = vendeur
+                vendeur = vendeur,
+                lstVendeur = lstVendeur
             };
 
             if (typeRech.HasValue)
@@ -598,7 +604,13 @@ namespace PetitesPuces.Controllers
 
 
         // GET: ProduitDetail
-        public ActionResult ProduitDetaille() => View();
+        public ActionResult ProduitDetaille(long numero)
+        {
+
+            PPProduits produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero);
+
+            return View(produit);
+        }
 
         public ActionResult test() => View();
 

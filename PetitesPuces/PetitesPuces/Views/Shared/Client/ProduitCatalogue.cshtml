@@ -5,7 +5,7 @@
     {
 
         <div id="divItems" class="card border-dark mb-3 p-1 sCardItemCatalogue sCardItemCatalogue">
-            <a href="/Client/ProduitDetaille" class="custom-card">
+            <a href="@Url.Action("ProduitDetaille", "Client", new { @numero = produit.NoProduit})" class="custom-card">
                 <img class="card-img-top" src="~/Content/images/@Html.DisplayFor(x => produit.Photo)" alt="produit ...." style="max-height: 14rem; min-height: 14rem;">
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(x => produit.Nom)</h5>
