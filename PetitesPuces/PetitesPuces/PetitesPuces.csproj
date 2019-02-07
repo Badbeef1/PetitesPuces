@@ -307,6 +307,7 @@
     <Content Include="Views\Shared\Courriel\Message.cshtml" />
     <Content Include="Views\Connexion\Deconnexion.cshtml" />
     <Content Include="Views\Courriel\Index.cshtml" />
+	<Content Include="Views\Client\ConfirmationTransaction.cshtml" />
     <Content Include="Views\Courriel\ListeCourriel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
