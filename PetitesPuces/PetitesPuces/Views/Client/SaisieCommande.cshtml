@@ -66,7 +66,7 @@
 
         $("#body").html(model)
         $("#btnPasserCommande").prop('value', 'Passer au paiement')
-        $("#btnPasserCommande").attr('onclick','test()')
+        $("#btnPasserCommande").attr('onclick','passerPaiement()')
     }
 
     function error(error) {
@@ -79,8 +79,20 @@
         //location.href = '/Client/AccueilClient';
     }
 
-    function test() {
-        console.log("test complet");
+    function passerPaiement() {
+        $("#collapse_zonePaiement").collapse("show");
+        $("#collapse_zoneCommande").collapse();
+        $("#btnCommande").addClass("disabled");
+        $("#btnPaiement").removeClass("disabled");
+
+    }
+
+    function successPaiement() {
+        console.log("successBig");
+    }
+
+    function errorPaiement() {
+        console.log("errorBig");
     }
 </script>
 <style>
@@ -189,6 +201,8 @@
 </style>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
     <title>Saisie d'une commande</title>
 </head>
 <body id="body">
@@ -202,6 +216,10 @@
         double dblPrixProduitCourant = 0.0;
         int compteur = 0;
     }
+    <input type="hidden" id="NoAutorisation" value="" />
+    <input type="hidden" id="DateAutorisation" value="" />
+    <input type="hidden" id="FraisMarchand" value="" />
+    <input type="hidden" id="InfoSuppl" value="" />
 
     <!-- Barre de navigation -->
     @Html.Partial("test")
@@ -676,13 +694,119 @@
                     </h5>
                 </div>
             </div>
+                <div id="collapse_zonePaiement" class="collapse" aria-labelledby="btnPaiement" data-parent="#infosPaiement">
+                    <div class="card-body align-items-center">
+                        <div class="row" style="margin: 0">
+                            <div class="col-md-4">&nbsp;</div>
+                            <div class="col-md-4">
+                                <h5>
+                                    <label for="numCredit">
+                                        Numéro de carte de crédit
+                                    </label>
+                                </h5>
+                                <input type="text" id="NoCarteCredit" class="form-control col-md-10 text-right" maxlength="16" placeholder="################" />
+                                <br />
+                                <h5>
+                                    <label>
+                                        Date d'expiration
+                                    </label>
+                                </h5>
+                                <div class="row" style="margin: 0">
+                                    <input type="number" id="moisExpireCredit" class="form-control col-md-4 text-right" min="1" max="12" placeholder="MM" />
+                                    <div class="col-md-2">-</div>
+                                    <input type="number" id="anneeExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Year" max="2023" placeholder="YYYY" />
+                                </div>
+                                <br />
+                                <h5>
+                                    <label>
+                                        Numéro de sécurité
+                                    </label>
+                                </h5>
 
-            <div id="collapse_zonePaiement" class="collapse" aria-labelledby="btnPaiement" data-parent="#infosPaiement">
-                <div class="card-body">
+                                <input type="text" id="securiteCredit" class="form-control col-md-10 text-right" maxlength="4" placeholder="####" />
+                            </div>
+                            <div class="col-md-4">&nbsp;</div>
+                        </div>
+                        <br />
+                        <script>
+                            function envoyerRequete() {
+                                var mois = $("#moisExpireCredit").val();
+                                if (mois.length = 1) {
+                                    mois = "0" + mois;
+                                }
 
+                                var form = document.createElement("form");
+                                form.setAttribute("method", "post");
+                                form.setAttribute("action", "https://personnel.lmbrousseau.info/lesi-2019/lesi-effectue-paiement.php");
+
+                                var noVendeur = document.createElement("input");
+                                noVendeur.setAttribute("type", "hidden");
+                                noVendeur.setAttribute("name", "NoVendeur");
+                                noVendeur.setAttribute("value",@Model[0].PPVendeurs.NoVendeur.ToString());
+                                form.appendChild(noVendeur);
+                                
+                                var nomAffaires = document.createElement("input");
+                                nomAffaires.setAttribute("type", "hidden");
+                                nomAffaires.setAttribute("name", "NomVendeur");
+                                nomAffaires.setAttribute("value","@Model[0].PPVendeurs.NomAffaires.ToString()");
+                                form.appendChild(nomAffaires);
+
+                                var noCarteCredit = document.createElement("input");
+                                noCarteCredit.setAttribute("type", "hidden");
+                                noCarteCredit.setAttribute("name", "NoCarteCredit");
+                                noCarteCredit.setAttribute("value", $("#NoCarteCredit").val());
+                                form.appendChild(noCarteCredit);
+
+                                var DateExpiration = document.createElement("input");
+                                DateExpiration.setAttribute("type", "hidden");
+                                DateExpiration.setAttribute("name", "DateExpirationCarteCredit");
+                                DateExpiration.setAttribute("value", mois + "-" + $("#anneeExpireCredit").val());
+                                form.appendChild(DateExpiration);
+                                
+                                var NumSecurite = document.createElement("input");
+                                NumSecurite.setAttribute("type", "hidden");
+                                NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
+                                NumSecurite.setAttribute("value", $("#securiteCredit").val());
+                                form.appendChild(NumSecurite);
+
+                                var MontantPaiement = document.createElement("input");
+                                MontantPaiement.setAttribute("type", "hidden");
+                                MontantPaiement.setAttribute("name", "MontantPaiement");
+                                MontantPaiement.setAttribute("value", @dblPrixTotal);
+                                form.appendChild(MontantPaiement);
+
+                                var PageRetour = document.createElement("input");
+                                PageRetour.setAttribute("type", "hidden");
+                                PageRetour.setAttribute("name", "NomPageRetour");
+                                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/SaisieCommande");
+                                form.appendChild(PageRetour);
+                                document.body.appendChild(form);
+                                form.submit();
+
+                  /*
+                            $.ajax({
+                                data: {
+                                    "NoVendeur": vendeur, "NomVendeur": nomAffaire, "NoCarteCredit": $("#numCredit").value,
+                                    "": mois + '-' + $("#anneeExpireCredit").value, "NoSecuriteCarteCredit": $("#securiteCredit").value, "MontantPaiement": montant,
+                                    "NomPageRetour": ''
+                                },
+                                success: successPaiement(),
+                                error: errorPaiement(),
+                            });*/
+                        }
+                        </script>
+                        <div class="row" style="margin: 0">
+                            <div class="col-md-4">&nbsp;</div>
+                            <div class="col-md-4 align-items-center">
+                                <input class="btn btn-primary" type="button" onclick="envoyerRequete()" value="Confirmer le paiement" />
+                            </div>
+                            <div class="col-md-4">&nbsp;</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </div>
+        
     </div>
+
 </body>
 </html>

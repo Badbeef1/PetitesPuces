@@ -11,3 +11,9 @@
     top: 0;
     z-index: 1071;
 }
+
+.bd-sidebar {
+    position: sticky;
+    z-index: 1000;
+    height: calc(100vh - 4rem);
+}

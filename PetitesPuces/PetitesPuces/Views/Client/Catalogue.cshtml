@@ -6,21 +6,23 @@
     const String strTriCat = "categorie";
     const String strTriDate = "date";
     ViewBag.Provenance = "Client";
+
+    int intIndex = 0;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" http-equiv = "Content-Type"  charset="utf-8" />
+    <meta name="viewport" content="width=device-width" http-equiv="Content-Type" charset="utf-8" />
     <title>Page Catalogue</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
-    <link rel="stylesheet" href="~/Content/css/Catalogue.css"/>
-    
+    <link rel="stylesheet" href="~/Content/css/Catalogue.css" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
     <style>
-        
     </style>
     <script type="text/javascript">
         function rechercheChangement(optionSelection) {
@@ -64,12 +66,14 @@
 
             var categorie = '@Html.Raw(Model.strCategorie)';
             var dimension = @Model.pageDimension;
+            var vendeur = '@Model.vendeur';
 
             var lien = '/Client/Catalogue?' +
                 (categorie != null ? 'categorie=' + categorie + '&' : '') +
                 ('recherche=' + recherche1 + '&') +
                 (recherche2 != null ? 'recherche2=' + recherche2 + '&' : '') +
                 ('pageDimension=' + dimension + '&') +
+                (vendeur != null ? 'vendeur=' + vendeur + '&' : '') +
                 ('typeRech=' + typeRecherche);
             location.href = lien;
         }
@@ -82,6 +86,7 @@
             var recherche2 = '@Model.recherche2';
             var tri = '@Model.strTri';
             var typeRecherche = '@Model.typeRech';
+            var vendeur = '@Model.vendeur';
 
             var lien = '/Client/Catalogue?' +
                 (categorie != null ? 'categorie=' + categorie + '&' : '') +
@@ -89,10 +94,10 @@
                 (recherche2 != null ? 'recherche2=' + recherche2 + '&' : '') +
                 (tri != null ? 'tri=' + tri + '&' : '') +
                 ('pageDimension=' + intNbProduit + '&') +
+                (vendeur != null ? 'vendeur=' + vendeur + '&' : '') +
                 ('typeRech=' + typeRecherche);
 
             location.href = lien;
-
         }
 
     </script>
@@ -105,21 +110,25 @@
     {
         <div class="container-fluid">
             <div class="row flex-xl-nowrap">
-                <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+                <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar bg-light bd-sidebar">
                     <h5>Catégorie de produit</h5>
                     <ul class="nav nav-pills flex-column" id="parentAccordeon">
                         @foreach (var categorie in Model.dicVendeur)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="@Url.Action("Catalogue", new { categorie = categorie.Key, Model.pageDimension})">@categorie.Key.ToString()</a>
-                                <a data-toggle="collapse" href="@("#accordeon" + categorie.Key)" aria-expanded="false" aria-controls="@("accordeon" + categorie.Key)" data-parent="parentAccordeon">+</a>
-                                <ul class="collapse" id="@("accordeon" + categorie.Key)">
-                                    @foreach (var vendeur in categorie.Value)
+                                <div class="row">
+                                    <a class="nav-link" href="@Url.Action("Catalogue", new { categorie = categorie.Key, Model.pageDimension})">@categorie.Key.ToString()</a>
+                                    <a data-toggle="collapse" href="@("#accordeon" + intIndex)">+</a>
+                                </div>
+                                
+                                <ul class="collapse" id="@("accordeon" + intIndex)">
+                                    @foreach (var vendeurs in categorie.Value)
                                     {
-                                        <li><a class="nav-link" href="#">@vendeur.ToString()</a></li>
+                                        <li><a class="nav-link" href="@Url.Action("Catalogue", new { vendeur = vendeurs, Model.pageDimension})">@vendeurs.ToString()</a></li>
                                     }
                                 </ul>
                             </li>
+                            intIndex++;
                         }
                     </ul>
                 </nav>
@@ -164,7 +173,7 @@
                                                 strClasse += " focus";
                                             }
                                         }
-                                        <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriNum, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
+                                        <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriNum, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech, Model.vendeur})" class="@strClasse">
                                             Numéro de produit
                                             @if ("!" + strTriNum == Model.strTri)
                                             {
@@ -182,7 +191,7 @@
                                                 strClasse += " focus";
                                             }
                                         }
-                                        <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriCat, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech})" class="@strClasse">
+                                        <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriCat, @categorie = Model.strCategorie, Model.recherche, Model.recherche2, Model.pageDimension, Model.typeRech, Model.vendeur})" class="@strClasse">
                                             Catégorie
                                             @if ("!" + strTriCat == Model.strTri)
                                             {
@@ -200,7 +209,7 @@
                                                 strClasse += " focus";
                                             }
                                         }
-                                        <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse">
+                                        <a href="@Url.Action("Catalogue", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech, Model.vendeur})" class="@strClasse">
                                             Date de parution
                                             @if ("!" + strTriDate == Model.strTri)
                                             {
@@ -221,17 +230,14 @@
                         </div>
                     </div>
                     <br />
-                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
+                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech, Model.vendeur }))
                     <br />
                     @Html.Partial("Client/ProduitCatalogue", Model.iplProduits)
                     <br />
-                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
+                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech, Model.vendeur }))
                 </main>
             </div>
         </div>
     }
-    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
-
 </body>
 </html>

@@ -20,5 +20,6 @@ namespace PetitesPuces.ViewModels
         public IPagedList<Models.PPProduits> iplProduits { get; set; }
         public String strParent { get; set; }
         public Dictionary<string, List<string>> dicVendeur { get; set; }
+        public String vendeur { get; set; }
     }
 }
