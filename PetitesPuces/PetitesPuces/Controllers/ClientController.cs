@@ -598,7 +598,13 @@ namespace PetitesPuces.Controllers
 
 
         // GET: ProduitDetail
-        public ActionResult ProduitDetaille() => View();
+        public ActionResult ProduitDetaille(long numero)
+        {
+
+            PPProduits produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero);
+
+            return View(produit);
+        }
 
         public ActionResult test() => View();
 
