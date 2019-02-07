@@ -232,6 +232,7 @@
     </Compile>
     <Compile Include="ViewModels\CatalogueViewModel.cs" />
     <Compile Include="ViewModels\InformationPersonnelViewModel.cs" />
+    <Compile Include="Controllers\CourrielController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config">
@@ -307,6 +308,7 @@
     <Content Include="Views\Gestionnaire\DetailVendeur.cshtml" />
     <Content Include="Views\Shared\Courriel\Message.cshtml" />
     <Content Include="Views\Connexion\Deconnexion.cshtml" />
+    <Content Include="Views\Courriel\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
