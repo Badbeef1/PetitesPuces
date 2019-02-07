@@ -12,6 +12,7 @@ namespace PetitesPuces.Models
       public PPCategories categorie { get; set; }
       public Dictionary<PPVendeurs,bool> lstVendeurs { get; set; }
       
+      
       public AccueilGestionnaireViewModel(List<PPVendeurs> lstDemandesVendeurs, Dictionary<PPCategories, bool> lstCategories, PPCategories categorie)
       {
          this.lstDemandesVendeurs = lstDemandesVendeurs;

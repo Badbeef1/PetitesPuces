@@ -109,6 +109,21 @@
             });
          }
       }
+
+      function modifierRedevance(id) {
+         console.log('J\'essaye de modifier');
+         var redevance = $('#redevance_' + id).val();
+         redevance = redevance.replace(',', '.');
+         redevance = parseFloat(redevance);
+
+         $.ajax({
+            url: "/Gestionnaire/ModifierRedevance",
+            data: { "id": id, "redevance": redevance },
+            success: success,
+            error: error,
+         });
+      }
+
       function success() {
          console.log('réussi');
          location.href = "/Gestionnaire/AccueilGestionnaire";
@@ -286,11 +301,11 @@
                               if (vendeur.Value.Equals(true))
                               {
 
-                                 <input type="number" min="0" max="100" step="0.25" value="@poucentage" disabled="disabled">
+                                 <input  type="number" min="0" max="100" step="0.25" value="@poucentage" disabled="disabled">
                               }
                               else
                               {
-                                 <input type="number" min="0" max="100" step="0.25" value="@poucentage">
+                                 <input id="redevance_@vendeur.Key.NoVendeur" type="number" min="0" max="100" step="0.25" value="@poucentage">
                               }
                            }
 
@@ -299,11 +314,11 @@
                            @{
                               if (vendeur.Value.Equals(true))
                               {
-                                 <button id="btn_modifier" class="btn btn-success" disabled="disabled">Modifier la redevance</button>
+                                 <button id="btn_modifier_@vendeur.Key.NoVendeur" class="btn btn-success" disabled="disabled">Modifier la redevance</button>
                               }
                               else
                               {
-                                 <button id="btn_modifier" class="btn btn-success">Modifier la redevance</button>
+                                 <button id="btn_modifier" class="btn btn-success" onclick="modifierRedevance(@vendeur.Key.NoVendeur)">Modifier la redevance</button>
                               }
                            }
                         </td>

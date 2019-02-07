@@ -54,6 +54,12 @@ namespace PetitesPuces.Controllers
          return View(model);
       }
 
+      public ActionResult AjouterProduit()
+      {
+         PPProduits produit = new PPProduits();
+         return View(produit);
+      }
+
       // GET: Vendeur
       public ActionResult GestionCommande() => View();
 
