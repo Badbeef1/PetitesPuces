@@ -1,0 +1,87 @@
+﻿@using PetitesPuces.Models
+@model PPProduits
+
+@using (Html.BeginForm())
+{
+   <!--Catégorie-->
+   <div class="form-group">
+      <label for="ddlCategorie">Catégorie</label>
+      <div id="ddlCategorie" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+         <a class="dropdown-item" href="#">Cat1</a>
+         <a class="dropdown-item" href="#">Cat2</a>
+         <a class="dropdown-item" href="#">Cat3</a>
+      </div>
+   </div>
+
+   <!--Nom du produit-->
+   <div class="form-row">
+      <div class="form-group col-md-6">
+         <label for="tbNomProduit">Nom du produit</label>
+         @Html.EditorFor(model => model.Nom, new { @class = "form-control", @id = "tbNomProduit" })
+      </div>
+
+      <!--Description plus élaboré-->
+      <div class="form-group col-md-6">
+         <label for="tbDescription">Description</label>
+         @Html.EditorFor(model => model.Description, new { @class = "form-control", @type = "number", @id = "tbDescription" })
+      </div>
+   </div>
+   
+
+   <!--Prix demande-->
+   <div class="form-group">
+      <label for="tbPrixDemande">Prix Demandé</label>
+      @Html.EditorFor(model => model.PrixDemande, new { @class = "form-control", @type = "number", id = "tbPrixDemande" })
+   </div>
+
+   
+
+   <!--Photo de l'article-->
+   <div class="form-group">
+      <div class="input-group">
+         <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+         </div>
+         <div class="custom-file">
+            <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+            <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+         </div>
+      </div>
+   </div>
+
+   <!--Date de création-->
+   <div class="form-group">
+      <label for="tbDate">Date de création</label>
+      @Html.EditorFor(model => model.Description, new { @type = "date", @id = "tbDate", @class = "form-control" })
+   </div>
+
+   <!--Nombre d'item-->
+   <div class="form-group">
+      <label for="tbNbItems">Nombres d'items</label>
+      @Html.EditorFor(model => model.NombreItems, new { @type = "number", @id = "tbNbItems", @class = "form-control" })
+   </div>
+
+   <!--Prix de vente-->
+   <div class="form-group">
+      <label for="tbPrixVente">Prix de vente</label>
+      @Html.EditorFor(model => model.PrixVente, new { @type = "number", @id = "tbPrixVente", @class = "form-control" })
+   </div>
+
+   <!--Date de vente-->
+   <div class="form-group">
+      <label for="tbDateVente">Date de vente</label>
+      @Html.EditorFor(model => model.DateVente, new { @type = "date", @id = "tbDateVente", @class = "form-control" })
+   </div>
+
+   <!--Poids de l'article-->
+   <div class="form-group">
+      <label for="tbPoids">Poids de l'article</label>
+      @Html.EditorFor(model => model.Poids, new { @type = "number", @id = "tbPoids", @class = "form-control" })
+   </div>
+   <!--Disponibilité-->
+   <div class="form-group">
+      <label for="cbDispo">Disponibilité</label>
+      @*Html.CheckBoxFor(model => (bool)model.Disponibilité, new { @id = "cbDispo", @class = "form-control" })*@
+      <input type="checkbox" id="cbDispo" class="form-control">
+   </div>
+}

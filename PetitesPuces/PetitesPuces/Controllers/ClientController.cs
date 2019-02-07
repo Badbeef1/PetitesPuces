@@ -175,7 +175,7 @@ namespace PetitesPuces.Controllers
                                   where articlePanier.NoPanier.Equals(noPanier)
                                   select articlePanier
                                   );
-
+            
             noVendeur = (int)articlesPanier.First().NoVendeur;
             articlesPanier.First().NbItems = (short)quantite;
 
