@@ -92,7 +92,9 @@ namespace PetitesPuces.Controllers
                string path = Path.Combine(Server.MapPath("~/Content/images"),
                                           Path.GetFileName(model.file.FileName));
                model.file.SaveAs(path);
+               model.produit.Photo = model.file.FileName;
                ViewBag.Message = "File uploaded successfully";
+
             }
             catch (Exception ex)
             {
