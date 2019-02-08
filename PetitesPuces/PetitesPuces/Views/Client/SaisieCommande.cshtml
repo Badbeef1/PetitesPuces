@@ -5,95 +5,18 @@
     Layout = null;
 
 }
+<!--Salut, je déplacer ton js en bas, fac tes mask fonctione. J'ai l'impression que la validation embarque pas car ton objet est une liste.
+    Pour faire le textboxfor, il utilise le nom de l variable recu. Sa enfrai peut etre les regle du html pour les noms ou caractèere abcepter exemple [].
+    https://stackoverflow.com/questions/34809341/asp-net-mvc-how-to-customize-validation-message-showing Je suis pas sur que c'est la solution, mais sa resemplait 
+    a ton cas. A plus tard!-->
 <!DOCTYPE html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"/>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"/>
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#btnContinueMagasiner").click(function () {
-            window.location.href = "/Client/Catalogue"
-        });
 
-    });
-
-    function passerCommande() {
-        $("#collapse_zoneCommande").collapse();
-        $("#collapse_zoneInfos").collapse("show");
-        $("#btnContinueMagasiner").attr("hidden", true);
-        $("#btnInformationLivraison").removeClass("disabled");
-        $("#btnCommande").addClass("disabled");
-    }
-    function quantitechange(e) {
-        if (e.which == 13) {
-            e.preventDefault();
-        }
-    }
-
-    function supprimerProduit(id) {
-
-        $.ajax({
-            url: "/Client/SupprimerProduitSaisieCommande",
-            data: { "id": id },
-            success: success,
-            error: error,
-        });
-    }
-    function updateCart(noPanier) {
-        var quantite = $('#' + noPanier).val();
-        console.log('J\'update le cart');
-        $.ajax({
-            url: "/Client/UpdatePanierSaisieCommande",
-            data: { "noPanier": noPanier, "quantite": quantite },
-            success: success,
-            error: error,
-        });
-    }
-
-
-    function success(model) {
-        $("#body").html(model)
-    }
-    function successPoids(model) {
-        $("#collapse_zoneCommande").collapse("show");
-        $("#infoPerso").attr("hidden", true);
-        $("#btnInformationLivraison").removeClass("disabled");
-        $("#btnTypeLivraison").removeClass("disabled");
-
-        $("#body").html(model)
-        $("#btnPasserCommande").prop('value', 'Passer au paiement')
-        $("#btnPasserCommande").attr('onclick','passerPaiement()')
-    }
-
-    function error(error) {
-        console.log('erreur : ' + error);
-        location.href = '/Client/AccueilClient';
-    }
-
-    function errorPoids(error) {
-        console.log('erreur : ' + error);
-        //location.href = '/Client/AccueilClient';
-    }
-
-    function passerPaiement() {
-        $("#collapse_zonePaiement").addClass("show");
-        $("#collapse_zoneCommande").removeClass("show");
-        $("#btnCommande").addClass("disabled");
-        $("#btnPaiement").removeClass("disabled");
-
-    }
-
-    function successPaiement() {
-        console.log("successBig");
-    }
-
-    function errorPaiement() {
-        console.log("errorBig");
-    }
 </script>
 <style>
     .quantity {
@@ -161,6 +84,7 @@
     .shopping-cart {
         margin-top: 20px;
     }
+
     button:disabled {
         background-color: #dddddd;
     }
@@ -198,6 +122,11 @@
         border: 1px solid #ccc;
         border-top: none;
     }
+
+    .input-validation-error {
+        border: 1px solid #ff0000;
+        background-color: white;
+    }
 </style>
 <html>
 <head>
@@ -220,7 +149,17 @@
     <!-- Barre de navigation -->
     @Html.Partial("test")
     <!-- Ensemble de collapsable -->
+
     <div class="container sEspaceBarNavigation" id="bigDiv">
+        <!-- Bar de progrès -->
+        <div class="progress">
+            <div class="progress-bar" id="bar" role="progressbar" aria-valuenow="0"
+                 aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                <span id="barSpan" text="0%" />
+            </div>
+        </div>
+        <br />
+        <br />
         <!-- Section commande, prix/quantité/taxes/poids etc, validation de la commande-->
         <div class="card shopping-cart" id="commande" style="margin-top:0px">
             <div class="card-header" id="heading_commande">
@@ -245,10 +184,20 @@
                     <!-- Loop d'article -->
                     @for (int x = 0; x < Model.Count; x++)
                     {
+                        double dblPrixStdUnit = 0;
                         poidsKg += (int)Model[x].NbItems * (double)Model[x].PPProduits.Poids;
-                        dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
-                        double dblPrixStdUnit = 1 * (double)Model[x].PPProduits.PrixDemande;
-                        dblSousTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                        if (Model[x].PPProduits.DateVente != null && Model[x].PPProduits.DateVente >= DateTime.Now)
+                        {
+                            dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixVente);
+                            dblPrixStdUnit = 1 * (double)Model[x].PPProduits.PrixVente;
+                            dblSousTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixVente);
+                        }
+                        else
+                        {
+                            dblPrixProduitCourant = ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                            dblPrixStdUnit = 1 * (double)Model[x].PPProduits.PrixDemande;
+                            dblSousTotal += ((int)Model[x].NbItems * (double)Model[x].PPProduits.PrixDemande);
+                        }
                         @Html.HiddenFor(lst => lst[x].DateCreation)
                         @Html.HiddenFor(lst => lst[x].NoClient)
                         @Html.HiddenFor(lst => lst[x].NoPanier)
@@ -295,7 +244,7 @@
                                 </div>
                                 <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-5">
                                     <h4 class="product-name"><strong>@Model[x].PPProduits.Nom</strong></h4>
-                                    <small>Poids unitaire : @Model[x].PPProduits.Poids Kg</small>
+                                    <small>Poids unitaire : @Model[x].PPProduits.Poids Lbs</small>
                                     <h4>
                                         <small>@Model[x].PPProduits.Description</small>
                                     </h4>
@@ -307,7 +256,7 @@
                                     </div>
                                     <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
                                         <div class="quantity">
-                                            <input id="@Model[x].NoPanier" type="number" min="0" max="99" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
+                                            <input id="@Model[x].NoPanier" type="number" min="0" max="@Model[x].PPProduits.NombreItems" step="1" class="qty" value="@Model[x].NbItems" onchange="updateCart(@Model[x].NoPanier)" onkeyup="">
                                         </div>
                                     </div>
 
@@ -427,81 +376,104 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <br />
+                                        Frais de livraison et taxes en sus
+                                    </div>
                                 </div>
                             }
                             <div class="col-3">&nbsp;</div>
-                            <div class="col-3 text-left" style="padding-right:0px">
-                                @if (lstMontantLivraison != null)
-                                {
-                                    <h5>Frais de livraison</h5>
-                                }
-                                <h5>Sous-total</h5>
-                                <h5>TPS (5%)</h5>
-                                @{
-                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                            @if (ViewData["cbChecked"] != null && (String)ViewData["cbChecked"] != "0")
+                            {
+                                <div class="col-3 text-left" style="padding-right:0px">
+                                    @if (lstMontantLivraison != null)
                                     {
-                                        <h5> TVQ (9.975%) </h5>
+                                        <h5>Frais de livraison</h5>
                                     }
-                                }
 
-                                <h5>Total</h5>
-                            </div>
-                            <div class="col-2 text-right">
-                                @{ double totalTps = 0;
-                                    double totalTvq = 0;}
-                                @if (lstMontantLivraison != null)
-                                {
-                                    <h5><strong><span id="fraisDeLivraison">@frais.ToString("0.00") $</span></strong></h5>
-                                    dblPrixTotal = dblSousTotal + frais;
-                                    if (Model[0].PPVendeurs.Taxes == true)
-                                    {
-                                        totalTps = dblPrixTotal * 0.05;
-                                        totalTvq = dblPrixTotal * 0.09975;
-                                    }
-                                }
-                                <h5><strong>@((dblSousTotal + frais).ToString("0.00")) $</strong></h5>
-                                @{ if (totalTps == 0 && Model[0].PPVendeurs.Taxes == true) { totalTps = (dblSousTotal * 0.05); } }
 
-                                @{
-                                    <h5>
-                                        <strong>
-                                            @totalTps.ToString("0.00") $
-                                        </strong>
-                                    </h5>
-                                }
-                                @{
-                                    if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
-                                    {
-                                        if (totalTvq == 0 && Model[0].PPVendeurs.Taxes == true)
+                                    <h5>Sous-total</h5>
+                                    <h5>TPS (5%)</h5>
+                                    @{
+                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
                                         {
-                                            totalTvq = (dblSousTotal * 0.09975);
+                                            <h5> TVQ (9.975%) </h5>
                                         }
+                                    }
+
+                                    <h5>Total</h5>
+                                </div>
+                                <div class="col-2 text-right">
+                                    @{ double totalTps = 0;
+                                        double totalTvq = 0;}
+                                    @if (lstMontantLivraison != null)
+                                    {
+                                        <h5><strong><span id="fraisDeLivraison">@frais.ToString("0.00") $</span></strong></h5>
+                                        dblPrixTotal = dblSousTotal + frais;
+                                        if (Model[0].PPVendeurs.Taxes == true)
+                                        {
+                                            totalTps = dblPrixTotal * 0.05;
+                                            totalTvq = dblPrixTotal * 0.09975;
+                                        }
+                                    }
+                                    <h5><strong>@((dblSousTotal + frais).ToString("0.00")) $</strong></h5>
+                                    @{ if (totalTps == 0 && Model[0].PPVendeurs.Taxes == true) { totalTps = (dblSousTotal * 0.05); } }
+
+                                    @{
                                         <h5>
                                             <strong>
-                                                @totalTvq.ToString("0.00") $
+                                                @totalTps.ToString("0.00") $
                                             </strong>
                                         </h5>
                                     }
-                                }
-
-                                <h5>
-                                    <strong>
-                                        @{
-                                            double totalAvecTaxes = 0;
-                                            if (dblPrixTotal == 0)
+                                    @{
+                                        if (Model[0].PPVendeurs.Province.ToString().Equals("QC"))
+                                        {
+                                            if (totalTvq == 0 && Model[0].PPVendeurs.Taxes == true)
                                             {
-
-                                                totalAvecTaxes = dblSousTotal + totalTps + totalTvq;
+                                                totalTvq = (dblSousTotal * 0.09975);
                                             }
-                                            else
-                                            {
+                                            <h5>
+                                                <strong>
+                                                    @totalTvq.ToString("0.00") $
+                                                </strong>
+                                            </h5>
+                                        }
+                                    }
 
-                                                totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
-                                            }
-                                        }@(totalAvecTaxes.ToString("0.00")) $
-                                    </strong>
-                                </h5>
-                            </div>
+                                    <h5>
+                                        <strong>
+                                            @{
+                                                double totalAvecTaxes = 0;
+                                                if (dblPrixTotal == 0)
+                                                {
+
+                                                    totalAvecTaxes = dblSousTotal + totalTps + totalTvq;
+                                                }
+                                                else
+                                                {
+
+                                                    totalAvecTaxes = dblPrixTotal + totalTps + totalTvq;
+                                                }
+                                            }@(totalAvecTaxes.ToString("0.00")) $
+                                        </strong>
+                                    </h5>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-3 text-left" style="padding-right:0px">
+                                    <h5>Sous-total</h5>
+                                </div>
+
+                                <div class="col-2 text-right">
+                                    <h5>
+                                        <strong>
+                                            @dblSousTotal.ToString("0.00") $
+                                        </strong>
+                                    </h5>
+                                </div>
+                            }
                         </div>
                         <div class="row" style="padding:15px">
 
@@ -512,12 +484,12 @@
                                     @if (Model[0].PPVendeurs.PoidsMaxLivraison > poidsKg)
                                     {
 
-                                        <input id="btnPasserCommande" class="btn btn-success" type="submit" value="Passer aux informations de livraison" onclick="passerCommande()" />
+                                        <input id="btnPasserCommande" class="btn btn-success" type="submit" value="Passer à la prochaine étape" onclick="passerCommande()" />
                                     }
                                     else
                                     {
 
-                                        <input id="btnPasserCommande" class="btn btn-success" title="Veuillez diminuer le poids total de la livraison" disabled type="submit" value="Passer aux informations de livraison" />
+                                        <input id="btnPasserCommande" class="btn btn-success" title="Veuillez diminuer le poids total de la livraison" disabled type="submit" value="Passer à la prochaine étape" />
                                     }
                                 </div>
                             </div>
@@ -538,7 +510,6 @@
                     </h5>
                 </div>
             </div>
-
             <div id="collapse_zoneInfos" class="collapse" aria-labelledby="btnInformationLivraison" data-parent="#infoPerso">
 
                 <div class="card-body  align-items-center" style="padding:0px">
@@ -553,7 +524,8 @@
                     <div class="row">
 
                         <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="firstName" type="text" value="@Model[0].PPClients.Prenom" />
+                        @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" })
+                        @Html.ValidationMessageFor(model => model[0].PPClients.Prenom)
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
                     </div>
@@ -620,7 +592,9 @@
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
                     </div>
+                    <script>
 
+                    </script>
                     <div class="row">
                         <div class="offset-md-1"></div>
                         <label class="col-md-5">Téléphone primaire</label>
@@ -640,40 +614,10 @@
                 <div class="card-footer">
                     <div class="row align-items-center">
                         <div class="offset-md-4"></div>
-                        <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer au type de livraison" style="width:30%" />
+                        <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer à la prochaine étape" style="width:30%" />
                         <div class="offset-md-4"></div>
                         <script>
-                                                $("#btnChoixDePoste").click(function () {
-                                                @{
-                                                <text>
-                                                var poids = @poidsKg.ToString().Replace(",",".");
-                                                var panier = @Model[0].NoPanier;
-                                                </text>
-                                                }
-                                                $.ajax({
-                                                    url: "/Client/RecevoirPrixLivraison",
-                                                    data: {
-                                                        "poids": poids, "panier": panier, "tarif": "0"},
-                                                    success: successPoids,
-                                                    error: errorPoids,
-                                                });
-                                                $("#collapse_zoneInfos").collapse();
-                                                $("#collapse_typeLivraison").collapse("show");
-                            });
-                                function checkBoxFraisLivraison(tarif) {
-                                    @{
-                                    <text>
-                                    var poids = @poidsKg.ToString().Replace(",", ".");
-                                    var panier = @Model[0].NoPanier;
-                                    </text>
-                                    }
-                                    $.ajax({
-                                        url: "/Client/RecevoirPrixLivraison",
-                                        data: { "poids": poids, "panier": panier,"tarif" : tarif},
-                                        success: success,
-                                        error: error,
-                                    });
-                                }
+
                         </script>
                     </div>
                 </div>
@@ -690,110 +634,273 @@
                     </h5>
                 </div>
             </div>
-                <div id="collapse_zonePaiement" class="collapse" aria-labelledby="btnPaiement" data-parent="#infosPaiement">
-                    <div class="card-body align-items-center">
-                        <div class="row" style="margin: 0">
-                            <div class="col-md-4">&nbsp;</div>
-                            <div class="col-md-4">
-                                <h5>
-                                    <label for="numCredit">
-                                        Numéro de carte de crédit
-                                    </label>
-                                </h5>
-                                <input type="text" id="NoCarteCredit" class="form-control col-md-10 text-right" maxlength="16" placeholder="################" />
-                                <br />
-                                <h5>
-                                    <label>
-                                        Date d'expiration
-                                    </label>
-                                </h5>
-                                <div class="row" style="margin: 0">
-                                    <input type="number" id="moisExpireCredit" class="form-control col-md-4 text-right" min="1" max="12" placeholder="MM" />
-                                    <div class="col-md-2">-</div>
-                                    <input type="number" id="anneeExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Year" max="2023" placeholder="YYYY" />
-                                </div>
-                                <br />
-                                <h5>
-                                    <label>
-                                        Numéro de sécurité
-                                    </label>
-                                </h5>
-
-                                <input type="text" id="securiteCredit" class="form-control col-md-10 text-right" maxlength="4" placeholder="####" />
+            <div id="collapse_zonePaiement" class="collapse" aria-labelledby="btnPaiement" data-parent="#infosPaiement">
+                <div class="card-body align-items-center">
+                    <div class="row" style="margin: 0">
+                        <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-4">
+                            <h5>
+                                <label for="numCredit">
+                                    Numéro de carte de crédit
+                                </label>
+                            </h5>
+                            <input type="text" id="NoCarteCredit" class="form-control col-md-10 text-right" maxlength="16" placeholder="################" />
+                            <br />
+                            <h5>
+                                <label>
+                                    Date d'expiration
+                                </label>
+                            </h5>
+                            <div class="row" style="margin: 0">
+                                <input type="number" id="moisExpireCredit" class="form-control col-md-4 text-right" min="1" max="12" placeholder="MM" />
+                                <div class="col-md-2">-</div>
+                                <input type="number" id="anneeExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Year" max="2023" placeholder="YYYY" />
                             </div>
-                            <div class="col-md-4">&nbsp;</div>
+                            <br />
+                            <h5>
+                                <label>
+                                    Numéro de sécurité
+                                </label>
+                            </h5>
+
+                            <input type="text" id="securiteCredit" class="form-control col-md-10 text-right" maxlength="4" placeholder="####" />
                         </div>
-                        <br />
-                        <script>
-                            function envoyerRequete() {
-                                var mois = $("#moisExpireCredit").val();
-                                if (mois.length = 1) {
-                                    mois = "0" + mois;
-                                }
+                        <div class="col-md-4">&nbsp;</div>
+                    </div>
+                    <br />
+                    <script>
 
-                                var form = document.createElement("form");
-                                form.setAttribute("method", "post");
-                                form.setAttribute("action", "https://personnel.lmbrousseau.info/lesi-2019/lesi-effectue-paiement.php");
-
-                                var noVendeur = document.createElement("input");
-                                noVendeur.setAttribute("type", "hidden");
-                                noVendeur.setAttribute("name", "NoVendeur");
-                                noVendeur.setAttribute("value",@Model[0].PPVendeurs.NoVendeur.ToString());
-                                form.appendChild(noVendeur);
-                                
-                                var nomAffaires = document.createElement("input");
-                                nomAffaires.setAttribute("type", "hidden");
-                                nomAffaires.setAttribute("name", "NomVendeur");
-                                nomAffaires.setAttribute("value","@Model[0].PPVendeurs.NomAffaires.ToString()");
-                                form.appendChild(nomAffaires);
-
-                                var noCarteCredit = document.createElement("input");
-                                noCarteCredit.setAttribute("type", "hidden");
-                                noCarteCredit.setAttribute("name", "NoCarteCredit");
-                                noCarteCredit.setAttribute("value", $("#NoCarteCredit").val());
-                                form.appendChild(noCarteCredit);
-
-                                var DateExpiration = document.createElement("input");
-                                DateExpiration.setAttribute("type", "hidden");
-                                DateExpiration.setAttribute("name", "DateExpirationCarteCredit");
-                                DateExpiration.setAttribute("value", mois + "-" + $("#anneeExpireCredit").val());
-                                form.appendChild(DateExpiration);
-                                
-                                var NumSecurite = document.createElement("input");
-                                NumSecurite.setAttribute("type", "hidden");
-                                NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
-                                NumSecurite.setAttribute("value", $("#securiteCredit").val());
-                                form.appendChild(NumSecurite);
-
-                                var MontantPaiement = document.createElement("input");
-                                MontantPaiement.setAttribute("type", "hidden");
-                                MontantPaiement.setAttribute("name", "MontantPaiement");
-                                MontantPaiement.setAttribute("value", @dblPrixTotal);
-                                form.appendChild(MontantPaiement);
-
-                                var PageRetour = document.createElement("input");
-                                PageRetour.setAttribute("type", "hidden");
-                                PageRetour.setAttribute("name", "NomPageRetour");
-                                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
-                                form.appendChild(PageRetour);
-                            
-                                document.body.appendChild(form);
-                                form.submit();
-                                
-                        }
-                        </script>
-                        <div class="row" style="margin: 0">
-                            <div class="col-md-4">&nbsp;</div>
-                            <div class="col-md-4 align-items-center">
-                                <input class="btn btn-primary" type="button" onclick="envoyerRequete()" value="Confirmer le paiement" />
-                            </div>
-                            <div class="col-md-4">&nbsp;</div>
+                    </script>
+                    <div class="row" style="margin: 0">
+                        <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-4 align-items-center">
+                            <input class="btn btn-primary" type="button" onclick="envoyerRequete()" value="Confirmer le paiement" />
                         </div>
+                        <div class="col-md-4">&nbsp;</div>
                     </div>
                 </div>
+            </div>
         </div>
-        
+
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnContinueMagasiner").click(function () {
+                window.location.href = "/Client/Catalogue"
+            });
+        });
+
+        function passerCommande() {
+            $("#collapse_zoneCommande").collapse();
+            $("#collapse_zoneInfos").collapse("show");
+            $("#btnContinueMagasiner").attr("hidden", true);
+            $("#btnInformationLivraison").removeClass("disabled");
+            $("#btnCommande").addClass("disabled");
+            var progres = "25";
+            $("#bar").attr("aria-valuenow", progres);
+            $("#bar").css("width", progres + "%");
+            $("#barSpan").text(progres + "%");
+        }
+        function quantitechange(e) {
+            if (e.which == 13) {
+                e.preventDefault();
+            }
+        }
+
+        function supprimerProduit(id) {
+
+            $.ajax({
+                url: "/Client/SupprimerProduitSaisieCommande",
+                data: { "id": id },
+                success: success,
+                error: error,
+            });
+        }
+        function updateCart(noPanier) {
+            var max = parseInt($('#' + noPanier).attr('max'));
+            var min = parseInt($('#' + noPanier).attr('min'));
+            if ($('#' + noPanier).val() > max) {
+                $('#' + noPanier).val(max);
+            }
+            else if ($('#' + noPanier).val() < min) {
+                $('#' + noPanier).val(min);
+            }
+            var quantite = $('#' + noPanier).val();
+            $.ajax({
+                url: "/Client/UpdatePanierSaisieCommande",
+                data: { "noPanier": noPanier, "quantite": quantite },
+                success: success,
+                error: error,
+            });
+        }
+
+
+        function success(model) {
+            $("#body").html(model)
+        }
+        function successPoids(model) {
+            $("#collapse_zoneCommande").collapse("show");
+            //$("#infoPerso").attr("hidden", true);
+            $("#btnInformationLivraison").removeClass("disabled");
+            $("#btnTypeLivraison").removeClass("disabled");
+
+            //$("#body").html(model)
+            $("#btnPasserCommande").prop('value', 'Passer au paiement')
+            $("#btnPasserCommande").attr('onclick', 'passerPaiement()')
+            var progres = "50";
+            $("#bar").attr("aria-valuenow", progres);
+            $("#bar").css("width", progres + "%");
+            $("#barSpan").text(progres + "%");
+
+
+        }
+
+        function error(error) {
+            console.log('erreur : ' + error);
+            location.href = '/Client/AccueilClient';
+        }
+
+        function errorPoids(error) {
+            console.log('erreur : ' + error);
+            //location.href = '/Client/AccueilClient';
+        }
+
+        function passerPaiement() {
+            $("#collapse_zonePaiement").addClass("show");
+            $("#btnCommande").addClass("disabled");
+            $("#btnPaiement").removeClass("disabled");
+            $(document).scrollTop($("#collapse_zonePaiement").offset().top)
+
+            var progres = "75";
+            $("#bar").attr("aria-valuenow", progres);
+            $("#bar").css("width", progres + "%");
+            $("#barSpan").text(progres + "%");
+
+        }
+
+        function successPaiement() {
+            console.log("successBig");
+        }
+
+        function errorPaiement() {
+            console.log("errorBig");
+        }
+
+        $(document).ready(function () {
+            $("#codePostal").mask("a9a 9a9");
+            $("#tel1").mask("(999) 999-9999");
+            $("#tel2").mask("(999) 999-9999");
+        });
+
+
+
+
+        $("#btnChoixDePoste").click(function () {
+        @{
+        <text>
+        var poids = @poidsKg.ToString().Replace(",",".");
+        var panier = @Model[0].NoPanier;
+        </text>
+        }
+        $.ajax({
+            url: "/Client/RecevoirPrixLivraison",
+            data: {
+                "poids": poids, "panier": panier, "tarif": "0"},
+            success: successPoids,
+            error: errorPoids,
+        });
+        $("#collapse_zoneInfos").collapse();
+        $("#collapse_typeLivraison").collapse("show");
+        });
+        function checkBoxFraisLivraison(tarif) {
+            @{
+            <text>
+            var poids = @poidsKg.ToString().Replace(",", ".");
+            var panier = @Model[0].NoPanier;
+            </text>
+            }
+            $.ajax({
+                url: "/Client/RecevoirPrixLivraison",
+                data: { "poids": poids, "panier": panier,"tarif" : tarif},
+                success: success,
+                error: error,
+            });
+        }
+
+
+
+        function envoyerRequete() {
+            if (confirm("Êtes-vous certain de vouloir payer cette commande?")) {
+                var mois = $("#moisExpireCredit").val();
+                if (mois.length = 1) {
+                    mois = "0" + mois;
+                }
+
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", "https://personnel.lmbrousseau.info/lesi-2019/lesi-effectue-paiement.php");
+
+                var noVendeur = document.createElement("input");
+                noVendeur.setAttribute("type", "hidden");
+                noVendeur.setAttribute("name", "NoVendeur");
+                noVendeur.setAttribute("value",@Model[0].PPVendeurs.NoVendeur.ToString());
+                form.appendChild(noVendeur);
+
+                var nomAffaires = document.createElement("input");
+                nomAffaires.setAttribute("type", "hidden");
+                nomAffaires.setAttribute("name", "NomVendeur");
+                nomAffaires.setAttribute("value", "@Model[0].PPVendeurs.NomAffaires.ToString()");
+                form.appendChild(nomAffaires);
+
+                var noCarteCredit = document.createElement("input");
+                noCarteCredit.setAttribute("type", "hidden");
+                noCarteCredit.setAttribute("name", "NoCarteCredit");
+                noCarteCredit.setAttribute("value", $("#NoCarteCredit").val());
+                form.appendChild(noCarteCredit);
+
+                var DateExpiration = document.createElement("input");
+                DateExpiration.setAttribute("type", "hidden");
+                DateExpiration.setAttribute("name", "DateExpirationCarteCredit");
+                DateExpiration.setAttribute("value", mois + "-" + $("#anneeExpireCredit").val());
+                form.appendChild(DateExpiration);
+
+                var NumSecurite = document.createElement("input");
+                NumSecurite.setAttribute("type", "hidden");
+                NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
+                NumSecurite.setAttribute("value", $("#securiteCredit").val());
+                form.appendChild(NumSecurite);
+
+                var MontantPaiement = document.createElement("input");
+                MontantPaiement.setAttribute("type", "hidden");
+                MontantPaiement.setAttribute("name", "MontantPaiement");
+                MontantPaiement.setAttribute("value", @dblPrixTotal);
+                form.appendChild(MontantPaiement);
+
+                var PageRetour = document.createElement("input");
+                PageRetour.setAttribute("type", "hidden");
+                PageRetour.setAttribute("name", "NomPageRetour");
+                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
+                form.appendChild(PageRetour);
+
+                document.body.appendChild(form);
+                form.submit();
+
+                var progres = "100";
+                $("#bar").attr("aria-valuenow", progres);
+                $("#bar").css("width", progres + "%");
+                $("#barSpan").text(progres + "%");
+            }
+        }
+
+
+    </script>
 
 </body>
 </html>
+

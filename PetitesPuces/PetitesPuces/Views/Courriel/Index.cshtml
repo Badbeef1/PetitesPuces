@@ -1,6 +1,7 @@
-﻿
+﻿@model PetitesPuces.ViewModels.CourrielVM
 @{
     Layout = null;
+    
 }
 
 <!DOCTYPE html>
@@ -39,25 +40,35 @@
             <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
                 <nav class=" bg-faded sidebar">
                     <ul class="nav nav-pills flex-column bg-light">
+                        @foreach(var lieux in Model.lstLieu)
+                        {
+                            <li class="nav-item">
+                                <a herf="@Url.Action("Index", new { lieu = lieux.NoLieu})"><span class=""></span> @lieux.Description</a>
+                                <span class="badge badge-primary"></span>
+                            </li>
+                        }
+
+                        <!--
                         <li class="nav-item"><a href="#"><span class="fa fa-inbox"></span> Boite de réception</a> <span class="badge badge-primary">120</span></li>
                         <li><a href="#"><span class="fa fa-pencil-alt"></span> Brouillons</a> <span class="badge badge-primary">1</span></li>
                         <li><a href="#"><span class="fa fa-paper-plane"></span> Éléments envoyés</a></li>
-                        <li><a href="#"><span class="fa fa-trash-alt"></span> Éléments supprimés</a> <span class="badge badge-primary">13</span></li>
+                        <li><a href="#"><span class="fa fa-trash-alt"></span> Éléments supprimés</a> <span class="badge badge-primary">13</span></li>-->
                     </ul>
                 </nav>
             </div>
             
 
             <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5">
-                @if (ViewBag.TypePg != "Nouveau")
-                {
-                    @Html.Partial("RedactionMessage")
+                @{
+                    if (Model.lieu == 1)
+                    {
+                        @Html.Partial("RedactionMessage")
+                    }
+                    else
+                    {
+                        @Html.Partial("ListeCourriel")
+                    }
                 }
-                else
-                {
-                    @Html.Partial("ListeCourriel")
-                }
-
 
             </main>
         </div>

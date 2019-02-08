@@ -111,6 +111,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\Catalogue.css" />
     <Content Include="Content\css\styleGeneral.css" />
+    <Content Include="Content\fichierXML.xml" />
     <Content Include="Content\images\1000010.jpg" />
     <Content Include="Content\images\1000020.jpg" />
     <Content Include="Content\images\1000030.jpg" />
@@ -176,6 +177,14 @@
     <Content Include="Scripts\esm\popper.js.map" />
     <Content Include="Scripts\esm\popper-utils.min.js.map" />
     <Content Include="Scripts\esm\popper-utils.js.map" />
+    <Content Include="Models\ProjetFinal.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>ProjetFinal.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Models\ProjetFinal.dbml.layout">
+      <DependentUpon>ProjetFinal.dbml</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -194,10 +203,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BDController.cs" />
     <Compile Include="Controllers\ClientDao.cs" />
     <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\IClient.cs" />
+    <Compile Include="Controllers\ICourriel.cs" />
     <Compile Include="Controllers\InternauteController.cs" />
     <Compile Include="Controllers\ConnexionController.cs" />
     <Compile Include="Controllers\IVendeur.cs" />
@@ -224,6 +235,11 @@
     <Compile Include="Models\MessageViewModel.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
     <Compile Include="Models\ProduitPanier.cs" />
+    <Compile Include="Models\ProjetFinal.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProjetFinal.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Models\Province.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -232,6 +248,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CatalogueViewModel.cs" />
+    <Compile Include="ViewModels\XmlDataViewModel.cs" />
+    <Compile Include="ViewModels\CourrielVM.cs" />
     <Compile Include="ViewModels\InformationPersonnelViewModel.cs" />
     <Compile Include="Controllers\CourrielController.cs" />
   </ItemGroup>
@@ -311,6 +329,7 @@
     <Content Include="Views\Client\ConfirmationTransaction.cshtml" />
     <Content Include="Views\Courriel\ListeCourriel.cshtml" />
     <Content Include="Views\Courriel\RedactionMessage.cshtml" />
+    <Content Include="Views\BD\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
