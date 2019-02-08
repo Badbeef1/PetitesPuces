@@ -10,9 +10,8 @@
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous"/>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"/>
-
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
 <script type="text/javascript">
     $(document).ready(function () {
         $("#btnContinueMagasiner").click(function () {
@@ -70,18 +69,18 @@
     }
     function successPoids(model) {
         $("#collapse_zoneCommande").collapse("show");
-        $("#infoPerso").attr("hidden", true);
+        //$("#infoPerso").attr("hidden", true);
         $("#btnInformationLivraison").removeClass("disabled");
         $("#btnTypeLivraison").removeClass("disabled");
 
-        $("#body").html(model)
+        //$("#body").html(model)
         $("#btnPasserCommande").prop('value', 'Passer au paiement')
         $("#btnPasserCommande").attr('onclick', 'passerPaiement()')
         var progres = "50";
         $("#bar").attr("aria-valuenow", progres);
         $("#bar").css("width", progres + "%");
         $("#barSpan").text(progres + "%");
-    
+
 
     }
 
@@ -105,7 +104,7 @@
         $("#bar").attr("aria-valuenow", progres);
         $("#bar").css("width", progres + "%");
         $("#barSpan").text(progres + "%");
-    
+
     }
 
     function successPaiement() {
@@ -182,6 +181,7 @@
     .shopping-cart {
         margin-top: 20px;
     }
+
     button:disabled {
         background-color: #dddddd;
     }
@@ -219,6 +219,11 @@
         border: 1px solid #ccc;
         border-top: none;
     }
+
+    .input-validation-error {
+        border: 1px solid #ff0000;
+        background-color: white;
+    }
 </style>
 <html>
 <head>
@@ -247,7 +252,7 @@
         <div class="progress">
             <div class="progress-bar" id="bar" role="progressbar" aria-valuenow="0"
                  aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                <span id="barSpan" text="0%"/>
+                <span id="barSpan" text="0%" />
             </div>
         </div>
         <br />
@@ -602,7 +607,6 @@
                     </h5>
                 </div>
             </div>
-
             <div id="collapse_zoneInfos" class="collapse" aria-labelledby="btnInformationLivraison" data-parent="#infoPerso">
 
                 <div class="card-body  align-items-center" style="padding:0px">
@@ -617,7 +621,8 @@
                     <div class="row">
 
                         <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="firstName" type="text" value="@Model[0].PPClients.Prenom" />
+                        @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" });
+                        @Html.ValidationMessageFor(model => Model[0].PPClients.Prenom);
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
                     </div>
@@ -684,7 +689,13 @@
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
                     </div>
-
+                    <script>
+                        $(document).ready(function () {
+                            $("#codePostal").mask("a9a 9a9");
+                            $("#tel1").mask("(999) 999-9999");
+                            $("#tel2").mask("(999) 999-9999");
+                        });
+                    </script>
                     <div class="row">
                         <div class="offset-md-1"></div>
                         <label class="col-md-5">Téléphone primaire</label>
@@ -867,3 +878,6 @@
 
 </body>
 </html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
