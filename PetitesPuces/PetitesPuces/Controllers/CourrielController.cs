@@ -3,24 +3,69 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using PetitesPuces.Models;
+using PagedList;
 
 namespace PetitesPuces.Views
 {
     public class CourrielController : Controller
     {
+        DataClasses1DataContext contextPP = new DataClasses1DataContext();
+
         // GET: Courriel
-        public ActionResult Index(string page)
+        public ActionResult Index(short? lieu)
         {
-            if (page != "")
+            const String strClient = "Client";
+            const String strVendeur = "Vendeur";
+            const String strGestionnaire = "Gestionnaire";
+            
+            
+            //Liste de tout les lieux pour la bar de navigation
+            List<PPLieu> lstLieu = contextPP.PPLieu.ToList();
+
+            //Type d'utilisateur
+            String strTypeUtilisateur = "";
+            dynamic utilisateur;
+
+            if (Session["clientObj"] != null)
             {
-                ViewBag.TypePg = "Nouveau";
+                strTypeUtilisateur = strClient;
+                utilisateur = contextPP.PPClients
+                    .FirstOrDefault(client => client.NoClient == (Session["clientObj"] as PPClients).NoClient);
+            }
+            else if (Session["vendeurObj"] != null)
+            {
+                strTypeUtilisateur = strVendeur;
+                utilisateur = contextPP.PPVendeurs
+                    .FirstOrDefault(vendeur => vendeur.NoVendeur == (Session["vendeurObj"] as PPVendeurs).NoVendeur);
             }
             else
             {
-                ViewBag.TypePg = "Liste";
+                strTypeUtilisateur = strGestionnaire;
+                utilisateur = contextPP.PPGestionnaire
+                    .FirstOrDefault(gestionnaire => gestionnaire.AdresseEmail == (Session["gestionnaireObj"] as PPGestionnaire).AdresseEmail);
             }
 
-            return View();
+
+            //Notification par dossier
+            Dictionary<short, int> dicNotificationLieu = new Dictionary<short, int>();
+
+            switch (utilisateur)
+            {
+                case 
+            }
+
+
+
+
+            ViewModels.CourrielVM courrielVM = new ViewModels.CourrielVM
+            {
+                lstLieu = lstLieu,
+                lieu = lieu ?? 1
+            };
+
+
+            return View(courrielVM);
         }
     }
 }

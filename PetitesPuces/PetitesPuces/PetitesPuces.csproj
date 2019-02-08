@@ -210,6 +210,7 @@
     <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\IClient.cs" />
+    <Compile Include="Controllers\ICourriel.cs" />
     <Compile Include="Controllers\InternauteController.cs" />
     <Compile Include="Controllers\ConnexionController.cs" />
     <Compile Include="Controllers\IVendeur.cs" />
@@ -248,6 +249,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CatalogueViewModel.cs" />
+    <Compile Include="ViewModels\CourrielVM.cs" />
     <Compile Include="ViewModels\InformationPersonnelViewModel.cs" />
     <Compile Include="Controllers\CourrielController.cs" />
   </ItemGroup>
