@@ -222,9 +222,10 @@
       <Association Name="PPLieu_PPDestinataires" Member="PPDestinataires" ThisKey="NoLieu" OtherKey="Lieu" Type="PPDestinataires" />
     </Type>
   </Table>
-  <Table Name="dbo.PPGestionnaire" Member="PPGestionnaire">
-    <Type Name="PPGestionnaire">
-      <Column Name="AdresseEmail" Type="System.String" DbType="VarChar(100) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+  <Table Name="dbo.PPGestionnaires" Member="PPGestionnaires">
+    <Type Name="PPGestionnaires">
+      <Column Name="NoGestionnaire" Type="System.Int64" DbType="BigInt NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AdresseEmail" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
       <Column Name="MotDePasse" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>

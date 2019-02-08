@@ -28,7 +28,7 @@ DROP TABLE HistoCommandes
 DROP TABLE HistoDetailsCommandes
 DROP TABLE PPVendeurs
 DROP TABLE PPClients
-DROP TABLE PPGestionnaire
+DROP TABLE PPGestionnaires
 DROP TABLE PPDestinataires
 DROP TABLE PPMessages
 DROP TABLE PPLieu
@@ -410,10 +410,11 @@ CREATE TABLE PPDestinataires (
 	CONSTRAINT FK_Lieu FOREIGN KEY(Lieu) REFERENCES PPLieu(NoLieu)
 	);
 
-CREATE TABLE PPGestionnaire(
+CREATE TABLE PPGestionnaires(
+	NoGestionnaire bigint NOT NULL,
 	AdresseEmail varchar(100) NOT NULL,
 	MotDePasse varchar(50) NOT NULL,
-	PRIMARY KEY(AdresseEmail)
+	PRIMARY KEY(NoGestionnaire)
 );
 
 CREATE TABLE PPEvaluations(
