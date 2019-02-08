@@ -330,6 +330,7 @@
     <Content Include="Views\Courriel\ListeCourriel.cshtml" />
     <Content Include="Views\Courriel\RedactionMessage.cshtml" />
     <Content Include="Views\BD\Index.cshtml" />
+    <Content Include="Views\Client\InfoClientSaisieCommande.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
