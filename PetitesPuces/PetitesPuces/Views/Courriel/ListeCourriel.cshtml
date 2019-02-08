@@ -1,6 +1,37 @@
-﻿@model PetitesPuces.ViewModels.CourrielVM
+﻿@model PagedList.IPagedList<Tuple<PetitesPuces.Models.PPDestinataires, String>>
 
 <div class="d-flex flex-column">
+
+    @foreach(var tup in Model)
+    {
+        PetitesPuces.Models.PPDestinataires destinataires = tup.Item1;
+        PetitesPuces.Models.PPMessages message = destinataires.PPMessages;
+        
+    <div class="row p-2 sMessListe">
+        <div class="col-3">
+            @Html.DisplayFor(x => tup.Item2)
+        </div>
+
+        <div class="col-2 sActionMessageListe">
+            <button type="button" title="Supprimer"><span class="fa fa-trash-alt"></span></button>
+            <button type="button" title="Marquer comme lu"><span class="far fa-envelope-open"></span></button>
+        </div>
+        <div class="col-1">
+            @if (message.objet != null)
+            {
+                <span class="fas fa-paperclip"></span>
+            }
+        </div>
+        <div class="col-5">
+            @Html.DisplayFor(x => message.DescMsg.Take(50))
+        </div>
+        <div class="col-2">
+            @Html.DisplayFor(x => message.dateEnvoi.Value.ToString("dd MM yyyy"))
+        </div>
+    </div>
+    }
+
+
     <div class="row p-2 sMessListe">
         <div class="col-3">
             <span>Jean-Michel Danger</span>
