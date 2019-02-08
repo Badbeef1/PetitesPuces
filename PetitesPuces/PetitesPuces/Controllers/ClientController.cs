@@ -535,6 +535,7 @@ namespace PetitesPuces.Controllers
             //Liste des vendeurs
             List<PPVendeurs> lstVendeur = contextPP.PPVendeurs
                 .Where(predicate: ven => ven.PPProduits.Count() > 0)
+                .OrderBy(ven => ven.NomAffaires)
                 .ToList(); 
 
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel

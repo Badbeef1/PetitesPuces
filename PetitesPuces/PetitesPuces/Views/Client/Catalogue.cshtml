@@ -111,7 +111,7 @@
         <div class="container-fluid">
             <div class="row flex-xl-nowrap">
                 <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar bg-light bd-sidebar">
-                    <h6>Catégorie de produit</h6>
+                    <h6 class="mt-2">Catégorie de produit</h6>
                     <ul class="nav nav-pills flex-column" id="parentAccordeon">
                         @foreach (var categorie in Model.dicVendeur)
                         {
@@ -131,12 +131,12 @@
                             intIndex++;
                         }
                     </ul>
-                    <h6>Vendeur</h6>
+                    <h6 class="mt-2">Vendeur</h6>
                     <ul class="nav nav-pills flex-column">
-                        @foreach (var vendeur in Model.lstVendeur)
+                        @foreach (var vendeurs in Model.lstVendeur)
                         {
                             <li class="nav-item">
-                                @Html.ActionLink(vendeur.NomAffaires,"Catalogue", new { })
+                                @Html.ActionLink(vendeurs.NomAffaires,"Catalogue", new { vendeur = vendeurs.NomAffaires, Model.pageDimension })
                             </li>
                         }
                     </ul>
