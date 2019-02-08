@@ -11,5 +11,6 @@ namespace PetitesPuces.ViewModels
         public bool enableAddButton { get; set; }
         public bool enableDeleteButton { get; set; }
         public string errorMessage { get; set; }
+        public string successMessage { get; set; }
     }
 }

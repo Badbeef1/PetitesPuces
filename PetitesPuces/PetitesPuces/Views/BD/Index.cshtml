@@ -24,11 +24,11 @@
 
 </head>
 <body>
-    <div class="container mt-5 mb-5"> 
+    <div class="container mt-5 mb-5">
         <table class="table table-striped">
             <tr class="row">
                 <th class="col-6">
-                    @using (Html.BeginForm("Ajouter", "BD",FormMethod.Post))
+                    @using (Html.BeginForm("Ajouter", "BD", FormMethod.Post))
                     {
                         <input type="submit" class="btn btn-block btn-success" value="Ajouter les données">
                     }
@@ -40,32 +40,25 @@
                     }
                 </th>
             </tr>
-            <tr class="row mt-5 text-center">
-                <th class="col-12">
-                    @Html.DisplayTextFor(m => m.errorMessage)
-                </th>
+            <tr class="row mt-3 text-center">
+                <td class="col-12 text-white bg-success">
+                    @Html.DisplayTextFor(m => m.successMessage)
+                </td>
             </tr>
-            <tr class="row mt-5 text-center">
-                <th class="col-6">
-                    <h1>Nom de la table</h1>
-                </th>
-                <th class="col-6">
-                    <h1>Nombre de données</h1>
-                </th>
+            <tr class="row mt-3 text-center">
+                <td class="col-12 text-dark bg-warning">
+                    @Html.DisplayTextFor(m => m.errorMessage)
+                </td>
             </tr>
             @{
-
                 for (int i = 0; i < (Model.tabCount.Length) / 2; i++)
                 {
                     <tr class="row">
                         <td class="col-6 text-right"><h3> @Model.tabCount[i, 0] : </h3></td>
-                        <td class="col-6  text-center"><h2> @Model.tabCount[i, 1] </h2></td>
+                        <td class="col-6 text-left"><h2> @Model.tabCount[i, 1] données présentes</h2></td>
                     </tr>
                 }
-
             }
-
-
         </table>
     </div>
 </body>

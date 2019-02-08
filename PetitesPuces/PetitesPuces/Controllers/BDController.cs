@@ -333,18 +333,20 @@ namespace PetitesPuces.Controllers
 
                             /*
                              *   Table PPGestionnaire
-                             */
-                            if (sheet.Attribute(ss + "Name").Value == "PPGestionnaire")
+                             */                                     
+                             /*
+                            if (sheet.Attribute(ss + "Name").Value == "PPGestionnaires")
                             {
                                 var tabObjs = GetTableCellStrings(table);
                                 foreach (var obj in tabObjs)
                                 {
                                     if (obj[0] != null)
                                     {
-                                        lstGestionnaire.Add(new PPGestionnaire()
+                                        lstGestionnaire.Add(new PPGestionnaires()
                                         {
-                                            AdresseEmail = obj[0],
-                                            MotDePasse = obj[1]
+                                            NoGestionnaire = CheckInt(obj[0]),
+                                            AdresseEmail = obj[1],
+                                            MotDePasse = obj[2]
                                         });
                                     }
                                 }
@@ -467,24 +469,30 @@ namespace PetitesPuces.Controllers
                 context.Connection.Open();
                 context.Transaction = context.Connection.BeginTransaction();
 
+
+                //Tables sans liens
+                context.PPCategories.InsertAllOnSubmit(lstCategories);
+                context.PPTypesLivraison.InsertAllOnSubmit(lstTypesLivraison);
+                context.PPTypesPoids.InsertAllOnSubmit(lstTypesPoids);
+                context.PPTaxeProvinciale.InsertAllOnSubmit(lstTaxeProvinciale);
+                context.PPTaxeFederale.InsertAllOnSubmit(lstTaxeFederale);
+                //context.PPGestionnaires.InsertAllOnSubmit(lstGestionnaire);
                 context.PPClients.InsertAllOnSubmit(lstClients);
                 context.PPVendeurs.InsertAllOnSubmit(lstVendeurs);
-                //context.PPProduits.InsertAllOnSubmit(lstProduits);
-                //context.PPDetailsCommandes.InsertAllOnSubmit(lstDetailsCommandes);
 
-                //context.PPCommandes.InsertAllOnSubmit(lstCommandes);
-                //context.PPArticlesEnPanier.InsertAllOnSubmit(lstArticlesEnPanier);
-                //context.PPHistoriquePaiements.InsertAllOnSubmit(lstHistoriquePaiements);
-                //context.PPCategories.InsertAllOnSubmit(lstCategories);
-                //context.PPVendeursClients.InsertAllOnSubmit(lstVendeursClients);
-                //context.PPGestionnaire.InsertAllOnSubmit(lstGestionnaire);
-                //context.PPTaxeFederale.InsertAllOnSubmit(lstTaxeFederale);
-                //context.PPTaxeProvinciale.InsertAllOnSubmit(lstTaxeProvinciale);
-                //context.PPTypesLivraison.InsertAllOnSubmit(lstTypesLivraison);
-                //context.PPTypesPoids.InsertAllOnSubmit(lstTypesPoids);
-                //context.PPPoidsLivraisons.InsertAllOnSubmit(lstPoidsLivraisons);
+                //Tables avec liens
+                context.PPPoidsLivraisons.InsertAllOnSubmit(lstPoidsLivraisons);
+                context.PPHistoriquePaiements.InsertAllOnSubmit(lstHistoriquePaiements);
+                context.PPProduits.InsertAllOnSubmit(lstProduits);
+                context.PPVendeursClients.InsertAllOnSubmit(lstVendeursClients);
+
+                context.PPDetailsCommandes.InsertAllOnSubmit(lstDetailsCommandes);
+                context.PPArticlesEnPanier.InsertAllOnSubmit(lstArticlesEnPanier);
+                context.PPCommandes.InsertAllOnSubmit(lstCommandes);
 
                 context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                context.Transaction.Commit();
+                model.successMessage = "Les tables ont étés remplies.";
             }
             catch (Exception ex)
             {
@@ -519,7 +527,7 @@ namespace PetitesPuces.Controllers
                 context.PPHistoriquePaiements.DeleteAllOnSubmit(context.PPHistoriquePaiements);
                 context.PPCategories.DeleteAllOnSubmit(context.PPCategories);
                 context.PPVendeursClients.DeleteAllOnSubmit(context.PPVendeursClients);
-                context.PPGestionnaire.DeleteAllOnSubmit(context.PPGestionnaire);
+          //      context.PPGestionnaires.DeleteAllOnSubmit(context.PPGestionnaires);
                 context.PPTaxeFederale.DeleteAllOnSubmit(context.PPTaxeFederale);
                 context.PPTaxeProvinciale.DeleteAllOnSubmit(context.PPTaxeProvinciale);
                 context.PPTypesLivraison.DeleteAllOnSubmit(context.PPTypesLivraison);
@@ -527,6 +535,9 @@ namespace PetitesPuces.Controllers
                 context.PPPoidsLivraisons.DeleteAllOnSubmit(context.PPPoidsLivraisons);
                 
                 context.SubmitChanges(ConflictMode.ContinueOnConflict);
+                context.Transaction.Commit();
+
+                model.successMessage = "Les tables ont étés vidées.";
                 model.tabCount = GetTableCount(context);
             }
             catch (Exception ex)
@@ -534,8 +545,6 @@ namespace PetitesPuces.Controllers
                 context.Transaction.Rollback();
                 model.errorMessage = ex.Message;
             }
-
-            
 
             context.Connection.Close();
             return View("Index", model);
@@ -556,7 +565,7 @@ namespace PetitesPuces.Controllers
 
                 { "PPCategories", context.PPCategories.Count().ToString() },
                 { "PPVendeursClients", context.PPVendeursClients.Count().ToString() },
-                { "PPGestionnaire", context.PPGestionnaire.Count().ToString() },
+               // { "PPGestionnaires", context.PPGestionnaires.Count().ToString() },
                 { "PPTaxeFederale", context.PPTaxeFederale.Count().ToString() },
                 { "PPTaxeProvinciale", context.PPTaxeProvinciale.Count().ToString() },
                 { "PPTypesLivraison", context.PPTypesLivraison.Count().ToString() },
