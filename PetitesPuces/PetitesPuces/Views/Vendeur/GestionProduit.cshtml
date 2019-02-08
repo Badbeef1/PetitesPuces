@@ -1,110 +1,156 @@
-﻿@{
-    Layout = null;
-}
-
+﻿@using PetitesPuces.Models
+@model PPProduits
 <!DOCTYPE html>
-
+@{
+   Culture = UICulture = "en-US";
+}
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Gestion Produit</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+   <meta name="viewport" content="width=device-width" />
+   <title>Gestion Produit</title>
+   <!--Librairies externes (Bootstrap 4.2)-->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+   <script type="text/javascript">
+
+      //fonction qui permet d'afficher l'image sélectionner
+      function readURL(input) {
+         console.log('j\'essaye de lire limage');
+         if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+               $('#imgProduit')
+                  .attr('src', e.target.result)
+                  .width(250)
+                  .height(250);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+         }
+      }
+   </script>
 </head>
 <body>
-    @Html.Partial("index")
-    <div class="container">
-        <div class="card">
-            <h4 class="card-header">Ajout de produit</h4>
-            <div class="card-body">
-                <div class="form-row form-group">
-                    <div class="col-7">
-                        <label class="col-form-label">Nom</label>
-                        <input type="text" class="form-control" />
-                    </div>
-                    <div class="col-3">
-                        <label class="col-form-label">Catégorie</label>
-                        <select id="selTypeRech" class="form-control">
-                            <option value="1" selected>Sport</option>
-                            <option value="2">Loisir</option>
-                            <option value="3">Véhicule</option>
-                            <option value="4">Fourniture de bureau</option>
-                        </select>
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Disponibilité</label><br />
-                        <input type="checkbox" class="form-check-label" />
-                    </div>
-                </div>
+   @Html.Partial("index")
+   <br />
+   @using (Html.BeginForm("AjouterProduit", "Vendeur", FormMethod.Post))
+   {
+      @Html.HiddenFor(model => model.NoVendeur)
+      @Html.HiddenFor(model => model.DateMAJ)
+      @Html.HiddenFor(model => model.NoProduit)
 
-                <div class="form-row form-group">
-                    <div class=" col-2">
-                        <label class="col-form-label">Prix demandé</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    $
-                                </span>
-                            </div>
+
+      <div class="container">
+         <div class="card">
+            <h4 class="card-header">Ajout de produit</h4>
+
+            <div class="card-body">
+               <div class="form-row form-group">
+                  <div class="col-7">
+                     <label class="col-form-label">Nom</label>
+                     <!--<input type="text" class="form-control" />-->
+                     @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                  </div>
+                  <div class="col-3">
+                     <label class="col-form-label">Catégorie</label>
+                     @Html.DropDownListFor(model => model.NoCategorie, (SelectList)ViewBag.ListeCategories, new { @class = "custom-select" })
+                     <!--<select id="selTypeRech" class="form-control">
+                           <option value="1" selected>Sport</option>
+                           <option value="2">Loisir</option>
+                           <option value="3">Véhicule</option>
+                           <option value="4">Fourniture de bureau</option>
+                        </select>-->
+                  </div>
+                  <div class="col-2">
+                     <label class="col-form-label">Disponibilité</label><br />
+                     <!--<input type="checkbox" class="form-check-label" />-->
+                     @Html.CheckBoxFor(model => model.Disponibilité.Value, new { htmlAttributes = new { @class = "form-check-label" } })
+                  </div>
+               </div>
+
+               <div class="form-row form-group">
+                  <div class=" col-2">
+                     <label class="col-form-label">Prix demandé</label>
+                     <div class="input-group">
+                        <!--<input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">-->
+                        @Html.EditorFor(model => model.PrixDemande, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @step = "0.01" } })
+                        <div class="input-group-append">
+                           <span class="input-group-text">
+                              $
+                           </span>
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Prix de vente</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="tbPrixVente" placeholder="00.00">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    $
-                                </span>
-                            </div>
+                     </div>
+                  </div>
+                  <div class="col-2">
+                     <label class="col-form-label">Prix de vente</label>
+                     <div class="input-group">
+                        <!--<input type="text" class="form-control" id="tbPrixVente" placeholder="00.00">-->
+                        @*Html.EditorFor(model => model.PrixVente, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @min="0", @step="0.01"} })*@
+                        @Html.TextBoxFor(model => model.PrixVente, new { @class="form-control"})
+                        <div class="input-group-append">
+                           <span class="input-group-text">
+                              $
+                           </span>
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Nombre d'item(s)</label>
-                        <input type="number" class="form-control" />
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Poids</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="tbPoids" placeholder="00">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    Lbs
-                                </span>
-                            </div>
+                     </div>
+                  </div>
+                  <div class="col-2">
+                     <label class="col-form-label">Nombre d'item(s)</label>
+                     @Html.EditorFor(model => model.NombreItems, new { htmlAttributes = new { @type = "number", @class = "form-control", @min = "0" } })
+                     <!--<input type="number" class="form-control" />-->
+                  </div>
+                  <div class="col-2">
+                     <label class="col-form-label">Poids</label>
+                     <div class="input-group">
+                        @Html.EditorFor(model => model.Poids, new { htmlAttributes = new { @type = "text", @class = "form-control", @placeholder = "00" } })
+                        <!--<input type="text" class="form-control" id="tbPoids" placeholder="00">-->
+                        <div class="input-group-append">
+                           <span class="input-group-text">
+                              Lbs
+                           </span>
                         </div>
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Date de création</label>
-                        <input type="date" class="form-control" />
-                    </div>
-                    <div class="col-2">
-                        <label class="col-form-label">Date de vente</label>
-                        <input type="date" class="form-control" />
-                    </div>
-                </div>
-                <div class="form-row form-group">
-                    <div class="col-7">
-                        <label class="col-form-label">Description plus élaborée</label>
-                        <textarea class="form-control" rows="12"></textarea>
-                    </div>
-                    <div class="col-5">
-                        <label class="col-form-label">Photo</label><br />
-                        <img src="~/Content/images/images.png" width="250" height="250" />
-                        <div class="d-flex mt-2">
-                            <input type="file" class="form-control" />
-                            <button type="button" class="btn btn-outline-primary ml-3">Visualiser</button>
-                        </div>
-                    </div>
-                </div>
+                     </div>
+                  </div>
+                  <div class="col-2">
+                     <label class="col-form-label">Date de création</label>
+                     @Html.EditorFor(model => model.DateCreation, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                     <!--<input type="date" class="form-control" />-->
+                  </div>
+                  <div class="col-2">
+                     <label class="col-form-label">Date de vente</label>
+                     @Html.EditorFor(model => model.DateVente, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                     <!--<input type="date" class="form-control" />-->
+                  </div>
+               </div>
+               <div class="form-row form-group">
+                  <div class="col-7">
+                     <label class="col-form-label">Description plus élaborée</label>
+                     @Html.TextAreaFor(model => model.Description, 10, 80, new { htmlAttributes = new { @class = "form-control" } })
+                     <!--<textarea class="form-control" rows="12"></textarea>-->
+                  </div>
+                  <div class="col-5">
+                     <label class="col-form-label">Photo</label><br />
+                     <img id="imgProduit" src="~/Content/images/images.png" width="250" height="250" />
+                     <div class="d-flex mt-2">
+                        @Html.EditorFor(model => model.Photo, new { htmlAttributes = new { @type = "file", @class = "form-control", @onchange = "readURL(this);" } })
+                        <!--<input type="file" class="form-control" />-->
+
+                        <button type="button" class="btn btn-outline-primary ml-3">Visualiser</button>
+                     </div>
+                  </div>
+               </div>
             </div>
             <div class="card-footer btn-group" style="width:100%">
-                <button type="button" class="btn btn-outline-success">Ajouter</button>
-                <a href="/Vendeur/CatalogueVendeur" class="btn btn-outline-primary">Annuler</a>
+               <button type="submit" class="btn btn-outline-success">Ajouter</button>
+               <a href="/Vendeur/CatalogueVendeur" class="btn btn-outline-primary">Annuler</a>
             </div>
-        </div>
-    </div>
+         </div>
+      </div>
+   }
 </body>
 </html>

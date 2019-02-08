@@ -56,8 +56,61 @@ namespace PetitesPuces.Controllers
 
       public ActionResult AjouterProduit()
       {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         var categories = (from cat in db.GetTable<PPCategories>()
+                           select cat
+                           ).ToList();
+
+         ViewBag.ListeCategories = new SelectList(categories, "NoCategorie", "Description");
+
          PPProduits produit = new PPProduits();
-         return View(produit);
+         produit.Disponibilité = true;
+         produit.NoVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+         produit.NoCategorie = 70;
+
+         
+
+         
+         return View("GestionProduit",produit);
+      }
+
+      [HttpPost]
+      public ActionResult AjouterProduit(PPProduits produit)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Pour les dropdownlist aller voir le fichier : ---------> vers la ligne 300 du clientController et dans les InformationPersonel
+         //TODO: Ajouter le produit dans la BASE DE DONNÉES
+         PPProduits prod = produit;
+         prod.Disponibilité = true;
+
+         var nbProduit = (from produits in db.GetTable<PPProduits>()
+                          select prod
+                          ).ToList();
+         //Le pattern de num produit va être à retravailler.
+         prod.NoProduit = (nbProduit.Count() + 1) * 10;
+
+         db.PPProduits.InsertOnSubmit(prod);
+
+         // Submit the changes to the database.
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+            Console.WriteLine(e);
+         }
+
+         db.Connection.Close();
+         PPProduits p = new PPProduits();
+         produit.Disponibilité = true;
+         produit.NoVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+         produit.NoCategorie = 70;
+
+
+         return View("GestionProduit", p);
       }
 
       // GET: Vendeur

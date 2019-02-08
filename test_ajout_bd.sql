@@ -106,3 +106,5 @@ VALUES(5,'Supprimé définitivement')
 --ajouter les deux catégories qui sont supprimables
 INSERT [dbo].[PPCategories] ([NoCategorie], [Description], [Details]) VALUES (40, N'Articles de bébé et enfants', N'Vêtements, mobiliers, jouets, articles de sports et loisirs')
 INSERT [dbo].[PPCategories] ([NoCategorie], [Description], [Details]) VALUES (50, N'Rénovation, bricolage, loisirs', N'Outils, quincaillerie, articles variés')
+
+delete PPProduits where NoProduit = 160
