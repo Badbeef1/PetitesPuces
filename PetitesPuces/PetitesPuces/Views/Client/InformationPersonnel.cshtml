@@ -11,10 +11,12 @@
                 <div class="col-3">
                     <label class="col-form-label">Prénom</label>
                     @Html.TextBoxFor(model => Model.Prenom, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => Model.Prenom)
                 </div>
                 <div class="col-3">
                     <label class="col-form-label">Nom</label>
                     @Html.TextBoxFor(model => Model.Nom, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Nom)
                 </div>
                 <div class="col-3">
                     <label class="col-form-label">Rue</label>
@@ -37,14 +39,17 @@
                 <div class="col-2">
                     <label class="col-form-label">Code postal</label>
                     @Html.TextBoxFor(model => Model.CodePostal, new { @class = "form-control", placeholder = "A9A 9A9", @id = "codePostal" })
+                    @Html.ValidationMessageFor(x => x.CodePostal)
                 </div>
                 <div class="col-2">
                     <label class="col-form-label">Téléphone #1</label>
                     @Html.TextBoxFor(model => Model.Tel1, new { @class = "form-control", placeholder = "(999) 999-9999" , @id = "tel1"})
+                    @Html.ValidationMessageFor(x => x.Tel1)
                 </div>
                 <div class="col-2">
                     <label class="col-form-label">Téléphone #2</label>
                     @Html.TextBoxFor(model => Model.Tel2, new { @class = "form-control", placeholder = "(999) 999-9999", @id = "tel2" })
+                    @Html.ValidationMessageFor(x => x.Tel2)
                 </div>
             </div>
         </div>
