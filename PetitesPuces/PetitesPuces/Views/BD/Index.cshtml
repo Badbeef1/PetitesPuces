@@ -1,4 +1,4 @@
-﻿
+﻿@model PetitesPuces.ViewModels.XmlDataViewModel
 @{
     Layout = null;
 }
@@ -8,10 +8,65 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
+    <title>Jeu d'essai</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-    <div> 
+    <div class="container mt-5 mb-5"> 
+        <table class="table table-striped">
+            <tr class="row">
+                <th class="col-6">
+                    @using (Html.BeginForm("Ajouter", "BD",FormMethod.Post))
+                    {
+                        <input type="submit" class="btn btn-block btn-success" value="Ajouter les données">
+                    }
+                </th>
+                <th class="col-6">
+                    @using (Html.BeginForm("Retirer", "BD", FormMethod.Post))
+                    {
+                        <input type="submit" class="btn btn-block btn-danger" value="Retirer les données">
+                    }
+                </th>
+            </tr>
+            <tr class="row mt-5 text-center">
+                <th class="col-12">
+                    @Html.DisplayTextFor(m => m.errorMessage)
+                </th>
+            </tr>
+            <tr class="row mt-5 text-center">
+                <th class="col-6">
+                    <h1>Nom de la table</h1>
+                </th>
+                <th class="col-6">
+                    <h1>Nombre de données</h1>
+                </th>
+            </tr>
+            @{
+
+                for (int i = 0; i < (Model.tabCount.Length) / 2; i++)
+                {
+                    <tr class="row">
+                        <td class="col-6 text-right"><h3> @Model.tabCount[i, 0] : </h3></td>
+                        <td class="col-6  text-center"><h2> @Model.tabCount[i, 1] </h2></td>
+                    </tr>
+                }
+
+            }
+
+
+        </table>
     </div>
 </body>
 </html>
