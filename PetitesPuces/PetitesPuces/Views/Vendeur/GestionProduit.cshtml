@@ -1,5 +1,5 @@
 ﻿@using PetitesPuces.Models
-@model PPProduits
+@model GestionProduitViewModel
 <!DOCTYPE html>
 @{
    Culture = UICulture = "en-US";
@@ -38,13 +38,17 @@
 <body>
    @Html.Partial("index")
    <br />
-   @using (Html.BeginForm("AjouterProduit", "Vendeur", FormMethod.Post))
+   @using (Html.BeginForm("AjouterProduit",
+      "Vendeur",
+      FormMethod.Post,
+      new { enctype = "multipart/form-data" }))
    {
-      @Html.HiddenFor(model => model.NoVendeur)
-      @Html.HiddenFor(model => model.DateMAJ)
-      @Html.HiddenFor(model => model.NoProduit)
+      @Html.HiddenFor(model => model.produit.NoVendeur)
+      @Html.HiddenFor(model => model.produit.DateMAJ)
+      @Html.HiddenFor(model => model.produit.NoProduit)
+      @Html.HiddenFor(model => model.produit.Photo)
 
-
+      @ViewBag.Message
       <div class="container">
          <div class="card">
             <h4 class="card-header">Ajout de produit</h4>
@@ -54,11 +58,11 @@
                   <div class="col-7">
                      <label class="col-form-label">Nom</label>
                      <!--<input type="text" class="form-control" />-->
-                     @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                     @Html.EditorFor(model => model.produit.Nom, new { htmlAttributes = new { @class = "form-control" } })
                   </div>
                   <div class="col-3">
                      <label class="col-form-label">Catégorie</label>
-                     @Html.DropDownListFor(model => model.NoCategorie, (SelectList)ViewBag.ListeCategories, new { @class = "custom-select" })
+                     @Html.DropDownListFor(model => model.produit.NoCategorie, (SelectList)ViewBag.ListeCategories, new { @class = "custom-select" })
                      <!--<select id="selTypeRech" class="form-control">
                            <option value="1" selected>Sport</option>
                            <option value="2">Loisir</option>
@@ -69,7 +73,7 @@
                   <div class="col-2">
                      <label class="col-form-label">Disponibilité</label><br />
                      <!--<input type="checkbox" class="form-check-label" />-->
-                     @Html.CheckBoxFor(model => model.Disponibilité.Value, new { htmlAttributes = new { @class = "form-check-label" } })
+                     @Html.CheckBoxFor(model => model.produit.Disponibilité.Value, new { htmlAttributes = new { @class = "form-check-label" } })
                   </div>
                </div>
 
@@ -78,7 +82,7 @@
                      <label class="col-form-label">Prix demandé</label>
                      <div class="input-group">
                         <!--<input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">-->
-                        @Html.EditorFor(model => model.PrixDemande, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @step = "0.01" } })
+                        @Html.EditorFor(model => model.produit.PrixDemande, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @step = "0.01" } })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               $
@@ -91,7 +95,7 @@
                      <div class="input-group">
                         <!--<input type="text" class="form-control" id="tbPrixVente" placeholder="00.00">-->
                         @*Html.EditorFor(model => model.PrixVente, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @min="0", @step="0.01"} })*@
-                        @Html.TextBoxFor(model => model.PrixVente, new { @class="form-control"})
+                        @Html.TextBoxFor(model => model.produit.PrixVente, new { @class = "form-control" })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               $
@@ -101,13 +105,13 @@
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Nombre d'item(s)</label>
-                     @Html.EditorFor(model => model.NombreItems, new { htmlAttributes = new { @type = "number", @class = "form-control", @min = "0" } })
+                     @Html.EditorFor(model => model.produit.NombreItems, new { htmlAttributes = new { @type = "number", @class = "form-control", @min = "0" } })
                      <!--<input type="number" class="form-control" />-->
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Poids</label>
                      <div class="input-group">
-                        @Html.EditorFor(model => model.Poids, new { htmlAttributes = new { @type = "text", @class = "form-control", @placeholder = "00" } })
+                        @Html.EditorFor(model => model.produit.Poids, new { htmlAttributes = new { @type = "text", @class = "form-control", @placeholder = "00" } })
                         <!--<input type="text" class="form-control" id="tbPoids" placeholder="00">-->
                         <div class="input-group-append">
                            <span class="input-group-text">
@@ -118,26 +122,27 @@
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Date de création</label>
-                     @Html.EditorFor(model => model.DateCreation, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                     @Html.EditorFor(model => model.produit.DateCreation, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
                      <!--<input type="date" class="form-control" />-->
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Date de vente</label>
-                     @Html.EditorFor(model => model.DateVente, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
+                     @Html.EditorFor(model => model.produit.DateVente, new { htmlAttributes = new { @class = "form-control", @type = "date" } })
                      <!--<input type="date" class="form-control" />-->
                   </div>
                </div>
                <div class="form-row form-group">
                   <div class="col-7">
                      <label class="col-form-label">Description plus élaborée</label>
-                     @Html.TextAreaFor(model => model.Description, 10, 80, new { htmlAttributes = new { @class = "form-control" } })
+                     @Html.TextAreaFor(model => model.produit.Description, 10, 80, new { htmlAttributes = new { @class = "form-control" } })
                      <!--<textarea class="form-control" rows="12"></textarea>-->
                   </div>
                   <div class="col-5">
                      <label class="col-form-label">Photo</label><br />
                      <img id="imgProduit" src="~/Content/images/images.png" width="250" height="250" />
                      <div class="d-flex mt-2">
-                        @Html.EditorFor(model => model.Photo, new { htmlAttributes = new { @type = "file", @class = "form-control", @onchange = "readURL(this);" } })
+                        @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control", @onchange = "readURL(this);" })
+                        <!--<input type="file" class="form-control" onchange="readURL(this);">-->
                         <!--<input type="file" class="form-control" />-->
 
                         <button type="button" class="btn btn-outline-primary ml-3">Visualiser</button>

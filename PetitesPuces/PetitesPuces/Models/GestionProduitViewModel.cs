@@ -8,6 +8,11 @@ namespace PetitesPuces.Models
    public class GestionProduitViewModel
    {
       public PPProduits produit { get; set; }
-      //public List<PPCategories> lstCategories { get; set; }
+      public HttpPostedFileBase file { get; set; }
+
+      public GestionProduitViewModel()
+      {
+         
+      }
    }
 }
