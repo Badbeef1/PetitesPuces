@@ -5,115 +5,18 @@
     Layout = null;
 
 }
+<!--Salut, je déplacer ton js en bas, fac tes mask fonctione. J'ai l'impression que la validation embarque pas car ton objet est une liste.
+    Pour faire le textboxfor, il utilise le nom de l variable recu. Sa enfrai peut etre les regle du html pour les noms ou caractèere abcepter exemple [].
+    https://stackoverflow.com/questions/34809341/asp-net-mvc-how-to-customize-validation-message-showing Je suis pas sur que c'est la solution, mais sa resemplait 
+    a ton cas. A plus tard!-->
 <!DOCTYPE html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $("#btnContinueMagasiner").click(function () {
-            window.location.href = "/Client/Catalogue"
-        });
-    });
 
-    function passerCommande() {
-        $("#collapse_zoneCommande").collapse();
-        $("#collapse_zoneInfos").collapse("show");
-        $("#btnContinueMagasiner").attr("hidden", true);
-        $("#btnInformationLivraison").removeClass("disabled");
-        $("#btnCommande").addClass("disabled");
-        var progres = "25";
-        $("#bar").attr("aria-valuenow", progres);
-        $("#bar").css("width", progres + "%");
-        $("#barSpan").text(progres + "%");
-    }
-    function quantitechange(e) {
-        if (e.which == 13) {
-            e.preventDefault();
-        }
-    }
-
-    function supprimerProduit(id) {
-
-        $.ajax({
-            url: "/Client/SupprimerProduitSaisieCommande",
-            data: { "id": id },
-            success: success,
-            error: error,
-        });
-    }
-    function updateCart(noPanier) {
-        var max = parseInt($('#' + noPanier).attr('max'));
-        var min = parseInt($('#' + noPanier).attr('min'));
-        if ($('#' + noPanier).val() > max) {
-            $('#' + noPanier).val(max);
-        }
-        else if ($('#' + noPanier).val() < min) {
-            $('#' + noPanier).val(min);
-        }
-        var quantite = $('#' + noPanier).val();
-        $.ajax({
-            url: "/Client/UpdatePanierSaisieCommande",
-            data: { "noPanier": noPanier, "quantite": quantite },
-            success: success,
-            error: error,
-        });
-    }
-
-
-    function success(model) {
-        $("#body").html(model)
-    }
-    function successPoids(model) {
-        $("#collapse_zoneCommande").collapse("show");
-        //$("#infoPerso").attr("hidden", true);
-        $("#btnInformationLivraison").removeClass("disabled");
-        $("#btnTypeLivraison").removeClass("disabled");
-
-        //$("#body").html(model)
-        $("#btnPasserCommande").prop('value', 'Passer au paiement')
-        $("#btnPasserCommande").attr('onclick', 'passerPaiement()')
-        var progres = "50";
-        $("#bar").attr("aria-valuenow", progres);
-        $("#bar").css("width", progres + "%");
-        $("#barSpan").text(progres + "%");
-
-
-    }
-
-    function error(error) {
-        console.log('erreur : ' + error);
-        location.href = '/Client/AccueilClient';
-    }
-
-    function errorPoids(error) {
-        console.log('erreur : ' + error);
-        //location.href = '/Client/AccueilClient';
-    }
-
-    function passerPaiement() {
-        $("#collapse_zonePaiement").addClass("show");
-        $("#btnCommande").addClass("disabled");
-        $("#btnPaiement").removeClass("disabled");
-        $(document).scrollTop($("#collapse_zonePaiement").offset().top)
-
-        var progres = "75";
-        $("#bar").attr("aria-valuenow", progres);
-        $("#bar").css("width", progres + "%");
-        $("#barSpan").text(progres + "%");
-
-    }
-
-    function successPaiement() {
-        console.log("successBig");
-    }
-
-    function errorPaiement() {
-        console.log("errorBig");
-    }
 </script>
 <style>
     .quantity {
@@ -621,8 +524,8 @@
                     <div class="row">
 
                         <div class="offset-md-1"></div>
-                        @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" });
-                        @Html.ValidationMessageFor(model => Model[0].PPClients.Prenom);
+                        @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" })
+                        @Html.ValidationMessageFor(model => model[0].PPClients.Prenom)
                         <div class="offset-md-1"></div>
                         <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
                     </div>
@@ -690,11 +593,7 @@
                         <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
                     </div>
                     <script>
-                        $(document).ready(function () {
-                            $("#codePostal").mask("a9a 9a9");
-                            $("#tel1").mask("(999) 999-9999");
-                            $("#tel2").mask("(999) 999-9999");
-                        });
+
                     </script>
                     <div class="row">
                         <div class="offset-md-1"></div>
@@ -718,37 +617,7 @@
                         <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer à la prochaine étape" style="width:30%" />
                         <div class="offset-md-4"></div>
                         <script>
-                                                $("#btnChoixDePoste").click(function () {
-                                                @{
-                                                <text>
-                                                var poids = @poidsKg.ToString().Replace(",",".");
-                                                var panier = @Model[0].NoPanier;
-                                                </text>
-                                                }
-                                                $.ajax({
-                                                    url: "/Client/RecevoirPrixLivraison",
-                                                    data: {
-                                                        "poids": poids, "panier": panier, "tarif": "0"},
-                                                    success: successPoids,
-                                                    error: errorPoids,
-                                                });
-                                                $("#collapse_zoneInfos").collapse();
-                                                $("#collapse_typeLivraison").collapse("show");
-                            });
-                                function checkBoxFraisLivraison(tarif) {
-                                    @{
-                                    <text>
-                                    var poids = @poidsKg.ToString().Replace(",", ".");
-                                    var panier = @Model[0].NoPanier;
-                                    </text>
-                                    }
-                                    $.ajax({
-                                        url: "/Client/RecevoirPrixLivraison",
-                                        data: { "poids": poids, "panier": panier,"tarif" : tarif},
-                                        success: success,
-                                        error: error,
-                                    });
-                                }
+
                         </script>
                     </div>
                 </div>
@@ -800,68 +669,7 @@
                     </div>
                     <br />
                     <script>
-                        function envoyerRequete() {
-                            if (confirm("Êtes-vous certain de vouloir payer cette commande?")) {
-                                var mois = $("#moisExpireCredit").val();
-                                if (mois.length = 1) {
-                                    mois = "0" + mois;
-                                }
 
-                                var form = document.createElement("form");
-                                form.setAttribute("method", "post");
-                                form.setAttribute("action", "https://personnel.lmbrousseau.info/lesi-2019/lesi-effectue-paiement.php");
-
-                                var noVendeur = document.createElement("input");
-                                noVendeur.setAttribute("type", "hidden");
-                                noVendeur.setAttribute("name", "NoVendeur");
-                                noVendeur.setAttribute("value",@Model[0].PPVendeurs.NoVendeur.ToString());
-                                form.appendChild(noVendeur);
-
-                                var nomAffaires = document.createElement("input");
-                                nomAffaires.setAttribute("type", "hidden");
-                                nomAffaires.setAttribute("name", "NomVendeur");
-                                nomAffaires.setAttribute("value", "@Model[0].PPVendeurs.NomAffaires.ToString()");
-                                form.appendChild(nomAffaires);
-
-                                var noCarteCredit = document.createElement("input");
-                                noCarteCredit.setAttribute("type", "hidden");
-                                noCarteCredit.setAttribute("name", "NoCarteCredit");
-                                noCarteCredit.setAttribute("value", $("#NoCarteCredit").val());
-                                form.appendChild(noCarteCredit);
-
-                                var DateExpiration = document.createElement("input");
-                                DateExpiration.setAttribute("type", "hidden");
-                                DateExpiration.setAttribute("name", "DateExpirationCarteCredit");
-                                DateExpiration.setAttribute("value", mois + "-" + $("#anneeExpireCredit").val());
-                                form.appendChild(DateExpiration);
-
-                                var NumSecurite = document.createElement("input");
-                                NumSecurite.setAttribute("type", "hidden");
-                                NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
-                                NumSecurite.setAttribute("value", $("#securiteCredit").val());
-                                form.appendChild(NumSecurite);
-
-                                var MontantPaiement = document.createElement("input");
-                                MontantPaiement.setAttribute("type", "hidden");
-                                MontantPaiement.setAttribute("name", "MontantPaiement");
-                                MontantPaiement.setAttribute("value", @dblPrixTotal);
-                                form.appendChild(MontantPaiement);
-
-                                var PageRetour = document.createElement("input");
-                                PageRetour.setAttribute("type", "hidden");
-                                PageRetour.setAttribute("name", "NomPageRetour");
-                                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
-                                form.appendChild(PageRetour);
-
-                                document.body.appendChild(form);
-                                form.submit();
-
-                                var progres = "100";
-                                $("#bar").attr("aria-valuenow", progres);
-                                $("#bar").css("width", progres + "%");
-                                $("#barSpan").text(progres + "%");
-                            }
-                        }
                     </script>
                     <div class="row" style="margin: 0">
                         <div class="col-md-4">&nbsp;</div>
@@ -876,8 +684,223 @@
 
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnContinueMagasiner").click(function () {
+                window.location.href = "/Client/Catalogue"
+            });
+        });
+
+        function passerCommande() {
+            $("#collapse_zoneCommande").collapse();
+            $("#collapse_zoneInfos").collapse("show");
+            $("#btnContinueMagasiner").attr("hidden", true);
+            $("#btnInformationLivraison").removeClass("disabled");
+            $("#btnCommande").addClass("disabled");
+            var progres = "25";
+            $("#bar").attr("aria-valuenow", progres);
+            $("#bar").css("width", progres + "%");
+            $("#barSpan").text(progres + "%");
+        }
+        function quantitechange(e) {
+            if (e.which == 13) {
+                e.preventDefault();
+            }
+        }
+
+        function supprimerProduit(id) {
+
+            $.ajax({
+                url: "/Client/SupprimerProduitSaisieCommande",
+                data: { "id": id },
+                success: success,
+                error: error,
+            });
+        }
+        function updateCart(noPanier) {
+            var max = parseInt($('#' + noPanier).attr('max'));
+            var min = parseInt($('#' + noPanier).attr('min'));
+            if ($('#' + noPanier).val() > max) {
+                $('#' + noPanier).val(max);
+            }
+            else if ($('#' + noPanier).val() < min) {
+                $('#' + noPanier).val(min);
+            }
+            var quantite = $('#' + noPanier).val();
+            $.ajax({
+                url: "/Client/UpdatePanierSaisieCommande",
+                data: { "noPanier": noPanier, "quantite": quantite },
+                success: success,
+                error: error,
+            });
+        }
+
+
+        function success(model) {
+            $("#body").html(model)
+        }
+        function successPoids(model) {
+            $("#collapse_zoneCommande").collapse("show");
+            //$("#infoPerso").attr("hidden", true);
+            $("#btnInformationLivraison").removeClass("disabled");
+            $("#btnTypeLivraison").removeClass("disabled");
+
+            //$("#body").html(model)
+            $("#btnPasserCommande").prop('value', 'Passer au paiement')
+            $("#btnPasserCommande").attr('onclick', 'passerPaiement()')
+            var progres = "50";
+            $("#bar").attr("aria-valuenow", progres);
+            $("#bar").css("width", progres + "%");
+            $("#barSpan").text(progres + "%");
+
+
+        }
+
+        function error(error) {
+            console.log('erreur : ' + error);
+            location.href = '/Client/AccueilClient';
+        }
+
+        function errorPoids(error) {
+            console.log('erreur : ' + error);
+            //location.href = '/Client/AccueilClient';
+        }
+
+        function passerPaiement() {
+            $("#collapse_zonePaiement").addClass("show");
+            $("#btnCommande").addClass("disabled");
+            $("#btnPaiement").removeClass("disabled");
+            $(document).scrollTop($("#collapse_zonePaiement").offset().top)
+
+            var progres = "75";
+            $("#bar").attr("aria-valuenow", progres);
+            $("#bar").css("width", progres + "%");
+            $("#barSpan").text(progres + "%");
+
+        }
+
+        function successPaiement() {
+            console.log("successBig");
+        }
+
+        function errorPaiement() {
+            console.log("errorBig");
+        }
+
+        $(document).ready(function () {
+            $("#codePostal").mask("a9a 9a9");
+            $("#tel1").mask("(999) 999-9999");
+            $("#tel2").mask("(999) 999-9999");
+        });
+
+
+
+
+        $("#btnChoixDePoste").click(function () {
+        @{
+        <text>
+        var poids = @poidsKg.ToString().Replace(",",".");
+        var panier = @Model[0].NoPanier;
+        </text>
+        }
+        $.ajax({
+            url: "/Client/RecevoirPrixLivraison",
+            data: {
+                "poids": poids, "panier": panier, "tarif": "0"},
+            success: successPoids,
+            error: errorPoids,
+        });
+        $("#collapse_zoneInfos").collapse();
+        $("#collapse_typeLivraison").collapse("show");
+        });
+        function checkBoxFraisLivraison(tarif) {
+            @{
+            <text>
+            var poids = @poidsKg.ToString().Replace(",", ".");
+            var panier = @Model[0].NoPanier;
+            </text>
+            }
+            $.ajax({
+                url: "/Client/RecevoirPrixLivraison",
+                data: { "poids": poids, "panier": panier,"tarif" : tarif},
+                success: success,
+                error: error,
+            });
+        }
+
+
+
+        function envoyerRequete() {
+            if (confirm("Êtes-vous certain de vouloir payer cette commande?")) {
+                var mois = $("#moisExpireCredit").val();
+                if (mois.length = 1) {
+                    mois = "0" + mois;
+                }
+
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", "https://personnel.lmbrousseau.info/lesi-2019/lesi-effectue-paiement.php");
+
+                var noVendeur = document.createElement("input");
+                noVendeur.setAttribute("type", "hidden");
+                noVendeur.setAttribute("name", "NoVendeur");
+                noVendeur.setAttribute("value",@Model[0].PPVendeurs.NoVendeur.ToString());
+                form.appendChild(noVendeur);
+
+                var nomAffaires = document.createElement("input");
+                nomAffaires.setAttribute("type", "hidden");
+                nomAffaires.setAttribute("name", "NomVendeur");
+                nomAffaires.setAttribute("value", "@Model[0].PPVendeurs.NomAffaires.ToString()");
+                form.appendChild(nomAffaires);
+
+                var noCarteCredit = document.createElement("input");
+                noCarteCredit.setAttribute("type", "hidden");
+                noCarteCredit.setAttribute("name", "NoCarteCredit");
+                noCarteCredit.setAttribute("value", $("#NoCarteCredit").val());
+                form.appendChild(noCarteCredit);
+
+                var DateExpiration = document.createElement("input");
+                DateExpiration.setAttribute("type", "hidden");
+                DateExpiration.setAttribute("name", "DateExpirationCarteCredit");
+                DateExpiration.setAttribute("value", mois + "-" + $("#anneeExpireCredit").val());
+                form.appendChild(DateExpiration);
+
+                var NumSecurite = document.createElement("input");
+                NumSecurite.setAttribute("type", "hidden");
+                NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
+                NumSecurite.setAttribute("value", $("#securiteCredit").val());
+                form.appendChild(NumSecurite);
+
+                var MontantPaiement = document.createElement("input");
+                MontantPaiement.setAttribute("type", "hidden");
+                MontantPaiement.setAttribute("name", "MontantPaiement");
+                MontantPaiement.setAttribute("value", @dblPrixTotal);
+                form.appendChild(MontantPaiement);
+
+                var PageRetour = document.createElement("input");
+                PageRetour.setAttribute("type", "hidden");
+                PageRetour.setAttribute("name", "NomPageRetour");
+                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
+                form.appendChild(PageRetour);
+
+                document.body.appendChild(form);
+                form.submit();
+
+                var progres = "100";
+                $("#bar").attr("aria-valuenow", progres);
+                $("#bar").css("width", progres + "%");
+                $("#barSpan").text(progres + "%");
+            }
+        }
+
+
+    </script>
+
 </body>
 </html>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
