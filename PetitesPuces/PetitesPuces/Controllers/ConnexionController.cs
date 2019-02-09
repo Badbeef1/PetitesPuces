@@ -47,7 +47,7 @@ namespace PetitesPuces.Controllers
                                  where ven.AdresseEmail.ToLower() == username.ToLower() &&
                                 ven.MotDePasse == password
                                  select ven).FirstOrDefault();
-
+         
             var gestionnaireLogged = (from gest in db.GetTable<PPGestionnaire>()
                                       where gest.AdresseEmail.ToLower() == username.ToLower() &&
                                             gest.MotDePasse == password

@@ -3,7 +3,7 @@ use BD6B8_424R_TESTS
 
 select * from PPClients
 select * from PPVendeurs
-select * from PPGestionnaire
+select * from PPGestionnaires
 
 select * from PPCategories
 select * from PPProduits

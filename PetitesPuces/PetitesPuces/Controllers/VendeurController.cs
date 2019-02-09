@@ -20,13 +20,13 @@ namespace PetitesPuces.Controllers
         public ActionResult AccueilVendeur()
         {
             //A changer dans le futur pour la variable de session vendeur
-            int noVendeur = 10;
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
             //Aller chercher les commandes non traités
             var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
-                                      where commande.NoVendeur.Equals(10) && commande.Statut.Equals('N')
+                                      where commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur) && commande.Statut.Equals('N')
                                       select commande
                                       ).ToList();
 
@@ -90,11 +90,10 @@ namespace PetitesPuces.Controllers
                 try
                 {
                     string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                               Path.GetFileName(model.file.FileName));
+                                          Path.GetFileName(model.file.FileName));
                     model.file.SaveAs(path);
                     model.produit.Photo = model.file.FileName;
                     ViewBag.Message = "File uploaded successfully";
-
                 }
                 catch (Exception ex)
                 {
@@ -513,11 +512,12 @@ namespace PetitesPuces.Controllers
             }
 
             //Model page d'accueil vendeur
-            int noVendeur = 10;
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+
             Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
             //Aller chercher les commandes non traités
             var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
-                                      where commande.NoVendeur.Equals(10) && commande.Statut.Equals('N')
+                                      where commande.NoVendeur.Equals(noVendeur) && commande.Statut.Equals('N')
                                       select commande
                                       ).ToList();
 
@@ -555,7 +555,7 @@ namespace PetitesPuces.Controllers
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(id) && panier.NoVendeur.Equals(10)
+                                              where panier.NoClient.Equals(id) && panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
                                               select panier).ToList();
             db.Connection.Close();
             return View(items);
