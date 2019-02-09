@@ -727,13 +727,13 @@
                 var noVendeur = document.createElement("input");
                 noVendeur.setAttribute("type", "hidden");
                 noVendeur.setAttribute("name", "NoVendeur");
-                noVendeur.setAttribute("value",@Model.vendeur.NoVendeur.ToString());
+                noVendeur.setAttribute("value",'@Model.vendeur.NoVendeur.ToString()');
                 form.appendChild(noVendeur);
 
                 var nomAffaires = document.createElement("input");
                 nomAffaires.setAttribute("type", "hidden");
                 nomAffaires.setAttribute("name", "NomVendeur");
-                nomAffaires.setAttribute("value", @Model.vendeur.NomAffaires.ToString());
+                nomAffaires.setAttribute("value", '@Model.vendeur.NomAffaires.ToString()');
                 form.appendChild(nomAffaires);
 
                 var noCarteCredit = document.createElement("input");
@@ -757,7 +757,7 @@
                 var MontantPaiement = document.createElement("input");
                 MontantPaiement.setAttribute("type", "hidden");
                 MontantPaiement.setAttribute("name", "MontantPaiement");
-                MontantPaiement.setAttribute("value", @dblPrixTotal);
+                MontantPaiement.setAttribute("value", '@dblPrixTotal');
                 form.appendChild(MontantPaiement);
 
                 var PageRetour = document.createElement("input");

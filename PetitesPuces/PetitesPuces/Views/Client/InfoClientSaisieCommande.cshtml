@@ -72,7 +72,7 @@
                         @Html.ValidationMessageFor(mod => Model.Ville)
                     </div>
                         <div class="offset-md-1"></div>
-                            @Html.DropDownListFor(x => x.Province, (SelectList)ViewBag.ListeProvinces, new {@class = "form-control col-md-4" , @Value = Model.Province})
+                            @Html.DropDownListFor(x => x.Province, (SelectList)ViewBag.ListeProvinces, new { @class = "form-control col-md-4" })
                     </div>
 
                 <div class="row">
