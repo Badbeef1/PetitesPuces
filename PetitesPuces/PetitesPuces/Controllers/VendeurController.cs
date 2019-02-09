@@ -20,13 +20,13 @@ namespace PetitesPuces.Controllers
         public ActionResult AccueilVendeur()
         {
             //A changer dans le futur pour la variable de session vendeur
-            int noVendeur = 10;
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
             //Aller chercher les commandes non traités
             var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
-                                      where commande.NoVendeur.Equals(10) && commande.Statut.Equals('N')
+                                      where commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur) && commande.Statut.Equals('N')
                                       select commande
                                       ).ToList();
 
@@ -83,6 +83,7 @@ namespace PetitesPuces.Controllers
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
+            ValidateModel(model.produit);
             //Pour les dropdownlist aller voir le fichier : ---------> vers la ligne 300 du clientController et dans les InformationPersonel
             //TODO: Ajouter le produit dans la BASE DE DONNÉES
             PPProduits prod = model.produit;
@@ -90,11 +91,10 @@ namespace PetitesPuces.Controllers
                 try
                 {
                     string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                               Path.GetFileName(model.file.FileName));
+                                          Path.GetFileName(model.file.FileName));
                     model.file.SaveAs(path);
                     model.produit.Photo = model.file.FileName;
                     ViewBag.Message = "File uploaded successfully";
-
                 }
                 catch (Exception ex)
                 {
@@ -104,25 +104,31 @@ namespace PetitesPuces.Controllers
             {
                 ViewBag.Message = "You have not specified a file.";
             }
-            prod.Disponibilité = true;
 
-            var nbProduit = (from produits in db.GetTable<PPProduits>()
-                             select prod
-                             ).ToList();
-            //Le pattern de num produit va être à retravailler.
-            prod.NoProduit = (nbProduit.Count() + 1) * 10;
-
-            db.PPProduits.InsertOnSubmit(prod);
-
-            // Submit the changes to the database.
-            try
+            //Ajouter le produit dans la base de donnée
+            if (ModelState.IsValid)
             {
-                db.SubmitChanges();
+               prod.Disponibilité = true;
+
+               var nbProduit = (from produits in db.GetTable<PPProduits>()
+                                select prod
+                                ).ToList();
+               //Le pattern de num produit va être à retravailler.
+               prod.NoProduit = (nbProduit.Count() + 1) * 10;
+
+               db.PPProduits.InsertOnSubmit(prod);
+
+               // Submit the changes to the database.
+               try
+               {
+                  db.SubmitChanges();
+               }
+               catch (Exception e)
+               {
+                  Console.WriteLine(e);
+               }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+           
 
             PPProduits p = new PPProduits();
             p.Disponibilité = true;
@@ -350,6 +356,27 @@ namespace PetitesPuces.Controllers
                 nameof(vendeur.LivraisonGratuite)
             };
 
+            HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
+
+            if (fichier != null && fichier.ContentLength > 0)
+                try
+                {
+                    string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                               Path.GetFileName(fichier.FileName));
+                    fichier.SaveAs(path);
+                    baniere = fichier.FileName;
+                    ViewBag.Message = "File uploaded successfully";
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file.";
+            }
+
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
             vendeurDao = new VendeurDao(vendeur.NoVendeur);
@@ -492,11 +519,12 @@ namespace PetitesPuces.Controllers
             }
 
             //Model page d'accueil vendeur
-            int noVendeur = 10;
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+
             Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
             //Aller chercher les commandes non traités
             var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
-                                      where commande.NoVendeur.Equals(10) && commande.Statut.Equals('N')
+                                      where commande.NoVendeur.Equals(noVendeur) && commande.Statut.Equals('N')
                                       select commande
                                       ).ToList();
 
@@ -534,7 +562,7 @@ namespace PetitesPuces.Controllers
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(id) && panier.NoVendeur.Equals(10)
+                                              where panier.NoClient.Equals(id) && panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
                                               select panier).ToList();
             db.Connection.Close();
             return View(items);

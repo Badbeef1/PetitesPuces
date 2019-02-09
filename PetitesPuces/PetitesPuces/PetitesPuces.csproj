@@ -232,6 +232,7 @@
     <Content Include="Content\images\3000040.jpg" />
     <Content Include="Content\images\3000050.jpg" />
     <Content Include="Content\images\4000020.jpg" />
+    <Content Include="Content\images\baniere.png" />
     <Content Include="Content\images\cart.jpg" />
     <Content Include="Content\images\dell.jpg" />
     <Content Include="Content\images\elec.jpg" />

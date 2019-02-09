@@ -499,130 +499,133 @@
             </div>
         </div>
         <!-- Informations de livraison -->
-        <div class="card shopping-cart" id="infoPerso" style="margin-top:0px;">
-            <div class="card-header" id="heading_infoPerso">
 
-                <div class="float-left">
-                    <h5 class="mb-0">
-                        <button id="btnInformationLivraison" class="btn btn-link text-s disabled" data-toggle="collapse" data-target="#collapse_zoneInfos" aria-expanded="true" aria-controls="#collapse_zoneInfos">
-                            Informations de livraison
-                        </button>
-                    </h5>
+        @Html.Partial("~/Views/Client/InfoClientSaisieCommande.cshtml", Model[0].PPClients)
+
+        <!--<div class="card shopping-cart" id="infoPerso" style="margin-top:0px;">
+        <div class="card-header" id="heading_infoPerso">
+
+            <div class="float-left">
+                <h5 class="mb-0">
+                    <button id="btnInformationLivraison" class="btn btn-link text-s disabled" data-toggle="collapse" data-target="#collapse_zoneInfos" aria-expanded="true" aria-controls="#collapse_zoneInfos">
+                        Informations de livraison
+                    </button>
+                </h5>
+            </div>
+        </div>
+        <div id="collapse_zoneInfos" class="collapse" aria-labelledby="btnInformationLivraison" data-parent="#infoPerso">
+
+            <div class="card-body  align-items-center" style="padding:0px">
+                <br />
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Prénom</label>
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Nom</label>
+                </div>
+
+                <div class="row">
+
+                    <div class="offset-md-1"></div>
+                    @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" })
+                    @Html.ValidationMessageFor(model => model[0].PPClients.Prenom)
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Courriel électronique</label>
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Rue</label>
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled />
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-4 form-control" id="rue" type="text" value="@Model[0].PPClients.Rue" />
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Ville</label>
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Province</label>
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-5 form-control" id="ville" type="text" value="@Model[0].PPClients.Ville" />
+                    <div class="offset-md-1"></div>
+                    <select class="col-md-4 form-control">
+                        @switch (Model[0].PPClients.Province)
+                        {
+
+                            case "QC":
+
+                                <option selected value="QC">Québec</option>
+                                <option value="ON">Ontario</option>
+                                <option value="NB">Nouveau-Brunswick</option>
+                                break;
+                            case "ON":
+                                <option value="QC">Québec</option>
+                                <option selected value="ON">Ontario</option>
+                                <option value="NB">Nouveau-Brunswick</option>
+                                break;
+                            case "NB":
+                                <option value="QC">Québec</option>
+                                <option value="ON">Ontario</option>
+                                <option selected value="NB">Nouveau-Brunswick</option>
+                                break;
+                        }
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Pays</label>
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Code Postal</label>
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-5 form-control" id="pays" type="text" value="@Model[0].PPClients.Pays" disabled />
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
+                </div>
+                <script>
+
+                </script>
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Téléphone primaire</label>
+                    <div class="offset-md-1"></div>
+                    <label class="col-md-5">Téléphone secondaire</label>
+                </div>
+
+                <div class="row">
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value="@Model[0].PPClients.Tel1" />
+                    <div class="offset-md-1"></div>
+                    <input class="col-md-4 form-control" id="tel2" type="text" value="@Model[0].PPClients.Tel2" />
                 </div>
             </div>
-            <div id="collapse_zoneInfos" class="collapse" aria-labelledby="btnInformationLivraison" data-parent="#infoPerso">
+            <br />
 
-                <div class="card-body  align-items-center" style="padding:0px">
-                    <br />
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Prénom</label>
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Nom</label>
-                    </div>
-
-                    <div class="row">
-
-                        <div class="offset-md-1"></div>
-                        @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" })
-                        @Html.ValidationMessageFor(model => model[0].PPClients.Prenom)
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Courriel électronique</label>
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Rue</label>
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled />
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-4 form-control" id="rue" type="text" value="@Model[0].PPClients.Rue" />
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Ville</label>
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Province</label>
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="ville" type="text" value="@Model[0].PPClients.Ville" />
-                        <div class="offset-md-1"></div>
-                        <select class="col-md-4 form-control">
-                            @switch (Model[0].PPClients.Province)
-                            {
-
-                                case "QC":
-
-                                    <option selected value="QC">Québec</option>
-                                    <option value="ON">Ontario</option>
-                                    <option value="NB">Nouveau-Brunswick</option>
-                                    break;
-                                case "ON":
-                                    <option value="QC">Québec</option>
-                                    <option selected value="ON">Ontario</option>
-                                    <option value="NB">Nouveau-Brunswick</option>
-                                    break;
-                                case "NB":
-                                    <option value="QC">Québec</option>
-                                    <option value="ON">Ontario</option>
-                                    <option selected value="NB">Nouveau-Brunswick</option>
-                                    break;
-                            }
-                        </select>
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Pays</label>
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Code Postal</label>
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="pays" type="text" value="@Model[0].PPClients.Pays" disabled />
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
-                    </div>
+            <div class="card-footer">
+                <div class="row align-items-center">
+                    <div class="offset-md-4"></div>
+                    <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer à la prochaine étape" style="width:30%" />
+                    <div class="offset-md-4"></div>
                     <script>
 
                     </script>
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Téléphone primaire</label>
-                        <div class="offset-md-1"></div>
-                        <label class="col-md-5">Téléphone secondaire</label>
-                    </div>
-
-                    <div class="row">
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value="@Model[0].PPClients.Tel1" />
-                        <div class="offset-md-1"></div>
-                        <input class="col-md-4 form-control" id="tel2" type="text" value="@Model[0].PPClients.Tel2" />
-                    </div>
-                </div>
-                <br />
-
-                <div class="card-footer">
-                    <div class="row align-items-center">
-                        <div class="offset-md-4"></div>
-                        <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer à la prochaine étape" style="width:30%" />
-                        <div class="offset-md-4"></div>
-                        <script>
-
-                        </script>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>-->
         <!-- Choix de type de livraison -->
         <div class="card shopping-cart" id="infosPaiement" style="margin-top:0px">
             <div class="card-header" id="heading_paiement">
