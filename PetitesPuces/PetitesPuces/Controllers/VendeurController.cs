@@ -83,6 +83,7 @@ namespace PetitesPuces.Controllers
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
+            ValidateModel(model.produit);
             //Pour les dropdownlist aller voir le fichier : ---------> vers la ligne 300 du clientController et dans les InformationPersonel
             //TODO: Ajouter le produit dans la BASE DE DONNÉES
             PPProduits prod = model.produit;
@@ -103,25 +104,31 @@ namespace PetitesPuces.Controllers
             {
                 ViewBag.Message = "You have not specified a file.";
             }
-            prod.Disponibilité = true;
 
-            var nbProduit = (from produits in db.GetTable<PPProduits>()
-                             select prod
-                             ).ToList();
-            //Le pattern de num produit va être à retravailler.
-            prod.NoProduit = (nbProduit.Count() + 1) * 10;
-
-            db.PPProduits.InsertOnSubmit(prod);
-
-            // Submit the changes to the database.
-            try
+            //Ajouter le produit dans la base de donnée
+            if (ModelState.IsValid)
             {
-                db.SubmitChanges();
+               prod.Disponibilité = true;
+
+               var nbProduit = (from produits in db.GetTable<PPProduits>()
+                                select prod
+                                ).ToList();
+               //Le pattern de num produit va être à retravailler.
+               prod.NoProduit = (nbProduit.Count() + 1) * 10;
+
+               db.PPProduits.InsertOnSubmit(prod);
+
+               // Submit the changes to the database.
+               try
+               {
+                  db.SubmitChanges();
+               }
+               catch (Exception e)
+               {
+                  Console.WriteLine(e);
+               }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+           
 
             PPProduits p = new PPProduits();
             p.Disponibilité = true;
