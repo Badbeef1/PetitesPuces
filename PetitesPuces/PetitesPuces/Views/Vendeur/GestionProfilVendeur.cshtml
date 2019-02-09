@@ -82,7 +82,7 @@
             </div>
         }
 
-        @using (Html.BeginForm())
+        @using (Html.BeginForm("GestionPofilVendeur","Vendeur",FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.HiddenFor(x => x.NoVendeur)
             @Html.Hidden("strProvenence", "configurationCatalogue")
@@ -113,11 +113,15 @@
                             @Html.TextBoxFor(x => fond, new { @class = "form-control" })
                         </div>
                         <div class="col-4">
-                            @Html.TextBoxFor(x => baniere)
+                            @Html.Label("Nouvelle banière", new { @class = "col-form-label" })
+                            @Html.TextBoxFor(x => ViewData["Fichier"], new { @type = "file", @class = "form-control", @onchange = "lireURL(this);" })
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary">Retirer la banière</button>
                         </div>
                     </div>
                     <div>
-                        <img />
+                        <img id="imgBaniere" src="~/Content/images/baniere.png" width="1000" height="350" />
                     </div>
 
 
@@ -146,6 +150,23 @@
             $("#police").colorpicker();
             $("#fond").colorpicker();
         });
+
+        //fonction qui permet d'afficher l'image sélectionner
+        function lireURL(input) {
+            console.log('j\'essaye de lire limage');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#imgBaniere')
+                        .attr('src', e.target.result)
+                        .width(1000)
+                        .height(350);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </body>
 </html>

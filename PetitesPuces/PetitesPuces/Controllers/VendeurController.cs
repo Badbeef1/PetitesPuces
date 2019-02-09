@@ -350,6 +350,27 @@ namespace PetitesPuces.Controllers
                 nameof(vendeur.LivraisonGratuite)
             };
 
+            HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
+
+            if (fichier != null && fichier.ContentLength > 0)
+                try
+                {
+                    string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                               Path.GetFileName(fichier.FileName));
+                    fichier.SaveAs(path);
+                    baniere = fichier.FileName;
+                    ViewBag.Message = "File uploaded successfully";
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                }
+            else
+            {
+                ViewBag.Message = "You have not specified a file.";
+            }
+
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
             vendeurDao = new VendeurDao(vendeur.NoVendeur);
