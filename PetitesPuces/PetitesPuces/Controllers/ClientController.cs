@@ -448,8 +448,9 @@ namespace PetitesPuces.Controllers
                     break;
             }
 
-            //Si affichage d'un vendeur en particulier (pas encore tester)
-            if (!String.IsNullOrWhiteSpace(vendeur))
+            //Si affichage d'un vendeur en particulier
+            if (!String.IsNullOrWhiteSpace(vendeur) && 
+                contextPP.PPVendeurs.FirstOrDefault(predicate: ven => ven.NomAffaires.ToLower() == vendeur.ToLower()) != null)
             {
                 lstDesProduits = lstDesProduits
                     .Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase))
@@ -457,7 +458,8 @@ namespace PetitesPuces.Controllers
 
             }
             //Si affichage d'une catégorie en particulier
-            else if (!String.IsNullOrWhiteSpace(categorie))
+            else if (!String.IsNullOrWhiteSpace(categorie) && 
+                contextPP.PPCategories.FirstOrDefault(predicate: cat => cat.Description.ToLower() == categorie.ToLower()) != null)
             {
                 lstDesProduits = lstDesProduits
                     .Where(pro => String.Equals(pro.PPCategories.Description, categorie, StringComparison.OrdinalIgnoreCase))

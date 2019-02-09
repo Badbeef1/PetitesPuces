@@ -30,6 +30,7 @@
         @using (Html.BeginForm())
         {
             @Html.HiddenFor(x => x.NoVendeur)
+            @Html.Hidden("strProvenence", "informationVendeur")
 
             <div class="card">
                 <h5 class="card-header">Section Vendeur</h5>
@@ -79,22 +80,44 @@
                     <a href="/Vendeur/" class="btn btn-outline-primary">Retour</a>
                 </div>
             </div>
+        }
+
+        @using (Html.BeginForm())
+        {
+            @Html.HiddenFor(x => x.NoVendeur)
+            @Html.Hidden("strProvenence", "configurationCatalogue")
+
+            var config = Model.Configuration.Split(';');
+            var police = "";
+            var fond = "";
+            var baniere = "";
+
+            if (config.Length == 3)
+            {
+                police = config[0];
+                fond = config[1];
+                baniere = config[2];
+            }
 
             <div class="card">
                 <h5 class="card-header">Personnalisation du catalogue</h5>
                 <div class="card-body">
                     <div class="form-row form-group">
+                        @Html.HiddenFor(x => x.Configuration)
                         <div class="col-3">
                             <label class="col-form-label">Couleur police</label>
-                            <input type="text" id="cpPolice" value="" class="form-control" />
+                            @Html.TextBoxFor(x => police, new { @class = "form-control"})
                         </div>
                         <div class="col-3">
                             <label class="col-form-label">Couleur arrière-plan</label>
-                            <input type="text" id="cpArrPlan" value="" class="form-control" />
+                            @Html.TextBoxFor(x => fond, new { @class = "form-control" })
+                        </div>
+                        <div class="col-4">
+                            @Html.TextBoxFor(x => baniere)
                         </div>
                     </div>
                     <div>
-
+                        <img />
                     </div>
 
 
@@ -120,8 +143,8 @@
             $("#codePostal").mask("a9a 9a9");
 
             //Palette de couleur
-            $("#cpPolice").colorpicker();
-            $("#cpArrPlan").colorpicker();
+            $("#police").colorpicker();
+            $("#fond").colorpicker();
         });
     </script>
 </body>

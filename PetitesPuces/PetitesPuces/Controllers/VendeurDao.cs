@@ -127,6 +127,23 @@ namespace PetitesPuces.Controllers
             }
         }
 
+        public void modifierProfilConfiguration(String strPolice, String strFond, String strBaniere)
+        {
+            String strConfiguration = strPolice + ";" + strFond + ";" + strBaniere;
+
+            unVendeur.Configuration = strConfiguration;
+            unVendeur.DateMAJ = DateTime.Now;
+
+            try
+            {
+                contextPP.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
         public PPVendeurs rechecheVendeurParNo(long lngNoVendeur)
         {
             return contextPP.PPVendeurs.FirstOrDefault(vendeur => vendeur.NoVendeur == lngNoVendeur);
