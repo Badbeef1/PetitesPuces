@@ -27,8 +27,10 @@
                 <div class="row">
 
                     <div class="offset-md-1"></div>
-                    @Html.TextBoxFor(model => model.Prenom, new { @class = "col-md-5 form-control" })
-                    @Html.ValidationMessageFor(model => model.Prenom)
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(model => model.Prenom, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Prenom)
+                    </div>
                     <div class="offset-md-1"></div>
                     <input class="col-md-4 form-control" id="lastName" type="text" value=@model.Nom />
                 </div>
@@ -42,9 +44,9 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="email" type="text" value="@model.AdresseEmail" disabled />
+                    <input class="col-md-5 form-control" id="email" type="text" disabled value=@model.AdresseEmail />
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="rue" type="text" value="@model.Rue" />
+                    <input class="col-md-4 form-control" id="rue" type="text" value=@model.Rue />
                 </div>
 
                 <div class="row">
@@ -56,7 +58,7 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="ville" type="text" value="@model.Ville" />
+                    <input class="col-md-5 form-control" id="ville" type="text" value=@model.Ville />
                     <div class="offset-md-1"></div>
                     <select class="col-md-4 form-control">
                         @switch (model.Province)
@@ -91,9 +93,9 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="pays" type="text" value="@model.Pays" disabled />
+                    <input class="col-md-5 form-control" id="pays" type="text" disabled value=@model.Pays />
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="codePostal" type="text" value="@model.CodePostal" />
+                    <input class="col-md-4 form-control" id="codePostal" type="text" value=@model.CodePostal />
                 </div>
                 <script>
 
@@ -107,9 +109,9 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value="@model.Tel1" />
+                    <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value=@model.Tel1 />
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="tel2" type="text" value="@model.Tel2" />
+                    <input class="col-md-4 form-control" id="tel2" type="text" value=@model.Tel2 />
                 </div>
             </div>
             <br />

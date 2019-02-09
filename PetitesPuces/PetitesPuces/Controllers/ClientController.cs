@@ -16,7 +16,7 @@ namespace PetitesPuces.Controllers
 
         public ActionResult Index()
         {
-            String noClient = "10000";
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
             /* Compare data with Database */
@@ -37,7 +37,7 @@ namespace PetitesPuces.Controllers
         public ActionResult AccueilClient()
         {
             List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
-            String noClient = "10000";
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
             /* Compare data with Database */
@@ -94,7 +94,7 @@ namespace PetitesPuces.Controllers
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(id)
+                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient) && panier.NoVendeur.Equals(id)
                                               select panier).ToList();
 
             return View(items);
@@ -109,7 +109,7 @@ namespace PetitesPuces.Controllers
             
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
-            long noClient = 10000;
+            long noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
             //Requête qui va permettre d'aller chercher les paniers du client
@@ -133,7 +133,7 @@ namespace PetitesPuces.Controllers
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
-            String noClient = "10000";
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
             int noVendeur;
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
@@ -156,7 +156,7 @@ namespace PetitesPuces.Controllers
             }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient.ToString()) && panier.NoVendeur.Equals(noVendeur)
                                               select panier).ToList();
 
             db.Connection.Close();
@@ -167,7 +167,7 @@ namespace PetitesPuces.Controllers
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
-            String noClient = "10000";
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
             int noVendeur;
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
@@ -190,7 +190,7 @@ namespace PetitesPuces.Controllers
             }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient) && panier.NoVendeur.Equals(noVendeur)
                                               select panier).ToList();
 
             db.Connection.Close();
@@ -206,7 +206,7 @@ namespace PetitesPuces.Controllers
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             long noVendeur;
-            String noClient = "10000";
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
             //Aller chercher le panier à supprimer
@@ -228,7 +228,7 @@ namespace PetitesPuces.Controllers
             }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient.ToString()) && panier.NoVendeur.Equals(noVendeur)
                                               select panier).ToList();
             if (items.Count() == 0)
             {
@@ -243,7 +243,7 @@ namespace PetitesPuces.Controllers
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             long noVendeur;
-            String noClient = "10000";
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
 
             //Aller chercher le panier à supprimer
@@ -265,7 +265,7 @@ namespace PetitesPuces.Controllers
             }
             //Requête qui va permettre d'aller chercher les paniers du client
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(10000) && panier.NoVendeur.Equals(noVendeur)
+                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient.ToString()) && panier.NoVendeur.Equals(noVendeur)
                                               select panier).ToList();
             if (items.Count() == 0)
             {
@@ -278,7 +278,7 @@ namespace PetitesPuces.Controllers
         public ActionResult GestionProfilClient()
         {
             //HttpContext.User.Identity.Name
-            String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
+            String strAdresseCourrielClient = ((PPClients)Session["clientObj"]).AdresseEmail;
 
             clientDao = new ClientDao((Session["clientObj"] as PPClients).NoClient);
 
