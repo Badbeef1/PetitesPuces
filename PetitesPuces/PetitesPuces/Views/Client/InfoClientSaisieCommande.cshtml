@@ -27,10 +27,10 @@
                 <div class="row">
 
                     <div class="offset-md-1"></div>
-                    @Html.TextBoxFor(model => model[0].PPClients.Prenom, new { @class = "col-md-5 form-control" })
-                    @Html.ValidationMessageFor(model => model[0].PPClients.Prenom)
+                    @Html.TextBoxFor(model => model.Prenom, new { @class = "col-md-5 form-control" })
+                    @Html.ValidationMessageFor(model => model.Prenom)
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="lastName" type="text" value="@Model[0].PPClients.Nom" />
+                    <input class="col-md-4 form-control" id="lastName" type="text" value=@model.Nom />
                 </div>
 
                 <div class="row">
@@ -42,9 +42,9 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="email" type="text" value="@Model[0].PPClients.AdresseEmail" disabled />
+                    <input class="col-md-5 form-control" id="email" type="text" value="@model.AdresseEmail" disabled />
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="rue" type="text" value="@Model[0].PPClients.Rue" />
+                    <input class="col-md-4 form-control" id="rue" type="text" value="@model.Rue" />
                 </div>
 
                 <div class="row">
@@ -56,10 +56,10 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="ville" type="text" value="@Model[0].PPClients.Ville" />
+                    <input class="col-md-5 form-control" id="ville" type="text" value="@model.Ville" />
                     <div class="offset-md-1"></div>
                     <select class="col-md-4 form-control">
-                        @switch (Model[0].PPClients.Province)
+                        @switch (model.Province)
                         {
 
                             case "QC":
@@ -91,9 +91,9 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="pays" type="text" value="@Model[0].PPClients.Pays" disabled />
+                    <input class="col-md-5 form-control" id="pays" type="text" value="@model.Pays" disabled />
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="codePostal" type="text" value="@Model[0].PPClients.CodePostal" />
+                    <input class="col-md-4 form-control" id="codePostal" type="text" value="@model.CodePostal" />
                 </div>
                 <script>
 
@@ -107,9 +107,9 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value="@Model[0].PPClients.Tel1" />
+                    <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value="@model.Tel1" />
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="tel2" type="text" value="@Model[0].PPClients.Tel2" />
+                    <input class="col-md-4 form-control" id="tel2" type="text" value="@model.Tel2" />
                 </div>
             </div>
             <br />

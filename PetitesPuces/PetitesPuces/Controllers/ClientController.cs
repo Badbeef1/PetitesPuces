@@ -22,7 +22,7 @@ namespace PetitesPuces.Controllers
             /* Compare data with Database */
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
-
+            
             //Requête qui va permettre d'aller chercher les paniers du client
             var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
                           where panier.NoClient.Equals(noClient)

@@ -5006,11 +5006,13 @@ namespace PetitesPuces.Models
         }
     }
 
-    [global::System.Data.Linq.Mapping.TableAttribute(Name = "dbo.PPGestionnaire")]
+    [global::System.Data.Linq.Mapping.TableAttribute(Name = "dbo.PPGestionnaires")]
     public partial class PPGestionnaire : INotifyPropertyChanging, INotifyPropertyChanged
     {
 
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+
+        private long _NoGestionnaire;
 
         private string _AdresseEmail;
 
@@ -5030,8 +5032,22 @@ namespace PetitesPuces.Models
         {
             OnCreated();
         }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_AdresseEmail", DbType = "VarChar(100) NOT NULL", CanBeNull = false, IsPrimaryKey = true)]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_NoGestionnaire", DbType = "BigInt NOT NULL", CanBeNull = false, IsPrimaryKey = true)]
+        public long NoGestionnaire
+        {
+            get
+            {
+                return this._NoGestionnaire;
+            }
+            set
+            {
+                if ((this._NoGestionnaire != value))
+                {
+                    this._NoGestionnaire = value;
+                }
+            }
+        }
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_AdresseEmail", DbType = "VarChar(100) NOT NULL", CanBeNull = false)]
         public string AdresseEmail
         {
             get
