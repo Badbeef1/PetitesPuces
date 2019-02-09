@@ -60,6 +60,7 @@ namespace PetitesPuces.Controllers
             {
                 clientLogged.MotDePasse = "";
                 Session["clientObj"] = clientLogged;
+                Session["adresseEmail"] = clientLogged.AdresseEmail;
                 return RedirectToAction("AccueilClient", "Client");
             }
 
@@ -67,6 +68,7 @@ namespace PetitesPuces.Controllers
             {
                 vendeurLogged.MotDePasse = "";
                 Session["vendeurObj"] = vendeurLogged;
+                Session["adresseEmail"] = vendeurLogged.AdresseEmail;
                 return RedirectToAction("AccueilVendeur", "Vendeur");
             }
 
@@ -74,6 +76,7 @@ namespace PetitesPuces.Controllers
             {
                 gestionnaireLogged.MotDePasse = "";
                 Session["gestionnaireObj"] = gestionnaireLogged;
+                Session["adresseEmail"] = gestionnaireLogged.AdresseEmail;
                 return RedirectToAction("AccueilGestionnaire", "Gestionnaire");
             }
 
