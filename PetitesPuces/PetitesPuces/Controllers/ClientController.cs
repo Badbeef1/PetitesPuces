@@ -78,12 +78,48 @@ namespace PetitesPuces.Controllers
         // GET: Client
         public ActionResult SaisieCommande(List<PPArticlesEnPanier> lst)
         {
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            List<PPArticlesEnPanier> items = new List<PPArticlesEnPanier>();
-        items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+            List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+
+            List < PPArticlesEnPanier > items = new List<PPArticlesEnPanier>();
+            items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur)
                     select panier).ToList();
-            return View(items);
+
+            var client = from unClient in contextPP.GetTable<PPClients>()
+                               where unClient.NoClient.Equals(items[0].PPClients.NoClient)
+                               select unClient;
+
+            PPClients clientSaisie = new PPClients
+            {
+                NoClient = client.First().NoClient,
+                AdresseEmail = client.First().AdresseEmail,
+                Nom = client.First().Nom,
+                Prenom = client.First().Prenom,
+                Rue = client.First().Rue,
+                Ville = client.First().Ville,
+                Province = client.First().Province,
+                CodePostal = client.First().CodePostal,
+                Pays = client.First().Pays,
+                Tel1 = client.First().Tel1,
+                Tel2 = client.First().Tel2
+            };
+
+            SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+            {
+                lstArticlePanier = items,
+                client = clientSaisie,
+                vendeur = items[0].PPVendeurs
+            };
+
+            return View(sViewModel);
         }
 
 
@@ -99,27 +135,6 @@ namespace PetitesPuces.Controllers
 
             return View(items);
         }
-
-
-        /* Fonction qui servait a rediriger par le form à la page SaisieCommande 
-         * Je l'ai enlever pcq ça servait à rien en fait (NJ 2019-02-02)
-         * [HttpPost]
-        public void PanierDetail(long id, List<PPArticlesEnPanier> model)
-        {
-            
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-            long noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
-            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-
-            //Requête qui va permettre d'aller chercher les paniers du client
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id)
-                                              select panier).ToList();
-            db.Connection.Close();
-            
-            RedirectToAction("SaisieCommande", items);
-        }*/
 
         /// <summary>
         /// Cette fonction du controleur permet d'actualiser 
@@ -165,36 +180,52 @@ namespace PetitesPuces.Controllers
 
         public ActionResult UpdatePanierSaisieCommande(int noPanier, int quantite)
         {
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
-            int noVendeur;
-            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-
-            var articlesPanier = (from articlePanier in db.GetTable<PPArticlesEnPanier>()
-                                  where articlePanier.NoPanier.Equals(noPanier)
-                                  select articlePanier
-                                  );
-            
-            noVendeur = (int)articlesPanier.First().NoVendeur;
-            articlesPanier.First().NbItems = (short)quantite;
-
-            // Submit the changes to the database.
-            try
+            if (ModelState.IsValid)
             {
-                db.SubmitChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            //Requête qui va permettre d'aller chercher les paniers du client
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient) && panier.NoVendeur.Equals(noVendeur)
-                                              select panier).ToList();
+                String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
+                long noVendeur = 0;
+                try
+                {
+                    var articlesPanier = from articlePanier in contextPP.GetTable<PPArticlesEnPanier>()
+                                         where articlePanier.NoPanier.Equals(noPanier)
+                                         select articlePanier;
 
-            db.Connection.Close();
-            return PartialView("SaisieCommande", items);
+                    noVendeur = (long)articlesPanier.First().NoVendeur;
+                    articlesPanier.First().NbItems = (short)quantite;
+                    contextPP.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    ViewData["errorBD"] = "Une erreur s'est produite au changement de quantité";
+                }
+                //Requête qui va permettre d'aller chercher les paniers du client
+                List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                                  where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(noVendeur)
+                                                  select panier).ToList();
+                
+                if (items.Count > 0)
+                {
+                    SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+                    {
+                        client = contextPP.GetTable<PPClients>().Where(m => m.NoClient.Equals(noClient)).First(),
+                        vendeur = contextPP.GetTable<PPVendeurs>().Where(m => m.NoVendeur.Equals(noVendeur)).First(),
+                        lstArticlePanier = items
+                    };
+                    
+                    return PartialView("SaisieCommande", sViewModel);
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                }
+            }
+            else
+            {
+                // Est-ce que je veux vraiment retourner ceci???
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
         }
         /// <summary>
         /// Permet de supprimer le produit passé en paramètre
@@ -240,39 +271,55 @@ namespace PetitesPuces.Controllers
 
         public ActionResult SupprimerProduitSaisieCommande(int id)
         {
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-            long noVendeur;
-            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
-            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-
-            //Aller chercher le panier à supprimer
-            var query = (from articlePanier in db.GetTable<Models.PPArticlesEnPanier>()
-                         where articlePanier.NoPanier.Equals(id)
-                         select articlePanier
-                         );
-            noVendeur = (long)query.First().NoVendeur;
-
-            db.PPArticlesEnPanier.DeleteOnSubmit(query.First());
-
-            try
+            if (ModelState.IsValid)
             {
-                db.SubmitChanges();
+                long noVendeur = 0;
+                long noClient = ((PPClients)Session["clientObj"]).NoClient;
+                try
+                {
+
+                    //Aller chercher le panier à supprimer
+                    var query = (from articlePanier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                 where articlePanier.NoPanier.Equals(id)
+                                 select articlePanier
+                                 );
+
+                    noVendeur = (long)query.First().NoVendeur;
+
+                    contextPP.PPArticlesEnPanier.DeleteOnSubmit(query.First());
+
+                    contextPP.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                //Requête qui va permettre d'aller chercher les paniers du client
+                List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                                  where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(noVendeur)
+                                                  select panier).ToList();
+                if (items.Count > 0)
+                {
+                    SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+                    {
+                        client = contextPP.GetTable<PPClients>().Where(m => m.NoClient.Equals(noClient)).First(),
+                        vendeur = contextPP.GetTable<PPVendeurs>().Where(m => m.NoVendeur.Equals(noVendeur)).First(),
+                        lstArticlePanier = items
+                    };
+
+                    return PartialView("SaisieCommande", sViewModel);
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
-            }
-            //Requête qui va permettre d'aller chercher les paniers du client
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient.ToString()) && panier.NoVendeur.Equals(noVendeur)
-                                              select panier).ToList();
-            if (items.Count() == 0)
-            {
+                // Est-ce que je veux vraiment retourner ceci???
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
-            db.Connection.Close();
-            return View("SaisieCommande", items);
+
         }
 
         public ActionResult GestionProfilClient()
@@ -571,40 +618,69 @@ namespace PetitesPuces.Controllers
 
         public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif)
         {
-            ViewData["cbChecked"] = tarif;
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            Decimal dclPoids = Decimal.Parse(poids.Replace(".",","));
-            db.Connection.Open();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    ViewData["cbChecked"] = tarif;
+                    Decimal dclPoids = Decimal.Parse(poids.Replace(".", ","));
 
-            // On trouve le code poids
-            var poidsLivraison = from pLiv in db.GetTable<PPTypesPoids>()
-                                  where pLiv.PoidsMin <= dclPoids && pLiv.PoidsMax >= dclPoids
-                                 orderby pLiv.CodePoids
-                                  select pLiv;
+                    // On trouve le code poids
+                    var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
+                                         where pLiv.PoidsMin <= dclPoids && pLiv.PoidsMax >= dclPoids
+                                         orderby pLiv.CodePoids
+                                         select pLiv;
 
-            // On checher la liste des livraisons offertes pour ce code poids
-            var montantLivraison = from monLivraison in db.GetTable<PPPoidsLivraisons>()
-                                   where monLivraison.CodePoids.Equals(poidsLivraison.First().CodePoids)
-                                   select monLivraison;
+                    // On checher la liste des livraisons offertes pour ce code poids
+                    var montantLivraison = from monLivraison in contextPP.GetTable<PPPoidsLivraisons>()
+                                           where monLivraison.CodePoids.Equals(poidsLivraison.First().CodePoids)
+                                           select monLivraison;
 
-            // On envoie le résultats des type de livraison
-            ViewData["MontantLivraison"] = montantLivraison.ToList();
+                    // On envoie le résultats des type de livraison
+                    ViewData["MontantLivraison"] = montantLivraison.ToList();
 
-            var typeLivraison = from typeLiv in db.GetTable<PPTypesLivraison>()
-                                select typeLiv;
+                    var typeLivraison = from typeLiv in contextPP.GetTable<PPTypesLivraison>()
+                                        select typeLiv;
 
-            ViewData["TypeLivraison"] = typeLivraison.ToList();
+                    ViewData["TypeLivraison"] = typeLivraison.ToList();
 
-            var numPourPanierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
-                             where ppArtEnPan.NoPanier.ToString().Equals(panier)
-                             select new { ppArtEnPan.PPClients, ppArtEnPan.PPVendeurs };
+                    var numPourPanierList = from ppArtEnPan in contextPP.GetTable<PPArticlesEnPanier>()
+                                            where ppArtEnPan.NoPanier.ToString().Equals(panier)
+                                            select new { ppArtEnPan.PPClients, ppArtEnPan.PPVendeurs };
 
-            var panierList = from ppArtEnPan in db.GetTable<PPArticlesEnPanier>()
-                             where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients.NoClient)
-                             && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs.NoVendeur)
-                             select ppArtEnPan;
-            
-            return View("SaisieCommande",panierList.ToList());
+                    var panierList = from ppArtEnPan in contextPP.GetTable<PPArticlesEnPanier>()
+                                     where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients.NoClient)
+                                     && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs.NoVendeur)
+                                     select ppArtEnPan;
+                    if(panierList.Count() > 0)
+                    {
+                        SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+                        {
+                            lstArticlePanier = panierList.ToList(),
+                            client = panierList.ToList()[0].PPClients,
+                            vendeur = panierList.ToList()[0].PPVendeurs
+                        };
+
+                        return View("SaisieCommande", sViewModel);
+                    }
+                    else
+                    {
+                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                }
+                
+            }
+            else
+            {
+                // Est-ce que je veux vraiment retourner ceci???
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
         }
 
 
@@ -617,6 +693,10 @@ namespace PetitesPuces.Controllers
             return View(produit);
         }
 
+        public ActionResult InfoClientSaisieCommande(PPClients client)
+        {
+            return View(client);
+        }
         public ActionResult test() => View();
 
         public ActionResult ConfirmationTransaction() => View();
