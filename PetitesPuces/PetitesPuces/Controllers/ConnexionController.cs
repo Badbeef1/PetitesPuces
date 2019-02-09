@@ -47,7 +47,7 @@ namespace PetitesPuces.Controllers
                                  where ven.AdresseEmail.ToLower() == username.ToLower() &&
                                 ven.MotDePasse == password
                                  select ven).FirstOrDefault();
-
+         
             var gestionnaireLogged = (from gest in db.GetTable<PPGestionnaire>()
                                       where gest.AdresseEmail.ToLower() == username.ToLower() &&
                                             gest.MotDePasse == password
@@ -60,6 +60,7 @@ namespace PetitesPuces.Controllers
             {
                 clientLogged.MotDePasse = "";
                 Session["clientObj"] = clientLogged;
+                Session["adresseEmail"] = clientLogged.AdresseEmail;
                 return RedirectToAction("AccueilClient", "Client");
             }
 
@@ -67,6 +68,7 @@ namespace PetitesPuces.Controllers
             {
                 vendeurLogged.MotDePasse = "";
                 Session["vendeurObj"] = vendeurLogged;
+                Session["adresseEmail"] = vendeurLogged.AdresseEmail;
                 return RedirectToAction("AccueilVendeur", "Vendeur");
             }
 
@@ -74,6 +76,7 @@ namespace PetitesPuces.Controllers
             {
                 gestionnaireLogged.MotDePasse = "";
                 Session["gestionnaireObj"] = gestionnaireLogged;
+                Session["adresseEmail"] = gestionnaireLogged.AdresseEmail;
                 return RedirectToAction("AccueilGestionnaire", "Gestionnaire");
             }
 

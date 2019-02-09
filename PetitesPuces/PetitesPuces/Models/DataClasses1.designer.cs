@@ -277,9 +277,12 @@ namespace PetitesPuces.Models
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         private int _NoCategorie;
-
+        
+        [Required]
+        [MaxLength(50)]
         private string _Description;
-
+        
+        [Required]
         private string _Details;
 
         private EntitySet<PPProduits> _PPProduits;
@@ -2502,25 +2505,34 @@ namespace PetitesPuces.Models
         private System.Nullable<long> _NoVendeur;
 
         private System.Nullable<int> _NoCategorie;
-
+        
+        [Required]
+        [MinLength(2)]
         private string _Nom;
-
+        
+        [Required]
         private string _Description;
-
+        
         private string _Photo;
-
+        
+        [Required]
         private System.Nullable<decimal> _PrixDemande;
-
+        
+        [Required]
         private System.Nullable<short> _NombreItems;
-
+         
         private System.Nullable<bool> _Disponibilité;
 
+        [Required]
         private System.Nullable<System.DateTime> _DateVente;
-
+        
+        [Required]
         private System.Nullable<decimal> _PrixVente;
-
+        
+        [Required]
         private System.Nullable<decimal> _Poids;
-
+        
+        [Required]
         private System.Nullable<System.DateTime> _DateCreation;
 
         private System.Nullable<System.DateTime> _DateMAJ;
