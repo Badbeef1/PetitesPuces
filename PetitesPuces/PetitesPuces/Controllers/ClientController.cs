@@ -620,6 +620,16 @@ namespace PetitesPuces.Controllers
             {
                 try
                 {
+                    List<Province> lstProvinces = new List<Province>
+                        {
+                            new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                            new Province { Abreviation = "ON", Nom = "Ontario"},
+                            new Province { Abreviation = "QC", Nom = "Québec"},
+                        };
+
+                    ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+
                     ViewData["cbChecked"] = tarif;
                     Decimal dclPoids = Decimal.Parse(poids.Replace(".", ","));
 
