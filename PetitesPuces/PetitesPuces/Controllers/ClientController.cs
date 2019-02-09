@@ -317,64 +317,66 @@ namespace PetitesPuces.Controllers
             };
 
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-
-            clientDao = new ClientDao();
+            clientDao = new ClientDao(client.NoClient);
 
             PPClients clientOriginal = clientDao.rechecheClientParNo(client.NoClient);
 
-            if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
+            if (ModelState.IsValid)
             {
-                clientDao.modifierProfilInformationPersonnel(client);
-            }
-            else
-            {
-                String strAncientMDP = Request["tbAncienMdp"];
-                String strNouveauMDP = Request["tbNouveauMdp"];
-                String strConfirmationMDP = Request["tbConfirmationMdp"];
-
-                String strMessageErreurVide = "Le champs doit être rempli!";
-                bool booValide = true;
-                if (string.IsNullOrWhiteSpace(strAncientMDP))
+                if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
                 {
-                    ViewBag.MessageErreurAncient = strMessageErreurVide;
-                    booValide = false;
+                    clientDao.modifierProfilInformationPersonnel(client);
                 }
-
-                if (string.IsNullOrWhiteSpace(strNouveauMDP))
+                else
                 {
-                    ViewBag.MessageErreurNouveau = strMessageErreurVide;
-                    booValide = false;
-                }
+                    String strAncientMDP = Request["tbAncienMdp"];
+                    String strNouveauMDP = Request["tbNouveauMdp"];
+                    String strConfirmationMDP = Request["tbConfirmationMdp"];
 
-                if (string.IsNullOrWhiteSpace(strConfirmationMDP))
-                {
-                    ViewBag.MessageErreurConfirmation = strMessageErreurVide;
-                    booValide = false;
-                }
-
-                //Tous les champs ne sont pas vide
-                if (booValide)
-                {
-                    //Valide que le mot de passe est bien l'ancien mdp.
-                    if (clientOriginal.MotDePasse.Equals(strAncientMDP))
+                    String strMessageErreurVide = "Le champs doit être rempli!";
+                    bool booValide = true;
+                    if (string.IsNullOrWhiteSpace(strAncientMDP))
                     {
-                        //Valide que le nouveau mdp est identique a celui de confirmation
-                        if (strNouveauMDP.Equals(strConfirmationMDP))
+                        ViewBag.MessageErreurAncient = strMessageErreurVide;
+                        booValide = false;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(strNouveauMDP))
+                    {
+                        ViewBag.MessageErreurNouveau = strMessageErreurVide;
+                        booValide = false;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(strConfirmationMDP))
+                    {
+                        ViewBag.MessageErreurConfirmation = strMessageErreurVide;
+                        booValide = false;
+                    }
+
+                    //Tous les champs ne sont pas vide
+                    if (booValide)
+                    {
+                        //Valide que le mot de passe est bien l'ancien mdp.
+                        if (clientOriginal.MotDePasse.Equals(strAncientMDP))
                         {
-                            clientDao.modifierProfilMDP(strNouveauMDP);
+                            //Valide que le nouveau mdp est identique a celui de confirmation
+                            if (strNouveauMDP.Equals(strConfirmationMDP))
+                            {
+                                clientDao.modifierProfilMDP(strNouveauMDP);
+                            }
+                            else
+                            {
+                                ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                            }
                         }
                         else
                         {
-                            ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                            ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
                         }
                     }
-                    else
-                    {
-                        ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
-                    }
-                }
 
-                TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
+                    TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
+                }
             }
 
             return View(clientOriginal);

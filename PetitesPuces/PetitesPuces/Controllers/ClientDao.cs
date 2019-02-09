@@ -18,7 +18,7 @@ namespace PetitesPuces.Controllers
 
         public ClientDao()
         {
-            String strAdresseCourrielClient = "Client10000@cgodin.qc.ca";
+            String strAdresseCourrielClient = "Client10001@gmail.com";
             unClient = (from unClient in contextPP.PPClients
                         where unClient.AdresseEmail == strAdresseCourrielClient
                         select unClient).First();

@@ -30,6 +30,7 @@
         @using (Html.BeginForm())
         {
             @Html.HiddenFor(x => x.NoVendeur)
+            @Html.HiddenFor(x => x.AdresseEmail)
             @Html.Hidden("strProvenence", "informationVendeur")
 
             <div class="card">
@@ -82,9 +83,10 @@
             </div>
         }
 
-        @using (Html.BeginForm("GestionPofilVendeur","Vendeur",FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("GestionPofilVendeur", "Vendeur", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.HiddenFor(x => x.NoVendeur)
+            @Html.HiddenFor(x => x.AdresseEmail)
             @Html.Hidden("strProvenence", "configurationCatalogue")
 
             var config = Model.Configuration.Split(';');
@@ -106,7 +108,7 @@
                         @Html.HiddenFor(x => x.Configuration)
                         <div class="col-3">
                             <label class="col-form-label">Couleur police</label>
-                            @Html.TextBoxFor(x => police, new { @class = "form-control"})
+                            @Html.TextBoxFor(x => police, new { @class = "form-control" })
                         </div>
                         <div class="col-3">
                             <label class="col-form-label">Couleur arrière-plan</label>
