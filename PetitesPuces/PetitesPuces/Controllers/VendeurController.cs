@@ -84,53 +84,78 @@ namespace PetitesPuces.Controllers
       [HttpPost]
       public ActionResult AjouterProduit(GestionProduitViewModel model)
       {
+         ViewBag.Message = "";
+         List<string> parts = new List<string>();
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
          //ValidateModel(model.produit);
          //Pour les dropdownlist aller voir le fichier : ---------> vers la ligne 300 du clientController et dans les InformationPersonel
          //TODO: Ajouter le produit dans la BASE DE DONNÉES
          PPProduits prod = model.produit;
-         if (model.file != null && model.file.ContentLength > 0)
-            try
-            {
-               string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                     Path.GetFileName(model.file.FileName));
-               model.file.SaveAs(path);
-               model.produit.Photo = model.file.FileName;
-               ViewBag.Message = "File uploaded successfully";
-            }
-            catch (Exception ex)
-            {
-               ViewBag.Message = "ERROR:" + ex.Message.ToString();
-            }
-         else
-         {
-            ViewBag.Message = "You have not specified a file.";
-         }
 
          //Ajouter le produit dans la base de donnée
          if (ModelState.IsValid)
          {
-            prod.Disponibilité = true;
+            if (model.file != null && model.file.ContentLength > 0)
+               try
+               {
+                  var postedFileExtension = Path.GetExtension(model.file.FileName);
+                  //Validation si c'est un image 
+                  if (!string.Equals(model.file.ContentType, "image/jpg", StringComparison.OrdinalIgnoreCase) &&
+                     !string.Equals(model.file.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase) &&
+                     !string.Equals(model.file.ContentType, "image/pjpeg", StringComparison.OrdinalIgnoreCase) &&
+                     !string.Equals(model.file.ContentType, "image/gif", StringComparison.OrdinalIgnoreCase) &&
+                     !string.Equals(model.file.ContentType, "image/x-png", StringComparison.OrdinalIgnoreCase) &&
+                     !string.Equals(model.file.ContentType, "image/png", StringComparison.OrdinalIgnoreCase))
+                  {
+                     ViewBag.Message("Le fichier doit être une image");
+                  }
+                  else if (!string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
+                          && !string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
+                          && !string.Equals(postedFileExtension, ".gif", StringComparison.OrdinalIgnoreCase)
+                          && !string.Equals(postedFileExtension, ".jpeg", StringComparison.OrdinalIgnoreCase))
+                  {
+                     ViewBag.Message("Le fichier doit être une image");
+                  }
+                  //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
+                  if (!ViewBag.Message.Equals("Le fichier doit être une image"))
+                  {
+                     parts = model.file.FileName.Split('.').Select(f => f.Trim()).ToList();
 
-            var nbProduit = (from produits in db.GetTable<PPProduits>()
-                             select prod
-                             ).ToList();
-            //Le pattern de num produit va être à retravailler.
-            prod.NoProduit = (nbProduit.Count() + 1) * 10;
+                     var nbProduit = (from produits in db.GetTable<PPProduits>()
+                                      select prod
+                     ).ToList();
+                     //Le pattern de num produit va être à retravailler.
+                     prod.NoProduit = (nbProduit.Count() + 1) * 10;
+                     string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                           (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
+                     model.file.SaveAs(path);
+                     prod.Photo = (prod.NoProduit.ToString() + Path.GetExtension(path));
 
-            db.PPProduits.InsertOnSubmit(prod);
+                    
+                     db.PPProduits.InsertOnSubmit(prod);
+                     try
+                     {
+                        db.SubmitChanges();
+                        ModelState.Clear();
+                     }
+                     catch (Exception e)
+                     {
 
-            // Submit the changes to the database.
-            try
+                     }
+
+                     ViewBag.Message = "File uploaded successfully";
+                  }
+               }
+               catch (Exception ex)
+               {
+                  ViewBag.Message = "ERROR:" + ex.Message.ToString();
+               }
+            else
             {
-               db.SubmitChanges();
-               ModelState.Clear();
+               ViewBag.Message = "You have not specified a file.";
             }
-            catch (Exception e)
-            {
-               Console.WriteLine(e);
-            }
+
          }
 
          PPProduits p = new PPProduits();
@@ -186,6 +211,7 @@ namespace PetitesPuces.Controllers
       [HttpPost]
       public ActionResult ModifierProduit(GestionProduitViewModel model)
       {
+         ViewBag.Message = "";
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
          //ValidateModel(model.produit);
@@ -196,14 +222,35 @@ namespace PetitesPuces.Controllers
          if (model.file != null && model.file.ContentLength > 0)
             try
             {
+               var postedFileExtension = Path.GetExtension(model.file.FileName);
+               //Validation si c'est un image 
+               if (!string.Equals(model.file.ContentType, "image/jpg", StringComparison.OrdinalIgnoreCase) &&
+                  !string.Equals(model.file.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase) &&
+                  !string.Equals(model.file.ContentType, "image/pjpeg", StringComparison.OrdinalIgnoreCase) &&
+                  !string.Equals(model.file.ContentType, "image/gif", StringComparison.OrdinalIgnoreCase) &&
+                  !string.Equals(model.file.ContentType, "image/x-png", StringComparison.OrdinalIgnoreCase) &&
+                  !string.Equals(model.file.ContentType, "image/png", StringComparison.OrdinalIgnoreCase))
+               {
+                  ViewBag.Message("Le fichier doit être une image");
+               }
+               else if (!string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
+                       && !string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
+                       && !string.Equals(postedFileExtension, ".gif", StringComparison.OrdinalIgnoreCase)
+                       && !string.Equals(postedFileExtension, ".jpeg", StringComparison.OrdinalIgnoreCase))
+               {
+                  ViewBag.Message("Le fichier doit être une image");
+               }
                //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
-               parts = model.file.FileName.Split('.').Select(p => p.Trim()).ToList();
+               if(!ViewBag.Message.Equals("Le fichier doit être une image"))
+               {
+                  parts = model.file.FileName.Split('.').Select(p => p.Trim()).ToList();
 
-               string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                     (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
-               model.file.SaveAs(path);
-               model.produit.Photo = model.produit.NoProduit + '.' + Path.GetExtension(path);
-               ViewBag.Message = "File uploaded successfully";
+                  string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                        (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
+                  model.file.SaveAs(path);
+                  model.produit.Photo = model.produit.NoProduit + '.' + Path.GetExtension(path);
+                  ViewBag.Message = "File uploaded successfully";
+               }
             }
             catch (Exception ex)
             {
@@ -211,10 +258,10 @@ namespace PetitesPuces.Controllers
             }
          else
          {
-            ViewBag.Message = "You have not specified a file.";
+            //ViewBag.Message = "You have not specified a file.";
          }
 
-         if (ModelState.IsValid)
+         if ((ModelState.IsValid) && (ViewBag.Message.Equals("File uploaded successfully") || ViewBag.Message.Equals("")))
          {
             var produitAModifier = (from prodAMod in db.GetTable<PPProduits>()
                                     where prodAMod.NoProduit.Equals(model.produit.NoProduit)
@@ -297,7 +344,7 @@ namespace PetitesPuces.Controllers
             GestionProduitViewModel gestionProduit = new GestionProduitViewModel();
             gestionProduit.produit = produitAModifier;
 
-            ViewBag.Message = "";
+            
             ViewBag.Action = "Modifier";
             ViewBag.Form = "ModifierProduit";
             db.Connection.Close();
