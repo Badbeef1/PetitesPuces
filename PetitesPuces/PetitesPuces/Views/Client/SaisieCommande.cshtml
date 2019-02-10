@@ -765,10 +765,12 @@
                         dblPrixTotal = dblSousTotal + totalTvq + totalTps + frais;
                     }
                     <text>
-                var dblPrixTotal = @dblPrixTotal.ToString().Replace(",",".");
-                </text>
+            var dblPrixTotal = @dblPrixTotal.ToString().Replace(",",".");
+                    </text>
                 }
-            if ($("#NoCarteCredit").val().replace(/\s/g, "").length == 16 && $("#securiteCredit").val().replace(/\s/g, "").length >= 3  && confirm("Êtes-vous certain de vouloir payer cette commande?")) {
+            
+                        var quatrePremier = $("#NoCarteCredit").val().substring(0, 4);
+            if (parseInt(quatrePremier) >= 1000 && parseInt(quatrePremier) <= 5000 && $("#NoCarteCredit").val().replace(/\s/g, "").length == 16 && $("#securiteCredit").val().replace(/\s/g, "").length >= 3  && confirm("Êtes-vous certain de vouloir payer cette commande?")) {
                 var mois = $("#moisExpireCredit").val();
                 if (mois.length == 1) {
                     mois = "0" + mois;
@@ -816,8 +818,7 @@
                 var PageRetour = document.createElement("input");
                 PageRetour.setAttribute("type", "hidden");
                 PageRetour.setAttribute("name", "NomPageRetour");
-                //PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
-                PageRetour.setAttribute("value", "~/Client/ConfirmationTransaction");
+                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
                 form.appendChild(PageRetour);
 
 
