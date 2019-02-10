@@ -24,8 +24,12 @@ namespace PetitesPuces.ViewModels
         public string objetMessage { get; set; }
         [Required]
         public string messageCourriel { get; set; }
+
+        public Models.PPMessages messageOuvert { get; set; }
+
         public string msgErreurCourriel { get; set; }
         public string msgSuccesCourriel { get; set; }
+
         public HttpPostedFileBase fichierJoint { get; set; }
     }
 }
