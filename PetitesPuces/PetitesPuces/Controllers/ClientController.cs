@@ -711,13 +711,17 @@ namespace PetitesPuces.Controllers
         }
         public ActionResult test() => View();
 
-        public ActionResult ConfirmationTransaction()
+       public ActionResult ConfirmationTransaction()
         {
             return View();
-        }/*
-        [HttpGet]
+        }
+        /*[HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
+            ViewData["NoAutorisation"] = NoAutorisation;
+            ViewData["DateAutorisation"] = DateAutorisation;
+            ViewData["FraisMarchand"] = FraisMarchand;
+            ViewData["InfoSuppl"] = InfoSuppl;
             Console.WriteLine(NoAutorisation);
             return View();
         }*/

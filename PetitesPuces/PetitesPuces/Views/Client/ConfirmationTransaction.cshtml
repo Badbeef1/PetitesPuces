@@ -13,27 +13,32 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>View</title>
-</head>
-<body>
-    @Html.Partial("test")
-    <div>
 
-        <span type="text" id="NoAutorisation" value=""></span>
-        <span type="text" id="DateAutorisation" value=""></span>
-        <span type="text" id="FraisMarchand" value=""></span>
-        <span type="text" id="InfoSuppl" value=""></span>
-    </div>
-</body>
-</html>
 <script>
     $(document).ready(function () {
         $("#NoAutorisation").text(Request["NoAutorisation"])
         $("#DateAutorisation").text(Request["DateAutorisation"])
         $("#FraisMarchand").text(Request["FraisMarchand"])
-        $("#InfoSuppl").text(Request["InfoSuppl"])
+
+        if (Request["InfoSuppl"] != null && Request["InfoSuppl"] != 'null') {
+            $("#InfoSuppl").text(Request["InfoSuppl"])
+        }
     });
 </script>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View</title>
+</head>
+
+<body>
+    @Html.Partial("test")
+    <div>
+
+        <span type="text" id="NoAutorisation">@ViewData["NoAutorisation"]</span>
+        <span type="text" id="DateAutorisation">@ViewData["DateAutorisation"]</span>
+        <span type="text" id="FraisMarchand">@ViewData["FraisMarchand"]</span>
+        <span type="text" id="InfoSuppl">@ViewData["InfoSuppl"]</span>
+    </div>
+</body>
+</html>
