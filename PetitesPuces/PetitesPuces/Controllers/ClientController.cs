@@ -711,10 +711,8 @@ namespace PetitesPuces.Controllers
         }
         public ActionResult test() => View();
 
-      /* public ActionResult ConfirmationTransaction()
-        {
-            return View();
-        }*/
+        public ActionResult ConfirmationTransaction() => View();
+
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
@@ -726,17 +724,17 @@ namespace PetitesPuces.Controllers
             if (DateAutorisation != null && DateAutorisation.Trim() != "")
             {
                 ViewData["DateAutorisation"] = DateAutorisation;
-                Console.WriteLine(NoAutorisation);
+                Console.WriteLine(DateAutorisation);
             }
             if (FraisMarchand != null && FraisMarchand.Trim() != "")
             {
                 ViewData["FraisMarchand"] = FraisMarchand;
-                Console.WriteLine(NoAutorisation);
+                Console.WriteLine(FraisMarchand);
             }
             if (InfoSuppl != null && InfoSuppl.Trim() != "")
             {
                 ViewData["InfoSuppl"] = InfoSuppl;
-                Console.WriteLine(NoAutorisation);
+                Console.WriteLine(InfoSuppl);
             }
             return View();
         }
