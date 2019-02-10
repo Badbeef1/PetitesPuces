@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using PagedList;
@@ -12,11 +13,19 @@ namespace PetitesPuces.ViewModels
         public short lieu { get; set; }
         public IPagedList<Tuple<Models.PPDestinataires, String>> iplDestionataireBoiteReception { get; set; }
         
-        public string addresseExpediteur { get; set; }
-        public List<Models.PPDestinataires> lstDestinataires { get; set; }
-        public string objetMessage { get; set; }
-        public string messageCourriel { get; set; }
 
+        public List<string> lstClientsCourriels { get; set; }
+        public List<string> lstVendeursCourriels { get; set; }
+        public List<string> lstGestionnairesCourriels { get; set; }
+
+        [Required]
+        public string addresseExpediteur { get; set; }
+        [Required]
+        public string objetMessage { get; set; }
+        [Required]
+        public string messageCourriel { get; set; }
+        public string msgErreurCourriel { get; set; }
+        public string msgSuccesCourriel { get; set; }
         public HttpPostedFileBase fichierJoint { get; set; }
     }
 }

@@ -291,7 +291,7 @@ namespace PetitesPuces.Controllers
                try
                {
                   model.vendeur.DateCreation = DateTime.Now;
-
+                model.vendeur.Configuration = ";;";
                   model.vendeur.NoVendeur = max > 10 ? max : 11;
                   model.vendeur.Statut = 0;
                   context.PPVendeurs.InsertOnSubmit(model.vendeur);

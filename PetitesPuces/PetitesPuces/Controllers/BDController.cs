@@ -138,7 +138,7 @@ namespace PetitesPuces.Controllers
                                             MotDePasse = obj[12],
                                             PoidsMaxLivraison = CheckInt(obj[13]),
                                             LivraisonGratuite = CheckDecimal(obj[14]),
-                                            Taxes = CheckInt(obj[15]) as bool?,
+                                            Taxes = CheckInt(obj[15]) == 1,
                                             Pourcentage = CheckDecimal(obj[16]),
                                             Configuration = obj[17],
                                             DateCreation = CheckDate(obj[18]),
@@ -170,7 +170,7 @@ namespace PetitesPuces.Controllers
                                             Photo = obj[5],
                                             PrixDemande = CheckDecimal(obj[6]),
                                             NombreItems = CheckShort(obj[7]),
-                                            Disponibilité = CheckInt(obj[8]) as bool?,
+                                            Disponibilité = CheckInt(obj[8]) == 1,
                                             DateVente = CheckDate(obj[9]),
                                             PrixVente = CheckDecimal(obj[10]),
                                             Poids = CheckDecimal(obj[11]),
@@ -334,7 +334,7 @@ namespace PetitesPuces.Controllers
                             /*
                              *   Table PPGestionnaire
                              */                                     
-                             /*
+                             
                             if (sheet.Attribute(ss + "Name").Value == "PPGestionnaires")
                             {
                                 var tabObjs = GetTableCellStrings(table);
@@ -342,7 +342,7 @@ namespace PetitesPuces.Controllers
                                 {
                                     if (obj[0] != null)
                                     {
-                                        lstGestionnaire.Add(new PPGestionnaires()
+                                        lstGestionnaire.Add(new PPGestionnaire()
                                         {
                                             NoGestionnaire = CheckInt(obj[0]),
                                             AdresseEmail = obj[1],
@@ -476,7 +476,7 @@ namespace PetitesPuces.Controllers
                 context.PPTypesPoids.InsertAllOnSubmit(lstTypesPoids);
                 context.PPTaxeProvinciale.InsertAllOnSubmit(lstTaxeProvinciale);
                 context.PPTaxeFederale.InsertAllOnSubmit(lstTaxeFederale);
-                //context.PPGestionnaires.InsertAllOnSubmit(lstGestionnaire);
+                context.PPGestionnaire.InsertAllOnSubmit(lstGestionnaire);
                 context.PPClients.InsertAllOnSubmit(lstClients);
                 context.PPVendeurs.InsertAllOnSubmit(lstVendeurs);
 
@@ -527,7 +527,7 @@ namespace PetitesPuces.Controllers
                 context.PPHistoriquePaiements.DeleteAllOnSubmit(context.PPHistoriquePaiements);
                 context.PPCategories.DeleteAllOnSubmit(context.PPCategories);
                 context.PPVendeursClients.DeleteAllOnSubmit(context.PPVendeursClients);
-          //      context.PPGestionnaires.DeleteAllOnSubmit(context.PPGestionnaires);
+                context.PPGestionnaire.DeleteAllOnSubmit(context.PPGestionnaire);
                 context.PPTaxeFederale.DeleteAllOnSubmit(context.PPTaxeFederale);
                 context.PPTaxeProvinciale.DeleteAllOnSubmit(context.PPTaxeProvinciale);
                 context.PPTypesLivraison.DeleteAllOnSubmit(context.PPTypesLivraison);
@@ -565,7 +565,7 @@ namespace PetitesPuces.Controllers
 
                 { "PPCategories", context.PPCategories.Count().ToString() },
                 { "PPVendeursClients", context.PPVendeursClients.Count().ToString() },
-               // { "PPGestionnaires", context.PPGestionnaires.Count().ToString() },
+                { "PPGestionnaires", context.PPGestionnaire.Count().ToString() },
                 { "PPTaxeFederale", context.PPTaxeFederale.Count().ToString() },
                 { "PPTaxeProvinciale", context.PPTaxeProvinciale.Count().ToString() },
                 { "PPTypesLivraison", context.PPTypesLivraison.Count().ToString() },

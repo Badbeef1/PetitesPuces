@@ -9,7 +9,7 @@
   <Author>Windows User</Author>
   <LastAuthor>YaoHua Shan</LastAuthor>
   <Created>2019-01-30T13:58:11Z</Created>
-  <LastSaved>2019-02-08T22:13:52Z</LastSaved>
+  <LastSaved>2019-02-09T22:56:13Z</LastSaved>
   <Version>16.00</Version>
  </DocumentProperties>
  <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
@@ -20,8 +20,8 @@
   <WindowWidth>29040</WindowWidth>
   <WindowTopX>32767</WindowTopX>
   <WindowTopY>32767</WindowTopY>
-  <ActiveSheet>2</ActiveSheet>
-  <FirstVisibleSheet>1</FirstVisibleSheet>
+  <ActiveSheet>9</ActiveSheet>
+  <FirstVisibleSheet>5</FirstVisibleSheet>
   <ProtectStructure>False</ProtectStructure>
   <ProtectWindows>False</ProtectWindows>
  </ExcelWorkbook>
@@ -1164,7 +1164,8 @@
     <Footer x:Margin="0.3"/>
     <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
    </PageSetup>
-   <Zoom>130</Zoom>
+   <Zoom>85</Zoom>
+   <LeftColumnVisible>1</LeftColumnVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
@@ -1242,7 +1243,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">45</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="Number">5</Data></Cell>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2018-12-09T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"/>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
@@ -1266,7 +1267,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">180</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="Number">6</Data></Cell>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2017-08-16T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2018-04-04T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
@@ -1290,7 +1291,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">320</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"/>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2019-02-05T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"/>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data></Cell>
@@ -1314,7 +1315,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">425</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="Number">3</Data></Cell>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2016-06-14T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2018-08-23T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
@@ -1338,7 +1339,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">525</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"/>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2019-01-01T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"/>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">0</Data></Cell>
@@ -1362,7 +1363,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">25</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="Number">8</Data></Cell>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2017-05-01T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2019-02-05T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
@@ -1386,7 +1387,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">135</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Boolean">1</Data></Cell>
     <Cell ss:StyleID="s65"><Data ss:Type="Number">5</Data></Cell>
-    <Cell ss:StyleID="s65"/>
+    <Cell ss:StyleID="s65"><Data ss:Type="String">;;</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2017-11-02T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s64"><Data ss:Type="DateTime">2018-05-02T00:00:00.000</Data></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data></Cell>
@@ -1402,6 +1403,13 @@
     <ValidPrinterInfo/>
     <VerticalResolution>0</VerticalResolution>
    </Print>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>9</ActiveRow>
+     <ActiveCol>16</ActiveCol>
+    </Pane>
+   </Panes>
    <ProtectObjects>False</ProtectObjects>
    <ProtectScenarios>False</ProtectScenarios>
   </WorksheetOptions>
@@ -3538,7 +3546,6 @@
     <HorizontalResolution>600</HorizontalResolution>
     <VerticalResolution>600</VerticalResolution>
    </Print>
-   <Selected/>
    <Panes>
     <Pane>
      <Number>3</Number>
@@ -4750,7 +4757,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1100012</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s63" ss:Formula="=RANDBETWEEN(DATE(2019,1,1),DATE(2019,2,5))"><Data
-      ss:Type="DateTime">2019-01-17T00:00:00.000</Data><NamedCell
+      ss:Type="DateTime">2019-02-04T00:00:00.000</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -4765,7 +4772,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1100013</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s63" ss:Formula="=RANDBETWEEN(DATE(2019,1,1),DATE(2019,2,5))"><Data
-      ss:Type="DateTime">2019-01-12T00:00:00.000</Data><NamedCell
+      ss:Type="DateTime">2019-01-03T00:00:00.000</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -4780,7 +4787,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1200002</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s63" ss:Formula="=RANDBETWEEN(DATE(2019,1,1),DATE(2019,2,5))"><Data
-      ss:Type="DateTime">2019-02-05T00:00:00.000</Data><NamedCell
+      ss:Type="DateTime">2019-01-26T00:00:00.000</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -4795,7 +4802,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1200004</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s63" ss:Formula="=RANDBETWEEN(DATE(2019,1,1),DATE(2019,2,5))"><Data
-      ss:Type="DateTime">2019-01-15T00:00:00.000</Data><NamedCell
+      ss:Type="DateTime">2019-02-05T00:00:00.000</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -4810,7 +4817,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1200010</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s63" ss:Formula="=RANDBETWEEN(DATE(2019,1,1),DATE(2019,2,5))"><Data
-      ss:Type="DateTime">2019-01-12T00:00:00.000</Data><NamedCell
+      ss:Type="DateTime">2019-01-22T00:00:00.000</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -4825,7 +4832,7 @@
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1200004</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s63" ss:Formula="=RANDBETWEEN(DATE(2019,1,1),DATE(2019,2,5))"><Data
-      ss:Type="DateTime">2019-01-06T00:00:00.000</Data><NamedCell
+      ss:Type="DateTime">2019-02-05T00:00:00.000</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
     <Cell ss:StyleID="s24"><Data ss:Type="Number">1</Data><NamedCell
       ss:Name="_FilterDatabase"/></Cell>
@@ -6364,6 +6371,7 @@
     <Footer x:Margin="0.3"/>
     <PageMargins x:Bottom="0.75" x:Left="0.7" x:Right="0.7" x:Top="0.75"/>
    </PageSetup>
+   <Selected/>
    <Panes>
     <Pane>
      <Number>3</Number>

@@ -1,61 +1,159 @@
 ﻿
 @model PetitesPuces.ViewModels.CourrielVM
 
-<div class="d-flex flex-column">
-    <div class="p-2 input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text">De : </span>
-        </div>
-        @Html.EditorFor(m => m.addresseExpediteur , new {
-            htmlAttributes = new
-            {
-                @class = "form-control",
-                @value = Model.addresseExpediteur ?? Session["adresseEmail"],
-                @readonly = ""
-            }
-        })
-    </div>
-    <div class="p-2 input-group">
-        <div class="input-group-prepend">
-            <label for="objetMessage" class="input-group-text">À : </label>
-        </div>
-        @Html.DropDownListFor(m => m.lstDestinataires,null, new
-           {
-               htmlAttributes = new
-               {
-                   @class = "form-control"
-               }
-           })
 
-    </div>
-    <div class="p-2 input-group">
-        <div class="input-group-prepend">
-            <label for="objetMessage" class="input-group-text">Sujet : </label>
-        </div>
-        <!--<input type="text" value="" placeholder="Ajouter un objet" class="form-control" />-->
-        @Html.EditorFor(m => m.objetMessage , new {
-            htmlAttributes = new
-            {
-                @class = "form-control",
-                @placeholder = "Ajouter un sujet"
+@using (Html.BeginForm("Soumettre", "Courriel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <style>
+        .custom-file-input ~ .custom-file-label::after {
+            content: "Choisir";
+            color: white;
+            background-color: #007bff;
+            border-color: #007bff;
+            cursor: pointer;
+        }
+
+        .fileinput-filename {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: middle;
+            /* new lines */
+            width: 100%;
+            position: absolute;
+            left: 0;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .input-group-prepend {
+            width: 120px;
+        }
+
+            .input-group-prepend label {
+                width: 100%;
+                overflow: hidden;
             }
-        })
-    </div>
-    <div class="p-2">
-        <div class="mb-2">
-            <label for="messageCourriel">Message : </label>
+    </style>
+    @Html.HiddenFor(m => m.lieu)
+    <div class="d-flex flex-column">
+        <div class="p-2 input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text"><b>De : </b></label>
+            </div>
+            @Html.EditorFor(m => m.addresseExpediteur , new {
+                htmlAttributes = new
+                {
+                    @class = "form-control",
+                    @value = Model.addresseExpediteur ?? Session["adresseEmail"],
+                    @readonly = ""
+                }
+            })
         </div>
-        <!--<textarea rows="10" cols="145" class="form-control"></textarea>-->
-        @Html.TextAreaFor(m => m.messageCourriel, new
-           {
-                @class= "form-control",
-                @rows = 10
-           })
+        <div class="p-2 input-group ">
+            <div class="input-group-prepend">
+                <label for="objetMessage" class="input-group-text "><b>À : </b></label>
+            </div>
+            <select id="ddlDestinataires" multiple name="ddlDestinataires" class="selectpicker form-control" title="Rien de sélectionné"
+                    data-selected-text-format="count > 5">
+                @if (Model.lstGestionnairesCourriels != null)
+                {
+                    <optgroup label="Liste de gestionnaires">
+                        @foreach (var destinataire in Model.lstGestionnairesCourriels)
+                        {
+                            <option value="@destinataire">
+                                @destinataire
+                            </option>
+                        }
+                    </optgroup>
+                }
+                @if (Model.lstVendeursCourriels != null)
+                {
+                    <optgroup label="Liste de vendeurs">
+                        @foreach (var destinataire in Model.lstVendeursCourriels)
+                        {
+                            <option value="@destinataire">
+                                @destinataire
+                            </option>
+                        }
+                    </optgroup>
+                }
+                @if (Model.lstClientsCourriels != null)
+                {
+                    <optgroup label="Liste de clients" id="grpClient">
+                        @foreach (var destinataire in Model.lstClientsCourriels)
+                        {
+                            <option value="@destinataire">
+                                @destinataire
+                            </option>
+                        }
+                    </optgroup>
+                }
+            </select>
+        </div>
+        <div class="p-2 input-group">
+            <div class="input-group-prepend">
+                <label for="objetMessage" class="input-group-text"><b>Sujet : </b></label>
+            </div>
+            @Html.EditorFor(m => m.objetMessage , new {
+                htmlAttributes = new
+                {
+                    @class = "form-control",
+                    @placeholder = "Ajouter un sujet"
+                }
+            })
+        </div>
+        <div class="p-2">
+            <div class="mb-3 form-row">
+                <div class="input-group col-12">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text"><b>Fichier joint : </b></label>
+                    </div>
+                    <div class="custom-file" id="customFile" lang="fr">
+                        @Html.TextBoxFor(m => m.fichierJoint, new { @type = "file", @id = "fichier", @class = "custom-file-input" })
+                        <label class="custom-file-label fileinput-filename" for="fichier">
+                            Choisir un fichier
+                        </label>
+                    </div>
+                </div>
+            </div>
+            @Html.TextAreaFor(m => m.messageCourriel, new
+               {
+                    @class= "form-control",
+                    @rows = 10,
+                    @placeholder = "Entrer votre message ici ... "
+               })
+        </div>
+        <div class="p-2 form-row">
+            <div class="col-4">
+                <input name="submit" type="submit" value="Envoyer" class="btn btn-outline-primary" />
+                <input name="submit" type="submit" value="Enregistrer" class="btn btn-outline-primary" />
+                <input type="reset" value="Effacer" class="btn btn-outline-danger" />
+            </div>
+            <div class="col-8">
+                <span class="text-danger"> @Html.DisplayFor(m => m.msgErreurCourriel)</span>
+                <span class="text-success"> @Html.DisplayFor(m => m.msgSuccesCourriel)</span>
+            </div>
+        </div>
+        <script>
+            $(function () {
+                $('select').selectpicker({
+                    actionsBox: true,
+                    selectAllText: "Tout choisir",
+                    deselectAllText: "Tout retirer",
+                    liveSearch: true,
+                    nSelectedText: 'destinataires sélectionnés',
+                    noneSelectedText: 'Rien de sélectionné',
+                    size: 10
+                });
+            });
+            $('#fichier').on('change', function () {
+                //get the file name
+                var fileName = $(this).val();
+                var cleanFileName = fileName.replace('C:\\fakepath\\', " ");
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(cleanFileName);
+            })
+        </script>
     </div>
-    <div class="p-2">
-        <button class="btn btn-outline-primary">Envoyer</button>
-        <button class="btn btn-outline-primary">Annuler</button>
-        <button class="btn btn-outline-primary">Enregistrer</button>
-        <button class="btn btn-outline-primary">Joindre</button>
-    </div>
-</div>
+}
