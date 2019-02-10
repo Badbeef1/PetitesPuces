@@ -579,6 +579,11 @@
             $("#btnContinueMagasiner").click(function () {
                 window.location.href = "/Client/Catalogue"
             });
+            $("#CodePostal").mask("a9a 9a9");
+            $("#Tel1").mask("(999) 999-9999");
+            $("#Tel2").mask("(999) 999-9999");
+            $("#NoCarteCredit").mask("9999 9999 9999 9999");
+            $("#securiteCredit").mask("999?9");
         });
 
         function passerCommande() {
@@ -699,14 +704,6 @@
         function errorPaiement() {
             console.log("errorBig");
         }
-
-        $(document).ready(function () {
-            $("#CodePostal").mask("a9a 9a9");
-            $("#Tel1").mask("(999) 999-9999");
-            $("#Tel2").mask("(999) 999-9999");
-            $("#NoCarteCredit").mask("9999 9999 9999 9999");
-            $("#securiteCredit").mask("999?9");
-        });
 
 
 
