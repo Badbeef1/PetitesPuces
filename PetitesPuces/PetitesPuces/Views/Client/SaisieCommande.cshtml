@@ -182,6 +182,11 @@
             <div id="collapse_zoneCommande" class="collapse show" aria-labelledby="btnCommande" data-parent="#commande">
 
                 <div class="card-body">
+                    @{ 
+
+                        double totalTps = 0;
+                        double totalTvq = 0;
+                    }
                     <!-- Loop d'article -->
                     @for (int x = 0; x < Model.lstArticlePanier.Count; x++)
                     {
@@ -405,8 +410,6 @@
                                     <h5>Total</h5>
                                 </div>
                                 <div class="col-2 text-right">
-                                    @{ double totalTps = 0;
-                                        double totalTvq = 0;}
                                     @if (lstMontantLivraison != null)
                                     {
                                         <h5><strong><span id="fraisDeLivraison">@frais.ToString("0.00") $</span></strong></h5>
@@ -533,7 +536,7 @@
                             <div class="row" style="margin: 0">
                                 <input type="number" id="moisExpireCredit" class="form-control col-md-4 text-right" min="1" max="12" placeholder="MM" onchange="expireMois('mois')" />
                                 <div class="col-md-2">-</div>
-                                20<input type="number" id="anneeExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Year.ToString().Remove(0,2)" max="23" placeholder="YY" onchange="expireMois('annee')"/>
+                                20<input type="number" id="anneeExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Year.ToString().Remove(0,2)" max="23" placeholder="YY" onchange="expireMois('annee')" />
                             </div>
                             <br />
                             <h5>
@@ -553,6 +556,13 @@
                     <div class="row" style="margin: 0">
                         <div class="col-md-4">&nbsp;</div>
                         <div class="col-md-4 align-items-center">
+                            <span id="erreurPaiement"></span>
+                        </div>
+                        <div class="col-md-4">&nbsp;</div>
+                    </div>
+                    <div class="row" style="margin: 0">
+                        <div class="col-md-4">&nbsp;</div>
+                        <div class="col-md-4 align-items-center">
                             <input class="btn btn-primary" type="button" onclick="envoyerRequete()" value="Confirmer le paiement" />
                         </div>
                         <div class="col-md-4">&nbsp;</div>
@@ -562,7 +572,7 @@
         </div>
 
     </div>
-
+</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
@@ -699,28 +709,34 @@
             $("#Tel1").mask("(999) 999-9999");
             $("#Tel2").mask("(999) 999-9999");
             $("#NoCarteCredit").mask("9999 9999 9999 9999");
-            $("#securiteCredit").mask("9999");
+            $("#securiteCredit").mask("999?9");
         });
 
 
 
 
         $("#btnChoixDePoste").click(function () {
-        @{
-        <text>
-        var poids = @poidsKg.ToString().Replace(",",".");
-            var panier = @Model.lstArticlePanier[0].NoPanier;
-        </text>
-        }
-        $.ajax({
-            url: "/Client/RecevoirPrixLivraison",
-            data: {
-                "poids": poids, "panier": panier, "tarif": "0"},
-            success: successPoids,
-            error: errorPoids,
-        });
-        $("#collapse_zoneInfos").collapse();
-        $("#collapse_typeLivraison").collapse("show");
+            if ($("#Prenom").val().trim() != "" && $("#Nom").val().trim() != "" && $("#Rue").val().trim() != "" && $("#Ville").val().trim() != "" && $("#CodePostal").val().trim() != "" && $("#Tel1").val().trim() != "") {
+                @{
+                    <text>
+                var poids = @poidsKg.ToString().Replace(",",".");
+                var panier = @Model.lstArticlePanier[0].NoPanier;
+                    </text>
+                    }
+                $.ajax({
+                    url: "/Client/RecevoirPrixLivraison",
+                    data: {
+                        "poids": poids, "panier": panier, "tarif": "0"
+                    },
+                    success: successPoids,
+                    error: errorPoids,
+                });
+                $("#collapse_zoneInfos").collapse();
+                $("#collapse_typeLivraison").collapse("show");
+            }
+            else {
+                $("#erreur").text("Une des cases : Prenom, Nom, Rue, Ville, Code postal ou Téléphone primaire est vide");
+            }
         });
 
         function checkBoxFraisLivraison(tarif) {
@@ -741,9 +757,20 @@
 
 
         function envoyerRequete() {
-            if (confirm("Êtes-vous certain de vouloir payer cette commande?")) {
+            console.log($("#NoCarteCredit").val().replace(/\s/g, ""));
+            console.log($("#securiteCredit").val().replace(/\s/g, ""));
+                @{
+                    if(dblPrixTotal == 0)
+                    {
+                        dblPrixTotal = dblSousTotal + totalTvq + totalTps + frais;
+                    }
+                    <text>
+                var dblPrixTotal = @dblPrixTotal.ToString().Replace(",",".");
+                </text>
+                }
+            if ($("#NoCarteCredit").val().replace(/\s/g, "").length == 16 && $("#securiteCredit").val().replace(/\s/g, "").length >= 3  && confirm("Êtes-vous certain de vouloir payer cette commande?")) {
                 var mois = $("#moisExpireCredit").val();
-                if (mois.length = 1) {
+                if (mois.length == 1) {
                     mois = "0" + mois;
                 }
 
@@ -754,7 +781,7 @@
                 var noVendeur = document.createElement("input");
                 noVendeur.setAttribute("type", "hidden");
                 noVendeur.setAttribute("name", "NoVendeur");
-                noVendeur.setAttribute("value",'@Model.vendeur.NoVendeur.ToString()');
+                noVendeur.setAttribute("value", '@Model.vendeur.NoVendeur.ToString()');
                 form.appendChild(noVendeur);
 
                 var nomAffaires = document.createElement("input");
@@ -780,26 +807,32 @@
                 NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
                 NumSecurite.setAttribute("value", $("#securiteCredit").val());
                 form.appendChild(NumSecurite);
-
                 var MontantPaiement = document.createElement("input");
                 MontantPaiement.setAttribute("type", "hidden");
                 MontantPaiement.setAttribute("name", "MontantPaiement");
-                MontantPaiement.setAttribute("value", '@dblPrixTotal');
+                    MontantPaiement.setAttribute("value", dblPrixTotal);
                 form.appendChild(MontantPaiement);
 
                 var PageRetour = document.createElement("input");
                 PageRetour.setAttribute("type", "hidden");
                 PageRetour.setAttribute("name", "NomPageRetour");
-                PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
+                //PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
+                PageRetour.setAttribute("value", "~/Client/ConfirmationTransaction");
                 form.appendChild(PageRetour);
+
 
                 document.body.appendChild(form);
                 form.submit();
+
+                $("#erreurPaiement").text("");
 
                 var progres = "100";
                 $("#bar").attr("aria-valuenow", progres);
                 $("#bar").css("width", progres + "%");
                 $("#barSpan").text(progres + "%");
+            }
+            else {
+                $("#erreurPaiement").text("Un des champs n'est pas rempli correctement");
             }
         }
 
