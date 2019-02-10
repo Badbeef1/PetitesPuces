@@ -22,6 +22,7 @@ namespace PetitesPuces.ViewModels
         public Dictionary<string, List<string>> dicVendeur { get; set; }
         public String vendeur { get; set; }
         public List<Models.PPVendeurs> lstVendeur { get; set; }
+        public Models.PPVendeurs vendeurCatalogue { get; set; }
 
         public HttpPostedFile test { get; set; }
     }

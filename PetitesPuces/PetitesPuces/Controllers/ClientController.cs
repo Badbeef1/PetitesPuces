@@ -497,14 +497,15 @@ namespace PetitesPuces.Controllers
                     break;
             }
 
+            PPVendeurs objVendeurCatalogue = null;
+
             //Si affichage d'un vendeur en particulier
             if (!String.IsNullOrWhiteSpace(vendeur) && 
-                contextPP.PPVendeurs.FirstOrDefault(predicate: ven => ven.NomAffaires.ToLower() == vendeur.ToLower()) != null)
+                ((objVendeurCatalogue = contextPP.PPVendeurs.FirstOrDefault(predicate: ven => ven.NomAffaires.ToLower() == vendeur.ToLower())) != null))
             {
                 lstDesProduits = lstDesProduits
                     .Where(pro => String.Equals(pro.PPVendeurs.NomAffaires, vendeur, StringComparison.OrdinalIgnoreCase))
                     .ToList();
-
             }
             //Si affichage d'une catégorie en particulier
             else if (!String.IsNullOrWhiteSpace(categorie) && 
@@ -601,7 +602,8 @@ namespace PetitesPuces.Controllers
                 iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension),
                 dicVendeur = dicCateAvecVendeur,
                 vendeur = vendeur,
-                lstVendeur = lstVendeur
+                lstVendeur = lstVendeur,
+                vendeurCatalogue = objVendeurCatalogue
             };
 
             if (typeRech.HasValue)
