@@ -45,10 +45,7 @@
    @Html.Partial("index")
    <br />
 
-   @using (Html.BeginForm("@ViewBag.Form",
-      "Vendeur",
-      FormMethod.Post,
-      new { enctype = "multipart/form-data" }))
+   @using (Html.BeginForm((@ViewBag.Form as String),"Vendeur",FormMethod.Post,new { enctype = "multipart/form-data" }))
    {
       @Html.HiddenFor(model => model.produit.NoVendeur)
       @Html.HiddenFor(model => model.produit.DateMAJ)
