@@ -750,8 +750,8 @@
 
 
         function envoyerRequete() {
-            console.log($("#NoCarteCredit").val().replace(/\s/g, ""));
-            console.log($("#securiteCredit").val().replace(/\s/g, ""));
+            var numCarte = $("#NoCarteCredit").val().replace(/\s/g, "");
+            var secCarte = $("#securiteCredit").val().replace(/\s/g, "");
                 @{
                     if(dblPrixTotal == 0)
                     {
@@ -788,7 +788,7 @@
                 var noCarteCredit = document.createElement("input");
                 noCarteCredit.setAttribute("type", "hidden");
                 noCarteCredit.setAttribute("name", "NoCarteCredit");
-                noCarteCredit.setAttribute("value", $("#NoCarteCredit").val());
+                noCarteCredit.setAttribute("value", numCarte);
                 form.appendChild(noCarteCredit);
 
                 var DateExpiration = document.createElement("input");
@@ -800,7 +800,7 @@
                 var NumSecurite = document.createElement("input");
                 NumSecurite.setAttribute("type", "hidden");
                 NumSecurite.setAttribute("name", "NoSecuriteCarteCredit");
-                NumSecurite.setAttribute("value", $("#securiteCredit").val());
+                NumSecurite.setAttribute("value", secCarte);
                 form.appendChild(NumSecurite);
                 var MontantPaiement = document.createElement("input");
                 MontantPaiement.setAttribute("type", "hidden");
@@ -813,6 +813,12 @@
                 PageRetour.setAttribute("name", "NomPageRetour");
                 PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
                 form.appendChild(PageRetour);
+
+                var InfoSuppl = document.createElement("input");
+                InfoSuppl.setAttribute("type", "hidden");
+                InfoSuppl.setAttribute("name", "InfoSuppl");
+                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur);
+                form.appendChild(InfoSuppl);
                 
                     document.body.appendChild(form);
                     form.submit();
