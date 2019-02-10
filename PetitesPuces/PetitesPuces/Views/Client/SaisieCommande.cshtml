@@ -5,10 +5,6 @@
     Layout = null;
 
 }
-<!--Salut, je déplacer ton js en bas, fac tes mask fonctione. J'ai l'impression que la validation embarque pas car ton objet est une liste.
-    Pour faire le textboxfor, il utilise le nom de l variable recu. Sa enfrai peut etre les regle du html pour les noms ou caractèere abcepter exemple [].
-    https://stackoverflow.com/questions/34809341/asp-net-mvc-how-to-customize-validation-message-showing Je suis pas sur que c'est la solution, mais sa resemplait 
-    a ton cas. A plus tard!-->
 <!DOCTYPE html>
 
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
@@ -768,7 +764,7 @@
             var dblPrixTotal = @dblPrixTotal.ToString().Replace(",",".");
                     </text>
                 }
-            
+
                         var quatrePremier = $("#NoCarteCredit").val().substring(0, 4);
             if (parseInt(quatrePremier) >= 1000 && parseInt(quatrePremier) <= 5000 && $("#NoCarteCredit").val().replace(/\s/g, "").length == 16 && $("#securiteCredit").val().replace(/\s/g, "").length >= 3  && confirm("Êtes-vous certain de vouloir payer cette commande?")) {
                 var mois = $("#moisExpireCredit").val();
@@ -820,18 +816,17 @@
                 PageRetour.setAttribute("name", "NomPageRetour");
                 PageRetour.setAttribute("value", "http://424r.cgodin.qc.ca/Client/ConfirmationTransaction");
                 form.appendChild(PageRetour);
+                
+                    document.body.appendChild(form);
+                    form.submit();
 
+                    $("#erreurPaiement").text("");
 
-                document.body.appendChild(form);
-                form.submit();
-
-                $("#erreurPaiement").text("");
-
-                var progres = "100";
-                $("#bar").attr("aria-valuenow", progres);
-                $("#bar").css("width", progres + "%");
-                $("#barSpan").text(progres + "%");
-            }
+                    var progres = "100";
+                    $("#bar").attr("aria-valuenow", progres);
+                    $("#bar").css("width", progres + "%");
+                    $("#barSpan").text(progres + "%");
+                }
             else {
                 $("#erreurPaiement").text("Un des champs n'est pas rempli correctement");
             }

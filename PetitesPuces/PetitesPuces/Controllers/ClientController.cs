@@ -709,6 +709,10 @@ namespace PetitesPuces.Controllers
         }
         public ActionResult test() => View();
 
-        public ActionResult ConfirmationTransaction() => View();
+        public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
+        {
+            Console.WriteLine(NoAutorisation);
+            return View();
+        }
     }
 }

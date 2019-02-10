@@ -4,19 +4,36 @@
 }
 
 <!DOCTYPE html>
-
+<link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>View</title>
 </head>
 <body>
+    @Html.Partial("test")
     <div>
 
-        <label type="text" id="NoAutorisation" value=""></label>
-        <label type="text" id="DateAutorisation" value="" ></label>
-        <label type="text" id="FraisMarchand" value="" ></label>
-        <label type="text" id="InfoSuppl" value="" ></label>
+        <span type="text" id="NoAutorisation" value=""></span>
+        <span type="text" id="DateAutorisation" value=""></span>
+        <span type="text" id="FraisMarchand" value=""></span>
+        <span type="text" id="InfoSuppl" value=""></span>
     </div>
 </body>
 </html>
+<script>
+    $(document).ready(function () {
+        $("#NoAutorisation").text(Request["NoAutorisation"])
+        $("#DateAutorisation").text(Request["DateAutorisation"])
+        $("#FraisMarchand").text(Request["FraisMarchand"])
+        $("#InfoSuppl").text(Request["InfoSuppl"])
+    });
+</script>
