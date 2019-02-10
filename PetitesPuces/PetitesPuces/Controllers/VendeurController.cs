@@ -469,28 +469,119 @@ namespace PetitesPuces.Controllers
                 nameof(vendeur.LivraisonGratuite)
             };
 
-         HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
+            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-         if (fichier != null && fichier.ContentLength > 0)
-            try
-            {
-               string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                          Path.GetFileName(fichier.FileName));
-               fichier.SaveAs(path);
-               baniere = fichier.FileName;
-               ViewBag.Message = "File uploaded successfully";
+            vendeurDao = new VendeurDao(vendeur.NoVendeur);
 
-            }
-            catch (Exception ex)
+            PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo(vendeur.NoVendeur);
+
+
+            if (ModelState.IsValid)
             {
-               ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
+
+                if (fichier != null && fichier.ContentLength > 0)
+                    try
+                    {
+                        string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                                   Path.GetFileName(fichier.FileName));
+                        fichier.SaveAs(path);
+                        baniere = fichier.FileName;
+                        ViewBag.Message = "File uploaded successfully";
+
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                    }
+                else
+                {
+                    ViewBag.Message = "You have not specified a file.";
+                }
+
+
+                if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
+                {
+                    lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+
+                    vendeurDao.modifierProfilInformationPersonnel(vendeur);
+                }
+                else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
+                {
+                    lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+                    lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+
+                    String strAncientMDP = Request["tbAncienMdp"];
+                    String strNouveauMDP = Request["tbNouveauMdp"];
+                    String strConfirmationMDP = Request["tbConfirmationMdp"];
+
+                    String strMessageErreurVide = "Le champs doit être rempli!";
+                    bool booValide = true;
+                    if (string.IsNullOrWhiteSpace(strAncientMDP))
+                    {
+                        ViewBag.MessageErreurAncient = strMessageErreurVide;
+                        booValide = false;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(strNouveauMDP))
+                    {
+                        ViewBag.MessageErreurNouveau = strMessageErreurVide;
+                        booValide = false;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(strConfirmationMDP))
+                    {
+                        ViewBag.MessageErreurConfirmation = strMessageErreurVide;
+                        booValide = false;
+                    }
+
+                    //Tous les champs ne sont pas vide
+                    if (booValide)
+                    {
+                        //Valide que le mot de passe est bien l'ancien mdp.
+                        if (vendeurOriginel.MotDePasse.Equals(strAncientMDP))
+                        {
+                            //Valide que le nouveau mdp est identique a celui de confirmation
+                            if (strNouveauMDP.Equals(strConfirmationMDP))
+                            {
+                                vendeurDao.modifierProfilMDP(strNouveauMDP);
+                            }
+                            else
+                            {
+                                ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                            }
+                        }
+                        else
+                        {
+                            ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                        }
+                    }
+                }
+                else if (string.Equals(strProvenence, "informationVendeur", StringComparison.OrdinalIgnoreCase))
+                {
+                    lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+
+                    vendeurDao.modifierProfilSpecificVendeur(vendeur);
+                }
+                else
+                {
+                    lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+                    lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+
+                    vendeurDao.modifierProfilConfiguration(police, fond, baniere);
+                }
             }
          else
          {
             ViewBag.Message = "You have not specified a file.";
          }
 
-         ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+            
+
+            //est-ce qu'il y a la mise a jour des donnée (meme si variable local?)
+            return View(vendeurOriginel);
+        }
 
          vendeurDao = new VendeurDao(vendeur.NoVendeur);
 

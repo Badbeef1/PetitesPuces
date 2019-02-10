@@ -2,6 +2,7 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(x => x.NoClient)
+    @Html.HiddenFor(x => x.AdresseEmail)
     @Html.Hidden("strProvenence", "modificationmdp");
     <div class="card">
         <h5 class="card-header">Modification du mot de passe</h5>
@@ -23,7 +24,7 @@
                 </div>
                 <div class="col-6">
                     <label class="col-form-label">Confirmation mot de passe</label>
-                    <input type="text" class="form-control" id="tbConfirmationMdp" name="tbConfirmationMdp"/>
+                    <input type="text" class="form-control" id="tbConfirmationMdp" name="tbConfirmationMdp" />
                     <span style="color:red">@ViewBag.MessageErreurConfirmation</span>
                 </div>
             </div>

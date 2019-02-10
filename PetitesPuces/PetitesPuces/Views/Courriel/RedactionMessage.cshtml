@@ -2,19 +2,55 @@
 @model PetitesPuces.ViewModels.CourrielVM
 
 <div class="d-flex flex-column">
-    <div class="p-2">
-        <label>De</label>
-        <input type="text" value="Zabuza@SaintEustache.qc" readonly="readonly" class="form-control"/>
+    <div class="p-2 input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">De : </span>
+        </div>
+        @Html.EditorFor(m => m.addresseExpediteur , new {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @value = Model.addresseExpediteur ?? Session["adresseEmail"],
+                @readonly = ""
+            }
+        })
+    </div>
+    <div class="p-2 input-group">
+        <div class="input-group-prepend">
+            <label for="objetMessage" class="input-group-text">À : </label>
+        </div>
+        @Html.DropDownListFor(m => m.lstDestinataires,null, new
+           {
+               htmlAttributes = new
+               {
+                   @class = "form-control"
+               }
+           })
+
+    </div>
+    <div class="p-2 input-group">
+        <div class="input-group-prepend">
+            <label for="objetMessage" class="input-group-text">Sujet : </label>
+        </div>
+        <!--<input type="text" value="" placeholder="Ajouter un objet" class="form-control" />-->
+        @Html.EditorFor(m => m.objetMessage , new {
+            htmlAttributes = new
+            {
+                @class = "form-control",
+                @placeholder = "Ajouter un sujet"
+            }
+        })
     </div>
     <div class="p-2">
-        <label>À</label>
-        <input type="text" value="" class="form-control"/>
-    </div>
-    <div class="p-2">
-        <input type="text" value="" placeholder="Ajouter un objet" class="form-control" />
-    </div>
-    <div>
-        <textarea rows="10" cols="145" class="form-control"></textarea>
+        <div class="mb-2">
+            <label for="messageCourriel">Message : </label>
+        </div>
+        <!--<textarea rows="10" cols="145" class="form-control"></textarea>-->
+        @Html.TextAreaFor(m => m.messageCourriel, new
+           {
+                @class= "form-control",
+                @rows = 10
+           })
     </div>
     <div class="p-2">
         <button class="btn btn-outline-primary">Envoyer</button>
