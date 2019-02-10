@@ -1,5 +1,5 @@
-﻿@model PetitesPuces.Models.PPClients
-
+﻿@using PetitesPuces.Models
+@model PPClients
 @using (Html.BeginForm())
 {
     <div class="card shopping-cart" id="infoPerso" style="margin-top:0px;">
@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <label class="col-md-5">Prénom</label>
-                    <div class="offset-md-1"></div>
+                    <div class="offset-md-1"></div> 
                     <label class="col-md-5">Nom</label>
                 </div>
 
@@ -28,11 +28,14 @@
 
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.TextBoxFor(model => model.Prenom, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Prenom)
+                        @Html.TextBoxFor(mod => Model.Prenom, new { @class = "form-control", @Value =Model.Prenom})
+                        @Html.ValidationMessageFor(mod => Model.Prenom)
                     </div>
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="lastName" type="text" value=@model.Nom />
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(mod => Model.Nom, new { @class = "form-control", @Value = Model.Nom})
+                        @Html.ValidationMessageFor(mod => Model.Nom)
+                    </div>
                 </div>
 
                 <div class="row">
@@ -44,9 +47,15 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="email" type="text" disabled value=@model.AdresseEmail />
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(mod => Model.AdresseEmail, new { @class = "form-control", @disabled = "disabled", @Value= Model.AdresseEmail})
+                        @Html.ValidationMessageFor(mod => Model.AdresseEmail)
+                    </div>
                     <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="rue" type="text" value=@model.Rue />
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(mod => Model.Rue, new { @class = "form-control", @Value = Model.Rue})
+                        @Html.ValidationMessageFor(mod => Model.Rue)
+                    </div>
                 </div>
 
                 <div class="row">
@@ -58,31 +67,13 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="ville" type="text" value=@model.Ville />
-                    <div class="offset-md-1"></div>
-                    <select class="col-md-4 form-control">
-                        @switch (model.Province)
-                        {
-
-                            case "QC":
-
-                                <option selected value="QC">Québec</option>
-                                <option value="ON">Ontario</option>
-                                <option value="NB">Nouveau-Brunswick</option>
-                                break;
-                            case "ON":
-                                <option value="QC">Québec</option>
-                                <option selected value="ON">Ontario</option>
-                                <option value="NB">Nouveau-Brunswick</option>
-                                break;
-                            case "NB":
-                                <option value="QC">Québec</option>
-                                <option value="ON">Ontario</option>
-                                <option selected value="NB">Nouveau-Brunswick</option>
-                                break;
-                        }
-                    </select>
-                </div>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(mod => Model.Ville, new { @class = "form-control", @Value = Model.Ville})
+                        @Html.ValidationMessageFor(mod => Model.Ville)
+                    </div>
+                        <div class="offset-md-1"></div>
+                            @Html.DropDownListFor(x => x.Province, (SelectList)ViewBag.ListeProvinces, new { @class = "form-control col-md-4" })
+                    </div>
 
                 <div class="row">
                     <div class="offset-md-1"></div>
@@ -93,13 +84,17 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="pays" type="text" disabled value=@model.Pays />
-                    <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="codePostal" type="text" value=@model.CodePostal />
-                </div>
-                <script>
 
-                </script>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(mod => Model.Pays, new { @class = "form-control", @disabled = "disabled", @Value = Model.Pays })
+                        @Html.ValidationMessageFor(mod => Model.Pays)
+                    </div>
+                    <div class="offset-md-1"></div>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(mod => Model.CodePostal, new { @class = "form-control", @Value=Model.CodePostal})
+                        @Html.ValidationMessageFor(mod => Model.CodePostal)
+                    </div>
+                </div>
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <label class="col-md-5">Téléphone primaire</label>
@@ -109,21 +104,29 @@
 
                 <div class="row">
                     <div class="offset-md-1"></div>
-                    <input class="col-md-5 form-control" id="tel1" type="text" style="padding-left:20px" value=@model.Tel1 />
-                    <div class="offset-md-1"></div>
-                    <input class="col-md-4 form-control" id="tel2" type="text" value=@model.Tel2 />
-                </div>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(mod => Model.Tel1, new { @class = "form-control", @Value = Model.Tel1})
+                        @Html.ValidationMessageFor(mod => Model.Tel1)
+                    </div>
+                        <div class="offset-md-1"></div>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(mod => Model.Tel2, new { @class = "form-control", @Value = Model.Tel2 })
+                            @Html.ValidationMessageFor(mod => Model.Tel2)
+                        </div>
+                    </div>
             </div>
             <br />
 
             <div class="card-footer">
                 <div class="row align-items-center">
                     <div class="offset-md-4"></div>
+                    <span class="col-md-4" id="erreur"></span>
+                    <div class="offset-md-4"></div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="offset-md-4"></div>
                     <input type="button" id="btnChoixDePoste" class="btn btn-success btn-block col-md-4" value="Passer à la prochaine étape" style="width:30%" />
                     <div class="offset-md-4"></div>
-                    <script>
-
-                    </script>
                 </div>
             </div>
         </div>

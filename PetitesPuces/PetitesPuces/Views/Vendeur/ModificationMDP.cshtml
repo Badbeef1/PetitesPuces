@@ -2,6 +2,7 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(x => x.NoVendeur)
+    @Html.HiddenFor(x => x.AdresseEmail)
     @Html.Hidden("strProvenence", "modificationmdp")
     <div class="card">
         <h5 class="card-header">Modification du mot de passe</h5>

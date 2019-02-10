@@ -3,6 +3,7 @@
 @using (Html.BeginForm())
 {
     @Html.HiddenFor(x => x.NoVendeur)
+    @Html.HiddenFor(x => x.AdresseEmail)
     @Html.Hidden("strProvenence", "informationPersonnel")
     <div class="card">
         <h5 class="card-header">Modification du profil de <span>@Html.DisplayFor(model => Model.AdresseEmail)</span></h5>

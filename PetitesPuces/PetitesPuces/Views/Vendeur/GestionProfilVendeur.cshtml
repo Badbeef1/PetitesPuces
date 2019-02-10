@@ -30,6 +30,7 @@
         @using (Html.BeginForm())
         {
             @Html.HiddenFor(x => x.NoVendeur)
+            @Html.HiddenFor(x => x.AdresseEmail)
             @Html.Hidden("strProvenence", "informationVendeur")
 
             <div class="card">
@@ -71,7 +72,7 @@
                         </div>
                         <div class="col-3">
                             <label class="col-form-label">Prélèvement de la taxe</label>
-                            @Html.CheckBoxFor(x => x.Taxes.Value, new { @class = "form-control" })
+                            @Html.CheckBox("Taxes", Model.Taxes.Value, new { @class = "form-control"})
                         </div>
                     </div>
                 </div>
@@ -81,11 +82,14 @@
                 </div>
             </div>
         }
-
-        @using (Html.BeginForm("GestionPofilVendeur","Vendeur",FormMethod.Post, new { enctype = "multipart/form-data" }))
+        <br />
+        
+        @using (Html.BeginForm("GestionProfilVendeur", "Vendeur", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.HiddenFor(x => x.NoVendeur)
+            @Html.HiddenFor(x => x.AdresseEmail)
             @Html.Hidden("strProvenence", "configurationCatalogue")
+
 
             var config = Model.Configuration.Split(';');
             var police = "";
@@ -106,7 +110,7 @@
                         @Html.HiddenFor(x => x.Configuration)
                         <div class="col-3">
                             <label class="col-form-label">Couleur police</label>
-                            @Html.TextBoxFor(x => police, new { @class = "form-control"})
+                            @Html.TextBoxFor(x => police, new { @class = "form-control" })
                         </div>
                         <div class="col-3">
                             <label class="col-form-label">Couleur arrière-plan</label>
@@ -116,12 +120,12 @@
                             @Html.Label("Nouvelle banière", new { @class = "col-form-label" })
                             @Html.TextBoxFor(x => ViewData["Fichier"], new { @type = "file", @class = "form-control", @onchange = "lireURL(this);" })
                         </div>
-                        <div>
+                        <div class="col-2">
                             <button type="button" class="btn btn-outline-primary">Retirer la banière</button>
                         </div>
                     </div>
                     <div>
-                        <img id="imgBaniere" src="~/Content/images/baniere.png" width="1000" height="350" />
+                        <img id="imgBaniere" src="~/Content/images/baniere.png" width="1000" height="250" />
                     </div>
 
 
@@ -161,7 +165,7 @@
                     $('#imgBaniere')
                         .attr('src', e.target.result)
                         .width(1000)
-                        .height(350);
+                        .height(250);
                 };
 
                 reader.readAsDataURL(input.files[0]);

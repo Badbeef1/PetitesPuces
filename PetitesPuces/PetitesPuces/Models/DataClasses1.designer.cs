@@ -278,11 +278,9 @@ namespace PetitesPuces.Models
 
         private int _NoCategorie;
         
-        [Required]
-        [MaxLength(50)]
+        
         private string _Description;
         
-        [Required]
         private string _Details;
 
         private EntitySet<PPProduits> _PPProduits;
@@ -324,7 +322,8 @@ namespace PetitesPuces.Models
                 }
             }
         }
-
+        [Required]
+        [MaxLength(50)]
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Description", DbType = "VarChar(50)")]
         public string Description
         {
@@ -346,6 +345,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Details", DbType = "VarChar(MAX)")]
+        [Required]
         public string Details
         {
             get
@@ -2523,16 +2523,16 @@ namespace PetitesPuces.Models
          
         private System.Nullable<bool> _Disponibilité;
 
-        [Required]
+        
         private System.Nullable<System.DateTime> _DateVente;
         
-        [Required]
+       
         private System.Nullable<decimal> _PrixVente;
         
         [Required]
         private System.Nullable<decimal> _Poids;
         
-        [Required]
+        
         private System.Nullable<System.DateTime> _DateCreation;
 
         private System.Nullable<System.DateTime> _DateMAJ;
@@ -2657,6 +2657,8 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
+        [Required]
+        [MaxLength(50)]
         public string Nom
         {
             get
@@ -2677,6 +2679,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Description", DbType = "VarChar(MAX)")]
+        [Required]
         public string Description
         {
             get
@@ -2717,6 +2720,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_PrixDemande", DbType = "SmallMoney")]
+        [Required]
         public System.Nullable<decimal> PrixDemande
         {
             get
@@ -2737,6 +2741,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_NombreItems", DbType = "SmallInt")]
+        [Required]
         public System.Nullable<short> NombreItems
         {
             get
@@ -2818,6 +2823,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Poids", DbType = "Decimal(8,1)")]
+        [Required]
         public System.Nullable<decimal> Poids
         {
             get
@@ -2858,7 +2864,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DateMAJ", DbType = "SmallDateTime")]
-        public System.Nullable<System.DateTime> DateMAJ
+        public System.Nullable<System.DateTime > DateMAJ
         {
             get
             {
@@ -3932,6 +3938,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_LivraisonGratuite", DbType = "SmallMoney")]
         [Required(ErrorMessage = "Le champ livraison gratuite est requis.")]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public System.Nullable<decimal> LivraisonGratuite
         {
             get

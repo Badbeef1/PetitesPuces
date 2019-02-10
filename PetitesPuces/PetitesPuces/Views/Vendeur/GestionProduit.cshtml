@@ -44,20 +44,27 @@
 <body>
    @Html.Partial("index")
    <br />
-   @using (Html.BeginForm("AjouterProduit",
-      "Vendeur",
-      FormMethod.Post,
-      new { enctype = "multipart/form-data" }))
+
+   @using (Html.BeginForm((@ViewBag.Form as String),"Vendeur",FormMethod.Post,new { enctype = "multipart/form-data" }))
    {
       @Html.HiddenFor(model => model.produit.NoVendeur)
       @Html.HiddenFor(model => model.produit.DateMAJ)
       @Html.HiddenFor(model => model.produit.NoProduit)
       @Html.HiddenFor(model => model.produit.Photo)
 
-      @ViewBag.Message
+
       <div class="container">
          <div class="card">
-            <h4 class="card-header">Ajout de produit</h4>
+            @{
+               if (ViewBag.Action.Equals("Ajouter"))
+               {
+                  <h4 class="card-header">Ajout de produit</h4>
+               }
+               else if (ViewBag.Action.Equals("Modifier"))
+               {
+                  <h4 class="card-header">Modifier le produit: ­@Model.produit.Nom</h4>
+               }
+            }
 
             <div class="card-body">
                <div class="form-row form-group">
@@ -70,11 +77,11 @@
                      <label class="col-form-label">Catégorie</label>
                      @Html.DropDownListFor(model => model.produit.NoCategorie, (SelectList)ViewBag.ListeCategories, new { @class = "custom-select" })
                      <!--<select id="selTypeRech" class="form-control">
-                           <option value="1" selected>Sport</option>
-                           <option value="2">Loisir</option>
-                           <option value="3">Véhicule</option>
-                           <option value="4">Fourniture de bureau</option>
-                        </select>-->
+               <option value="1" selected>Sport</option>
+               <option value="2">Loisir</option>
+               <option value="3">Véhicule</option>
+               <option value="4">Fourniture de bureau</option>
+            </select>-->
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Disponibilité</label><br />
@@ -101,7 +108,7 @@
                      <div class="input-group">
                         <!--<input type="text" class="form-control" id="tbPrixVente" placeholder="00.00">-->
                         @*Html.EditorFor(model => model.PrixVente, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @min="0", @step="0.01"} })*@
-                        @Html.TextBoxFor(model => model.produit.PrixVente, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.produit.PrixVente, new { @class = "form-control", @type = "number", @min = "0", @step = "0.05" })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               $
@@ -117,8 +124,8 @@
                   <div class="col-2">
                      <label class="col-form-label">Poids</label>
                      <div class="input-group">
-                        @Html.EditorFor(model => model.produit.Poids, new { htmlAttributes = new { @type = "text", @class = "form-control", @placeholder = "00" } })
-                        <!--<input type="text" class="form-control" id="tbPoids" placeholder="00">-->
+                        @*Html.EditorFor(model => model.produit.Poids, new { htmlAttributes = new { @type = "text", @class = "form-control", @placeholder = "00" } })*@
+                        @Html.TextBoxFor(model => model.produit.Poids, new { @type = "number", @class = "form-control", @min = "0", @step = "0.5" })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               Lbs
@@ -145,13 +152,28 @@
                   </div>
                   <div class="col-5">
                      <label class="col-form-label">Photo</label><br />
-                     <img id="imgProduit" src="~/Content/images/images.png" width="250" height="250" />
-                     <div class="d-flex mt-2">
-                        @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control", @onchange = "readURL(this);" })
-                        <!--<input type="file" class="form-control" onchange="readURL(this);">-->
-                        <!--<input type="file" class="form-control" />-->
+                     @{
+                        if (ViewBag.Action.Equals("Modifier"))
+                        {
+                           <img id="imgProduit" src="~/Content/images/@Model.produit.Photo" width="250" height="250" />
+                        }
+                        else
+                        {
+                           <img id="imgProduit" src="~/Content/images/images.png" width="250" height="250" />
+                        }
+                     }
 
-                        <button type="button" class="btn btn-outline-primary ml-3">Visualiser</button>
+                     <div class="d-flex mt-2">
+                        @{
+                           if (!ViewBag.Message.Equals("File uploaded successfully") && !ViewBag.Message.Equals(""))
+                           {
+                              @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control input-validation-error", @onchange = "readURL(this);" })
+                           }
+                           else
+                           {
+                              @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control", @onchange = "readURL(this);" })
+                           }
+                        }
                      </div>
                   </div>
                </div>

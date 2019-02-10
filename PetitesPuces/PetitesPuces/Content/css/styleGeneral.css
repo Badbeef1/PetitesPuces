@@ -16,4 +16,17 @@
     position: sticky;
     z-index: 1000;
     height: calc(100vh - 4rem);
+    top: 4rem;
+}
+
+.bd-links {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-right: -15px;
+    margin-left: -15px;
+
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+
+    display:block!important;
 }
