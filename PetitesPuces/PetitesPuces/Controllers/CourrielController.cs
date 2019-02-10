@@ -102,38 +102,12 @@ namespace PetitesPuces.Views
                         .ToList();
 
                     dicNotificationLieu.Add(unLieu.NoLieu, lstMessage04.Count);
-
-
-                    courrielVM.addresseExpediteur = x.AdresseEmail;
-
-                    //Get vendeurs
-                    courrielVM.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
-                    //Get gestionnaires
-                    courrielVM.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
                     break;
                 case PPVendeurs y:
-
-
-                    courrielVM.addresseExpediteur = y.AdresseEmail;
-
-                    //Get soi-même
-                    courrielVM.lstVendeursCourriels = contextPP.PPVendeurs.Where(v => v.AdresseEmail == y.AdresseEmail).Select(m => m.AdresseEmail).ToList();
-                    //Get clients
-                    courrielVM.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
-                    //Get gestionnaires
-                    courrielVM.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    
                     break;
                 case PPGestionnaire z:
-
-
-                    courrielVM.addresseExpediteur = z.AdresseEmail;
-
-                    //Get gestionnaires
-                    courrielVM.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
-                    //Get clients
-                    courrielVM.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
-                    //Get vendeurs
-                    courrielVM.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
+                    
                     break;
             }
 
@@ -142,10 +116,9 @@ namespace PetitesPuces.Views
             courrielVM.lstLieu = lstLieu;
             courrielVM.lieu = lieu ?? 1;
 
-
-            getNoDestinataireEtAdresse(contextPP);
-
-
+            //Init lstDestinataires et l'adresse de l'expediteur
+            courrielVM = InitModelCourriel(utilisateur, courrielVM);
+            
             if (id == "Reception")
             {
                 SectionBoiteReception(ref courrielVM, lstDestinataires01);
@@ -203,13 +176,15 @@ namespace PetitesPuces.Views
             model.lstLieu = contextPP.PPLieu.ToList();
 
             //Liste de toutes les IDs et leur courriel
-            var listeNoDestEtAdresse = getNoDestinataireEtAdresse(contextPP);
+            var listeNoDestEtAdresse = GetNoDestinataireEtAdresse(contextPP);
             
             //ID de l'expediteur (utilisateur courant)
             var noExpediteur = listeNoDestEtAdresse.Where(m => m.Item2.Equals(model.addresseExpediteur)).Select(s => s.Item1).FirstOrDefault();
             //Nb messages present
             var noMessage = contextPP.PPMessages.Count() + 1;
-            
+
+            //Repopuler le dropdownlist des destinataires
+            model = InitModelCourriel(Session["vendeurObj"] ?? Session["clientObj"] ?? Session["gestionnaireObj"], model);
 
             switch (submit)
             {
@@ -228,7 +203,7 @@ namespace PetitesPuces.Views
                         NoMsg = noMessage,
                         NoExpediteur = int.Parse(noExpediteur.ToString()),
                         DescMsg = model.messageCourriel,
-                        FichierJoint = model.fichierJoint.FileName,
+                        FichierJoint = model.fichierJoint?.FileName,
                         Lieu = 2,
                         dateEnvoi = DateTime.Now,
                         objet = model.objetMessage
@@ -237,7 +212,7 @@ namespace PetitesPuces.Views
                     // Sauvegarde le fichier sur le serveur
                     string path = Server.MapPath("~/Uploads/");
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    model.fichierJoint.SaveAs(path + Path.GetFileName(model.fichierJoint.FileName));
+                    model.fichierJoint?.SaveAs(path + Path.GetFileName(model.fichierJoint?.FileName));
 
                     contextPP.PPMessages.InsertOnSubmit(message);
 
@@ -272,7 +247,7 @@ namespace PetitesPuces.Views
                         NoMsg = noMessage,
                         NoExpediteur = int.Parse(noExpediteur.ToString()),
                         DescMsg = model.messageCourriel,
-                        FichierJoint = model.fichierJoint.FileName,
+                        FichierJoint = model.fichierJoint?.FileName,
                         Lieu = 4,
                         //dateEnvoi = DateTime.Now,
                         objet = model.objetMessage
@@ -283,7 +258,7 @@ namespace PetitesPuces.Views
                     string path1 = Server.MapPath("~/Uploads/");
                     if (!Directory.Exists(path1))
                         Directory.CreateDirectory(path1);
-                    model.fichierJoint.SaveAs(path1 + Path.GetFileName(model.fichierJoint.FileName));
+                    model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
                     model.msgSuccesCourriel = "Le courriel a été enregistré.";
                     break;
             }
@@ -291,11 +266,11 @@ namespace PetitesPuces.Views
             return View("Index", model);
         }
 
-        private List<Tuple<long, string>> getNoDestinataireEtAdresse(DataClasses1DataContext context)
+        private List<Tuple<long, string>> GetNoDestinataireEtAdresse(DataClasses1DataContext context)
         {
             var clients = from c in context.PPClients select new { c.NoClient, c.AdresseEmail };
             var vendeurs = from v in context.PPVendeurs select new { v.NoVendeur, v.AdresseEmail };
-            var gestionnaire = (from g in context.PPGestionnaire select new { g.NoGestionnaire, g.AdresseEmail });
+            var gestionnaire = from g in context.PPGestionnaire select new { g.NoGestionnaire, g.AdresseEmail };
 
             List<Tuple<long, string>> liste = new List<Tuple<long, string>>();
 
@@ -307,6 +282,44 @@ namespace PetitesPuces.Views
                 liste.Add(new Tuple<long, string>(g.NoGestionnaire, g.AdresseEmail));
 
             return liste;
+        }
+
+        private ViewModels.CourrielVM InitModelCourriel(dynamic util, ViewModels.CourrielVM model)
+        {
+            switch (util)
+            {
+                case PPClients c:
+                    model.addresseExpediteur = c.AdresseEmail;
+
+                    //Get vendeurs
+                    model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
+                    //Get gestionnaires
+                    model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    break;
+                case PPVendeurs v:
+                    model.addresseExpediteur = v.AdresseEmail;
+
+                    //Get soi-même
+                    model.lstVendeursCourriels = contextPP.PPVendeurs.Where(a => a.AdresseEmail == v.AdresseEmail).Select(m => m.AdresseEmail).ToList();
+                    //Get clients
+                    model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
+                    //Get gestionnaires
+                    model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    break;
+                    
+                case PPGestionnaire g:
+                    model.addresseExpediteur = g.AdresseEmail;
+
+                    //Get gestionnaires
+                    model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    //Get clients
+                    model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
+                    //Get vendeurs
+                    model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
+                    break;
+            }
+
+            return model;
         }
     }
 }
