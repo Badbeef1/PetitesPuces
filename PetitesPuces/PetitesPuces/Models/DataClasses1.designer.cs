@@ -3932,6 +3932,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_LivraisonGratuite", DbType = "SmallMoney")]
         [Required(ErrorMessage = "Le champ livraison gratuite est requis.")]
+        [DisplayFormat(DataFormatString = "{0:C}")]
         public System.Nullable<decimal> LivraisonGratuite
         {
             get

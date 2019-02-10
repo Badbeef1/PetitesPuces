@@ -108,27 +108,27 @@ namespace PetitesPuces.Controllers
             //Ajouter le produit dans la base de donnée
             if (ModelState.IsValid)
             {
-               prod.Disponibilité = true;
+                prod.Disponibilité = true;
 
-               var nbProduit = (from produits in db.GetTable<PPProduits>()
-                                select prod
-                                ).ToList();
-               //Le pattern de num produit va être à retravailler.
-               prod.NoProduit = (nbProduit.Count() + 1) * 10;
+                var nbProduit = (from produits in db.GetTable<PPProduits>()
+                                 select prod
+                                 ).ToList();
+                //Le pattern de num produit va être à retravailler.
+                prod.NoProduit = (nbProduit.Count() + 1) * 10;
 
-               db.PPProduits.InsertOnSubmit(prod);
+                db.PPProduits.InsertOnSubmit(prod);
 
-               // Submit the changes to the database.
-               try
-               {
-                  db.SubmitChanges();
-               }
-               catch (Exception e)
-               {
-                  Console.WriteLine(e);
-               }
+                // Submit the changes to the database.
+                try
+                {
+                    db.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
-           
+
 
             PPProduits p = new PPProduits();
             p.Disponibilité = true;
@@ -323,7 +323,11 @@ namespace PetitesPuces.Controllers
             };
 
             ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
-            return View(vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur));
+
+            PPVendeurs unVendeur = vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur);
+
+
+            return View(unVendeur);
         }
 
         [HttpPost]
@@ -362,6 +366,28 @@ namespace PetitesPuces.Controllers
 
             PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo(vendeur.NoVendeur);
 
+            //Retire les validations selon la section appelé
+            if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
+            {
+                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+            }
+            else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
+            {
+                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+            }
+            else if (string.Equals(strProvenence, "informationVendeur", StringComparison.OrdinalIgnoreCase))
+            {
+                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+            }
+            else
+            {
+                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+            }
+
+            ModelState[nameof(vendeur.MotDePasse)].Errors.Clear();
+
 
             if (ModelState.IsValid)
             {
@@ -389,15 +415,10 @@ namespace PetitesPuces.Controllers
 
                 if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
                 {
-                    lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
-
                     vendeurDao.modifierProfilInformationPersonnel(vendeur);
                 }
                 else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
                 {
-                    lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
-                    lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
-
                     String strAncientMDP = Request["tbAncienMdp"];
                     String strNouveauMDP = Request["tbNouveauMdp"];
                     String strConfirmationMDP = Request["tbConfirmationMdp"];
@@ -446,21 +467,16 @@ namespace PetitesPuces.Controllers
                 }
                 else if (string.Equals(strProvenence, "informationVendeur", StringComparison.OrdinalIgnoreCase))
                 {
-                    lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
-
                     vendeurDao.modifierProfilSpecificVendeur(vendeur);
                 }
                 else
                 {
-                    lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
-                    lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
-
                     vendeurDao.modifierProfilConfiguration(police, fond, baniere);
                 }
             }
 
 
-            
+
 
             //est-ce qu'il y a la mise a jour des donnée (meme si variable local?)
             return View(vendeurOriginel);
