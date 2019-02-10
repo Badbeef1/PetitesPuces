@@ -179,7 +179,16 @@
                </div>
             </div>
             <div class="card-footer btn-group" style="width:100%">
-               <button type="submit" class="btn btn-outline-success">Ajouter</button>
+               @{
+                  if (ViewBag.Action.Equals("Ajouter"))
+                  {
+                     <button type="submit" class="btn btn-outline-success">Ajouter</button>
+                  }
+                  else
+                  {
+                     <button type="submit" class="btn btn-outline-success">Modifier</button>
+                  }
+               }
                <a href="/Vendeur/CatalogueVendeur" class="btn btn-outline-primary">Annuler</a>
             </div>
          </div>

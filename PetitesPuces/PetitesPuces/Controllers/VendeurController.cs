@@ -191,15 +191,18 @@ namespace PetitesPuces.Controllers
          //ValidateModel(model.produit);
          //Pour les dropdownlist aller voir le fichier : ---------> vers la ligne 300 du clientController et dans les InformationPersonel
          //TODO: Ajouter le produit dans la BASE DE DONNÉES
-         
+         List<string> parts = new List<string>();
 
          if (model.file != null && model.file.ContentLength > 0)
             try
             {
+               //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
+               parts = model.file.FileName.Split('.').Select(p => p.Trim()).ToList();
+
                string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                     Path.GetFileName(model.file.FileName));
+                                     (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
                model.file.SaveAs(path);
-               model.produit.Photo = model.file.FileName;
+               model.produit.Photo = model.produit.NoProduit + '.' + Path.GetExtension(path);
                ViewBag.Message = "File uploaded successfully";
             }
             catch (Exception ex)
@@ -219,10 +222,22 @@ namespace PetitesPuces.Controllers
                                     ).ToList();
 
             PPProduits pAModifier = produitAModifier.First();
-            pAModifier = model.produit;
+
+            //Modifier les valeurs
+            pAModifier.Nom = model.produit.Nom;
+            pAModifier.PrixDemande = model.produit.PrixDemande;
+            pAModifier.Description = model.produit.Description;
+            pAModifier.DateCreation = model.produit.DateCreation;
+            pAModifier.NombreItems = model.produit.NombreItems;
+            pAModifier.PrixVente = model.produit.PrixVente;
+            pAModifier.DateVente = model.produit.DateVente;
+            pAModifier.Poids = model.produit.Poids;
+            //pAModifier.Disponibilité = model.produit.Disponibilité;
+
+
             if(ViewBag.Message.Equals("File uploaded successfully"))
             {
-               pAModifier.Photo = model.file.FileName;
+               pAModifier.Photo = (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1));
             }
             try
             {
@@ -233,7 +248,37 @@ namespace PetitesPuces.Controllers
             {
                Console.WriteLine(e);
             }
-            return View("CatalogueVendeur");
+
+            Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+            //Aller chercher les commandes non traités
+            var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
+                                      where commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur) && commande.Statut.Equals('N')
+                                      select commande
+                                      ).ToList();
+
+            foreach (var commande in commandesNonTraite)
+            {
+               List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>();
+               var query = (from detailsCommande in db.PPDetailsCommandes
+                            where detailsCommande.NoCommande.Equals(commande.NoCommande)
+                            select detailsCommande
+                            ).ToList();
+               lstDetailCommandes = query;
+               lstDetailsProduitsCommandes.Add(commande, lstDetailCommandes);
+            }
+
+            //Aller chercher les paniers du vendeur
+            var paniers = (from panier in db.GetTable<PPArticlesEnPanier>()
+                           where panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                           group panier by panier.PPClients
+                           );
+
+            //TODO : Aller chercher le nombres de visites quotidienne
+
+            //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
+            AccueilVendeurViewModel model2 = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, 10);
+            db.Connection.Close();
+            return View("AccueilVendeur", model2);
          }
          else
          {
@@ -255,6 +300,7 @@ namespace PetitesPuces.Controllers
             ViewBag.Message = "";
             ViewBag.Action = "Modifier";
             ViewBag.Form = "ModifierProduit";
+            db.Connection.Close();
             return View("GestionProduit", gestionProduit);
          }
       }
