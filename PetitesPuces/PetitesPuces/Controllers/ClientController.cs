@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using PetitesPuces.Models;
 using PagedList;
 using System.Transactions;
+using System.Globalization;
 
 namespace PetitesPuces.Controllers
 {
@@ -755,6 +756,12 @@ namespace PetitesPuces.Controllers
                                         where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
                                         typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3])) select typeLiv;
 
+                // Trouver prochain numéro de commande
+                var numCommande = from commandeTrouver in contextPP.GetTable<PPCommandes>()
+                                  orderby commandeTrouver.NoCommande descending
+                                  select commandeTrouver;
+                long maxCommande = numCommande.First().NoCommande + 1;
+
                 ViewData["CheckPoint"] = "D";
                 using (var trans = new TransactionScope())
                     {
@@ -765,9 +772,10 @@ namespace PetitesPuces.Controllers
                         // Création de la commande
                         PPCommandes commande = new PPCommandes
                         {
+                            NoCommande = maxCommande,
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
-                            DateCommande = DateTime.Parse(DateAutorisation),
+                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd",CultureInfo.InvariantCulture),
                             CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
                             TypeLivraison = typeLivraison.First().CodeLivraison,
                             MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
@@ -777,6 +785,7 @@ namespace PetitesPuces.Controllers
                             Statut = 'N',
                             NoAutorisation = NoAutorisation
                         };
+                        ViewData["CheckPoint"] = commande.ToString();
                         contextPP.GetTable<PPCommandes>().InsertOnSubmit(commande);
                         contextPP.SubmitChanges();
 
@@ -856,6 +865,7 @@ namespace PetitesPuces.Controllers
                     }
                     catch (Exception e)
                     {
+                        ViewData["CheckPoint"] = e.StackTrace+"=======\n"+e.ToString();
                         //return new HttpStatusCodeResult(HttpStatusCode.NotFound);
                     }
 
