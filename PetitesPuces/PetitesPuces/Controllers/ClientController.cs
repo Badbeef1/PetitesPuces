@@ -760,7 +760,6 @@ namespace PetitesPuces.Controllers
                 
                 using (var trans = new TransactionScope())
                     {
-                    contextPP.Connection.Open();
                     try
                     {
                         Char c = new Char();
@@ -855,8 +854,6 @@ namespace PetitesPuces.Controllers
                         
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
-                        contextPP.Connection.Close();
-                        trans.Complete();
                     }
                     catch (Exception e)
                     {
