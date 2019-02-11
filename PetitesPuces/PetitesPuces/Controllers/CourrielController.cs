@@ -14,7 +14,7 @@ namespace PetitesPuces.Views
         DataClasses1DataContext contextPP = new DataClasses1DataContext();
 
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu)
+        public ActionResult Index(string id, short? lieu, int? message)
         {
             const String strClient = "Client";
             const String strVendeur = "Vendeur";
@@ -92,6 +92,10 @@ namespace PetitesPuces.Views
             {
                 SectionBoiteReception(ref courrielVM, lstDestinatairesBoiteReception);
             }
+            else if (id == "AffichageMessage" && message.HasValue)
+            {
+                courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur);
+            }
 
 
 
@@ -136,6 +140,53 @@ namespace PetitesPuces.Views
 
             courrielVM.iplDestionataireBoiteReception = lstDestinataireEtExpediteur.ToPagedList(1, 20);
 
+        }
+
+        private (PPDestinataires,string,string) AffichageMessage(int intNoMessage, dynamic utilisateur)
+        {
+            String strDestinataire = "";
+            String strExpediteur = "";
+            long lngNoDestinataire = 0;
+
+            switch (utilisateur)
+            {
+                case PPClients c:
+                    strDestinataire = c.AdresseEmail;
+                    lngNoDestinataire = c.NoClient ;
+                    break;
+                case PPVendeurs v:
+                    strDestinataire = v.AdresseEmail;
+                    lngNoDestinataire = v.NoVendeur;
+                    break;
+                case PPGestionnaire g:
+                    strDestinataire = g.AdresseEmail;
+                    lngNoDestinataire = g.NoGestionnaire;
+                    break;
+            }
+
+            PPDestinataires destinataires = contextPP.PPDestinataires
+                .FirstOrDefault(predicate: dest => dest.NoDestinataire == lngNoDestinataire && dest.NoMsg == intNoMessage);
+
+            dynamic expediteur;
+            int intNoExpediteur = destinataires.PPMessages.NoExpediteur.Value;
+            if ((expediteur = contextPP.PPClients.FirstOrDefault(predicate: client => client.NoClient == intNoExpediteur)) != null)
+            {
+                PPClients unClient = (expediteur as PPClients);
+
+                strExpediteur = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom + " <" + unClient.AdresseEmail + ">";
+            }
+            else if ((expediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur)) != null)
+            {
+                PPVendeurs unVendeur = (expediteur as PPVendeurs);
+
+                strExpediteur = unVendeur.NomAffaires + " <" + unVendeur.AdresseEmail + ">";
+            }
+            else
+            {
+                strExpediteur = (expediteur as PPGestionnaire).AdresseEmail;
+            }
+
+            return (destinataires, strDestinataire, strExpediteur);
         }
 
         //Touve le nombre de notification par lieu

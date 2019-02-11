@@ -13,6 +13,7 @@ namespace PetitesPuces.ViewModels
         public short lieu { get; set; }
         public IPagedList<Tuple<Models.PPDestinataires, String>> iplDestionataireBoiteReception { get; set; }
         public Dictionary<short, int> dicNotificationLieu { get; set; }
+        public (Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur) valtupAfficheMessage { get; set; }
         
 
         public List<string> lstClientsCourriels { get; set; }

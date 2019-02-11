@@ -1,22 +1,36 @@
-﻿
+﻿@model Tuple<PetitesPuces.Models.PPDestinataires, String>
+@{ 
+    PetitesPuces.Models.PPMessages message = Model.Item1.PPMessages;
+
+    string strNomExpediteur = Model.Item2; //A suivre ... Philippe &lsaquo;PhilousLeLoup@Netscape.com&rsaquo;
+    string strDateEnvoie = message.dateEnvoi.Value.ToString("dd MMMM yyyy");
+
+}
+
 <div>
-    <div>
-        Objet...
+    <div style="height: 30px;">
+        <h6>@message.objet</h6>
     </div>
     <div>
         <div>
-            <span>Philippe</span>
-            <span>10 février 2019</span>
-            <span>Jojo@aol.com</span>
             <div>
-                <span>Contract.pdf</span>
-                <button type="button" class="btn">Télécharger</button>
+                <span>@strNomExpediteur</span><br />
+                <span>@strDateEnvoie</span><br />
+                <small>Jojo@aol.com</small>
             </div>
+            @if (message.FichierJoint != null)
+            {
+                <br />
+                <div>
+                    <span>@message.FichierJoint.ToString()</span>
+                    <button type="button" class="btn">Télécharger</button>
+                </div>
+            }
         </div>
-        
+        <br />
         <div>
             <p>
-                Message ...
+                @message.DescMsg
             </p>
         </div>
 
