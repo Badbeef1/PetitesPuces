@@ -838,8 +838,13 @@ namespace PetitesPuces.Controllers
                                       select unVendeur;
 
                         // Mettre à jour l'historique de paiement
+                        var numHistoPaie = from histoPaie in contextPP.GetTable<PPHistoriquePaiements>()
+                                         orderby histoPaie.NoHistorique descending
+                                         select histoPaie;
+                        long maxHistoPaie = numHistoPaie.First().NoHistorique + 1;
                         PPHistoriquePaiements histoPaiement = new PPHistoriquePaiements
                         {
+                            NoHistorique = maxHistoPaie,
                             MontantVenteAvantLivraison = commande.MontantTotAvantTaxes,
                             NoVendeur = commande.NoVendeur,
                             NoClient = commande.NoClient,
