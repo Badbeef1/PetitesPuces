@@ -2505,12 +2505,10 @@ namespace PetitesPuces.Models
         private System.Nullable<long> _NoVendeur;
 
         private System.Nullable<int> _NoCategorie;
-        
-        [Required]
-        [MinLength(2)]
+
         private string _Nom;
         
-        [Required]
+        [Required(ErrorMessage ="Vous devez saisie une descrption de produit.")]
         private string _Description;
         
         private string _Photo;
@@ -2657,9 +2655,10 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
-        [Required]
-        [MaxLength(50)]
-        public string Nom
+
+      [StringLength(60, MinimumLength = 3, ErrorMessage = "Le nom de produit doit etre entre 3 et 50 caractères")]
+      [Required(ErrorMessage = "Vous devez saisir un nom de produit.")]
+      public string Nom
         {
             get
             {
@@ -2679,7 +2678,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Description", DbType = "VarChar(MAX)")]
-        [Required]
+        [Required(ErrorMessage ="Vous devez saisir une description.")]
         public string Description
         {
             get
@@ -2720,7 +2719,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_PrixDemande", DbType = "SmallMoney")]
-        [Required]
+        [Required(ErrorMessage ="Vous devez saisir le prix demandé.")]
         public System.Nullable<decimal> PrixDemande
         {
             get
@@ -2741,7 +2740,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_NombreItems", DbType = "SmallInt")]
-        [Required]
+        [Required(ErrorMessage ="Vous devez saisir le nombre(s) d'items disponibles.")]
         public System.Nullable<short> NombreItems
         {
             get
@@ -2823,7 +2822,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Poids", DbType = "Decimal(8,1)")]
-        [Required]
+        [Required(ErrorMessage = "Vous devez saisir le poid du produit")]
         public System.Nullable<decimal> Poids
         {
             get

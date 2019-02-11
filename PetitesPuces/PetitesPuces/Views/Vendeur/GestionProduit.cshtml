@@ -12,7 +12,9 @@
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <!-- Popper JS -->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
    <script type="text/javascript">
@@ -39,13 +41,20 @@
          border: 1px solid #ff0000;
          background-color: white;
       }
+
+      /*Copie de la classe alert de bootstrap*/
+      .field-validation-error {
+         color: #b94a48;
+         background-color: #f2dede;
+         border-color: #eed3d7;
+      }
    </style>
 </head>
 <body>
    @Html.Partial("index")
    <br />
 
-   @using (Html.BeginForm((@ViewBag.Form as String),"Vendeur",FormMethod.Post,new { enctype = "multipart/form-data" }))
+   @using (Html.BeginForm((@ViewBag.Form as String), "Vendeur", FormMethod.Post, new { enctype = "multipart/form-data" }))
    {
       @Html.HiddenFor(model => model.produit.NoVendeur)
       @Html.HiddenFor(model => model.produit.DateMAJ)
@@ -72,16 +81,12 @@
                      <label class="col-form-label">Nom</label>
                      <!--<input type="text" class="form-control" />-->
                      @Html.EditorFor(model => model.produit.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                     @Html.ValidationMessageFor(model => model.produit.Nom)
+
                   </div>
                   <div class="col-3">
                      <label class="col-form-label">Catégorie</label>
                      @Html.DropDownListFor(model => model.produit.NoCategorie, (SelectList)ViewBag.ListeCategories, new { @class = "custom-select" })
-                     <!--<select id="selTypeRech" class="form-control">
-               <option value="1" selected>Sport</option>
-               <option value="2">Loisir</option>
-               <option value="3">Véhicule</option>
-               <option value="4">Fourniture de bureau</option>
-            </select>-->
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Disponibilité</label><br />
@@ -101,6 +106,7 @@
                               $
                            </span>
                         </div>
+                        @Html.ValidationMessageFor(model => model.produit.PrixDemande)
                      </div>
                   </div>
                   <div class="col-2">
@@ -114,23 +120,26 @@
                               $
                            </span>
                         </div>
+
                      </div>
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Nombre d'item(s)</label>
                      @Html.EditorFor(model => model.produit.NombreItems, new { htmlAttributes = new { @type = "number", @class = "form-control", @min = "0" } })
+                     @Html.ValidationMessageFor(model => model.produit.NombreItems)
                      <!--<input type="number" class="form-control" />-->
                   </div>
                   <div class="col-2">
                      <label class="col-form-label">Poids</label>
                      <div class="input-group">
                         @*Html.EditorFor(model => model.produit.Poids, new { htmlAttributes = new { @type = "text", @class = "form-control", @placeholder = "00" } })*@
-                        @Html.TextBoxFor(model => model.produit.Poids, new { @type = "number", @class = "form-control", @min = "0", @step = "0.5" })
+                        @Html.TextBoxFor(model => model.produit.Poids, new { @type = "number", @class = "form-control", @min = "0", @step = "0.01" })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               Lbs
                            </span>
                         </div>
+                        @Html.ValidationMessageFor(model => model.produit.Poids)
                      </div>
                   </div>
                   <div class="col-2">
@@ -148,6 +157,7 @@
                   <div class="col-7">
                      <label class="col-form-label">Description plus élaborée</label>
                      @Html.TextAreaFor(model => model.produit.Description, 10, 80, new { htmlAttributes = new { @class = "form-control" } })
+                     @Html.ValidationMessageFor(model => model.produit.Description)
                      <!--<textarea class="form-control" rows="12"></textarea>-->
                   </div>
                   <div class="col-5">
@@ -163,18 +173,28 @@
                         }
                      }
 
-                     <div class="d-flex mt-2">
-                        @{
-                           if (!ViewBag.Message.Equals("File uploaded successfully") && !ViewBag.Message.Equals(""))
-                           {
-                              @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control input-validation-error", @onchange = "readURL(this);" })
-                           }
-                           else
-                           {
-                              @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control", @onchange = "readURL(this);" })
-                           }
+                           <div class="d-flex mt-2">
+                              @{
+                                 if ((!ViewBag.Message.Equals("File uploaded successfully")) && (!ViewBag.Message.Equals("")))
+                                 {
+                                    @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control input-validation-error", @onchange = "readURL(this);" })
+                                    <!--<span class="field-validation-error">Le fichier doit correspondre à une image et il ne peut pas être vide</span>-->
+                                 }
+                                 else
+                                 {
+                                    @Html.TextBoxFor(model => model.file, new { @type = "file", @class = "form-control", @onchange = "readURL(this);" })
+
+                                 }
+                              }
+
+                           </div>
+                     @{
+                        if ((!ViewBag.Message.Equals("File uploaded successfully")) && (!ViewBag.Message.Equals("")))
+                        {
+                           <span class="field-validation-error">Le fichier doit correspondre à une image et il ne peut pas être vide</span>
                         }
-                     </div>
+                     }
+
                   </div>
                </div>
             </div>
