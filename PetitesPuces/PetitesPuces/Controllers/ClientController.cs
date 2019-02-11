@@ -768,7 +768,18 @@ namespace PetitesPuces.Controllers
                     try
                     {
 
-                        ViewData["CheckPoint"] = "E";
+                        ViewData["CheckPoint"] = maxCommande+"\n";
+                        ViewData["CheckPoint"] += panierCommander.First().NoClient+"\n";
+                        ViewData["CheckPoint"] += panierCommander.First().NoVendeur+"\n";
+                        ViewData["CheckPoint"] += DateTime.ParseExact(DateAutorisation, "yyyy-MM-dd", CultureInfo.InvariantCulture) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[3]) + "\n";
+                        ViewData["CheckPoint"] += typeLivraison.First().CodeLivraison + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[4]) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[5]) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[6]) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[2]) + "\n";
+                        Char c = new Char();
+                        c = 'N';
                         // Création de la commande
                         PPCommandes commande = new PPCommandes
                         {
@@ -782,7 +793,7 @@ namespace PetitesPuces.Controllers
                             TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
                             TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
                             PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
-                            Statut = 'N',
+                            Statut = c,
                             NoAutorisation = NoAutorisation
                         };
                         ViewData["CheckPoint"] = commande.ToString();
