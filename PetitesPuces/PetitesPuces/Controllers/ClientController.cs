@@ -771,6 +771,8 @@ namespace PetitesPuces.Controllers
                         ViewData["CheckPoint"] = maxCommande+"\n";
                         ViewData["CheckPoint"] += panierCommander.First().NoClient+"\n";
                         ViewData["CheckPoint"] += panierCommander.First().NoVendeur+"\n";
+                        ViewData["CheckPoint"] += "COUNT POIDSLIVRAISON" + poidsLivraison.ToList().Count;
+                        ViewData["CheckPoint"] += "COUNT typeLivraison" + typeLivraison.ToList().Count;
                         ViewData["CheckPoint"] += DateTime.ParseExact(DateAutorisation, "yyyy-MM-dd", CultureInfo.InvariantCulture) + "\n";
                         ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[3]) + "\n";
                         ViewData["CheckPoint"] += typeLivraison.First().CodeLivraison + "\n";
