@@ -747,10 +747,7 @@
 
         function checkBoxFraisLivraison(tarif) {
             @{
-
-                decimal dclCout = 0;
-            <text> 
-                    @dclCout = tarif
+            <text>
                 var poids = @poidsLbs.ToString().Replace(",", ".");
                 var panier = @Model.lstArticlePanier[0].NoPanier;
             </text>
@@ -833,7 +830,18 @@
                 var InfoSuppl = document.createElement("input");
                 InfoSuppl.setAttribute("type", "hidden");
                 InfoSuppl.setAttribute("name", "InfoSuppl");
-                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur+"-"+@poidsLbs+"-"+@dclCout+"-"+@dblSousTotal+"-"+@totalTps+"-"@totalTvq+);
+                @if(ViewData["cbChecked"] != null)
+                {
+                    <text>
+                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur+"-"+@poidsLbs+"-"+@ViewData["cbChecked"].ToString()+"-"+@dblSousTotal+"-"+@totalTps+"-"+@totalTvq);
+                </text>
+                }
+                else {
+                    <text>
+                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur+"-"+@poidsLbs+"-0-"+@dblSousTotal+"-"+@totalTps+"-"+@totalTvq);
+                </text>
+                }
+                
                 form.appendChild(InfoSuppl);
 
                     document.body.appendChild(form);

@@ -717,6 +717,8 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
+
+            ViewData["CheckPoint"] = "-A";
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
@@ -733,28 +735,33 @@ namespace PetitesPuces.Controllers
             }
             if (InfoSuppl != null && InfoSuppl.Trim() != "N/A")
             {
+                ViewData["CheckPoint"] = "A";
                 ViewData["InfoSuppl"] = InfoSuppl;
-
-
                     var panierCommander = from unPanier in contextPP.GetTable<PPArticlesEnPanier>()
                                           where unPanier.NoClient.Equals(InfoSuppl.Split('-')[0]) &&
                                           unPanier.NoVendeur.Equals(InfoSuppl.Split('-')[1])
                                           select unPanier;
 
-                    // Poids de ma livraison
-                    var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
+                ViewData["CheckPoint"] = "B";
+                // Poids de ma livraison
+                var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
                                          where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2]) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2])
                                          orderby pLiv.CodePoids
                                          select pLiv;
 
-                    // Type de livraison
-                    var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
+                ViewData["CheckPoint"] = "C";
+                // Type de livraison
+                var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
                                         where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
                                         typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3])) select typeLiv;
-                    using (var trans = new TransactionScope())
+
+                ViewData["CheckPoint"] = "D";
+                using (var trans = new TransactionScope())
                     {
                     try
                     {
+
+                        ViewData["CheckPoint"] = "E";
                         // Création de la commande
                         PPCommandes commande = new PPCommandes
                         {
@@ -773,6 +780,7 @@ namespace PetitesPuces.Controllers
                         contextPP.GetTable<PPCommandes>().InsertOnSubmit(commande);
                         contextPP.SubmitChanges();
 
+                        ViewData["CheckPoint"] = "F";
                         // Création des détails de commande
                         foreach (PPArticlesEnPanier artPan in panierCommander)
                         {
@@ -794,8 +802,11 @@ namespace PetitesPuces.Controllers
                             lstDetCommandeEnCours.Add(detCommande);
                             contextPP.GetTable<PPDetailsCommandes>().InsertOnSubmit(detCommande);
                             contextPP.SubmitChanges();
+
+                            ViewData["CheckPoint"] = "G";
                         }
 
+                        ViewData["CheckPoint"] = "H";
                         // Vider le panier
                         contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(panierCommander);
                         contextPP.SubmitChanges();
@@ -810,8 +821,11 @@ namespace PetitesPuces.Controllers
                             prodModifier.NombreItems -= detComm.Quantité;
                             contextPP.GetTable<PPProduits>().InsertOnSubmit(prodModifier);
                             contextPP.SubmitChanges();
+
+                            ViewData["CheckPoint"] = "I";
                         }
 
+                        ViewData["CheckPoint"] = "J";
                         // On cherche le vendeur
                         var vendeur = from unVendeur in contextPP.GetTable<PPVendeurs>()
                                       where unVendeur.NoVendeur.Equals(commande.NoVendeur)
@@ -833,13 +847,16 @@ namespace PetitesPuces.Controllers
                             FraisTVQ = commande.TVQ
                         };
 
+                        ViewData["CheckPoint"] = "K";
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
                         trans.Complete();
+
+                        ViewData["CheckPoint"] = "L";
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.ToString());
+                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
                     }
 
                 }

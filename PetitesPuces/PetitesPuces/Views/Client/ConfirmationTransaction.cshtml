@@ -14,17 +14,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
 
-<script>
-    /*$(document).ready(function () {
-        $("#NoAutorisation").text(Request["NoAutorisation"])
-        $("#DateAutorisation").text(Request["DateAutorisation"])
-        $("#FraisMarchand").text(Request["FraisMarchand"])
-
-        if (Request["InfoSuppl"] != null && Request["InfoSuppl"] != 'null') {
-            $("#InfoSuppl").text(Request["InfoSuppl"])
-        }
-    });*/
-</script>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -48,6 +37,7 @@
                     <div class="col-md-5">
                         <div class="row">@ViewData["NoAutorisation"]</div>
                         <div class="row">@ViewData["DateAutorisation"]</div>
+                        <div class="row">@ViewData["CheckPoint"]</div>
                     </div>
                 }
                 else
