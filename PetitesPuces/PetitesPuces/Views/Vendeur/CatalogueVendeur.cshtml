@@ -80,17 +80,24 @@
           $.ajax({
              url: "/Vendeur/ProduitDansUnPanier",
              data: { "id": id },
-             success: messagePanier,
-             error: messageNormal,
+             success: messagePanier(id),
+             error: messageNormal(id),
           });
        }
 
-       function messagePanier() {
+       function messagePanier(id) {
           if (confirm("Voulez-vous vraiment supprimer ce produit, car le produit est dans le panier d'un ou plusieurs vendeur ?")) {
              console.log('delete');
+             console.log("id: " + id)
+             /*$.ajax({
+                url: "/Vendeur/ProduitDansUnPanier",
+                data: { "id": id },
+                success: success,
+                error: error,
+             });*/
           }
        }
-       function messageNormal() {
+       function messageNormal(id) {
           if (confirm("Voulez-vous vraiment supprimer ce produit?")) {
              console.log('delete');
           }
