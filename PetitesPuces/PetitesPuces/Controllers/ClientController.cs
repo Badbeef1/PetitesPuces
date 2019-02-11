@@ -718,8 +718,7 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
-
-            ViewData["CheckPoint"] = "-A";
+            
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
@@ -859,7 +858,7 @@ namespace PetitesPuces.Controllers
                     }
                     catch (Exception e)
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                        ViewData["CheckPoint"] = e.StackTrace;
                     }
 
                 }
