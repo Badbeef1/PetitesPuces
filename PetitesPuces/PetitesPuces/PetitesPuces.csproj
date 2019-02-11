@@ -440,6 +440,7 @@
     <Content Include="Views\Courriel\RedactionMessage.cshtml" />
     <Content Include="Views\BD\Index.cshtml" />
     <Content Include="Views\Client\InfoClientSaisieCommande.cshtml" />
+    <Content Include="Views\Courriel\AffichageMessage.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
