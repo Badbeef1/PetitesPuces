@@ -769,10 +769,10 @@ namespace PetitesPuces.Controllers
                     {
 
                         ViewData["CheckPoint"] = maxCommande+"\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[4]) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[5]) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[6]) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[2]) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[4].Replace(".", ",")) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[5].Replace(".", ",")) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[6].Replace(".", ",")) + "\n";
+                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")) + "\n";
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
