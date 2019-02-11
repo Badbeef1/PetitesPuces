@@ -836,7 +836,6 @@ namespace PetitesPuces.Controllers
                                                   select unProduit;
                             PPProduits prodModifier = produitModifier.First();
                             prodModifier.NombreItems -= detComm.Quantité;
-                            contextPP.GetTable<PPProduits>().InsertOnSubmit(prodModifier);
                             contextPP.SubmitChanges();
 
                             ViewData["CheckPoint"] = "I";
