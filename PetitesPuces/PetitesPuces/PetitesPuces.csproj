@@ -116,6 +116,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap-stars.css" />
     <Content Include="Content\css\Catalogue.css" />
     <Content Include="Content\css\styleGeneral.css" />
     <Content Include="Content\fichierXML.xml" />
@@ -263,6 +264,7 @@
     <Content Include="Content\css\AdminLTE.css" />
     <Content Include="Content\css\morris.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\scripts\jquery.barrating.min.js" />
     <Content Include="Content\scripts\morris.js" />
     <Content Include="Content\scripts\raphael.js" />
     <Content Include="Content\Site.css" />
@@ -445,6 +447,7 @@
     <Content Include="Views\BD\Index.cshtml" />
     <Content Include="Views\Client\InfoClientSaisieCommande.cshtml" />
     <Content Include="Views\Courriel\AffichageMessage.cshtml" />
+    <Content Include="Views\Shared\Client\EcrireEvaluation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
