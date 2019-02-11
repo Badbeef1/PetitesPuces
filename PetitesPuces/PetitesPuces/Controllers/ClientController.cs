@@ -91,9 +91,20 @@ namespace PetitesPuces.Controllers
 
 
             List < PPArticlesEnPanier > items = new List<PPArticlesEnPanier>();
+            List < PPArticlesEnPanier > lstItemsARetirer = new List<PPArticlesEnPanier>();
+
             items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                    where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur)
+                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur) &&
+                     panier.PPProduits.NombreItems > 0 && panier.PPProduits.Disponibilité == true
                     select panier).ToList();
+
+            lstItemsARetirer = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur) &&
+                     (panier.PPProduits.NombreItems <= 0 || panier.PPProduits.Disponibilité == false)
+                    select panier).ToList();
+
+            contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstItemsARetirer);
+            contextPP.SubmitChanges();
 
             var client = from unClient in contextPP.GetTable<PPClients>()
                                where unClient.NoClient.Equals(items[0].PPClients.NoClient)
@@ -128,6 +139,7 @@ namespace PetitesPuces.Controllers
         //Panier Détaillé du client
         public ActionResult PanierDetail(int id)
         {
+            // ON AJOUTE ICIIIIII
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
@@ -184,6 +196,15 @@ namespace PetitesPuces.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+                ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
                 String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
                 long noVendeur = 0;
                 try
@@ -275,6 +296,15 @@ namespace PetitesPuces.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+                ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
                 long noVendeur = 0;
                 long noClient = ((PPClients)Session["clientObj"]).NoClient;
                 try
@@ -620,7 +650,7 @@ namespace PetitesPuces.Controllers
 
 
 
-        public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif)
+        public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif, string modifProfil)
         {
             if (ModelState.IsValid)
             {
@@ -666,6 +696,60 @@ namespace PetitesPuces.Controllers
                                      where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients.NoClient)
                                      && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs.NoVendeur)
                                      select ppArtEnPan;
+                    if (modifProfil.Trim() != "")
+                    {
+                        var client = from unClient in contextPP.GetTable<PPClients>()
+                                     where unClient.NoClient == panierList.First().NoClient
+                                     select unClient;
+
+                        PPClients clientModifier = client.First();
+                        String[] tabInfoModifier = modifProfil.Split(';');
+                        for(int i = 0; i < tabInfoModifier.Length; i++)
+                        {
+                            if (tabInfoModifier[i].Trim() != "")
+                            {
+                                switch (tabInfoModifier[i].Split('=')[0].ToUpper())
+                                {
+                                    case "PRENOM":
+                                        clientModifier.Prenom = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "NOM":
+                                        clientModifier.Nom = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "EMAIL":
+                                        clientModifier.AdresseEmail = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "RUE":
+                                        clientModifier.Rue = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "VILLE":
+                                        clientModifier.Ville = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "PROVINCE":
+                                        clientModifier.Province = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "CODEPOSTAL":
+                                        clientModifier.CodePostal = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "TEL1":
+                                        clientModifier.Tel1 = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "TEL2":
+                                        clientModifier.Tel2 = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    default:
+                                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                                }
+
+                            }
+
+                        }
+                        using (var Trans = new TransactionScope()){
+                            contextPP.SubmitChanges();
+                            Trans.Complete();
+                        };
+                    }
+
                     if(panierList.Count() > 0)
                     {
                         SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel

@@ -36,7 +36,6 @@
          }
       }
 
-      }
 
 
    </script>
@@ -160,7 +159,7 @@
                <div class="form-row form-group">
                   <div class="col-7">
                      <label class="col-form-label">Description plus élaborée</label>
-                     @Html.TextAreaFor(model => model.produit.Description, 10, 80, new { htmlAttributes = new { @class = "form-control" } })
+                     @Html.TextAreaFor(model => model.produit.Description, 10, 70, new { htmlAttributes = new { @class = "form-control" } })
                      @Html.ValidationMessageFor(model => model.produit.Description)
                      <!--<textarea class="form-control" rows="12"></textarea>-->
                   </div>
