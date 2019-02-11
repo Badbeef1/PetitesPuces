@@ -750,7 +750,7 @@ namespace PetitesPuces.Controllers
                 // Type de livraison
                 var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
                                         where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
-                                        typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3])) select typeLiv;
+                                        typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ","))) select typeLiv;
 
                 // Trouver prochain numéro de commande
                 var numCommande = from commandeTrouver in contextPP.GetTable<PPCommandes>()
