@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using PetitesPuces.Models;
 using PagedList;
+using System.Transactions;
 
 namespace PetitesPuces.Controllers
 {
@@ -716,25 +717,132 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
+            List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
+
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
             {
-                ViewData["NoAutorisation"] = NoAutorisation; 
-                Console.WriteLine(NoAutorisation);
+                ViewData["NoAutorisation"] = int.Parse(NoAutorisation); 
             }
             if (DateAutorisation != null && DateAutorisation.Trim() != "")
             {
                 ViewData["DateAutorisation"] = DateAutorisation;
-                Console.WriteLine(DateAutorisation);
             }
             if (FraisMarchand != null && FraisMarchand.Trim() != "")
             {
                 ViewData["FraisMarchand"] = FraisMarchand;
-                Console.WriteLine(FraisMarchand);
             }
-            if (InfoSuppl != null && InfoSuppl.Trim() != "")
+            if (InfoSuppl != null && InfoSuppl.Trim() != "N/A")
             {
                 ViewData["InfoSuppl"] = InfoSuppl;
-                Console.WriteLine(InfoSuppl);
+
+
+                    var panierCommander = from unPanier in contextPP.GetTable<PPArticlesEnPanier>()
+                                          where unPanier.NoClient.Equals(InfoSuppl.Split('-')[0]) &&
+                                          unPanier.NoVendeur.Equals(InfoSuppl.Split('-')[1])
+                                          select unPanier;
+
+                    // Poids de ma livraison
+                    var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
+                                         where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2]) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2])
+                                         orderby pLiv.CodePoids
+                                         select pLiv;
+
+                    // Type de livraison
+                    var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
+                                        where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
+                                        typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3])) select typeLiv;
+                    using (var trans = new TransactionScope())
+                    {
+                    try
+                    {
+                        // Création de la commande
+                        PPCommandes commande = new PPCommandes
+                        {
+                            NoClient = panierCommander.First().NoClient,
+                            NoVendeur = panierCommander.First().NoVendeur,
+                            DateCommande = DateTime.Parse(DateAutorisation),
+                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
+                            TypeLivraison = typeLivraison.First().CodeLivraison,
+                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
+                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
+                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
+                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
+                            Statut = 'N',
+                            NoAutorisation = NoAutorisation
+                        };
+                        contextPP.GetTable<PPCommandes>().InsertOnSubmit(commande);
+                        contextPP.SubmitChanges();
+
+                        // Création des détails de commande
+                        foreach (PPArticlesEnPanier artPan in panierCommander)
+                        {
+                            decimal prix = 0;
+                            var produit = from unProduit in contextPP.GetTable<PPProduits>()
+                                          where unProduit.NoProduit.Equals(artPan.NoProduit)
+                                          select unProduit;
+                            if(DateTime.Now <= produit.First().DateVente)
+                            {
+                                prix = (decimal) produit.First().PrixVente;
+                            }
+                            PPDetailsCommandes detCommande = new PPDetailsCommandes
+                            {
+                                NoCommande = commande.NoCommande,
+                                NoProduit = artPan.NoProduit,
+                                PrixVente = prix,
+                                Quantité = artPan.NbItems
+                            };
+                            lstDetCommandeEnCours.Add(detCommande);
+                            contextPP.GetTable<PPDetailsCommandes>().InsertOnSubmit(detCommande);
+                            contextPP.SubmitChanges();
+                        }
+
+                        // Vider le panier
+                        contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(panierCommander);
+                        contextPP.SubmitChanges();
+
+                        // Mettre à jour nbItems
+                        foreach(PPDetailsCommandes detComm in lstDetCommandeEnCours)
+                        {
+                            var produitModifier = from unProduit in contextPP.GetTable<PPProduits>()
+                                                  where unProduit.NoProduit.Equals(detComm.NoProduit)
+                                                  select unProduit;
+                            PPProduits prodModifier = produitModifier.First();
+                            prodModifier.NombreItems -= detComm.Quantité;
+                            contextPP.GetTable<PPProduits>().InsertOnSubmit(prodModifier);
+                            contextPP.SubmitChanges();
+                        }
+
+                        // On cherche le vendeur
+                        var vendeur = from unVendeur in contextPP.GetTable<PPVendeurs>()
+                                      where unVendeur.NoVendeur.Equals(commande.NoVendeur)
+                                      select unVendeur;
+
+                        // Mettre à jour l'historique de paiement
+                        PPHistoriquePaiements histoPaiement = new PPHistoriquePaiements
+                        {
+                            MontantVenteAvantLivraison = commande.MontantTotAvantTaxes,
+                            NoVendeur = commande.NoVendeur,
+                            NoClient = commande.NoClient,
+                            NoCommande = commande.NoCommande,
+                            DateVente = commande.DateCommande,
+                            NoAutorisation = commande.NoAutorisation,
+                            FraisLesi = Decimal.Parse(FraisMarchand),
+                            Redevance = commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100),
+                            FraisLivraison = commande.CoutLivraison,
+                            FraisTPS = commande.TPS,
+                            FraisTVQ = commande.TVQ
+                        };
+
+                        contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
+                        contextPP.SubmitChanges();
+                        trans.Complete();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                    }
+
+                }
             }
             return View();
         }

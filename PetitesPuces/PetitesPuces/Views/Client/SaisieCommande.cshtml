@@ -1,7 +1,7 @@
 ﻿@using PetitesPuces.Models
 @model SaisieCommandeViewModel
 @{
-    double poidsKg = 0;
+    double poidsLbs = 0;
     Layout = null;
 
 }
@@ -187,7 +187,7 @@
                     @for (int x = 0; x < Model.lstArticlePanier.Count; x++)
                     {
                         double dblPrixStdUnit = 0;
-                        poidsKg += (int)Model.lstArticlePanier[x].NbItems * (double)Model.lstArticlePanier[x].PPProduits.Poids;
+                        poidsLbs += (int)Model.lstArticlePanier[x].NbItems * (double)Model.lstArticlePanier[x].PPProduits.Poids;
                         if (Model.lstArticlePanier[x].PPProduits.DateVente != null && Model.lstArticlePanier[x].PPProduits.DateVente >= DateTime.Now)
                         {
                             dblPrixProduitCourant = ((int)Model.lstArticlePanier[x].NbItems * (double)Model.lstArticlePanier[x].PPProduits.PrixVente);
@@ -344,7 +344,7 @@
                             {
                                 <div class="col-4 text-left" id="verifPoids">
                                     <div class="row">
-                                        @if (Model.vendeur.PoidsMaxLivraison < poidsKg)
+                                        @if (Model.vendeur.PoidsMaxLivraison < poidsLbs)
                                         {
                                             <br /> <br />
                                             <span style="color:red">Le poids de livraison maximal est dépassé</span>
@@ -363,15 +363,15 @@
                                         </div>
                                         <div class="col-3 text-right">
                                             <div class="row text-right">
-                                                @if (Model.vendeur.PoidsMaxLivraison > poidsKg)
+                                                @if (Model.vendeur.PoidsMaxLivraison > poidsLbs)
                                                 {
-                                                    <span style="color:green"> @poidsKg Lbs</span>
+                                                    <span style="color:green"> @poidsLbs Lbs</span>
                                                     <br />
                                                     <span>@Model.vendeur.PoidsMaxLivraison Lbs</span>
                                                 }
                                                 else
                                                 {
-                                                    <span style="color:red"> @poidsKg Lbs</span>
+                                                    <span style="color:red"> @poidsLbs Lbs</span>
                                                     <br />
                                                     <span>@Model.vendeur.PoidsMaxLivraison Lbs</span>
                                                 }
@@ -481,7 +481,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-flex justify-content-end">
-                                    @if (Model.vendeur.PoidsMaxLivraison > poidsKg)
+                                    @if (Model.vendeur.PoidsMaxLivraison > poidsLbs)
                                     {
 
                                         <input id="btnPasserCommande" class="btn btn-success" type="submit" value="Passer à la prochaine étape" onclick="passerCommande()" />
@@ -530,7 +530,7 @@
                                 </label>
                             </h5>
                             <div class="row" style="margin: 0">
-                                <input type="number" id="moisExpireCredit" class="form-control col-md-4 text-right" min="1" max="12" placeholder="MM" onchange="expireMois('mois')" />
+                                <input type="number" id="moisExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Month.ToString()" max="12" placeholder="MM" onchange="expireMois('mois')" />
                                 <div class="col-md-2">-</div>
                                 20<input type="number" id="anneeExpireCredit" class="form-control col-md-4 text-right" min="@DateTime.Now.Year.ToString().Remove(0,2)" max="23" placeholder="YY" onchange="expireMois('annee')" />
                             </div>
@@ -614,6 +614,19 @@
         }
 
         function expireMois(moisOuAnnee) {
+            if (moisOuAnnee == 'annee') {
+                @{
+                    <text>
+                if (parseInt($('#anneeExpireCredit').val().substring(0, 2)) > parseInt($('#anneeExpireCredit').attr('min'))) {
+                    $('#moisExpireCredit').attr('min', '1');
+                }
+                else {
+                    $('#moisExpireCredit').val("");
+                }
+                    </text>
+                }
+
+            }
             var max = parseInt($('#' + moisOuAnnee + 'ExpireCredit').attr('max'));
             var min = parseInt($('#' + moisOuAnnee + 'ExpireCredit').attr('min'));
             if ($('#' + moisOuAnnee + 'ExpireCredit').val() > max) {
@@ -712,7 +725,7 @@
             if ($("#Prenom").val().trim() != "" && $("#Nom").val().trim() != "" && $("#Rue").val().trim() != "" && $("#Ville").val().trim() != "" && $("#CodePostal").val().trim() != "" && $("#Tel1").val().trim() != "") {
                 @{
                     <text>
-                var poids = @poidsKg.ToString().Replace(",",".");
+                var poids = @poidsLbs.ToString().Replace(",",".");
                 var panier = @Model.lstArticlePanier[0].NoPanier;
                     </text>
                     }
@@ -734,9 +747,12 @@
 
         function checkBoxFraisLivraison(tarif) {
             @{
-            <text>
-            var poids = @poidsKg.ToString().Replace(",", ".");
-            var panier = @Model.lstArticlePanier[0].NoPanier;
+
+                decimal dclCout = 0;
+            <text> 
+                    @dclCout = tarif
+                var poids = @poidsLbs.ToString().Replace(",", ".");
+                var panier = @Model.lstArticlePanier[0].NoPanier;
             </text>
             }
             $.ajax({
@@ -762,8 +778,8 @@
                     </text>
                 }
 
-                        var quatrePremier = $("#NoCarteCredit").val().substring(0, 4);
-            if (parseInt(quatrePremier) >= 1000 && parseInt(quatrePremier) <= 5000 && $("#NoCarteCredit").val().replace(/\s/g, "").length == 16 && $("#securiteCredit").val().replace(/\s/g, "").length >= 3  && confirm("Êtes-vous certain de vouloir payer cette commande?")) {
+            var quatrePremier = $("#NoCarteCredit").val().substring(0, 4);
+            if (parseInt(quatrePremier) >= 1000 && parseInt(quatrePremier) <= 5000 && $("#NoCarteCredit").val().replace(/\s/g, "").length == 16 && $("#securiteCredit").val().replace(/\s/g, "").length >= 3 && $("#moisExpireCredit").val().length >= 1 && $("#anneeExpireCredit").val().length >= 1 && confirm("Êtes-vous certain de vouloir payer cette commande?")) {
                 var mois = $("#moisExpireCredit").val();
                 if (mois.length == 1) {
                     mois = "0" + mois;
@@ -817,9 +833,9 @@
                 var InfoSuppl = document.createElement("input");
                 InfoSuppl.setAttribute("type", "hidden");
                 InfoSuppl.setAttribute("name", "InfoSuppl");
-                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur);
+                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur+"-"+@poidsLbs+"-"+@dclCout+"-"+@dblSousTotal+"-"+@totalTps+"-"@totalTvq+);
                 form.appendChild(InfoSuppl);
-                
+
                     document.body.appendChild(form);
                     form.submit();
 

@@ -33,63 +33,64 @@
 
 <body>
     @Html.Partial("test")
-    <div class="container sEspaceBarNavigation" id="bigDiv">
-        @if (ViewData["NoAutorisation"] != null && ViewData["DateAutorisation"] != null && ViewData["FraisMarchand"] != null && (String)ViewData["InfoSuppl"] != "N/A")
-        {
-            int noAutorisation = (int)ViewData["NoAutorisation"];
-            if (noAutorisation >= 1000 && noAutorisation <= 5000)
+    <div class="container sEspaceBarNavigation h-100" id="bigDiv">
+        <div class="row">
+            @if (ViewData["NoAutorisation"] != null && ViewData["DateAutorisation"] != null && ViewData["FraisMarchand"] != null && (String)ViewData["InfoSuppl"] != "N/A")
             {
-                <div class="col-md-5" ¨>
-                    <div class="row">Numéro d'autorisation</div>
-                    <div class="row">Date d'autorisation</div>
-                </div>
-                <div class="offset-md-2"></div>
-                <div class="col-md-5">
-                    <div class="row">@ViewData["NoAutorisation"]</div>
-                    <div class="row">@ViewData["DateAutorisation"]</div>
-                </div>
+                int noAutorisation = int.Parse(ViewData["NoAutorisation"].ToString());
+                if (noAutorisation >= 1000 && noAutorisation <= 5000)
+                {
+                    <div class="col-md-5">
+                        <div class="row">Numéro d'autorisation</div>
+                        <div class="row">Date d'autorisation</div>
+                    </div>
+                    <div class="offset-md-1"></div>
+                    <div class="col-md-5">
+                        <div class="row">@ViewData["NoAutorisation"]</div>
+                        <div class="row">@ViewData["DateAutorisation"]</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-5">
+                        <div class="row">Numéro de refus</div>
+                        <div class="row">Raison</div>
+                        <div class="row">Date de refus</div>
+                    </div>
+                    <div class="offset-md-1"></div>
+                    <div class="col-md-5">
+                        <div class="row">@ViewData["NoAutorisation"]</div>
+                        @switch (noAutorisation)
+                        {
+                            case 0:
+                                <div class="row">Transaction annulée par l'utilisateur</div>
+                                break;
+                            case 1:
+                                <div class="row">Transaction refusée : Date d'expiration dépassée</div>
+                                break;
+                            case 2:
+                                <div class="row">Transaction refusée : Limite de crédit atteinte</div>
+                                break;
+                            case 3:
+                                <div class="row">Transaction refusée : Carte refusée</div>
+                                break;
+                            default:
+                                <div class="row">Erreur de validation</div>
+                                break;
+                        }
+                        <div class="row">@ViewData["DateAutorisation"]</div>
+                    </div>
+                }
             }
             else
             {
-                <div class="col-md-5">
-                    <div class="row">Numéro de refus</div>
-                    <div class="row">Raison</div>
-                    <div class="row">Date de refus</div>
+                <div class="align-items-center">
+                    <text>
+                        <h1>Accès interdit</h1>
+                    </text>
                 </div>
-                <div class="offset-md-2"></div>
-                <div class="col-md-5">
-                    <div class="row">@ViewData["NoAutorisation"]</div>
-                    @switch (noAutorisation)
-                    {
-                        case 0:
-                            <div class="row">Transaction annulée par l'utilisateur</div>
-                            break;
-                        case 1:
-                            <div class="row">Transaction refusée : Date d'expiration dépassée</div>
-                            break;
-                        case 2:
-                            <div class="row">Transaction refusée : Limite de crédit atteinte</div>
-                            break;
-                        case 3:
-                            <div class="row">Transaction refusée : Carte refusée</div>
-                            break;
-                        default:
-                            <div class="row">Erreur de validation</div>
-                            break;
-                    }
-                    <div class="row">@ViewData["DateAutorisation"]</div>
-                </div>
-                    }
-                }
-                    else
-                    {
-                    <div class="align-items-center">
-                        <text>
-                            <h1>Accès interdit</h1>
-                        </text>
-                    </div>
-                    }
-
-                </div>
+            }
+        </div>
+    </div>
 </body>
 </html>
