@@ -865,7 +865,7 @@ namespace PetitesPuces.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewData["CheckPoint"] = e.StackTrace+"=======\n"+e.ToString();
+                        ViewData["CheckPoint"] += "ERRREUR========================================="+e.StackTrace+"=======\n"+e.ToString();
                         //return new HttpStatusCodeResult(HttpStatusCode.NotFound);
                     }
 
