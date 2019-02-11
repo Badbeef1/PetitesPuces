@@ -158,7 +158,6 @@
         <br />
         <!-- Section commande, prix/quantité/taxes/poids etc, validation de la commande-->
         <div class="card shopping-cart" id="commande" style="margin-top:0px">
-        <div class="card shopping-cart" id="commande" style="margin-top:0px">
             <div class="card-header" id="heading_commande">
 
                 <div class="float-left">
@@ -572,8 +571,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
 </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -581,6 +578,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script type="text/javascript">
+        var arrayProfilModifier = {};
+
         $(document).ready(function () {
             $("#btnContinueMagasiner").click(function () {
                 window.location.href = "/Client/Catalogue"
@@ -724,10 +723,16 @@
             console.log("errorBig");
         }
 
-
+        function infoClient(valeur) {
+            arrayProfilModifier[valeur.split("=")[0]] = valeur.split("=")[1];
+        }
 
 
         $("#btnChoixDePoste").click(function () {
+            var arrSousChaine = "";
+            for (var key in arrayProfilModifier) {
+                arrSousChaine += key + "=" + arrayProfilModifier[key] + ";";
+            }
             if ($("#Prenom").val().trim() != "" && $("#Nom").val().trim() != "" && $("#Rue").val().trim() != "" && $("#Ville").val().trim() != "" && $("#CodePostal").val().trim() != "" && $("#Tel1").val().trim() != "") {
                 @{
                     <text>
@@ -738,7 +743,7 @@
                 $.ajax({
                     url: "/Client/RecevoirPrixLivraison",
                     data: {
-                        "poids": poids, "panier": panier, "tarif": "0"
+                        "poids": poids, "panier": panier, "tarif": "0", "modifProfil": arrSousChaine
                     },
                     success: successPoids,
                     error: errorPoids,
@@ -752,6 +757,11 @@
         });
 
         function checkBoxFraisLivraison(tarif) {
+
+            var arrSousChaine = "";
+            for (var key in arrayProfilModifier) {
+                arrSousChaine += key + "=" + arrayProfilModifier[key] + ";";
+            }
             @{
             <text>
                 var poids = @poidsLbs.ToString().Replace(",", ".");
@@ -760,7 +770,7 @@
             }
             $.ajax({
                 url: "/Client/RecevoirPrixLivraison",
-                data: { "poids": poids, "panier": panier,"tarif" : tarif},
+                data: { "poids": poids, "panier": panier, "tarif": tarif, "modifProfil": arrSousChaine},
                 success: successCb,
                 error: error,
             });

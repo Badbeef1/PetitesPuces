@@ -184,6 +184,15 @@ namespace PetitesPuces.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+                ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
                 String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
                 long noVendeur = 0;
                 try
@@ -275,6 +284,15 @@ namespace PetitesPuces.Controllers
         {
             if (ModelState.IsValid)
             {
+                List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+                ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
                 long noVendeur = 0;
                 long noClient = ((PPClients)Session["clientObj"]).NoClient;
                 try
@@ -620,7 +638,7 @@ namespace PetitesPuces.Controllers
 
 
 
-        public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif)
+        public ActionResult RecevoirPrixLivraison(string poids, string panier, string tarif, string modifProfil)
         {
             if (ModelState.IsValid)
             {
@@ -666,6 +684,60 @@ namespace PetitesPuces.Controllers
                                      where ppArtEnPan.NoClient.Equals(numPourPanierList.First().PPClients.NoClient)
                                      && ppArtEnPan.NoVendeur.Equals(numPourPanierList.First().PPVendeurs.NoVendeur)
                                      select ppArtEnPan;
+                    if (modifProfil.Trim() != "")
+                    {
+                        var client = from unClient in contextPP.GetTable<PPClients>()
+                                     where unClient.NoClient == panierList.First().NoClient
+                                     select unClient;
+
+                        PPClients clientModifier = client.First();
+                        String[] tabInfoModifier = modifProfil.Split(';');
+                        for(int i = 0; i < tabInfoModifier.Length; i++)
+                        {
+                            if (tabInfoModifier[i].Trim() != "")
+                            {
+                                switch (tabInfoModifier[i].Split('=')[0].ToUpper())
+                                {
+                                    case "PRENOM":
+                                        clientModifier.Prenom = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "NOM":
+                                        clientModifier.Nom = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "EMAIL":
+                                        clientModifier.AdresseEmail = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "RUE":
+                                        clientModifier.Rue = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "VILLE":
+                                        clientModifier.Ville = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "PROVINCE":
+                                        clientModifier.Province = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "CODEPOSTAL":
+                                        clientModifier.CodePostal = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "TEL1":
+                                        clientModifier.Tel1 = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    case "TEL2":
+                                        clientModifier.Tel2 = tabInfoModifier[i].Split('=')[1];
+                                        break;
+                                    default:
+                                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                                }
+
+                            }
+
+                        }
+                        using (var Trans = new TransactionScope()){
+                            contextPP.SubmitChanges();
+                            Trans.Complete();
+                        };
+                    }
+
                     if(panierList.Count() > 0)
                     {
                         SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
