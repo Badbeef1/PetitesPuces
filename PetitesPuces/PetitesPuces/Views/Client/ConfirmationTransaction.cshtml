@@ -24,9 +24,9 @@
     @Html.Partial("test")
     <div class="container sEspaceBarNavigation h-100" id="bigDiv">
         <div class="row">
-            @if (ViewData["NoAutorisation"] != null && ViewData["DateAutorisation"] != null && ViewData["FraisMarchand"] != null && (String)ViewData["InfoSuppl"] != "N/A")
+            @if (TempData["NoAutorisation"] != null && TempData["DateAutorisation"] != null && TempData["FraisMarchand"] != null && (String)TempData["InfoSuppl"] != "N/A")
             {
-                int noAutorisation = int.Parse(ViewData["NoAutorisation"].ToString());
+                int noAutorisation = int.Parse(TempData["NoAutorisation"].ToString());
                 if (noAutorisation >= 1000 && noAutorisation <= 5000)
                 {
                     <div class="col-md-5">
@@ -35,9 +35,14 @@
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        <div class="row">@ViewData["NoAutorisation"]</div>
-                        <div class="row">@ViewData["DateAutorisation"]</div>
-                        <div class="row">@ViewData["CheckPoint"]</div>
+                        <div class="row">@TempData["NoAutorisation"]</div>
+                        <div class="row">@TempData["DateAutorisation"]</div>
+                        <div class="row">@TempData["InfoSuppl"]</div>
+                        @if (ViewData["CheckPoint"] != null)
+                        {
+
+                            <div class="row">@ViewData["CheckPoint"]</div>
+                        }
                     </div>
                 }
                 else
@@ -49,7 +54,7 @@
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        <div class="row">@ViewData["NoAutorisation"]</div>
+                        <div class="row">@TempData["NoAutorisation"]</div>
                         @switch (noAutorisation)
                         {
                             case 0:
@@ -68,7 +73,7 @@
                                 <div class="row">Erreur de validation</div>
                                 break;
                         }
-                        <div class="row">@ViewData["DateAutorisation"]</div>
+                        <div class="row">@TempData["DateAutorisation"]</div>
                     </div>
                 }
             }

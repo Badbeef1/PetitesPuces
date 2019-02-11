@@ -43,10 +43,13 @@
                 <nav class=" bg-faded sidebar">
                     <ul class="nav nav-pills flex-column bg-light">
                         @foreach(var lieux in Model.lstLieu)
-                        {
+                        {                           
                             <li class="nav-item">
                                 <a herf="@Url.Action("Index", new { lieu = lieux.NoLieu})"><span class=""></span> @lieux.Description</a>
-                                <span class="badge badge-primary"></span>
+                                @if(Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
+                                {
+                                    <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
+                                }
                             </li>
                         }
 
@@ -66,9 +69,13 @@
                     {
                         @Html.Partial("RedactionMessage")
                     }
+                    else if (Model.lieu == 2)
+                    {
+                        @Html.Partial("AffichageMessage")
+                    }
                     else
                     {
-                        @Html.Partial("ListeCourriel")
+                        @Html.Partial("ListeCourriel", Model.iplDestionataireBoiteReception)
                     }
                 }
 

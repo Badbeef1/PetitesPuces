@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using PetitesPuces.Models;
 using PagedList;
 using System.Transactions;
+using System.Globalization;
 
 namespace PetitesPuces.Controllers
 {
@@ -717,73 +718,82 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
-
-            ViewData["CheckPoint"] = "-A";
+            
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
             {
-                ViewData["NoAutorisation"] = int.Parse(NoAutorisation); 
+                TempData["NoAutorisation"] = int.Parse(NoAutorisation); 
             }
             if (DateAutorisation != null && DateAutorisation.Trim() != "")
             {
-                ViewData["DateAutorisation"] = DateAutorisation;
+                TempData["DateAutorisation"] = DateAutorisation;
             }
             if (FraisMarchand != null && FraisMarchand.Trim() != "")
             {
-                ViewData["FraisMarchand"] = FraisMarchand;
+                TempData["FraisMarchand"] = FraisMarchand;
             }
             if (InfoSuppl != null && InfoSuppl.Trim() != "N/A")
             {
-                ViewData["CheckPoint"] = "A";
-                ViewData["InfoSuppl"] = InfoSuppl;
+                TempData["InfoSuppl"] = InfoSuppl;
                     var panierCommander = from unPanier in contextPP.GetTable<PPArticlesEnPanier>()
                                           where unPanier.NoClient.Equals(InfoSuppl.Split('-')[0]) &&
                                           unPanier.NoVendeur.Equals(InfoSuppl.Split('-')[1])
                                           select unPanier;
-
-                ViewData["CheckPoint"] = "B";
+                
                 // Poids de ma livraison
                 var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
-                                         where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2]) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2])
+                                         where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ","))
                                          orderby pLiv.CodePoids
                                          select pLiv;
-
-                ViewData["CheckPoint"] = "C";
+                
                 // Type de livraison
                 var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
                                         where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
-                                        typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3])) select typeLiv;
+                                        typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ","))) select typeLiv;
 
-                ViewData["CheckPoint"] = "D";
+                // Trouver prochain numéro de commande
+                var numCommande = from commandeTrouver in contextPP.GetTable<PPCommandes>()
+                                  orderby commandeTrouver.NoCommande descending
+                                  select commandeTrouver;
+                long maxCommande = numCommande.First().NoCommande + 1;
+                
                 using (var trans = new TransactionScope())
                     {
                     try
                     {
-
-                        ViewData["CheckPoint"] = "E";
+                        contextPP.Connection.Open();
+                        Char c = new Char();
+                        c = 'N';
                         // Création de la commande
                         PPCommandes commande = new PPCommandes
                         {
+                            NoCommande = maxCommande,
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
-                            DateCommande = DateTime.Parse(DateAutorisation),
-                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
+                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd",CultureInfo.InvariantCulture),
+                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ",")),
                             TypeLivraison = typeLivraison.First().CodeLivraison,
-                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
-                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
-                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
-                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
-                            Statut = 'N',
+                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4].Replace(".", ",")),
+                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5].Replace(".", ",")),
+                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6].Replace(".", ",")),
+                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")),
+                            Statut = c,
                             NoAutorisation = NoAutorisation
                         };
                         contextPP.GetTable<PPCommandes>().InsertOnSubmit(commande);
                         contextPP.SubmitChanges();
-
-                        ViewData["CheckPoint"] = "F";
+                        
                         // Création des détails de commande
+
+                        var numDetComm = from detTrouver in contextPP.GetTable<PPDetailsCommandes>()
+                                         orderby detTrouver.NoDetailCommandes descending
+                                         select detTrouver;
+                        long maxDetComm = numDetComm.First().NoDetailCommandes + 1;
                         foreach (PPArticlesEnPanier artPan in panierCommander)
                         {
+                            // Trouver prochain numéro de commande
+
                             decimal prix = 0;
                             var produit = from unProduit in contextPP.GetTable<PPProduits>()
                                           where unProduit.NoProduit.Equals(artPan.NoProduit)
@@ -794,19 +804,18 @@ namespace PetitesPuces.Controllers
                             }
                             PPDetailsCommandes detCommande = new PPDetailsCommandes
                             {
+                                NoDetailCommandes = maxDetComm,
                                 NoCommande = commande.NoCommande,
                                 NoProduit = artPan.NoProduit,
                                 PrixVente = prix,
                                 Quantité = artPan.NbItems
                             };
                             lstDetCommandeEnCours.Add(detCommande);
-                            contextPP.GetTable<PPDetailsCommandes>().InsertOnSubmit(detCommande);
-                            contextPP.SubmitChanges();
-
-                            ViewData["CheckPoint"] = "G";
+                            maxDetComm++;
                         }
-
-                        ViewData["CheckPoint"] = "H";
+                        contextPP.GetTable<PPDetailsCommandes>().InsertAllOnSubmit(lstDetCommandeEnCours);
+                        contextPP.SubmitChanges();
+                        
                         // Vider le panier
                         contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(panierCommander);
                         contextPP.SubmitChanges();
@@ -819,44 +828,44 @@ namespace PetitesPuces.Controllers
                                                   select unProduit;
                             PPProduits prodModifier = produitModifier.First();
                             prodModifier.NombreItems -= detComm.Quantité;
-                            contextPP.GetTable<PPProduits>().InsertOnSubmit(prodModifier);
                             contextPP.SubmitChanges();
-
-                            ViewData["CheckPoint"] = "I";
+                            
                         }
-
-                        ViewData["CheckPoint"] = "J";
+                        
                         // On cherche le vendeur
                         var vendeur = from unVendeur in contextPP.GetTable<PPVendeurs>()
                                       where unVendeur.NoVendeur.Equals(commande.NoVendeur)
                                       select unVendeur;
 
                         // Mettre à jour l'historique de paiement
+                        var numHistoPaie = from histoPaie in contextPP.GetTable<PPHistoriquePaiements>()
+                                         orderby histoPaie.NoHistorique descending
+                                         select histoPaie;
+                        long maxHistoPaie = numHistoPaie.First().NoHistorique + 1;
                         PPHistoriquePaiements histoPaiement = new PPHistoriquePaiements
                         {
+                            NoHistorique = maxHistoPaie,
                             MontantVenteAvantLivraison = commande.MontantTotAvantTaxes,
                             NoVendeur = commande.NoVendeur,
                             NoClient = commande.NoClient,
                             NoCommande = commande.NoCommande,
                             DateVente = commande.DateCommande,
                             NoAutorisation = commande.NoAutorisation,
-                            FraisLesi = Decimal.Parse(FraisMarchand),
-                            Redevance = commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100),
+                            FraisLesi = Decimal.Parse(FraisMarchand.Replace(".", ",")),
+                            Redevance = Decimal.Parse((commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100)).ToString().Replace(".",",")),
                             FraisLivraison = commande.CoutLivraison,
                             FraisTPS = commande.TPS,
                             FraisTVQ = commande.TVQ
                         };
-
-                        ViewData["CheckPoint"] = "K";
+                        
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
+                        contextPP.Connection.Close();
                         trans.Complete();
-
-                        ViewData["CheckPoint"] = "L";
                     }
                     catch (Exception e)
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                        ViewData["CheckPoint"] = e.StackTrace + "-----------------------|||||||||||||||||||||-------------------------" + e.Message + "-----------------------|||||||||||||||||||||-------------------------" + e;
                     }
 
                 }
