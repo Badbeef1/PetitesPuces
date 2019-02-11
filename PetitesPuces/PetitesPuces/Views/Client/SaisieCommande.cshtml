@@ -824,7 +824,7 @@
                 InfoSuppl.setAttribute("name", "InfoSuppl");
                 @{
                     <text>
-                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-" +@Model.vendeur.NoVendeur+"-" +@poidsLbs+"-"+@frais+"-"+@dblSousTotal+"-"+@totalTps+"-"+@totalTvq);
+                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-" +@Model.vendeur.NoVendeur+"-" +@poidsLbs.ToString("0.00").Replace(", ", ".")+"-"+@frais.ToString("0.00").Replace(", ", ".")+"-"+@dblSousTotal.ToString("0.00").Replace(", ", ".")+"-"+@totalTps.ToString("0.00").Replace(", ", ".")+"-"+@totalTvq.ToString("0.00").Replace(", ", "."));
                 </text>
                 }
 
