@@ -10,42 +10,45 @@
         string strMessDebut = new string(message.DescMsg.Take(50).ToArray());
         string strDateEnvioFormat = message.dateEnvoi.Value.ToString("dd MMMM yyyy");
 
-        
-            <div class="row p-2 sMessListe"  style="cursor:pointer">
-                <div class="col-1">
-                    <input type="checkbox" />
-                </div>
-                <div class="col-3" onclick="location.href='#'">
-                    @Html.DisplayFor(x => tup.Item2)
-                </div>
+        string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = message.NoMsg });
 
-                <div class="col-1 sActionMessageListe">
-                    <button type="button" title="Supprimer"><span class="fa fa-trash-alt"></span></button>
-                    @if (destinataires.EtatLu == 0)
-                    {
-                        <button type="button" title="Marquer comme lu"><span class="far fa-envelope-open"></span></button>
-                    }
-                    else
-                    {
-                        <button type="button" title="Marquer comme non lu"><span class="far fa-envelope"></span></button>
-                    }
-                </div>
-                <div class="col-1" onclick="location.href='#'">
-                    @if (message.FichierJoint != null)
-                    {
-                        <span class="fas fa-paperclip"></span>
-                    }
-                </div>
-                <div class="col-4" onclick="location.href='#'">
-                    @Html.DisplayFor(x => strMessDebut)
-                </div>
-                <div class="col-2" onclick="location.href='#'">
-                    @Html.DisplayFor(x => strDateEnvioFormat)
-                </div>
+        string strMessageEtat = destinataires.EtatLu == 0 ? "color: blue;" : "";
+
+        <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
+            <div class="col-1">
+                <input type="checkbox" />
             </div>
-        
-        
+            <div class="col-3" onclick="location.href='@strActionAffichage'">
+                @Html.DisplayFor(x => tup.Item2)
+            </div>
+
+            <div class="col-1 sActionMessageListe">
+                <button type="button" title="Supprimer"><span class="fa fa-trash-alt"></span></button>
+                @if (destinataires.EtatLu == 0)
+                {
+                    <button type="button" title="Marquer comme lu"><span class="far fa-envelope-open"></span></button>
+                }
+                else
+                {
+                    <button type="button" title="Marquer comme non lu"><span class="far fa-envelope"></span></button>
+                }
+            </div>
+            <div class="col-1" onclick="location.href='@strActionAffichage'">
+                @if (message.FichierJoint != null)
+                {
+                    <span class="fas fa-paperclip"></span>
+                }
+            </div>
+            <div class="col-4" onclick="location.href='@strActionAffichage'">
+                @Html.DisplayFor(x => strMessDebut)
+            </div>
+            <div class="col-2" onclick="location.href='@strActionAffichage'">
+                @Html.DisplayFor(x => strDateEnvioFormat)
+            </div>
+        </div>
+
+
     }
 </div>
 
-@Html.PagedListPager(Model,page => Url.Action("Index/Reception", new { @page = 1}))
+@Html.PagedListPager(Model, page => Url.Action("Index/Reception", new { @page = 1 }))

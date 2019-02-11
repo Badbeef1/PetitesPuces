@@ -25,18 +25,18 @@
 </head>
 <body>
     <div class="container mt-5 mb-5">
-        <table class="table table-striped">
+        <table class="table table-sm table-striped">
             <tr class="row">
                 <th class="col-6">
                     @using (Html.BeginForm("Ajouter", "BD", FormMethod.Post))
                     {
-                        <input type="submit" class="btn btn-block btn-success" value="Ajouter les données">
+                        <input type="submit" class="btn btn-block btn-success" value="Ajouter les données" disabled="@(!Model.enableAddButton)">
                     }
                 </th>
                 <th class="col-6">
                     @using (Html.BeginForm("Retirer", "BD", FormMethod.Post))
                     {
-                        <input type="submit" class="btn btn-block btn-danger" value="Retirer les données">
+                        <input type="submit" class="btn btn-block btn-danger" value="Retirer les données" disabled="@(!Model.enableDeleteButton)">
                     }
                 </th>
             </tr>
@@ -54,8 +54,8 @@
                 for (int i = 0; i < (Model.tabCount.Length) / 2; i++)
                 {
                     <tr class="row">
-                        <td class="col-6 text-right"><h3> @Model.tabCount[i, 0] : </h3></td>
-                        <td class="col-6 text-left"><h2> @Model.tabCount[i, 1] données présentes</h2></td>
+                        <td class="col-6 text-right"> @Model.tabCount[i, 0] : </td>
+                       <td class="col-6 text-left"><b>@Model.tabCount[i, 1]</b> enregistrement(s)</td>
                     </tr>
                 }
             }

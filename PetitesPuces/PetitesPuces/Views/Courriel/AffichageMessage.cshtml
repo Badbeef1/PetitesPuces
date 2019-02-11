@@ -1,6 +1,6 @@
-﻿@model Tuple<PetitesPuces.Models.PPDestinataires, String>
+﻿@model (PetitesPuces.Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur)
 @{ 
-    PetitesPuces.Models.PPMessages message = Model.Item1.PPMessages;
+    PetitesPuces.Models.PPMessages message = (Model.objDestinataire as PetitesPuces.Models.PPDestinataires).PPMessages;
 
     string strNomExpediteur = Model.Item2; //A suivre ... Philippe &lsaquo;PhilousLeLoup@Netscape.com&rsaquo;
     string strDateEnvoie = message.dateEnvoi.Value.ToString("dd MMMM yyyy");
@@ -14,16 +14,16 @@
     <div>
         <div>
             <div>
-                <span>@strNomExpediteur</span><br />
+                <span>@Model.affExpediteur</span><br />
                 <span>@strDateEnvoie</span><br />
-                <small>Jojo@aol.com</small>
+                <small>@Model.affDestinataire</small>
             </div>
             @if (message.FichierJoint != null)
             {
                 <br />
                 <div>
                     <span>@message.FichierJoint.ToString()</span>
-                    <button type="button" class="btn">Télécharger</button>
+                    <button type="button" class="btn btn-primary">Télécharger</button>
                 </div>
             }
         </div>
