@@ -22,7 +22,7 @@
             <div class="card-footer btn-group" style="width:100%">
                <!--<button type="button" class="btn btn-outline-primary" title="modifier le produit"><span class="fas fa-edit"></span></button>-->
                <button type="button" class="btn btn-outline-primary" title="modifier le produit">@Html.ActionLink("    ", "ModifierProduit", "Vendeur", new { id = produit.NoProduit }, new { @class = "fas fa-edit" })</button>
-               <button type="button" class="btn btn-outline-primary" title="supprimer le produit"><span class="fas fa-trash"></span></button>
+               <button type="button" class="btn btn-outline-primary" title="supprimer le produit" onclick="supprimerProduit(@produit.NoProduit)"><span class="fas fa-trash"></span></button>
             </div>
             }
         </div>

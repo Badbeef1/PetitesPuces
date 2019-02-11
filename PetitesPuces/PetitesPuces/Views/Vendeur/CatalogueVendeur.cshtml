@@ -12,15 +12,18 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Catalogue du vendeur</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
-    <link rel="stylesheet" href="~/Content/css/Catalogue.css" />
-    <style>
-    </style>
-    <script type="text/javascript">
+   <meta name="viewport" content="width=device-width" />
+   <title>Catalogue du vendeur</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+   <link rel="stylesheet" href="~/Content/css/Catalogue.css" />
+   <style>
+   </style>
+   <script type="text/javascript">
         function rechercheChangement(optionSelection) {
             var divDateDebut = document.getElementById("divRechercheDateDebut");
             var divDateFin = document.getElementById("divRechercheDateFin");
@@ -72,8 +75,25 @@
             location.href = lien;
        }
 
-       function modfierProduit(id) {
+       function supprimerProduit(id) {
+          console.log('jenvoie un message');
+          $.ajax({
+             url: "/Vendeur/ProduitDansUnPanier",
+             data: { "id": id },
+             success: messagePanier,
+             error: messageNormal,
+          });
+       }
 
+       function messagePanier() {
+          if (confirm("Voulez-vous vraiment supprimer ce produit, car le produit est dans le panier d'un ou plusieurs vendeur ?")) {
+             console.log('delete');
+          }
+       }
+       function messageNormal() {
+          if (confirm("Voulez-vous vraiment supprimer ce produit?")) {
+             console.log('delete');
+          }
        }
 
         //Recharge la page catalogue pour appliquer le changement du nombre de produits par page
@@ -94,9 +114,8 @@
                 ('typeRech=' + typeRecherche);
 
             location.href = lien;
-
         }
-    </script>
+   </script>
 </head>
 <body>
     @Html.Partial("index")
