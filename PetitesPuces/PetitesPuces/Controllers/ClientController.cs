@@ -767,12 +767,6 @@ namespace PetitesPuces.Controllers
                     {
                     try
                     {
-
-                        ViewData["CheckPoint"] = maxCommande+"\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[4].Replace(".", ",")) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[5].Replace(".", ",")) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[6].Replace(".", ",")) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")) + "\n";
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
@@ -797,8 +791,15 @@ namespace PetitesPuces.Controllers
 
                         ViewData["CheckPoint"] = "F";
                         // Création des détails de commande
+
+                        var numDetComm = from detTrouver in contextPP.GetTable<PPDetailsCommandes>()
+                                         orderby detTrouver.NoDetailCommandes descending
+                                         select detTrouver;
+                        long maxDetComm = numDetComm.First().NoDetailCommandes + 1;
                         foreach (PPArticlesEnPanier artPan in panierCommander)
                         {
+                            // Trouver prochain numéro de commande
+
                             decimal prix = 0;
                             var produit = from unProduit in contextPP.GetTable<PPProduits>()
                                           where unProduit.NoProduit.Equals(artPan.NoProduit)
@@ -809,17 +810,18 @@ namespace PetitesPuces.Controllers
                             }
                             PPDetailsCommandes detCommande = new PPDetailsCommandes
                             {
+                                NoDetailCommandes = maxDetComm,
                                 NoCommande = commande.NoCommande,
                                 NoProduit = artPan.NoProduit,
                                 PrixVente = prix,
                                 Quantité = artPan.NbItems
                             };
                             lstDetCommandeEnCours.Add(detCommande);
-                            contextPP.GetTable<PPDetailsCommandes>().InsertOnSubmit(detCommande);
-                            contextPP.SubmitChanges();
-
+                            maxDetComm++;
                             ViewData["CheckPoint"] = "G";
                         }
+                        contextPP.GetTable<PPDetailsCommandes>().InsertAllOnSubmit(lstDetCommandeEnCours);
+                        contextPP.SubmitChanges();
 
                         ViewData["CheckPoint"] = "H";
                         // Vider le panier
