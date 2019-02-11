@@ -736,21 +736,18 @@ namespace PetitesPuces.Controllers
             }
             if (InfoSuppl != null && InfoSuppl.Trim() != "N/A")
             {
-                ViewData["CheckPoint"] = "A";
                 TempData["InfoSuppl"] = InfoSuppl;
                     var panierCommander = from unPanier in contextPP.GetTable<PPArticlesEnPanier>()
                                           where unPanier.NoClient.Equals(InfoSuppl.Split('-')[0]) &&
                                           unPanier.NoVendeur.Equals(InfoSuppl.Split('-')[1])
                                           select unPanier;
-
-                ViewData["CheckPoint"] = "B";
+                
                 // Poids de ma livraison
                 var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
                                          where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ","))
                                          orderby pLiv.CodePoids
                                          select pLiv;
-
-                ViewData["CheckPoint"] = "C";
+                
                 // Type de livraison
                 var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
                                         where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
@@ -761,8 +758,7 @@ namespace PetitesPuces.Controllers
                                   orderby commandeTrouver.NoCommande descending
                                   select commandeTrouver;
                 long maxCommande = numCommande.First().NoCommande + 1;
-
-                ViewData["CheckPoint"] = "D";
+                
                 using (var trans = new TransactionScope())
                     {
                     try
@@ -785,11 +781,9 @@ namespace PetitesPuces.Controllers
                             Statut = c,
                             NoAutorisation = NoAutorisation
                         };
-                        ViewData["CheckPoint"] = commande.ToString();
                         contextPP.GetTable<PPCommandes>().InsertOnSubmit(commande);
                         contextPP.SubmitChanges();
-
-                        ViewData["CheckPoint"] = "F";
+                        
                         // Création des détails de commande
 
                         var numDetComm = from detTrouver in contextPP.GetTable<PPDetailsCommandes>()
@@ -818,12 +812,10 @@ namespace PetitesPuces.Controllers
                             };
                             lstDetCommandeEnCours.Add(detCommande);
                             maxDetComm++;
-                            ViewData["CheckPoint"] = "G";
                         }
                         contextPP.GetTable<PPDetailsCommandes>().InsertAllOnSubmit(lstDetCommandeEnCours);
                         contextPP.SubmitChanges();
-
-                        ViewData["CheckPoint"] = "H";
+                        
                         // Vider le panier
                         contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(panierCommander);
                         contextPP.SubmitChanges();
@@ -837,11 +829,9 @@ namespace PetitesPuces.Controllers
                             PPProduits prodModifier = produitModifier.First();
                             prodModifier.NombreItems -= detComm.Quantité;
                             contextPP.SubmitChanges();
-
-                            ViewData["CheckPoint"] = "I";
+                            
                         }
-
-                        ViewData["CheckPoint"] = "J";
+                        
                         // On cherche le vendeur
                         var vendeur = from unVendeur in contextPP.GetTable<PPVendeurs>()
                                       where unVendeur.NoVendeur.Equals(commande.NoVendeur)
@@ -862,18 +852,14 @@ namespace PetitesPuces.Controllers
                             FraisTPS = commande.TPS,
                             FraisTVQ = commande.TVQ
                         };
-
-                        ViewData["CheckPoint"] = "K";
+                        
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
                         trans.Complete();
-
-                        ViewData["CheckPoint"] = "L";
                     }
                     catch (Exception e)
                     {
-                        ViewData["CheckPoint"] += "ERRREUR========================================="+e.StackTrace+"=======\n"+e.ToString();
-                        //return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
                     }
 
                 }
