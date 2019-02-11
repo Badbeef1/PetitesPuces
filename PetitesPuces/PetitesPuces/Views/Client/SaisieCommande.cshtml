@@ -295,35 +295,27 @@
                                                 <div class="col-8 text-left">
                                                     @if (ViewData["cbChecked"] != null)
                                                     {
-                                                        if (ViewData["cbChecked"] != null && ViewData["cbChecked"].ToString() != "0" && Double.Parse(ViewData["cbChecked"].ToString()) == Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                        if (Double.Parse(ViewData["cbChecked"].ToString()) == 0 && Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal && Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()) == Double.Parse(ViewData["cbChecked"].ToString()))
                                                         {
-                                                            if (Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
-                                                            {
-                                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked />
-                                                                <span><strong>@ppTypeLivraison.Description</strong></span>
-                                                            }
-                                                            else
-                                                            {
-                                                                frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
-                                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked />
-                                                                <span><strong>@ppTypeLivraison.Description</strong></span>
-                                                            }
-
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(0)" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
                                                         }
-                                                        else if (ppTypeLivraison.Description.Equals("Poste régulière") && (ViewData["cbChecked"].ToString() == "0" || ViewData["cbChecked"].ToString() == lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()))
+                                                        else if (Double.Parse(ViewData["cbChecked"].ToString()) != 0 && Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()) == Double.Parse(ViewData["cbChecked"].ToString()))
                                                         {
-                                                            if (Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) > dblSousTotal)
-                                                            {
-                                                                frais = double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
-                                                            }
-                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" checked /> <span><strong>@ppTypeLivraison.Description</strong></span>
+
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@ViewData["cbChecked"].ToString())" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                            frais = Double.Parse(ViewData["cbChecked"].ToString());
                                                         }
                                                         else
                                                         {
-                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif)" /> <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())" />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
                                                         }
+
                                                         <br /> <br />
                                                     }
+
                                                 </div>
                                                 @if (Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
                                                 {<div class="col-4 text-right"><strong>(0.00 $)</strong><br /> <br /></div> <br />
@@ -830,18 +822,12 @@
                 var InfoSuppl = document.createElement("input");
                 InfoSuppl.setAttribute("type", "hidden");
                 InfoSuppl.setAttribute("name", "InfoSuppl");
-                @if(ViewData["cbChecked"] != null)
-                {
+                @{
                     <text>
-                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur+"-"+@poidsLbs+"-"+@ViewData["cbChecked"].ToString()+"-"+@dblSousTotal+"-"+@totalTps+"-"+@totalTvq);
+                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-" +@Model.vendeur.NoVendeur+"-" +@poidsLbs+"-"+@frais+"-"+@dblSousTotal+"-"+@totalTps+"-"+@totalTvq);
                 </text>
                 }
-                else {
-                    <text>
-                InfoSuppl.setAttribute("value", @Model.client.NoClient+"-"+@Model.vendeur.NoVendeur+"-"+@poidsLbs+"-0-"+@dblSousTotal+"-"+@totalTps+"-"+@totalTvq);
-                </text>
-                }
-                
+
                 form.appendChild(InfoSuppl);
 
                     document.body.appendChild(form);

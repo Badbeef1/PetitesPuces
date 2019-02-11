@@ -723,20 +723,20 @@ namespace PetitesPuces.Controllers
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
             {
-                ViewData["NoAutorisation"] = int.Parse(NoAutorisation); 
+                TempData["NoAutorisation"] = int.Parse(NoAutorisation); 
             }
             if (DateAutorisation != null && DateAutorisation.Trim() != "")
             {
-                ViewData["DateAutorisation"] = DateAutorisation;
+                TempData["DateAutorisation"] = DateAutorisation;
             }
             if (FraisMarchand != null && FraisMarchand.Trim() != "")
             {
-                ViewData["FraisMarchand"] = FraisMarchand;
+                TempData["FraisMarchand"] = FraisMarchand;
             }
             if (InfoSuppl != null && InfoSuppl.Trim() != "N/A")
             {
                 ViewData["CheckPoint"] = "A";
-                ViewData["InfoSuppl"] = InfoSuppl;
+                TempData["InfoSuppl"] = InfoSuppl;
                     var panierCommander = from unPanier in contextPP.GetTable<PPArticlesEnPanier>()
                                           where unPanier.NoClient.Equals(InfoSuppl.Split('-')[0]) &&
                                           unPanier.NoVendeur.Equals(InfoSuppl.Split('-')[1])
@@ -856,7 +856,7 @@ namespace PetitesPuces.Controllers
                     }
                     catch (Exception e)
                     {
-                        return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                        //return new HttpStatusCodeResult(HttpStatusCode.NotFound);
                     }
 
                 }
