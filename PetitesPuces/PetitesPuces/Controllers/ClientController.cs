@@ -91,9 +91,20 @@ namespace PetitesPuces.Controllers
 
 
             List < PPArticlesEnPanier > items = new List<PPArticlesEnPanier>();
+            List < PPArticlesEnPanier > lstItemsARetirer = new List<PPArticlesEnPanier>();
+
             items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                    where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur)
+                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur) &&
+                     panier.PPProduits.NombreItems > 0 && panier.PPProduits.Disponibilité == true
                     select panier).ToList();
+
+            lstItemsARetirer = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur) &&
+                     (panier.PPProduits.NombreItems <= 0 || panier.PPProduits.Disponibilité == false)
+                    select panier).ToList();
+
+            contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstItemsARetirer);
+            contextPP.SubmitChanges();
 
             var client = from unClient in contextPP.GetTable<PPClients>()
                                where unClient.NoClient.Equals(items[0].PPClients.NoClient)
