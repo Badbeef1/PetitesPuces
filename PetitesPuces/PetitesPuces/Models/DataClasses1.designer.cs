@@ -2779,8 +2779,10 @@ namespace PetitesPuces.Models
                 }
             }
         }
-
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DateVente", DbType = "SmallDateTime")]
+      
+      [Range(typeof(DateTime), "2019-02-11", "2020-02-11",
+      ErrorMessage = "La date {0} doit être entre {1} et {2}")]
+      [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DateVente", DbType = "SmallDateTime")]
         public System.Nullable<System.DateTime> DateVente
         {
             get

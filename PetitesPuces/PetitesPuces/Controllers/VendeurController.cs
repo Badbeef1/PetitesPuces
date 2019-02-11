@@ -127,9 +127,17 @@ namespace PetitesPuces.Controllers
                                       select prod
                      ).ToList();
                      //Le pattern de num produit va être à retravailler.
-                     prod.NoProduit = (nbProduit.Count() + 1) * 10;
+                     //prod.NoProduit = (nbProduit.Count() + 1) * 10;
+                     var maxNoProduitVendeur = (from pMax in db.GetTable<PPProduits>()
+                                                where pMax.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                                                select pMax
+                                                ).ToList();
+                     long noProduit = maxNoProduitVendeur.Last().NoProduit + 1;
+                     prod.NoProduit = noProduit;
+                     prod.DateCreation = DateTime.Now;
+
                      string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                           (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
+                                           (prod.NoProduit.ToString() + '.' + parts.ElementAt(1)));
                      model.file.SaveAs(path);
                      prod.Photo = (prod.NoProduit.ToString() + Path.GetExtension(path));
 
@@ -280,7 +288,7 @@ namespace PetitesPuces.Controllers
             pAModifier.PrixVente = model.produit.PrixVente;
             pAModifier.DateVente = model.produit.DateVente;
             pAModifier.Poids = model.produit.Poids;
-            //pAModifier.Disponibilité = model.produit.Disponibilité;
+            pAModifier.Disponibilité = model.produit.Disponibilité;
 
 
             if(ViewBag.Message.Equals("File uploaded successfully"))
@@ -336,7 +344,7 @@ namespace PetitesPuces.Controllers
                ).ToList();
 
             PPProduits produitAModifier = produit.First();
-            produitAModifier.Disponibilité = true;
+            //produitAModifier.Disponibilité = true;
             var categories = (from cat in db.GetTable<PPCategories>()
                               select cat
                               ).ToList();
