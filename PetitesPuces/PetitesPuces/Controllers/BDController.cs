@@ -227,7 +227,7 @@ namespace PetitesPuces.Controllers
                                             TPS = CheckDecimal(obj[7]),
                                             TVQ = CheckDecimal(obj[8]),
                                             PoidsTotal = CheckDecimal(obj[9]),
-                                            Statut = obj[10] as char?,
+                                            Statut = char.Parse(obj[10]),
                                             NoAutorisation = obj[11]
                                         });
                                     }

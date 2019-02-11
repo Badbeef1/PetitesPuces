@@ -14,17 +14,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
 
-<script>
-    $(document).ready(function () {
-        $("#NoAutorisation").text(Request["NoAutorisation"])
-        $("#DateAutorisation").text(Request["DateAutorisation"])
-        $("#FraisMarchand").text(Request["FraisMarchand"])
-
-        if (Request["InfoSuppl"] != null && Request["InfoSuppl"] != 'null') {
-            $("#InfoSuppl").text(Request["InfoSuppl"])
-        }
-    });
-</script>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -33,12 +22,65 @@
 
 <body>
     @Html.Partial("test")
-    <div>
-
-        <span type="text" id="NoAutorisation">@ViewData["NoAutorisation"]</span>
-        <span type="text" id="DateAutorisation">@ViewData["DateAutorisation"]</span>
-        <span type="text" id="FraisMarchand">@ViewData["FraisMarchand"]</span>
-        <span type="text" id="InfoSuppl">@ViewData["InfoSuppl"]</span>
+    <div class="container sEspaceBarNavigation h-100" id="bigDiv">
+        <div class="row">
+            @if (ViewData["NoAutorisation"] != null && ViewData["DateAutorisation"] != null && ViewData["FraisMarchand"] != null && (String)ViewData["InfoSuppl"] != "N/A")
+            {
+                int noAutorisation = int.Parse(ViewData["NoAutorisation"].ToString());
+                if (noAutorisation >= 1000 && noAutorisation <= 5000)
+                {
+                    <div class="col-md-5">
+                        <div class="row">Numéro d'autorisation</div>
+                        <div class="row">Date d'autorisation</div>
+                    </div>
+                    <div class="offset-md-1"></div>
+                    <div class="col-md-5">
+                        <div class="row">@ViewData["NoAutorisation"]</div>
+                        <div class="row">@ViewData["DateAutorisation"]</div>
+                        <div class="row">@ViewData["CheckPoint"]</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-5">
+                        <div class="row">Numéro de refus</div>
+                        <div class="row">Raison</div>
+                        <div class="row">Date de refus</div>
+                    </div>
+                    <div class="offset-md-1"></div>
+                    <div class="col-md-5">
+                        <div class="row">@ViewData["NoAutorisation"]</div>
+                        @switch (noAutorisation)
+                        {
+                            case 0:
+                                <div class="row">Transaction annulée par l'utilisateur</div>
+                                break;
+                            case 1:
+                                <div class="row">Transaction refusée : Date d'expiration dépassée</div>
+                                break;
+                            case 2:
+                                <div class="row">Transaction refusée : Limite de crédit atteinte</div>
+                                break;
+                            case 3:
+                                <div class="row">Transaction refusée : Carte refusée</div>
+                                break;
+                            default:
+                                <div class="row">Erreur de validation</div>
+                                break;
+                        }
+                        <div class="row">@ViewData["DateAutorisation"]</div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="align-items-center">
+                    <text>
+                        <h1>Accès interdit</h1>
+                    </text>
+                </div>
+            }
+        </div>
     </div>
 </body>
 </html>
