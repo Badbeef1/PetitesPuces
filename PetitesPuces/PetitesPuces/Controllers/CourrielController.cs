@@ -45,83 +45,52 @@ namespace PetitesPuces.Views
                 strTypeUtilisateur = strGestionnaire;
                 /*
                 utilisateur = contextPP.PPGestionnaire
-                    .FirstOrDefault(gestionnaire => gestionnaire.AdresseEmail == (Session["gestionnaireObj"] as PPGestionnaire).AdresseEmail);
-                    */
+                .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
+                */
+
                 utilisateur = contextPP.PPVendeurs.FirstOrDefault();
             }
-
 
             //Notification par dossier
             Dictionary<short, int> dicNotificationLieu = new Dictionary<short, int>();
 
-            List<PPDestinataires> lstDestinataires01 = new List<PPDestinataires>();
-
-            ViewModels.CourrielVM courrielVM = new ViewModels.CourrielVM();
-
+            List<PPDestinataires> lstDestinatairesBoiteReception = new List<PPDestinataires>();
 
             switch (utilisateur)
             {
-                case PPClients x:
+                case PPClients c:
+                    Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification = notificationParLieu(lstLieu, c.NoClient);
 
-                    /*
-                     * Code purement théorique, rien n'a été tester
-                     */
-
-
-                    //Metton lieu 1 Boite de reception
-                    var unLieu = lstLieu[0];
-
-                    //Parcour les destinataires pour trouver les messages de l'utilisateur
-                    lstDestinataires01 = contextPP.PPDestinataires
-                        .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == x.NoClient)
-                        .ToList();
-
-                    //Metton que etat non lu == 0
-                    int intMessageNonLu = lstDestinataires01
-                        .Where(predicate: des => des.EtatLu.Value == 0)
-                        .Count();
-
-                    dicNotificationLieu.Add(unLieu.NoLieu, intMessageNonLu);
-                    //---
-                    //Metton lieu 3 Message supprimer
-                    unLieu = lstLieu[2];
-
-                    //Parcour les destinataires pour trouver les messages de l'utilisateur supprimer
-                    List<PPDestinataires> lstDestinataires03 = contextPP.PPDestinataires
-                        .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == x.NoClient)
-                        .ToList();
-
-                    dicNotificationLieu.Add(unLieu.NoLieu, lstDestinataires03.Count);
-                    //---
-                    //Metton lieu 4 Bouillon
-                    unLieu = lstLieu[3];
-
-                    //Parcour les destinataires pour trouver les messages de l'utilisateur brouillon
-                    List<PPMessages> lstMessage04 = contextPP.PPMessages
-                        .Where(predicate: mess => mess.NoExpediteur == x.NoClient && mess.dateEnvoi.HasValue == false)
-                        .ToList();
-
-                    dicNotificationLieu.Add(unLieu.NoLieu, lstMessage04.Count);
+                    dicNotificationLieu = tupNotification.Item1;
+                    lstDestinatairesBoiteReception = tupNotification.Item2;
                     break;
-                case PPVendeurs y:
-                    
+                case PPVendeurs v:
+                    Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification1 = notificationParLieu(lstLieu, v.NoVendeur);
+
+                    dicNotificationLieu = tupNotification1.Item1;
+                    lstDestinatairesBoiteReception = tupNotification1.Item2;
                     break;
-                case PPGestionnaire z:
-                    
+                case PPGestionnaire g:
+                    Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification2 = notificationParLieu(lstLieu, g.NoGestionnaire);
+
+                    dicNotificationLieu = tupNotification2.Item1;
+                    lstDestinatairesBoiteReception = tupNotification2.Item2;
                     break;
             }
 
-
-
-            courrielVM.lstLieu = lstLieu;
-            courrielVM.lieu = lieu ?? 1;
+            ViewModels.CourrielVM courrielVM = new ViewModels.CourrielVM
+            {
+                lstLieu = lstLieu,
+                lieu = lieu ?? 1,
+                dicNotificationLieu = dicNotificationLieu
+            };
 
             //Init lstDestinataires et l'adresse de l'expediteur
             courrielVM = InitModelCourriel(utilisateur, courrielVM);
             
             if (id == "Reception")
             {
-                SectionBoiteReception(ref courrielVM, lstDestinataires01);
+                SectionBoiteReception(ref courrielVM, lstDestinatairesBoiteReception);
             }
 
 
@@ -146,7 +115,7 @@ namespace PetitesPuces.Views
                 int intNoExpediteur = dest.PPMessages.NoExpediteur.Value;
 
                 //Si le client n'a pas inscrit de prenom ou de nom, l'adresse courriel va etre afficher au lieu du nom
-                if (dynExpediteur = contextPP.PPClients.FirstOrDefault(predicate: client => client.NoClient == intNoExpediteur) != null)
+                if ((dynExpediteur = contextPP.PPClients.FirstOrDefault(predicate: client => client.NoClient == intNoExpediteur)) != null)
                 {
                     PPClients unClient = (dynExpediteur as PPClients);
 
@@ -154,7 +123,7 @@ namespace PetitesPuces.Views
 
                     lstDestinataireEtExpediteur.Add(new Tuple<PPDestinataires, string>(dest, strNomAffichage));
                 }
-                else if (dynExpediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur) != null)
+                else if ((dynExpediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur)) != null)
                 {
                     lstDestinataireEtExpediteur.Add(new Tuple<PPDestinataires, string>(dest, (dynExpediteur as PPVendeurs).NomAffaires));
                 }
@@ -167,6 +136,56 @@ namespace PetitesPuces.Views
 
             courrielVM.iplDestionataireBoiteReception = lstDestinataireEtExpediteur.ToPagedList(1, 20);
 
+        }
+
+        //Touve le nombre de notification par lieu
+        //La liste des destinataire est utile dans une autre méthode, donc je l'exporte ...
+        private Tuple­<Dictionary<short, int>, List<PPDestinataires>> notificationParLieu(List<PPLieu> lstDesLieux, long lngNoUtilisateur)
+        {
+            Dictionary<short, int> dicNbNotification = new Dictionary<short, int>();
+            List<PPDestinataires> lstDestinatairesBR = new List<PPDestinataires>();
+
+            //Prend en compet que les lieux n'ont pas été altéré 
+            lstDesLieux.ForEach(unLieu => {
+
+                //Boite de reception
+                if (unLieu.NoLieu == 1)
+                {
+                    //Parcour les destinataires pour trouver les messages de l'utilisateur
+                    lstDestinatairesBR = contextPP.PPDestinataires
+                        .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == lngNoUtilisateur)
+                        .ToList();
+
+                    //Metton que etat non lu == 0
+                    int intMessageNonLu = lstDestinatairesBR
+                        .Where(predicate: des => des.EtatLu.Value == 0)
+                        .Count();
+
+                    dicNbNotification.Add(unLieu.NoLieu, intMessageNonLu);
+                }
+                //Boite supprimer
+                else if (unLieu.NoLieu == 3)
+                {
+                    //Parcour les destinataires pour trouver les messages de l'utilisateur supprimer
+                    List<PPDestinataires> lstDestinataires03 = contextPP.PPDestinataires
+                        .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == lngNoUtilisateur)
+                        .ToList();
+
+                    dicNbNotification.Add(unLieu.NoLieu, lstDestinataires03.Count);
+                }
+                //Brouillon
+                else if (unLieu.NoLieu == 4)
+                {
+                    //Parcour les destinataires pour trouver les messages de l'utilisateur brouillon
+                    List<PPMessages> lstMessage04 = contextPP.PPMessages
+                        .Where(predicate: mess => mess.NoExpediteur == lngNoUtilisateur && mess.dateEnvoi.HasValue == false)
+                        .ToList();
+
+                    dicNbNotification.Add(unLieu.NoLieu, lstMessage04.Count);
+                }
+            });
+
+            return new Tuple<Dictionary<short, int>, List<PPDestinataires>>(dicNbNotification, lstDestinatairesBR);
         }
 
         [HttpPost]
