@@ -295,35 +295,39 @@
                                                 <div class="col-8 text-left">
                                                     @if (ViewData["cbChecked"] != null)
                                                     {
-                                                        if (Double.Parse(ViewData["cbChecked"].ToString()) == 0 && Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal)
+                                                        if (Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ',')) == 0 && Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
                                                         {
                                                             <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(0)" checked />
                                                             <span><strong>@ppTypeLivraison.Description</strong></span>
                                                         }
-                                                        else if (Double.Parse(ViewData["cbChecked"].ToString()) == 0)
+                                                        else if (Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ',')) == 0 && ppTypeLivraison.CodeLivraison == 1)
                                                         {
                                                             {
 
-                                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())" checked />
+                                                                <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString().Replace(",","."))" checked />
                                                                 <span><strong>@ppTypeLivraison.Description</strong></span>
                                                                 frais = Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString());
                                                             }
                                                         }
-                                                        else if (Double.Parse(ViewData["cbChecked"].ToString()) != 0 && Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()) == Double.Parse(ViewData["cbChecked"].ToString()))
-                                                        {
-
-                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@ViewData["cbChecked"].ToString())" checked />
-                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
-                                                            frais = Double.Parse(ViewData["cbChecked"].ToString());
-                                                        }
-                                                        else if (Double.Parse(ViewData["cbChecked"].ToString()) != 0)
-                                                        {
-
-                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString())" checked />
+                                                        else if (Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ',')) == 0){
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString().Replace(",","."))" />
                                                             <span><strong>@ppTypeLivraison.Description</strong></span>
                                                         }
+                                                        else if (Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ',')) != 0 && Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()) == Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ',')))
+                                                        {
 
-                                                        <br /> <br />
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@ViewData["cbChecked"].ToString().Replace(",","."))" checked />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                            frais = Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ','));
+                                                        }
+                                                        else if (Double.Parse(ViewData["cbChecked"].ToString().Replace('.', ',')) != 0)
+                                                        {
+
+                                                            <input type="radio" name="typePoste" value="@ppTypeLivraison.CodeLivraison" onclick="checkBoxFraisLivraison(@lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString().Replace(",","."))" />
+                                                            <span><strong>@ppTypeLivraison.Description</strong></span>
+                                                        }
+
+                                                    <br /> <br />
                                                     }
 
                                                 </div>
