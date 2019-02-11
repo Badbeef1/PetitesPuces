@@ -1,6 +1,13 @@
 ﻿@model PetitesPuces.ViewModels.CourrielVM
 @{
     Layout = null;
+
+    const string strBoiteReception = "Reception";
+    const string strAffichageMessage = "AffichageMessage";
+    const string strBoiteSupprime = "SupprimePartiel";
+    const string strSupprimeDefinitivement = "SupprimeTotal";
+    const string strBrouillon = "Brouillon";
+    const string strNouveauMessage = "NouveauMessage";
 }
 <!DOCTYPE html>
 <html>
@@ -42,49 +49,82 @@
             <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
                 <nav class=" bg-faded sidebar">
                     <ul class="nav nav-pills flex-column bg-light">
-                        @foreach(var lieux in Model.lstLieu)
-                        {                           
+                        @foreach (var lieux in Model.lstLieu)
+                        {
+                            var affichage = "";
+                            if (lieux.NoLieu == 1)
+                            {
+                                affichage = strBoiteReception;
+                            }
+                            else if (lieux.NoLieu == 4)
+                            {
+                                affichage = strBrouillon;
+                            }
+
                             <li class="nav-item">
-                                <a herf="@Url.Action("Index", new { lieu = lieux.NoLieu})"><span class=""></span> @lieux.Description</a>
-                                @if(Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
+                                <a href="@Url.Action("Index/" + affichage)">
+                                    @if (lieux.NoLieu == 1)
+                                    {
+                                        <span class="fa fa-inbox"></span>
+                                    }
+                                    else if (lieux.NoLieu == 2)
+                                    {
+                                        <span class="fa fa-paper-plane"></span>
+                                    }
+                                    else if (lieux.NoLieu == 3)
+                                    {
+                                        <span class="fa fa-trash-alt"></span>
+                                    }
+                                    else if (lieux.NoLieu == 4)
+                                    {
+                                        <span class="fa fa-pencil-alt"></span>
+                                    }
+                                    else if (lieux.NoLieu == 5)
+                                    {
+                                        <span class="fa fa-trash-alt"></span>
+                                    }
+                                    @lieux.Description
+                                </a>
+                                    @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
+                                    {
+                                        <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
+                                    }
+                                </li>
+                            }
+
+                                    <!--
+                                    <li class="nav-item"><a href="#"><span class="fa fa-inbox"></span> Boite de réception</a> <span class="badge badge-primary">120</span></li>
+                                    <li><a href="#"><span class="fa fa-pencil-alt"></span> Brouillons</a> <span class="badge badge-primary">1</span></li>
+                                    <li><a href="#"><span class="fa fa-paper-plane"></span> Éléments envoyés</a></li>
+                                    <li><a href="#"><span class="fa fa-trash-alt"></span> Éléments supprimés</a> <span class="badge badge-primary">13</span></li>-->
+                                </ul>
+                            </nav>
+                        </div>
+
+
+                        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5">
+                            @{
+                                if (Model.strPage == strNouveauMessage)
                                 {
-                                    <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
+                                    @Html.Partial("RedactionMessage")
                                 }
-                            </li>
-                        }
+                                else if (Model.strPage == strAffichageMessage)
+                                {
+                                    @Html.Partial("AffichageMessage", Model.valtupAfficheMessage)
+                                }
+                                else
+                                {
+                                    @Html.Partial("ListeCourriel", Model.iplDestionataireBoiteReception)
+                                }
 
-                        <!--
-                        <li class="nav-item"><a href="#"><span class="fa fa-inbox"></span> Boite de réception</a> <span class="badge badge-primary">120</span></li>
-                        <li><a href="#"><span class="fa fa-pencil-alt"></span> Brouillons</a> <span class="badge badge-primary">1</span></li>
-                        <li><a href="#"><span class="fa fa-paper-plane"></span> Éléments envoyés</a></li>
-                        <li><a href="#"><span class="fa fa-trash-alt"></span> Éléments supprimés</a> <span class="badge badge-primary">13</span></li>-->
-                    </ul>
-                </nav>
-            </div>
-            
+                            }
 
-            <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5">
-                @{
-                    if (Model.lieu == 1)
-                    {
-                        @Html.Partial("RedactionMessage")
-                    }
-                    else if (Model.lieu == 2)
-                    {
-                        @Html.Partial("AffichageMessage")
-                    }
-                    else
-                    {
-                        @Html.Partial("ListeCourriel", Model.iplDestionataireBoiteReception)
-                    }
-                }
+                        </main>
+                    </div>
 
-            </main>
-        </div>
 
-        
-    </div>
-    
+                </div>
 
-</body>
-</html>
+
+            </body>
+        </html>

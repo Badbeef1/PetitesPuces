@@ -24,6 +24,7 @@ namespace PetitesPuces.Views
             //Liste de tout les lieux pour la bar de navigation
             List<PPLieu> lstLieu = contextPP.PPLieu.ToList();
 
+
             //Type d'utilisateur
             String strTypeUtilisateur = "";
             dynamic utilisateur;
@@ -82,19 +83,21 @@ namespace PetitesPuces.Views
             {
                 lstLieu = lstLieu,
                 lieu = lieu ?? 1,
-                dicNotificationLieu = dicNotificationLieu
+                dicNotificationLieu = dicNotificationLieu,
+                strPage = id
             };
 
             //Init lstDestinataires et l'adresse de l'expediteur
             courrielVM = InitModelCourriel(utilisateur, courrielVM);
             
-            if (id == "Reception")
-            {
-                SectionBoiteReception(ref courrielVM, lstDestinatairesBoiteReception);
-            }
-            else if (id == "AffichageMessage" && message.HasValue)
+            
+            if (id == "AffichageMessage" && message.HasValue)
             {
                 courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur);
+            }
+            else
+            {
+                SectionBoiteReception(ref courrielVM, lstDestinatairesBoiteReception);
             }
 
 
@@ -186,7 +189,24 @@ namespace PetitesPuces.Views
                 strExpediteur = (expediteur as PPGestionnaire).AdresseEmail;
             }
 
-            return (destinataires, strDestinataire, strExpediteur);
+            //Change l'état de non lu à lu
+            if (destinataires.EtatLu == 0)
+            {
+                destinataires.EtatLu = 1;
+
+                try
+                {
+                    contextPP.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+
+                }
+            }
+
+
+                return (destinataires, strDestinataire, strExpediteur);
         }
 
         //Touve le nombre de notification par lieu
