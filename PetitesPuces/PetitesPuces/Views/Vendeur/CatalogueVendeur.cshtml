@@ -76,33 +76,45 @@
        }
 
        function supprimerProduit(id) {
-          console.log('jenvoie un message');
+          //console.log('jenvoie un message');
           $.ajax({
              url: "/Vendeur/ProduitDansUnPanier",
              data: { "id": id },
-             success: messagePanier(id),
-             error: messageNormal(id),
+             success: function () {
+                if (confirm("Voulez-vous vraiment supprimer ce produit, car le produit est dans le panier d'un ou plusieurs vendeur ?")) {
+                   console.log('je tente de supprimer');
+                   supprimerDeLaBD(id);
+                }
+             },
+             error: function () {
+                if (confirm("Voulez-vous vraiment supprimer ce produit?")) {
+                   console.log('Je tente de supprimer');
+                   supprimerDeLaBD(id);
+                }
+             },
           });
-       }
+      }
 
-       function messagePanier(id) {
-          if (confirm("Voulez-vous vraiment supprimer ce produit, car le produit est dans le panier d'un ou plusieurs vendeur ?")) {
-             console.log('delete');
-             console.log("id: " + id)
-             /*$.ajax({
-                url: "/Vendeur/ProduitDansUnPanier",
-                data: { "id": id },
-                success: success,
-                error: error,
-             });*/
-          }
-       }
-       function messageNormal(id) {
-          if (confirm("Voulez-vous vraiment supprimer ce produit?")) {
-             console.log('delete');
-          }
-       }
+      function supprimerDeLaBD(id) {
+         console.log('je supprime : ' + id);
+         //Requête AJAX pour aller supprimer la catégorie passé en paramètre
+         $.ajax({
+            url: "/Vendeur/SupprimerProduit",
+            data: { "id": id },
+            success: success,
+            error: error,
+         });
+      }
 
+      function success() {
+         console.log('réussi');
+         location.href = "/Vendeur/CatalogueVendeur";
+      }
+
+      function error() {
+         console.log('erreur');
+      }
+      
         //Recharge la page catalogue pour appliquer le changement du nombre de produits par page
         function envoieNbProduit(intNbProduit) {
 

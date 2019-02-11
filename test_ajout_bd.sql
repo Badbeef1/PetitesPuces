@@ -15,7 +15,7 @@ select * from PPMessages
 select * from PPDestinataires
 select * from PPLieu
 
-
+select * from PPDetailsCommandes
 
 --Ajouter un vendeur
 insert into PPVendeurs values(1,'Childish', 'Blanchet-Plante', 'Kevin','Notre-Dame', 'Montréal','QC','J7W8H5', 'Canada','514-453-8546',null,'kev@gmail.com','Password1',10,20,1,10,null,GETDATE(),GETDATE(),1)

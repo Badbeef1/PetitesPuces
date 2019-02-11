@@ -376,16 +376,72 @@ namespace PetitesPuces.Controllers
                               where articleEnPanier.NoProduit.Equals(prodASupprimer.NoProduit)
                               select articleEnPanier
                               ).ToList();
-         
-         //Suppression du produit s'il n'est pas dans une commande
-         if(produitCommande.Count <= 0)
+         //Vérifier si le produit est dans des paniers
+         if (produitPanier.Count() > 0)
          {
-            //Vérifier si le produit est dans des paniers
-            
+            //Vider le produit des paniers
+            foreach (var item in produitPanier)
+            {
+               db.PPArticlesEnPanier.DeleteOnSubmit(item);
+            }
+
          }
 
+         //Suppression du produit s'il n'est pas dans une commande
+         if (produitCommande.Count <= 0)
+         {
+            //Supprimer le produit définitivement de la BD
+            db.PPProduits.DeleteOnSubmit(prodASupprimer);
+         }
+         else
+         {
+            //Si le produit est présent dans une commande le champs Disponilité devient à False et
+            //le champ quantité devient à 0.
+            prodASupprimer.Disponibilité = false;
+            prodASupprimer.NombreItems = 0;
+         }
+
+         //Add changes to DATABASE
+         try
+         {
+            db.SubmitChanges();
+         }
+         catch (Exception e)
+         {
+
+         }
+
+         //Retourner la page d'accueil client.
+         Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+         //Aller chercher les commandes non traités
+         var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
+                                   where commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur) && commande.Statut.Equals('N')
+                                   select commande
+                                   ).ToList();
+
+         foreach (var commande in commandesNonTraite)
+         {
+            List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>();
+            var query = (from detailsCommande in db.PPDetailsCommandes
+                         where detailsCommande.NoCommande.Equals(commande.NoCommande)
+                         select detailsCommande
+                         ).ToList();
+            lstDetailCommandes = query;
+            lstDetailsProduitsCommandes.Add(commande, lstDetailCommandes);
+         }
+
+         //Aller chercher les paniers du vendeur
+         var paniers = (from panier in db.GetTable<PPArticlesEnPanier>()
+                        where panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                        group panier by panier.PPClients
+                        );
+
+         //TODO : Aller chercher le nombres de visites quotidienne
+
+         //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
+         AccueilVendeurViewModel model2 = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, 10);
          db.Connection.Close();
-         return View();
+         return View("AccueilVendeur", model2);
       }
 
       public ActionResult ProduitDansUnPanier(int id)
@@ -400,11 +456,13 @@ namespace PetitesPuces.Controllers
 
          if (produitPanier.Count > 0)
          {
-            return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            db.Connection.Close();
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
          }
          else
          {
-            return new HttpStatusCodeResult(HttpStatusCode.OK);
+            db.Connection.Close();
+            return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
          }
 
       }
