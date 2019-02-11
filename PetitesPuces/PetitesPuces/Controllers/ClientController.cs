@@ -769,13 +769,6 @@ namespace PetitesPuces.Controllers
                     {
 
                         ViewData["CheckPoint"] = maxCommande+"\n";
-                        ViewData["CheckPoint"] += panierCommander.First().NoClient+"\n";
-                        ViewData["CheckPoint"] += panierCommander.First().NoVendeur+"\n";
-                        ViewData["CheckPoint"] += "COUNT POIDSLIVRAISON" + poidsLivraison.ToList().Count;
-                        ViewData["CheckPoint"] += "COUNT typeLivraison" + typeLivraison.ToList().Count;
-                        ViewData["CheckPoint"] += DateTime.ParseExact(DateAutorisation, "yyyy-MM-dd", CultureInfo.InvariantCulture) + "\n";
-                        ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[3]) + "\n";
-                        ViewData["CheckPoint"] += typeLivraison.First().CodeLivraison + "\n";
                         ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[4]) + "\n";
                         ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[5]) + "\n";
                         ViewData["CheckPoint"] += Decimal.Parse(InfoSuppl.Split('-')[6]) + "\n";
@@ -789,12 +782,12 @@ namespace PetitesPuces.Controllers
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
                             DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd",CultureInfo.InvariantCulture),
-                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
+                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ",")),
                             TypeLivraison = typeLivraison.First().CodeLivraison,
-                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
-                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
-                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
-                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
+                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4].Replace(".", ",")),
+                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5].Replace(".", ",")),
+                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6].Replace(".", ",")),
+                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")),
                             Statut = c,
                             NoAutorisation = NoAutorisation
                         };
