@@ -855,7 +855,7 @@ namespace PetitesPuces.Controllers
                             NoCommande = commande.NoCommande,
                             DateVente = commande.DateCommande,
                             NoAutorisation = commande.NoAutorisation,
-                            FraisLesi = Decimal.Parse(FraisMarchand),
+                            FraisLesi = Decimal.Parse(FraisMarchand.Replace(".", ",")),
                             Redevance = commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100),
                             FraisLivraison = commande.CoutLivraison,
                             FraisTPS = commande.TPS,
