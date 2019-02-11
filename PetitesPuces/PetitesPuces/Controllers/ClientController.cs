@@ -746,7 +746,7 @@ namespace PetitesPuces.Controllers
                 ViewData["CheckPoint"] = "B";
                 // Poids de ma livraison
                 var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
-                                         where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2]) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2])
+                                         where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ","))
                                          orderby pLiv.CodePoids
                                          select pLiv;
 
