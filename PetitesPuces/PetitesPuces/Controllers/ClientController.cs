@@ -762,6 +762,7 @@ namespace PetitesPuces.Controllers
                     {
                     try
                     {
+                        contextPP.Connection.Open();
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
@@ -854,10 +855,12 @@ namespace PetitesPuces.Controllers
                         
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
+                        contextPP.Connection.Close();
+                        trans.Complete();
                     }
                     catch (Exception e)
                     {
-                        ViewData["CheckPoint"] = e.StackTrace;
+                        ViewData["CheckPoint"] = e.StackTrace + "-----------------------|||||||||||||||||||||-------------------------" + e.Message + "-----------------------|||||||||||||||||||||-------------------------" + e;
                     }
 
                 }
