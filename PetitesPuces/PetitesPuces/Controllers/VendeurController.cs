@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using PagedList;
 using System.IO;
+using System.Net;
 
 namespace PetitesPuces.Controllers
 {
@@ -350,6 +351,62 @@ namespace PetitesPuces.Controllers
             db.Connection.Close();
             return View("GestionProduit", gestionProduit);
          }
+      }
+
+      public ActionResult SupprimerProduit(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //1-Aller chercher le produit à supprimer
+         var produitASupprimer = (from prod in db.GetTable<PPProduits>()
+                                  where prod.NoProduit.Equals(id)
+                                  select prod
+                                  ).ToList();
+
+         PPProduits prodASupprimer = produitASupprimer.First();
+
+         //2- Vérifier si le produit est dans une commande
+         var produitCommande = (from dc in db.GetTable<PPDetailsCommandes>()
+                                where dc.NoProduit.Equals(prodASupprimer.NoProduit)
+                                select dc
+                                ).ToList();
+
+         //3-Vérifier si le produit est dans des paniers de client
+         var produitPanier = (from articleEnPanier in db.GetTable<PPArticlesEnPanier>()
+                              where articleEnPanier.NoProduit.Equals(prodASupprimer.NoProduit)
+                              select articleEnPanier
+                              ).ToList();
+         
+         //Suppression du produit s'il n'est pas dans une commande
+         if(produitCommande.Count <= 0)
+         {
+            //Vérifier si le produit est dans des paniers
+            
+         }
+
+         db.Connection.Close();
+         return View();
+      }
+
+      public ActionResult ProduitDansUnPanier(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //3-Vérifier si le produit est dans des paniers de client
+         var produitPanier = (from articleEnPanier in db.GetTable<PPArticlesEnPanier>()
+                              where articleEnPanier.NoProduit.Equals(id)
+                              select articleEnPanier
+                              ).ToList();
+
+         if (produitPanier.Count > 0)
+         {
+            return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+         }
+         else
+         {
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+         }
+
       }
 
       // GET: Vendeur
