@@ -1,0 +1,99 @@
+﻿@using PetitesPuces.Models
+@model PPCommandes
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<style>
+    h5{
+        overflow-wrap:break-word;
+    }
+</style>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Facture</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+</head>
+<body class="container">
+    <div class="row"> 
+        <div class="col-md-5 text-left">
+            <h1 class="d-flex align-items-end h-100">Commande #@Model.NoCommande</h1>
+        </div>
+        <div class="offset-md-2"></div>
+        <div class="col-md-5 text-right">
+            <h3 class="d-flex align-items-end h-100">Date: @Model.DateCommande</h3>
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="margin:0">
+        <div class="col-md-5 border border-dark" style="padding:5px">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>@Model.PPClients.Prenom  @Model.PPClients.Nom</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Client # : @Model.PPClients.NoClient</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPClients.AdresseEmail</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPClients.Rue, @Model.PPClients.Ville, @Model.PPClients.Province @Model.PPClients.Pays, @Model.PPClients.CodePostal</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPClients.Tel1</h5>
+                    <h5>@Model.PPClients.Tel2</h5>
+                </div>
+            </div>
+        </div>
+        <div class="offset-md-2"></div>
+        <div class="col-md-5 border border-dark" style="padding:5px">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPVendeurs.NomAffaires</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPVendeurs.Prenom  @Model.PPVendeurs.Nom</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Vendeur # : @Model.PPVendeurs.NoVendeur</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPVendeurs.AdresseEmail</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPVendeurs.Rue, @Model.PPVendeurs.Ville, @Model.PPVendeurs.Province @Model.PPVendeurs.Pays, @Model.PPVendeurs.CodePostal</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>@Model.PPVendeurs.Tel1</h5>
+                    <h5>@Model.PPVendeurs.Tel2</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

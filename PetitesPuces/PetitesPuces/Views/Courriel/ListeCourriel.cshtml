@@ -10,18 +10,33 @@
 
         document.getElementById('ElementSelectionner').value = tabCb;
     }
+
+    function uneTache(element) {
+        var strElement = element.value;
+
+        var tabChampsModification = strElement.split("_");
+
+        var action = tabChampsModification[0];
+        var sujet = tabChampsModification[1];
+
+        document.getElementById("ElementSelectionner").value = sujet;
+        document.getElementById("uneAction").value = action;
+
+        document.getElementsByTagName("form")[0].submit();
+    }
+
 </script>
 @using (Html.BeginForm())
 {
 <div>
     @Html.Hidden("ElementSelectionner")
+    @Html.Hidden("uneAction")
     <ul class="nav navbar bd-navbar mr-auto">
         <li class="nav-item">
             <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
         </li>
         <li class="nav-item">
-            <a onclick="" class="nav-link"><span class="far fa-envelope-open"></span> Marquer tous comme lu</a>
-            <input type="submit" value="Gros Test" />
+            <button type="submit" class="btn btn-link"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
         </li>
         <li class="nav-item">
             <a href="#">Répondre</a>
@@ -61,14 +76,19 @@
             </div>
 
             <div class="col-1 sActionMessageListe">
-                <button type="button" title="Supprimer"><span class="fa fa-trash-alt"></span></button>
+                @{
+                    var nom = "supp_" + message.NoMsg;
+                }
+                <button type="button" title="Supprimer" onclick="uneTache(this)"><span class="fa fa-trash-alt"></span></button>
                 @if (destinataires.EtatLu == 0)
-                {
-                    <button type="button" title="Marquer comme lu"><span class="far fa-envelope-open"></span></button>
+                 {
+                    nom = "lu_" + message.NoMsg;
+                    <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope-open"></span></button>
                 }
                 else
                 {
-                    <button type="button" title="Marquer comme non lu"><span class="far fa-envelope"></span></button>
+                    nom = "nonlu_" + message.NoMsg;
+                    <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)" ><span class="far fa-envelope"></span></button>
                 }
             </div>
             <div class="col-1" onclick="location.href='@strActionAffichage'">
