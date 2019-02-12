@@ -2,7 +2,7 @@
     Layout = null;
 }
 @using PetitesPuces.Models
-@model List<PPArticlesEnPanier>
+@model SaisieCommandeViewModel
 <!DOCTYPE html>
 
 <html>
@@ -114,7 +114,16 @@
                 error: error,
             });
         }
+        
         function updateCart(noPanier) {
+            var max = parseInt($('#' + noPanier).attr('max'));
+            var min = parseInt($('#' + noPanier).attr('min'));
+            if ($('#' + noPanier).val() > max) {
+                $('#' + noPanier).val(max);
+            }
+            else if ($('#' + noPanier).val() < min) {
+                $('#' + noPanier).val(min);
+            }
             var quantite = $('#' + noPanier).val();
             console.log('J\'update le cart');
             $.ajax({
