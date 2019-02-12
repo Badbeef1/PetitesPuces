@@ -78,7 +78,7 @@ namespace PetitesPuces.Controllers
         }
 
         // GET: Client
-        public ActionResult SaisieCommande(List<PPArticlesEnPanier> lst)
+        public ActionResult SaisieCommande(SaisieCommandeViewModel sViewModelParam)
         {
             List<Province> lstProvinces = new List<Province>
             {
@@ -94,12 +94,12 @@ namespace PetitesPuces.Controllers
             List < PPArticlesEnPanier > lstItemsARetirer = new List<PPArticlesEnPanier>();
 
             items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur) &&
+                     where panier.NoClient.Equals(sViewModelParam.client.NoClient) && panier.NoVendeur.Equals(sViewModelParam.vendeur.NoVendeur) &&
                      panier.PPProduits.NombreItems > 0 && panier.PPProduits.Disponibilité == true
                     select panier).ToList();
 
             lstItemsARetirer = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                     where panier.NoClient.Equals(lst[0].NoClient) && panier.NoVendeur.Equals(lst[0].NoVendeur) &&
+                     where panier.NoClient.Equals(sViewModelParam.client.NoClient) && panier.NoVendeur.Equals(sViewModelParam.vendeur.NoVendeur) &&
                      (panier.PPProduits.NombreItems <= 0 || panier.PPProduits.Disponibilité == false)
                     select panier).ToList();
 
@@ -107,10 +107,10 @@ namespace PetitesPuces.Controllers
             contextPP.SubmitChanges();
 
             var client = from unClient in contextPP.GetTable<PPClients>()
-                               where unClient.NoClient.Equals(items[0].PPClients.NoClient)
+                               where unClient.NoClient.Equals(items[0].NoClient)
                                select unClient;
 
-            PPClients clientSaisie = new PPClients
+            PPClients clientSaisie = (PPClients)client.First();/*new PPClients
             {
                 NoClient = client.First().NoClient,
                 AdresseEmail = client.First().AdresseEmail,
@@ -123,7 +123,7 @@ namespace PetitesPuces.Controllers
                 Pays = client.First().Pays,
                 Tel1 = client.First().Tel1,
                 Tel2 = client.First().Tel2
-            };
+            };*/
 
             SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
             {
@@ -139,15 +139,19 @@ namespace PetitesPuces.Controllers
         //Panier Détaillé du client
         public ActionResult PanierDetail(int id)
         {
-            // ON AJOUTE ICIIIIII
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
                                               where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient) && panier.NoVendeur.Equals(id)
                                               select panier).ToList();
-
-            return View(items);
+            SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+            {
+                lstArticlePanier = items,
+                vendeur = items[0].PPVendeurs,
+                client = items[0].PPClients
+            };
+            return View(sViewModel);
         }
 
         /// <summary>
@@ -160,36 +164,60 @@ namespace PetitesPuces.Controllers
 
         public ActionResult UpdatePanier(int noPanier, int quantite)
         {
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
-            int noVendeur;
-            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-
-            var articlesPanier = (from articlePanier in db.GetTable<PPArticlesEnPanier>()
-                                  where articlePanier.NoPanier.Equals(noPanier)
-                                  select articlePanier
-                                  );
-
-            noVendeur = (int)articlesPanier.First().NoVendeur;
-            articlesPanier.First().NbItems = (short)quantite;
-
-            // Submit the changes to the database.
-            try
+            if (ModelState.IsValid)
             {
-                db.SubmitChanges();
-            }
-            catch (Exception e)
+                List<Province> lstProvinces = new List<Province>
             {
-                Console.WriteLine(e);
-            }
-            //Requête qui va permettre d'aller chercher les paniers du client
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient.ToString()) && panier.NoVendeur.Equals(noVendeur)
-                                              select panier).ToList();
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
 
-            db.Connection.Close();
-            return PartialView("Client/Panier", items);
+                ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+                String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
+                long noVendeur = 0;
+                try
+                {
+                    var articlesPanier = from articlePanier in contextPP.GetTable<PPArticlesEnPanier>()
+                                         where articlePanier.NoPanier.Equals(noPanier)
+                                         select articlePanier;
+
+                    noVendeur = (long)articlesPanier.First().NoVendeur;
+                    articlesPanier.First().NbItems = (short)quantite;
+                    contextPP.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                    ViewData["errorBD"] = "Une erreur s'est produite au changement de quantité";
+                }
+                //Requête qui va permettre d'aller chercher les paniers du client
+                List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                                  where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(noVendeur)
+                                                  select panier).ToList();
+
+                if (items.Count > 0)
+                {
+                    SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+                    {
+                        client = contextPP.GetTable<PPClients>().Where(m => m.NoClient.Equals(noClient)).First(),
+                        vendeur = contextPP.GetTable<PPVendeurs>().Where(m => m.NoVendeur.Equals(noVendeur)).First(),
+                        lstArticlePanier = items
+                    };
+
+                    return PartialView("Client/Panier", sViewModel);
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                }
+            }
+            else
+            {
+                // Est-ce que je veux vraiment retourner ceci???
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
         }
 
         public ActionResult UpdatePanierSaisieCommande(int noPanier, int quantite)
@@ -257,39 +285,63 @@ namespace PetitesPuces.Controllers
         /// <returns></returns>
         public ActionResult SupprimerProduit(int id)
         {
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-            long noVendeur;
-            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
-            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-
-            //Aller chercher le panier à supprimer
-            var query = (from articlePanier in db.GetTable<Models.PPArticlesEnPanier>()
-                         where articlePanier.NoPanier.Equals(id)
-                         select articlePanier
-                         );
-            noVendeur = (long)query.First().NoVendeur;
-
-            db.PPArticlesEnPanier.DeleteOnSubmit(query.First());
-
-            try
+            if (ModelState.IsValid)
             {
-                db.SubmitChanges();
+                List<Province> lstProvinces = new List<Province>
+            {
+                new Province { Abreviation = "NB", Nom = "Nouveau-Brunswick"},
+                new Province { Abreviation = "ON", Nom = "Ontario"},
+                new Province { Abreviation = "QC", Nom = "Québec"},
+            };
+
+                ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+
+                long noVendeur = 0;
+                long noClient = ((PPClients)Session["clientObj"]).NoClient;
+                try
+                {
+
+                    //Aller chercher le panier à supprimer
+                    var query = (from articlePanier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                 where articlePanier.NoPanier.Equals(id)
+                                 select articlePanier
+                                 );
+
+                    noVendeur = (long)query.First().NoVendeur;
+
+                    contextPP.PPArticlesEnPanier.DeleteOnSubmit(query.First());
+
+                    contextPP.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                //Requête qui va permettre d'aller chercher les paniers du client
+                List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                                  where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(noVendeur)
+                                                  select panier).ToList();
+                if (items.Count > 0)
+                {
+                    SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+                    {
+                        client = contextPP.GetTable<PPClients>().Where(m => m.NoClient.Equals(noClient)).First(),
+                        vendeur = contextPP.GetTable<PPVendeurs>().Where(m => m.NoVendeur.Equals(noVendeur)).First(),
+                        lstArticlePanier = items
+                    };
+
+                    return PartialView("Client/Panier", sViewModel);
+                }
+                else
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
-            }
-            //Requête qui va permettre d'aller chercher les paniers du client
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient.ToString()) && panier.NoVendeur.Equals(noVendeur)
-                                              select panier).ToList();
-            if (items.Count() == 0)
-            {
+                // Est-ce que je veux vraiment retourner ceci???
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
-            db.Connection.Close();
-            return PartialView("Client/Panier", items);
         }
 
         public ActionResult SupprimerProduitSaisieCommande(int id)
@@ -959,6 +1011,7 @@ namespace PetitesPuces.Controllers
                                                   select unProduit;
                             PPProduits prodModifier = produitModifier.First();
                             prodModifier.NombreItems -= detComm.Quantité;
+                            prodModifier.DateMAJ = DateTime.Now;
                             contextPP.SubmitChanges();
                             
                         }

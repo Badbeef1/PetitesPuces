@@ -41,7 +41,7 @@
       <div class="card-columns">
          @for (int i = 0; (i < 15) && (i < Model.Count()); i++)
          {
-            double dblPrixVente = (double)Model[i].PrixVente;
+            double dblPrixVente = (double)Model[i].PrixDemande;
             <!--<a href="/Internaute/ProduitDetaille" class="custom-card">-->
             <div id="divItems" class="card border-dark mb-3 sCardItemCatalogue">
                <img class="card-img-top" src="~/Content/images/@Model[i].Photo" alt="produit ...." width="250px" height="250px">

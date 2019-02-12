@@ -14,7 +14,7 @@ namespace PetitesPuces.Views
         DataClasses1DataContext contextPP = new DataClasses1DataContext();
 
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu, int? message)
+        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner)
         {
             const String strClient = "Client";
             const String strVendeur = "Vendeur";
@@ -56,7 +56,7 @@ namespace PetitesPuces.Views
             Dictionary<short, int> dicNotificationLieu = new Dictionary<short, int>();
 
             List<PPDestinataires> lstDestinatairesBoiteReception = new List<PPDestinataires>();
-
+            long lngNoUtilisateur = 0;
             switch (utilisateur)
             {
                 case PPClients c:
@@ -64,18 +64,24 @@ namespace PetitesPuces.Views
 
                     dicNotificationLieu = tupNotification.Item1;
                     lstDestinatairesBoiteReception = tupNotification.Item2;
+
+                    lngNoUtilisateur = c.NoClient;
                     break;
                 case PPVendeurs v:
                     Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification1 = notificationParLieu(lstLieu, v.NoVendeur);
 
                     dicNotificationLieu = tupNotification1.Item1;
                     lstDestinatairesBoiteReception = tupNotification1.Item2;
+
+                    lngNoUtilisateur = v.NoVendeur;
                     break;
                 case PPGestionnaire g:
                     Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification2 = notificationParLieu(lstLieu, g.NoGestionnaire);
 
                     dicNotificationLieu = tupNotification2.Item1;
                     lstDestinatairesBoiteReception = tupNotification2.Item2;
+
+                    lngNoUtilisateur = g.NoGestionnaire;
                     break;
             }
 
@@ -101,7 +107,10 @@ namespace PetitesPuces.Views
             }
 
 
-
+            if (ElementSelectionner != null)
+            {
+                MarqueLu(new List<String>(ElementSelectionner.Split(',')), lngNoUtilisateur);
+            }
 
 
 
@@ -257,6 +266,30 @@ namespace PetitesPuces.Views
             });
 
             return new Tuple<Dictionary<short, int>, List<PPDestinataires>>(dicNbNotification, lstDestinatairesBR);
+        }
+
+        private void MarqueLu(List<String> lstElementATaiter, long lngNoUtilisateur)
+        {
+            List<PPDestinataires> lstTempoDestinataire = new List<PPDestinataires>();
+
+            lstElementATaiter.ForEach(element =>
+            {
+                PPDestinataires destinataire = contextPP.PPDestinataires
+                    .FirstOrDefault(desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == int.Parse(element.Substring(2)));
+
+                destinataire.EtatLu = 1;
+
+                lstTempoDestinataire.Add(destinataire);
+            });
+
+            try
+            {
+                contextPP.SubmitChanges();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         [HttpPost]
