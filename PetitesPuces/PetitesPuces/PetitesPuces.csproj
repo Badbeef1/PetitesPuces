@@ -384,6 +384,7 @@
     </Content>
     <None Include="Models\DataClasses1.dbml.layout">
       <DependentUpon>DataClasses1.dbml</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
     <Content Include="Views\Gestionnaire\AccueilGestionnaire.cshtml" />
