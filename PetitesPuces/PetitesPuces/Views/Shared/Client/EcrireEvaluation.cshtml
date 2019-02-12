@@ -53,8 +53,12 @@
 }
 <script type="text/javascript">
     $(function () {
-        $('#ddlCote').barrating({
-            theme: 'bootstrap-stars'
+       $('#ddlCote').barrating({
+          theme: 'bootstrap-stars',
+          onSelect: function (value, text, event) {
+              $('#ddlCote').val(text).change();
+           }
+
         });
     });
 </script>

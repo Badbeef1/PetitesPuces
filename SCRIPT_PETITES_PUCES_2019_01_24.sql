@@ -424,4 +424,7 @@ CREATE TABLE PPEvaluations(
 	Commentaire varchar(150),
 	DateMAJ smalldatetime,
 	DateCreation smalldatetime
+	CONSTRAINT PK_Evaluations PRIMARY KEY (NoClient,NoProduit),
+	CONSTRAINT FK_NoClient FOREIGN KEY(NoClient) REFERENCES PPClients (NoClient),
+	CONSTRAINT FK_NoProduit FOREIGN KEY (NoProduit) REFERENCES PPProduits (NoProduit)
 	);
