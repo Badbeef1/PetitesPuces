@@ -28,6 +28,7 @@ namespace PetitesPuces.Controllers
          //Aller chercher les commandes non traités
          var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
                                    where commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur) && commande.Statut.Equals('N')
+                                   orderby commande.DateCommande ascending
                                    select commande
                                    ).ToList();
 

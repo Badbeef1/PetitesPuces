@@ -2781,8 +2781,9 @@ namespace PetitesPuces.Models
         }
 
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DateVente", DbType = "SmallDateTime")]
-        [ValidationDateVente(ErrorMessage = "La date doit être supérieur à la date du jour.")]
+      [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DateVente", DbType = "SmallDateTime")]
+      [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
+      [ValidationDateVente(ErrorMessage = "La date doit être supérieur à la date du jour.")]
         public System.Nullable<System.DateTime> DateVente
         {
             get

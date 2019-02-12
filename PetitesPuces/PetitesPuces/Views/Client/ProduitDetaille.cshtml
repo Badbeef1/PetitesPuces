@@ -24,9 +24,12 @@
         @RenderPage("~/Views/Client/index.cshtml")
     </div>
     <br /><br /><br />
-    <div class="container">
+    <div class="container mb-5">
        @Html.Partial("Client/DetailProduit", Model)
-       @Html.Partial("Client/EcrireEvaluation",Model)
+       
+       @if (Model.ClientARecuCeProduit) { 
+           @Html.Partial("Client/EcrireEvaluation",Model)
+       }
     </div>
 </body>
 </html>

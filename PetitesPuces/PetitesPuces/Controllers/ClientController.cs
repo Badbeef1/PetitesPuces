@@ -834,60 +834,76 @@ namespace PetitesPuces.Controllers
             }
         }
 
+       //GET: Evaluations
+       public ActionResult Evaluations(long numero)
+       {
+          if (contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
+
+
+         var model = new ViewModels.ProduitDetailViewModel()
+         {
+            lstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList()
+         };
+
+          return View(model);
+       }
 
         // GET: ProduitDetaille
         public ActionResult ProduitDetaille(long numero)
         {
-            ViewModels.ProduitDetailViewModel model = new ViewModels.ProduitDetailViewModel();
-            model.Produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero);
-            if(Session["clientObj"] != null)
-            {
-                var cConnecte = Session["clientObj"] as PPClients;
+           var model = new ViewModels.ProduitDetailViewModel
+           {
+              Produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero)
+           };
 
-                model.Evaluation = contextPP.PPEvaluations
-                    .Where(e => e.NoClient == cConnecte.NoClient && e.NoProduit == numero)
-                    .FirstOrDefault() ?? 
-                    new PPEvaluations(){ NoProduit = numero };
-            }
-            return View("ProduitDetaille",model);
+
+           if (Session["clientObj"] == null) return View("ProduitDetaille", model);
+
+           var cConnecte = Session["clientObj"] as PPClients;
+           model.Evaluation = contextPP.PPEvaluations
+                                 .FirstOrDefault(e => e.NoClient == cConnecte.NoClient && e.NoProduit == numero) ?? 
+                              new PPEvaluations(){ NoProduit = numero };
+            //Check pour si le client a recu ce item
+           model.ClientARecuCeProduit = (from commande in contextPP.PPCommandes
+                                          from detail in commande.PPDetailsCommandes
+                                        where detail.NoProduit == numero && commande.Statut == 'L' select commande).Any(); 
+
+
+           return View("ProduitDetaille",model);
         }
 
         //Sauvegarder son commentaire
         [HttpPost]
         public ActionResult Evaluation(ViewModels.ProduitDetailViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                model.Evaluation.NoClient = (Session["clientObj"] as PPClients).NoClient;
-                var evalAvant = contextPP.PPEvaluations
-                    .Where(x => x.NoProduit == model.Evaluation.NoProduit && x.NoClient == model.Evaluation.NoClient)?
-                    .FirstOrDefault();
+           if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit);
 
-                if (evalAvant != null) {
-                    evalAvant.Cote = model.Evaluation.Cote;
-                    evalAvant.Commentaire = model.Evaluation.Commentaire;
-                    evalAvant.DateMAJ = DateTime.Now;
-                }
-                else {
+           model.Evaluation.NoClient = ((PPClients) Session["clientObj"]).NoClient;
+           var evalAvant = contextPP.PPEvaluations
+              .Where(x => x.NoProduit == model.Evaluation.NoProduit && x.NoClient == model.Evaluation.NoClient)?
+              .FirstOrDefault();
 
-                    model.Evaluation.DateCreation = DateTime.Now;
-                    contextPP.PPEvaluations.InsertOnSubmit(model.Evaluation);
-                }
+           if (evalAvant != null) {
+              evalAvant.Cote = model.Evaluation.Cote;
+              evalAvant.Commentaire = model.Evaluation.Commentaire;
+              evalAvant.DateMAJ = DateTime.Now;
+              
+           }
+           else {
+              model.Evaluation.DateCreation = DateTime.Now;
+              contextPP.PPEvaluations.InsertOnSubmit(model.Evaluation);
+           }
 
-                try
-                {
-                    contextPP.SubmitChanges();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+           try
+           {
+              contextPP.SubmitChanges();
+           }
+           catch (Exception e)
+           {
+              Console.WriteLine(e);
+           }
 
-            }
-
-
-
-            return ProduitDetaille(model.Produit.NoProduit);
+           return ProduitDetaille(model.Evaluation.NoProduit);
         }
 
 
