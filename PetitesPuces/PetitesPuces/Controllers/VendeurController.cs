@@ -249,83 +249,104 @@ namespace PetitesPuces.Controllers
          //TODO: Ajouter le produit dans la BASE DE DONNÉES
          List<string> parts = new List<string>();
 
-         if (model.file != null && model.file.ContentLength > 0)
-            try
-            {
-               var postedFileExtension = Path.GetExtension(model.file.FileName);
-               //Validation si c'est un image 
-               if (!string.Equals(model.file.ContentType, "image/jpg", StringComparison.OrdinalIgnoreCase) &&
-                  !string.Equals(model.file.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase) &&
-                  !string.Equals(model.file.ContentType, "image/pjpeg", StringComparison.OrdinalIgnoreCase) &&
-                  !string.Equals(model.file.ContentType, "image/gif", StringComparison.OrdinalIgnoreCase) &&
-                  !string.Equals(model.file.ContentType, "image/x-png", StringComparison.OrdinalIgnoreCase) &&
-                  !string.Equals(model.file.ContentType, "image/png", StringComparison.OrdinalIgnoreCase))
-               {
-                  ViewBag.Message("Le fichier doit être une image");
-               }
-               else if (!string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
-                       && !string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
-                       && !string.Equals(postedFileExtension, ".gif", StringComparison.OrdinalIgnoreCase)
-                       && !string.Equals(postedFileExtension, ".jpeg", StringComparison.OrdinalIgnoreCase))
-               {
-                  ViewBag.Message("Le fichier doit être une image");
-               }
-               //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
-               if (!ViewBag.Message.Equals("Le fichier doit être une image"))
-               {
-                  parts = model.file.FileName.Split('.').Select(p => p.Trim()).ToList();
-
-                  string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                        (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
-                  model.file.SaveAs(path);
-                  model.produit.Photo = model.produit.NoProduit + '.' + Path.GetExtension(path);
-                  ViewBag.Message = "File uploaded successfully";
-               }
-            }
-            catch (Exception ex)
-            {
-               ViewBag.Message = "ERROR:" + ex.Message.ToString();
-            }
-         else
+         if (ModelState.IsValid)
          {
-            //ViewBag.Message = "You have not specified a file.";
+            if (model.produit.PrixDemande > model.produit.PrixVente)
+            {
+               if (DateVentePrixVenteValide(model.produit.PrixVente, model.produit.DateVente))
+               {
+                  if (model.file != null && model.file.ContentLength > 0)
+                     try
+                     {
+                        var postedFileExtension = Path.GetExtension(model.file.FileName);
+                        //Validation si c'est un image 
+                        if (!string.Equals(model.file.ContentType, "image/jpg", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/pjpeg", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/gif", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/x-png", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/png", StringComparison.OrdinalIgnoreCase))
+                        {
+                           ViewBag.Message("Le fichier doit être une image");
+                        }
+                        else if (!string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(postedFileExtension, ".gif", StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(postedFileExtension, ".jpeg", StringComparison.OrdinalIgnoreCase))
+                        {
+                           ViewBag.Message("Le fichier doit être une image");
+                        }
+                        //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
+                        if (!ViewBag.Message.Equals("Le fichier doit être une image"))
+                        {
+                           parts = model.file.FileName.Split('.').Select(p => p.Trim()).ToList();
+
+                           string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                                 (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1)));
+                           model.file.SaveAs(path);
+                           model.produit.Photo = model.produit.NoProduit + '.' + Path.GetExtension(path);
+                           ViewBag.Message = "File uploaded successfully";
+                        }
+                     }
+                     catch (Exception ex)
+                     {
+                        ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                     }
+                  else
+                  {
+                     //ViewBag.Message = "You have not specified a file.";
+                  }
+                  if (ViewBag.Message.Equals("File uploaded successfully") || ViewBag.Message.Equals(""))
+                  {
+                     var produitAModifier = (from prodAMod in db.GetTable<PPProduits>()
+                                             where prodAMod.NoProduit.Equals(model.produit.NoProduit)
+                                             select prodAMod
+                        ).ToList();
+
+                     PPProduits pAModifier = produitAModifier.First();
+
+                     //Modifier les valeurs
+                     pAModifier.Nom = model.produit.Nom;
+                     pAModifier.PrixDemande = model.produit.PrixDemande;
+                     pAModifier.Description = model.produit.Description;
+                     pAModifier.DateCreation = model.produit.DateCreation;
+                     pAModifier.NombreItems = model.produit.NombreItems;
+                     pAModifier.PrixVente = model.produit.PrixVente;
+                     pAModifier.DateVente = model.produit.DateVente;
+                     pAModifier.Poids = model.produit.Poids;
+                     pAModifier.Disponibilité = model.produit.Disponibilité;
+
+
+                     if (ViewBag.Message.Equals("File uploaded successfully"))
+                     {
+                        pAModifier.Photo = (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1));
+                     }
+                     try
+                     {
+                        db.SubmitChanges();
+                        ModelState.Clear();
+                     }
+                     catch (Exception e)
+                     {
+                        Console.WriteLine(e);
+                     }
+                  }
+               }
+               else
+               {
+
+                  ViewBag.PrixVenteErreur = "Le prix de vente et la date doivent être rempli si il y a un rabais.";
+               }
+            }
+            else
+            {
+               ViewBag.PrixVenteErreur = "Le prix de vente doit être plus petit que le prix demandé.";
+            }
          }
+         
 
-         if ((ModelState.IsValid) && (ViewBag.Message.Equals("File uploaded successfully") || ViewBag.Message.Equals("")))
+         if ((ModelState.IsValid) && ((ViewBag.Message.Equals("File uploaded successfully")) || (ViewBag.Message.Equals(""))) && (ViewBag.PrixVenteErreur.Equals("")))
          {
-            var produitAModifier = (from prodAMod in db.GetTable<PPProduits>()
-                                    where prodAMod.NoProduit.Equals(model.produit.NoProduit)
-                                    select prodAMod
-                                    ).ToList();
-
-            PPProduits pAModifier = produitAModifier.First();
-
-            //Modifier les valeurs
-            pAModifier.Nom = model.produit.Nom;
-            pAModifier.PrixDemande = model.produit.PrixDemande;
-            pAModifier.Description = model.produit.Description;
-            pAModifier.DateCreation = model.produit.DateCreation;
-            pAModifier.NombreItems = model.produit.NombreItems;
-            pAModifier.PrixVente = model.produit.PrixVente;
-            pAModifier.DateVente = model.produit.DateVente;
-            pAModifier.Poids = model.produit.Poids;
-            pAModifier.Disponibilité = model.produit.Disponibilité;
-
-
-            if (ViewBag.Message.Equals("File uploaded successfully"))
-            {
-               pAModifier.Photo = (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1));
-            }
-            try
-            {
-               db.SubmitChanges();
-               ModelState.Clear();
-            }
-            catch (Exception e)
-            {
-               Console.WriteLine(e);
-            }
-
             Dictionary<PPCommandes, List<PPDetailsCommandes>> lstDetailsProduitsCommandes = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
             //Aller chercher les commandes non traités
             var commandesNonTraite = (from commande in db.GetTable<PPCommandes>()
