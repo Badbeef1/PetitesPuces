@@ -397,7 +397,9 @@
     <Content Include="Views\Vendeur\GestionProduit.cshtml" />
     <Content Include="Views\Vendeur\CatalogueVendeur.cshtml" />
     <Content Include="Views\Connexion\RecupererMDP.cshtml" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Views\Internaute\Inscription.cshtml" />
     <Content Include="Views\Client\SaisieCommande.cshtml" />
     <Content Include="Views\Client\Catalogue.cshtml" />
@@ -454,6 +456,7 @@
     <Content Include="Views\Client\InfoClientSaisieCommande.cshtml" />
     <Content Include="Views\Courriel\AffichageMessage.cshtml" />
     <Content Include="Views\Shared\Client\EcrireEvaluation.cshtml" />
+    <Content Include="Views\Client\Facture.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -8,6 +8,7 @@ using PetitesPuces.Models;
 using PagedList;
 using System.Transactions;
 using System.Globalization;
+using IronPdf;
 
 namespace PetitesPuces.Controllers
 {
@@ -1046,6 +1047,8 @@ namespace PetitesPuces.Controllers
                         contextPP.SubmitChanges();
                         contextPP.Connection.Close();
                         trans.Complete();
+
+                        HtmlToPdf pdfFacture = new HtmlToPdf();
                     }
                     catch (Exception e)
                     {
@@ -1055,6 +1058,14 @@ namespace PetitesPuces.Controllers
                 }
             }
             return View();
+        }
+
+        public ActionResult Facture()
+        {
+            PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()
+                                   orderby unCommande.NoCommande descending
+                                   select unCommande).First();
+            return View(commande);
         }
     }
 }
