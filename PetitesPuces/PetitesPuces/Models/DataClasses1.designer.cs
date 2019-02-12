@@ -2779,9 +2779,9 @@ namespace PetitesPuces.Models
                 }
             }
         }
-      
-      [Range(typeof(DateTime), "2019-02-11", "2020-02-11",
-      ErrorMessage = "La date {0} doit être entre {1} et {2}")]
+
+      [Range(typeof(DateTime), "2019-02-11" , "2020-02-11",
+      ErrorMessage = "La date de vente ne peut pas être une date passée")]
       [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_DateVente", DbType = "SmallDateTime")]
         public System.Nullable<System.DateTime> DateVente
         {
