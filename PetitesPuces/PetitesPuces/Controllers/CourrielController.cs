@@ -13,14 +13,20 @@ namespace PetitesPuces.Views
     {
         DataClasses1DataContext contextPP = new DataClasses1DataContext();
 
+        const String strClient = "Client";
+        const String strVendeur = "Vendeur";
+        const String strGestionnaire = "Gestionnaire";
+
+        const String actionLu = "lu";
+        const String actionNonLu = "nonlu";
+        const String actionSupprimer = "supp";
+        const String actionSupprimerDefinitivement = "suppdef";
+        const String actionRestaurer = "restau";
+
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner)
+        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction)
         {
-            const String strClient = "Client";
-            const String strVendeur = "Vendeur";
-            const String strGestionnaire = "Gestionnaire";
-
-
+            
             //Liste de tout les lieux pour la bar de navigation
             List<PPLieu> lstLieu = contextPP.PPLieu.ToList();
 
@@ -107,10 +113,18 @@ namespace PetitesPuces.Views
             }
 
 
+            if (ElementSelectionner != null && uneAction != null)
+            {
+                changeEtatVisionnment(new List<string>(ElementSelectionner.Split(',')), lngNoUtilisateur, uneAction);
+            }
+
+
             if (ElementSelectionner != null)
             {
                 MarqueLu(new List<String>(ElementSelectionner.Split(',')), lngNoUtilisateur);
             }
+
+
 
 
 
@@ -291,6 +305,49 @@ namespace PetitesPuces.Views
                 Console.WriteLine(e);
             }
         }
+
+        //Applique changement au destinataire
+        private void changeEtatVisionnment(List<String> lstElementATraiter,long lngNoUtilisateur, string strAction)
+        {
+            List<PPDestinataires> lstTempoDestinataire = new List<PPDestinataires>();
+
+            lstElementATraiter.ForEach(element =>
+            {
+                PPDestinataires destinataires = contextPP.PPDestinataires
+                    .FirstOrDefault(predicate: desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == int.Parse(element));
+
+                switch (strAction)
+                {
+                    case actionLu:
+                        destinataires.EtatLu = 1;
+                        break;
+                    case actionNonLu:
+                        destinataires.EtatLu = 0;
+                        break;
+                    case actionSupprimer:
+                        destinataires.Lieu = 3;
+                        break;
+                    case actionRestaurer:
+                        destinataires.Lieu = 1;
+                        break;
+                    case actionSupprimerDefinitivement:
+                        destinataires.Lieu = 5;
+                        break;
+                }
+
+                lstTempoDestinataire.Add(destinataires);
+            });
+
+            try
+            {
+                contextPP.SubmitChanges();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
 
         [HttpPost]
         public ActionResult Soumettre(string submit, ViewModels.CourrielVM model)
