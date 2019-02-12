@@ -22,7 +22,34 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
 
+            $.selection = function () {
+
+                var element = $('input:checkbox:checked').map(function () {
+                    return this.value;
+                }).get();
+
+                console.log('Aurevoir');
+                console.log(element);
+
+                return element;
+            };
+
+        });
+
+        function test() {
+            console.log("parfait");
+            var tabCb = [];
+            document.querySelectorAll('input[type=checkbox]:checked').forEach(list => {
+                tabCb.push(list.id);
+            })
+
+            return tabCb;
+        }
+
+    </script>
     <style>
         .sActionMessageListe > button {
             display: none;
@@ -40,9 +67,6 @@
 <body>
     <header class="navbar bd-navbar">
         <a class="navbar-brand" href="#">Petites Puces</a>
-        <ul class="navbar-nav">
-            <li class="nav-item"><a href="#" class="nav-link">Nouveau Message</a></li>
-        </ul>
     </header>
     <div class="container-fluid">
         <div class="row flex-xl-nowrap">
@@ -102,7 +126,7 @@
                         </div>
 
 
-                        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5">
+                        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5" id="divCorps">
                             @{
                                 if (Model.strPage == strNouveauMessage)
                                 {
@@ -124,6 +148,7 @@
 
 
                 </div>
+            
 
 
             </body>
