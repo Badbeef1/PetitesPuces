@@ -782,14 +782,61 @@ namespace PetitesPuces.Controllers
         }
 
 
-        // GET: ProduitDetail
+        // GET: ProduitDetaille
         public ActionResult ProduitDetaille(long numero)
         {
+            ViewModels.ProduitDetailViewModel model = new ViewModels.ProduitDetailViewModel();
+            model.Produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero);
+            if(Session["clientObj"] != null)
+            {
+                var cConnecte = Session["clientObj"] as PPClients;
 
-            PPProduits produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero);
-
-            return View(produit);
+                model.Evaluation = contextPP.PPEvaluations
+                    .Where(e => e.NoClient == cConnecte.NoClient && e.NoProduit == numero)
+                    .FirstOrDefault() ?? 
+                    new PPEvaluations(){ NoProduit = numero };
+            }
+            return View("ProduitDetaille",model);
         }
+
+        //Sauvegarder son commentaire
+        [HttpPost]
+        public ActionResult Evaluation(ViewModels.ProduitDetailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Evaluation.NoClient = (Session["clientObj"] as PPClients).NoClient;
+                var evalAvant = contextPP.PPEvaluations
+                    .Where(x => x.NoProduit == model.Evaluation.NoProduit && x.NoClient == model.Evaluation.NoClient)?
+                    .FirstOrDefault();
+
+                if (evalAvant != null) {
+                    evalAvant.Cote = model.Evaluation.Cote;
+                    evalAvant.Commentaire = model.Evaluation.Commentaire;
+                    evalAvant.DateMAJ = DateTime.Now;
+                }
+                else {
+
+                    model.Evaluation.DateCreation = DateTime.Now;
+                    contextPP.PPEvaluations.InsertOnSubmit(model.Evaluation);
+                }
+
+                try
+                {
+                    contextPP.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+            }
+
+
+
+            return ProduitDetaille(model.Produit.NoProduit);
+        }
+
 
         public ActionResult InfoClientSaisieCommande(PPClients client)
         {

@@ -1,4 +1,4 @@
-﻿@model PetitesPuces.Models.PPProduits
+﻿@model PetitesPuces.ViewModels.ProduitDetailViewModel
 
 
 
@@ -6,41 +6,55 @@
 <link href="~/Content/css/bootstrap-stars.css" rel="stylesheet" />
 
 <style>
-   @@font-face {
-      font-family: 'Glyphicons Halflings';
-      src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/fonts/glyphicons-halflings-regular.woff') format('woff')
-   }
+    @@font-face {
+        font-family: 'Glyphicons Halflings';
+        src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/fonts/glyphicons-halflings-regular.woff') format('woff')
+    }
+
+    .input-validation-error {
+        border: 1px solid #ff0000;
+        background-color: white;
+    }
+
+    .field-validation-error {
+        width: 100%;
+        margin-top: .25rem;
+        font-size: 80%;
+        color: #dc3545;
+    }
+
 </style>
 
-<div class="card mt-3 mb-5">
-   <div class="card-body">
-      <h5 class="card-title">Laisser un commentaire</h5>
-      <div class="row">
-         <div class="col-12 mb-1">
-            <div class="stars br-theme-bootstrap-stars">
-               <select id="ddlCote">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-               </select>
+@using (Html.BeginForm("Evaluation", "client", FormMethod.Post))
+{
+    @Html.HiddenFor(x => x.Evaluation.NoProduit)
+    <div class="card mt-3 mb-5">
+        <div class="card-body">
+            <h5 class="card-title">Laisser un commentaire</h5>
+            <div class="row">
+                <div class="col-12 mb-1">
+                    <div class="stars br-theme-bootstrap-stars">
+                       @Html.DropDownListFor(x => x.Evaluation.Cote,
+                      new SelectList(new List<int> {
+                          1,2,3,4,5
+                      }), new { @id="ddlCote" } )
+                    </div>
+                    @Html.ValidationMessageFor(x => x.Evaluation.Cote)
+                </div>
             </div>
-         </div>
-
-      </div>
-      <textarea id="taCommentaire" class="w-100" rows="5"  placeholder="Entrer votre commentaire ..."></textarea>
-      <div class="w-100 text-right">
-         <input type="submit" class="btn btn-primary pull-right" value="Sauvegarder">
-         <input type="reset" class="btn btn-danger pull-right" value="Annuler">
-      </div>
-   </div>
-</div>
-
+            @Html.TextAreaFor(x => x.Evaluation.Commentaire, new { @class="w-100", @rows="5", @placeholder = "Entrer votre commentaire ..." })
+            @Html.ValidationMessageFor(x => x.Evaluation.Commentaire)
+            <div class="w-100 text-right">
+                <input type="submit" class="btn btn-primary pull-right" value="Sauvegarder">
+                <input type="reset" class="btn btn-danger pull-right" value="Annuler">
+            </div>
+        </div>
+    </div>
+}
 <script type="text/javascript">
-   $(function () {
-      $('#ddlCote').barrating({
-         theme: 'bootstrap-stars'
-      });
-   });
+    $(function () {
+        $('#ddlCote').barrating({
+            theme: 'bootstrap-stars'
+        });
+    });
 </script>

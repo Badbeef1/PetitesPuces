@@ -5181,6 +5181,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Cote", DbType = "Decimal(1,0)")]
+        [Required(ErrorMessage = "Le cote est requis.")]
         public System.Nullable<decimal> Cote
         {
             get
@@ -5197,6 +5198,9 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Commentaire", DbType = "VarChar(150)")]
+        [Required(ErrorMessage = "Le commentaire est requis.")]
+        [MinLength(3,ErrorMessage = "Le commentaire doit être entre 3 et 150 caractères." )]
+        [MaxLength(150, ErrorMessage = "Le commentaire doit être entre 3 et 150 caractères.")]
         public string Commentaire
         {
             get
