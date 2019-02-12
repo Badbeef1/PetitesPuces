@@ -116,6 +116,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap-stars.css" />
     <Content Include="Content\css\Catalogue.css" />
     <Content Include="Content\css\styleGeneral.css" />
     <Content Include="Content\fichierXML.xml" />
@@ -263,6 +264,7 @@
     <Content Include="Content\css\AdminLTE.css" />
     <Content Include="Content\css\morris.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\scripts\jquery.barrating.min.js" />
     <Content Include="Content\scripts\morris.js" />
     <Content Include="Content\scripts\raphael.js" />
     <Content Include="Content\Site.css" />
@@ -302,6 +304,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
@@ -340,6 +344,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\DateVenteEtPrixVenteValidation.cs" />
     <Compile Include="Models\EntrepriseCategorie.cs" />
     <Compile Include="Models\Extentions.cs" />
     <Compile Include="Models\GestionProduitViewModel.cs" />
@@ -354,6 +359,7 @@
     </Compile>
     <Compile Include="Models\Province.cs" />
     <Compile Include="Models\SaisieCommandeViewModel.cs" />
+    <Compile Include="Models\ValidationDateVente.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -361,6 +367,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CatalogueViewModel.cs" />
+    <Compile Include="ViewModels\ProduitDetailViewModel.cs" />
     <Compile Include="ViewModels\XmlDataViewModel.cs" />
     <Compile Include="ViewModels\CourrielVM.cs" />
     <Compile Include="ViewModels\InformationPersonnelViewModel.cs" />
@@ -445,6 +452,7 @@
     <Content Include="Views\BD\Index.cshtml" />
     <Content Include="Views\Client\InfoClientSaisieCommande.cshtml" />
     <Content Include="Views\Courriel\AffichageMessage.cshtml" />
+    <Content Include="Views\Shared\Client\EcrireEvaluation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

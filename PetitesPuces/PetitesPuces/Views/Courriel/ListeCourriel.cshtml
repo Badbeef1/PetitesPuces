@@ -1,5 +1,43 @@
 ﻿@model PagedList.IPagedList<Tuple<PetitesPuces.Models.PPDestinataires, String>>
 @using PagedList.Mvc;
+
+<script type="text/javascript">
+    function marqueLu() {
+        var tabCb = new Array();
+        document.querySelectorAll('input[type=checkbox]:checked').forEach(list => {
+            tabCb.push(list.id);
+        })
+
+        document.getElementById('ElementSelectionner').value = tabCb;
+    }
+</script>
+@using (Html.BeginForm())
+{
+<div>
+    @Html.Hidden("ElementSelectionner")
+    <ul class="nav navbar bd-navbar mr-auto">
+        <li class="nav-item">
+            <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
+        </li>
+        <li class="nav-item">
+            <a onclick="" class="nav-link"><span class="far fa-envelope-open"></span> Marquer tous comme lu</a>
+            <input type="submit" value="Gros Test" />
+        </li>
+        <li class="nav-item">
+            <a href="#">Répondre</a>
+        </li>
+        <li class="nav-item">
+            <a href="#">Supprimer</a>
+        </li>
+        <li class="nav-item">
+            <a href="#">Vider le dossier</a>
+        </li>
+        <li class="nav-item">
+            <a href="#">Restaurer</a>
+        </li>
+    </ul>
+</div>
+
 <div class="d-flex flex-column">
 
     @foreach (var tup in Model)
@@ -12,11 +50,11 @@
 
         string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = message.NoMsg });
 
-        string strMessageEtat = destinataires.EtatLu == 0 ? "color: blue;" : "";
+        string strMessageEtat = destinataires.EtatLu == 0 ? "font-weight: bold;" : "";
 
         <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
             <div class="col-1">
-                <input type="checkbox" />
+                @Html.CheckBox("cb" + message.NoMsg, false, new { onchange = "marqueLu();" })
             </div>
             <div class="col-3" onclick="location.href='@strActionAffichage'">
                 @Html.DisplayFor(x => tup.Item2)
@@ -50,5 +88,7 @@
 
     }
 </div>
+}
+
 
 @Html.PagedListPager(Model, page => Url.Action("Index/Reception", new { @page = 1 }))
