@@ -1018,6 +1018,10 @@ namespace PetitesPuces.Controllers
                             {
                                 prix = (decimal) produit.First().PrixVente;
                             }
+                            else
+                            {
+                                prix = (decimal)produit.First().PrixDemande;
+                            }
                             PPDetailsCommandes detCommande = new PPDetailsCommandes
                             {
                                 NoDetailCommandes = maxDetComm,
