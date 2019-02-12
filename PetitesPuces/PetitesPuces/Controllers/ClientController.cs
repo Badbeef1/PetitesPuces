@@ -139,7 +139,6 @@ namespace PetitesPuces.Controllers
         //Panier Détaillé du client
         public ActionResult PanierDetail(int id)
         {
-            // ON AJOUTE ICIIIIII
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
