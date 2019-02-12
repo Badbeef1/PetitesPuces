@@ -1065,6 +1065,7 @@ namespace PetitesPuces.Controllers
                         trans.Complete();
 
                         HtmlToPdf pdfFacture = new HtmlToPdf();
+                        return View(commande);
                     }
                     catch (Exception e)
                     {
@@ -1073,7 +1074,8 @@ namespace PetitesPuces.Controllers
 
                 }
             }
-            return View();
+            PPCommandes commandeVide = new PPCommandes();
+            return View(commandeVide);
         }
 
         public ActionResult Facture()
