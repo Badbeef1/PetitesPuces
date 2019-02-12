@@ -14,7 +14,6 @@ namespace PetitesPuces.ViewModels
 
       public PPEvaluations Evaluation { get; set; }
       public bool ClientARecuCeProduit { get; set; }
-
-      public List<PPEvaluations> lstEvaluations { get; set; }
+      
    }
 }
