@@ -837,15 +837,30 @@ namespace PetitesPuces.Controllers
        //GET: Evaluations
        public ActionResult Evaluations(long numero)
        {
-          if (contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
-
-
-         var model = new ViewModels.ProduitDetailViewModel()
+          if (!contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
+          
+         var model = new ViewModels.EvaluationsViewModel()
          {
-            lstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList()
+            LstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList(),
+            LstEvalEtNomClient = new List<Tuple<PPEvaluations, string>>(),
+            Produit = contextPP.PPProduits.FirstOrDefault(x => x.NoProduit == numero),
+            LstPourcentage = new List<int>()
          };
 
-          return View(model);
+          model.FormattedRating = Math.Round(model.LstEvaluations.Average(x => x.Cote).Value, 1);
+
+          foreach (var eval in model.LstEvaluations) { 
+            model.LstEvalEtNomClient.Add(new Tuple<PPEvaluations,string>(eval,
+               (from cli in contextPP.PPClients
+                  where cli.NoClient == eval.NoClient select new {nom = cli.Nom + " " + cli.Prenom}).FirstOrDefault()
+               ?.nom));
+          }
+
+          for(int i=0,cote = 5; i< 5; i++,cote--) { 
+            model.LstPourcentage.Add(model.LstEvaluations.Count(x => x.Cote == cote) / model.LstEvaluations.Count() * 100);
+          }
+
+         return View(model);
        }
 
         // GET: ProduitDetaille
@@ -874,7 +889,7 @@ namespace PetitesPuces.Controllers
 
         //Sauvegarder son commentaire
         [HttpPost]
-        public ActionResult Evaluation(ViewModels.ProduitDetailViewModel model)
+        public ActionResult Evaluer(ViewModels.ProduitDetailViewModel model)
         {
            if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit);
 
@@ -897,6 +912,7 @@ namespace PetitesPuces.Controllers
            try
            {
               contextPP.SubmitChanges();
+              return RedirectToAction("Evaluations", model.Evaluation.NoProduit);
            }
            catch (Exception e)
            {

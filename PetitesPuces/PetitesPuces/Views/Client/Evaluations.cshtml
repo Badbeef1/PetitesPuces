@@ -1,0 +1,113 @@
+﻿@model PetitesPuces.ViewModels.EvaluationsViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>Evaluations</title>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+   <style>
+   </style>
+
+</head>
+<body>
+
+   <div class="container mt-5 mb-5">
+
+      @if (Model?.LstEvaluations != null && Model?.LstEvaluations?.Count() != 0)
+      {
+         <div class="card">
+         <div class="card-header">
+            <h3> @Model.Produit.Nom</h3>
+         </div>
+            <div class="card-body row">
+               <div class="col-4 text-center m-auto">
+                  <h1>@Model.FormattedRating</h1>
+                  @(Model.FormattedRating=(decimal) 3.5)
+                  @for (var i = 0; i < 5; i++)
+                  {
+                     if (Model.FormattedRating > i)
+                     {
+                        <i class="fas fa-star"></i>
+                     }
+                     else if (Model.FormattedRating >= i && Model.FormattedRating % 1 == 0)
+                     {
+                        <i class="fas fa-star"></i>
+                     }
+                     else if (Model.FormattedRating > i && Model.FormattedRating % 1 != 0)
+                     {
+                        <i class="fas fa-star-half-alt"></i>
+                     }
+                     else
+                     {
+                        <i class="far fa-star"></i>
+                     }
+
+                  }
+
+                  <p><i class="fas fa-user"></i> @Model.LstEvaluations.Count &eacute;valuations</p>
+               </div>
+               <div class="col-6">
+                  <table class="table table-sm table-borderless">
+                     <tr class="row">
+                        <td class="col-1"><span>5<i class="fas fa-star"></i></span></td>
+                        <td class="col-11">
+                           <div class="progress mt-1">
+                              <div class="progress-bar bg-success" style="width: @Model.LstPourcentage[0]%" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="col-1"><span>4<i class="fas fa-star"></i></span></td>
+                        <td class="col-11">
+                           <div class="progress mt-1">
+                              <div class="progress-bar bg-primary" style="width: @Model.LstPourcentage[1]%" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="col-1"><span>3<i class="fas fa-star"></i></span></td>
+                        <td class="col-11">
+                           <div class="progress mt-1">
+                              <div class="progress-bar bg-info" style="width: @Model.LstPourcentage[2]%" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="col-1"><span>2<i class="fas fa-star"></i></span></td>
+                        <td class="col-11">
+                           <div class="progress mt-1">
+                              <div class="progress-bar bg-warning" style="width: @Model.LstPourcentage[3]%" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div></td>
+                     </tr>
+                     <tr class="row">
+                        <td class="col-1"><span>1<i class="fas fa-star"></i></span></td>
+                        <td class="col-11">
+                           <div class="progress mt-1">
+                              <div class="progress-bar bg-danger" style="width: @Model.LstPourcentage[4]%" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div></div></td>
+                     </tr>
+                  </table>
+               </div>
+            </div>
+         </div>
+
+         foreach (var tupl in Model.LstEvalEtNomClient)
+         {
+            <div class="card">
+               <div class="card-body">
+                  <blockquote class="blockquote mb-0">
+                     <p>@tupl.Item1.Commentaire</p>
+                     <footer class="blockquote-footer">@tupl.Item2 (@tupl.Item1.NoClient)</footer>
+                  </blockquote>
+               </div>
+            </div>
+         }
+      }
+      else
+      {
+         <div class="alert alert-info">    
+            <h2> Aucun &eacute;valuations pour ce produit</h2>
+         </div>
+      }
+
+   </div>
+</body>
+</html>
