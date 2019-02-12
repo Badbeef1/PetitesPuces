@@ -344,6 +344,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DataClasses1.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\DateVenteEtPrixVenteValidation.cs" />
     <Compile Include="Models\EntrepriseCategorie.cs" />
     <Compile Include="Models\Extentions.cs" />
     <Compile Include="Models\GestionProduitViewModel.cs" />
@@ -358,6 +359,7 @@
     </Compile>
     <Compile Include="Models\Province.cs" />
     <Compile Include="Models\SaisieCommandeViewModel.cs" />
+    <Compile Include="Models\ValidationDateVente.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

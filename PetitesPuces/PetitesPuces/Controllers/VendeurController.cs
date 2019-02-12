@@ -77,6 +77,7 @@ namespace PetitesPuces.Controllers
          gestionProduit.produit = produit;
 
          ViewBag.Message = "";
+         ViewBag.PrixVenteErreur = "";
          ViewBag.Action = "Ajouter";
          ViewBag.Form = "AjouterProduit";
          return View("GestionProduit", gestionProduit);
@@ -86,6 +87,7 @@ namespace PetitesPuces.Controllers
       public ActionResult AjouterProduit(GestionProduitViewModel model)
       {
          ViewBag.Message = "";
+         ViewBag.PrixVenteErreur = "";
          List<string> parts = new List<string>();
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
@@ -97,72 +99,88 @@ namespace PetitesPuces.Controllers
          //Ajouter le produit dans la base de donnée
          if (ModelState.IsValid)
          {
-            if (model.file != null && model.file.ContentLength > 0)
-               try
+            if (model.produit.PrixDemande > model.produit.PrixVente)
+            {
+               if (DateVentePrixVenteValide(model.produit.PrixVente, model.produit.DateVente))
                {
-                  var postedFileExtension = Path.GetExtension(model.file.FileName);
-                  //Validation si c'est un image 
-                  if (!string.Equals(model.file.ContentType, "image/jpg", StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(model.file.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(model.file.ContentType, "image/pjpeg", StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(model.file.ContentType, "image/gif", StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(model.file.ContentType, "image/x-png", StringComparison.OrdinalIgnoreCase) &&
-                     !string.Equals(model.file.ContentType, "image/png", StringComparison.OrdinalIgnoreCase))
-                  {
-                     ViewBag.Message("Le fichier doit être une image");
-                  }
-                  else if (!string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
-                          && !string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
-                          && !string.Equals(postedFileExtension, ".gif", StringComparison.OrdinalIgnoreCase)
-                          && !string.Equals(postedFileExtension, ".jpeg", StringComparison.OrdinalIgnoreCase))
-                  {
-                     ViewBag.Message("Le fichier doit être une image");
-                  }
-                  //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
-                  if (!ViewBag.Message.Equals("Le fichier doit être une image"))
-                  {
-                     parts = model.file.FileName.Split('.').Select(f => f.Trim()).ToList();
 
-                     var nbProduit = (from produits in db.GetTable<PPProduits>()
-                                      select prod
-                     ).ToList();
-                     //Le pattern de num produit va être à retravailler.
-                     //prod.NoProduit = (nbProduit.Count() + 1) * 10;
-                     var maxNoProduitVendeur = (from pMax in db.GetTable<PPProduits>()
-                                                where pMax.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
-                                                select pMax
-                                                ).ToList();
-                     long noProduit = maxNoProduitVendeur.Last().NoProduit + 1;
-                     prod.NoProduit = noProduit;
-                     prod.DateCreation = DateTime.Now;
-
-                     string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                           (prod.NoProduit.ToString() + '.' + parts.ElementAt(1)));
-                     model.file.SaveAs(path);
-                     prod.Photo = (prod.NoProduit.ToString() + Path.GetExtension(path));
-
-                    
-                     db.PPProduits.InsertOnSubmit(prod);
+                  if (model.file != null && model.file.ContentLength > 0)
                      try
                      {
-                        db.SubmitChanges();
-                        ModelState.Clear();
+                        var postedFileExtension = Path.GetExtension(model.file.FileName);
+                        //Validation si c'est un image 
+                        if (!string.Equals(model.file.ContentType, "image/jpg", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/jpeg", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/pjpeg", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/gif", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/x-png", StringComparison.OrdinalIgnoreCase) &&
+                           !string.Equals(model.file.ContentType, "image/png", StringComparison.OrdinalIgnoreCase))
+                        {
+                           ViewBag.Message("Le fichier doit être une image");
+                        }
+                        else if (!string.Equals(postedFileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(postedFileExtension, ".png", StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(postedFileExtension, ".gif", StringComparison.OrdinalIgnoreCase)
+                                && !string.Equals(postedFileExtension, ".jpeg", StringComparison.OrdinalIgnoreCase))
+                        {
+                           ViewBag.Message("Le fichier doit être une image");
+                        }
+                        //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
+                        if (!ViewBag.Message.Equals("Le fichier doit être une image"))
+                        {
+                           parts = model.file.FileName.Split('.').Select(f => f.Trim()).ToList();
+
+                           var nbProduit = (from produits in db.GetTable<PPProduits>()
+                                            select prod
+                           ).ToList();
+                           //Le pattern de num produit va être à retravailler.
+                           //prod.NoProduit = (nbProduit.Count() + 1) * 10;
+                           var maxNoProduitVendeur = (from pMax in db.GetTable<PPProduits>()
+                                                      where pMax.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                                                      select pMax
+                                                      ).ToList();
+                           long noProduit = maxNoProduitVendeur.Last().NoProduit + 1;
+                           prod.NoProduit = noProduit;
+                           prod.DateCreation = DateTime.Now;
+
+                           string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                                 (prod.NoProduit.ToString() + '.' + parts.ElementAt(1)));
+                           model.file.SaveAs(path);
+                           prod.Photo = (prod.NoProduit.ToString() + Path.GetExtension(path));
+
+
+                           db.PPProduits.InsertOnSubmit(prod);
+                           try
+                           {
+                              db.SubmitChanges();
+                              ModelState.Clear();
+                           }
+                           catch (Exception e)
+                           {
+
+                           }
+
+                           ViewBag.Message = "File uploaded successfully";
+                        }
                      }
-                     catch (Exception e)
+                     catch (Exception ex)
                      {
-
+                        ViewBag.Message = "ERROR:" + ex.Message.ToString();
                      }
-
-                     ViewBag.Message = "File uploaded successfully";
+                  else
+                  {
+                     ViewBag.Message = "You have not specified a file.";
                   }
                }
-               catch (Exception ex)
+               else
                {
-                  ViewBag.Message = "ERROR:" + ex.Message.ToString();
+                  ViewBag.PrixVenteErreur = "Le prix de vente et la date doivent être rempli si il y a un rabais.";
                }
+
+            }
             else
             {
-               ViewBag.Message = "You have not specified a file.";
+               ViewBag.PrixVenteErreur = "Le prix de vente doit être plus bas que le prix demandé.";
             }
 
          }
@@ -193,6 +211,7 @@ namespace PetitesPuces.Controllers
       /// <returns></returns>
       public ActionResult ModifierProduit(int id)
       {
+         
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
 
@@ -212,6 +231,7 @@ namespace PetitesPuces.Controllers
          gestionProduit.produit = produitAModifier;
 
          ViewBag.Message = "";
+         ViewBag.PrixVenteErreur = "";
          ViewBag.Action = "Modifier";
          ViewBag.Form = "ModifierProduit";
          return View("GestionProduit", gestionProduit);
@@ -220,6 +240,7 @@ namespace PetitesPuces.Controllers
       [HttpPost]
       public ActionResult ModifierProduit(GestionProduitViewModel model)
       {
+         ViewBag.PrixVenteErreur = "";
          ViewBag.Message = "";
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
@@ -250,7 +271,7 @@ namespace PetitesPuces.Controllers
                   ViewBag.Message("Le fichier doit être une image");
                }
                //Le nom de l'image sur le serveur sera le numeros du produit + l'extension de l'image
-               if(!ViewBag.Message.Equals("Le fichier doit être une image"))
+               if (!ViewBag.Message.Equals("Le fichier doit être une image"))
                {
                   parts = model.file.FileName.Split('.').Select(p => p.Trim()).ToList();
 
@@ -291,7 +312,7 @@ namespace PetitesPuces.Controllers
             pAModifier.Disponibilité = model.produit.Disponibilité;
 
 
-            if(ViewBag.Message.Equals("File uploaded successfully"))
+            if (ViewBag.Message.Equals("File uploaded successfully"))
             {
                pAModifier.Photo = (model.produit.NoProduit.ToString() + '.' + parts.ElementAt(1));
             }
@@ -353,7 +374,7 @@ namespace PetitesPuces.Controllers
             GestionProduitViewModel gestionProduit = new GestionProduitViewModel();
             gestionProduit.produit = produitAModifier;
 
-            
+
             ViewBag.Action = "Modifier";
             ViewBag.Form = "ModifierProduit";
             db.Connection.Close();
@@ -651,13 +672,13 @@ namespace PetitesPuces.Controllers
                 new Province { Abreviation = "QC", Nom = "Québec"},
             };
 
-            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+         ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-            PPVendeurs unVendeur = vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur);
+         PPVendeurs unVendeur = vendeurDao.rechecheVendeurParNo((Session["vendeurObj"] as PPVendeurs).NoVendeur);
 
 
-            return View(unVendeur);
-        }
+         return View(unVendeur);
+      }
 
       [HttpPost]
       public ActionResult GestionProfilVendeur(PPVendeurs vendeur, String strProvenence, String police, String fond, String baniere)
@@ -689,120 +710,120 @@ namespace PetitesPuces.Controllers
                 nameof(vendeur.LivraisonGratuite)
             };
 
-            ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
+         ViewBag.ListeProvinces = new SelectList(lstProvinces, "Abreviation", "Nom");
 
-            vendeurDao = new VendeurDao(vendeur.NoVendeur);
+         vendeurDao = new VendeurDao(vendeur.NoVendeur);
 
-            PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo(vendeur.NoVendeur);
+         PPVendeurs vendeurOriginel = vendeurDao.rechecheVendeurParNo(vendeur.NoVendeur);
 
-            //Retire les validations selon la section appelé
+         //Retire les validations selon la section appelé
+         if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
+         {
+            lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+         }
+         else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
+         {
+            lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+            lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+         }
+         else if (string.Equals(strProvenence, "informationVendeur", StringComparison.OrdinalIgnoreCase))
+         {
+            lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+         }
+         else
+         {
+            lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+            lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+         }
+
+         ModelState[nameof(vendeur.MotDePasse)].Errors.Clear();
+
+
+         if (ModelState.IsValid)
+         {
+            HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
+
+            if (fichier != null && fichier.ContentLength > 0)
+               try
+               {
+                  string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                             Path.GetFileName(fichier.FileName));
+                  fichier.SaveAs(path);
+                  baniere = fichier.FileName;
+                  ViewBag.Message = "File uploaded successfully";
+
+               }
+               catch (Exception ex)
+               {
+                  ViewBag.Message = "ERROR:" + ex.Message.ToString();
+               }
+            else
+            {
+               ViewBag.Message = "You have not specified a file.";
+            }
+
+
             if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
             {
-                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+               vendeurDao.modifierProfilInformationPersonnel(vendeur);
             }
             else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
             {
-                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
-                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+               String strAncientMDP = Request["tbAncienMdp"];
+               String strNouveauMDP = Request["tbNouveauMdp"];
+               String strConfirmationMDP = Request["tbConfirmationMdp"];
+
+               String strMessageErreurVide = "Le champs doit être rempli!";
+               bool booValide = true;
+               if (string.IsNullOrWhiteSpace(strAncientMDP))
+               {
+                  ViewBag.MessageErreurAncient = strMessageErreurVide;
+                  booValide = false;
+               }
+
+               if (string.IsNullOrWhiteSpace(strNouveauMDP))
+               {
+                  ViewBag.MessageErreurNouveau = strMessageErreurVide;
+                  booValide = false;
+               }
+
+               if (string.IsNullOrWhiteSpace(strConfirmationMDP))
+               {
+                  ViewBag.MessageErreurConfirmation = strMessageErreurVide;
+                  booValide = false;
+               }
+
+               //Tous les champs ne sont pas vide
+               if (booValide)
+               {
+                  //Valide que le mot de passe est bien l'ancien mdp.
+                  if (vendeurOriginel.MotDePasse.Equals(strAncientMDP))
+                  {
+                     //Valide que le nouveau mdp est identique a celui de confirmation
+                     if (strNouveauMDP.Equals(strConfirmationMDP))
+                     {
+                        vendeurDao.modifierProfilMDP(strNouveauMDP);
+                     }
+                     else
+                     {
+                        ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                     }
+                  }
+                  else
+                  {
+                     ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                  }
+               }
             }
             else if (string.Equals(strProvenence, "informationVendeur", StringComparison.OrdinalIgnoreCase))
             {
-                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
+               vendeurDao.modifierProfilSpecificVendeur(vendeur);
             }
             else
             {
-                lstChampsInfoPersonnel.ForEach(x => ModelState[x].Errors.Clear());
-                lstChampsSectionVendeur.ForEach(x => ModelState[x].Errors.Clear());
+               vendeurDao.modifierProfilConfiguration(police, fond, baniere);
             }
-
-            ModelState[nameof(vendeur.MotDePasse)].Errors.Clear();
-
-
-            if (ModelState.IsValid)
-            {
-                HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
-
-                if (fichier != null && fichier.ContentLength > 0)
-                    try
-                    {
-                        string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                                   Path.GetFileName(fichier.FileName));
-                        fichier.SaveAs(path);
-                        baniere = fichier.FileName;
-                        ViewBag.Message = "File uploaded successfully";
-
-                    }
-                    catch (Exception ex)
-                    {
-                        ViewBag.Message = "ERROR:" + ex.Message.ToString();
-                    }
-                else
-                {
-                    ViewBag.Message = "You have not specified a file.";
-                }
-
-
-                if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
-                {
-                    vendeurDao.modifierProfilInformationPersonnel(vendeur);
-                }
-                else if (string.Equals(strProvenence, "modificationmdp", StringComparison.OrdinalIgnoreCase))
-                {
-                    String strAncientMDP = Request["tbAncienMdp"];
-                    String strNouveauMDP = Request["tbNouveauMdp"];
-                    String strConfirmationMDP = Request["tbConfirmationMdp"];
-
-                    String strMessageErreurVide = "Le champs doit être rempli!";
-                    bool booValide = true;
-                    if (string.IsNullOrWhiteSpace(strAncientMDP))
-                    {
-                        ViewBag.MessageErreurAncient = strMessageErreurVide;
-                        booValide = false;
-                    }
-
-                    if (string.IsNullOrWhiteSpace(strNouveauMDP))
-                    {
-                        ViewBag.MessageErreurNouveau = strMessageErreurVide;
-                        booValide = false;
-                    }
-
-                    if (string.IsNullOrWhiteSpace(strConfirmationMDP))
-                    {
-                        ViewBag.MessageErreurConfirmation = strMessageErreurVide;
-                        booValide = false;
-                    }
-
-                    //Tous les champs ne sont pas vide
-                    if (booValide)
-                    {
-                        //Valide que le mot de passe est bien l'ancien mdp.
-                        if (vendeurOriginel.MotDePasse.Equals(strAncientMDP))
-                        {
-                            //Valide que le nouveau mdp est identique a celui de confirmation
-                            if (strNouveauMDP.Equals(strConfirmationMDP))
-                            {
-                                vendeurDao.modifierProfilMDP(strNouveauMDP);
-                            }
-                            else
-                            {
-                                ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
-                            }
-                        }
-                        else
-                        {
-                            ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
-                        }
-                    }
-                }
-                else if (string.Equals(strProvenence, "informationVendeur", StringComparison.OrdinalIgnoreCase))
-                {
-                    vendeurDao.modifierProfilSpecificVendeur(vendeur);
-                }
-                else
-                {
-                    vendeurDao.modifierProfilConfiguration(police, fond, baniere);
-                }
-            }
+         }
          else
          {
             ViewBag.Message = "You have not specified a file.";
@@ -814,6 +835,7 @@ namespace PetitesPuces.Controllers
          //est-ce qu'il y a la mise a jour des donnée (meme si variable local?)
          return View(vendeurOriginel);
       }
+
 
 
       public ActionResult CommandeDetail(int id)
@@ -911,6 +933,21 @@ namespace PetitesPuces.Controllers
          db.Connection.Close();
 
          return View("AccueilVendeur", model);
+      }
+
+      public bool DateVentePrixVenteValide(decimal? prixVente, DateTime? dateVente)
+      {
+         bool retour = false;
+         if ((dateVente.Equals(null)) && (prixVente.Equals(null)))
+         {
+            retour = true;
+         }
+         else if (!(dateVente.Equals(null)) && !(prixVente.Equals(null)))
+         {
+            retour = true;
+         }
+
+         return retour;
       }
 
       public ActionResult PanierDetailVendeur(int id)
