@@ -961,7 +961,8 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
-            
+
+            PPCommandes commande = new PPCommandes();
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
@@ -1009,18 +1010,19 @@ namespace PetitesPuces.Controllers
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
-                        PPCommandes commande = new PPCommandes
+                        commande = new PPCommandes
                         {
+                            // MontAvantTx TPS/TVQ ???????
                             NoCommande = maxCommande,
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
-                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd",CultureInfo.InvariantCulture),
-                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ",")),
+                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd HH:mm:ss",CultureInfo.InvariantCulture),
+                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
                             TypeLivraison = typeLivraison.First().CodeLivraison,
-                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4].Replace(".", ",")),
-                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5].Replace(".", ",")),
-                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6].Replace(".", ",")),
-                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")),
+                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
+                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
+                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
+                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
                             Statut = c,
                             NoAutorisation = NoAutorisation
                         };
@@ -1044,6 +1046,10 @@ namespace PetitesPuces.Controllers
                             if(DateTime.Now <= produit.First().DateVente)
                             {
                                 prix = (decimal) produit.First().PrixVente;
+                            }
+                            else
+                            {
+                                prix = (decimal)produit.First().PrixDemande;
                             }
                             PPDetailsCommandes detCommande = new PPDetailsCommandes
                             {
@@ -1095,8 +1101,8 @@ namespace PetitesPuces.Controllers
                             NoCommande = commande.NoCommande,
                             DateVente = commande.DateCommande,
                             NoAutorisation = commande.NoAutorisation,
-                            FraisLesi = Decimal.Parse(FraisMarchand.Replace(".", ",")),
-                            Redevance = Decimal.Parse((commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100)).ToString().Replace(".",",")),
+                            FraisLesi = Decimal.Parse(FraisMarchand),
+                            Redevance = Decimal.Parse((commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100)).ToString()),
                             FraisLivraison = commande.CoutLivraison,
                             FraisTPS = commande.TPS,
                             FraisTVQ = commande.TVQ
@@ -1116,7 +1122,7 @@ namespace PetitesPuces.Controllers
 
                 }
             }
-            return View();
+            return View(commande);
         }
 
         public ActionResult Facture()

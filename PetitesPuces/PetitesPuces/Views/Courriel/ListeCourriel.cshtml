@@ -1,11 +1,11 @@
-﻿@model PagedList.IPagedList<Tuple<PetitesPuces.Models.PPDestinataires, String>>
+﻿@model PagedList.IPagedList<PetitesPuces.ViewModels.MessageAfficheVM>
 @using PagedList.Mvc;
 
 <script type="text/javascript">
     function marqueLu() {
         var tabCb = new Array();
         document.querySelectorAll('input[type=checkbox]:checked').forEach(list => {
-            tabCb.push(list.id);
+            tabCb.push(list.id.substring(2));
         })
 
         document.getElementById('ElementSelectionner').value = tabCb;
@@ -25,10 +25,16 @@
         document.getElementsByTagName("form")[0].submit();
     }
 
+    function desTaches(element) {
+        document.getElementById("uneAction").value = element.value;
+
+        document.getElementsByTagName("form")[0].submit();
+    }
+
 </script>
 @using (Html.BeginForm())
 {
-<div>
+<div class="bg-light">
     @Html.Hidden("ElementSelectionner")
     @Html.Hidden("uneAction")
     <ul class="nav navbar bd-navbar mr-auto">
@@ -36,13 +42,16 @@
             <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
         </li>
         <li class="nav-item">
-            <button type="submit" class="btn btn-link"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
+            <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
         </li>
         <li class="nav-item">
             <a href="#">Répondre</a>
         </li>
         <li class="nav-item">
-            <a href="#">Supprimer</a>
+            <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><span class="fa fa-trash-alt"></span> Supprimer</button>
+        </li>
+        <li class="nav-item">
+            <a href="#">Supprimer</a> <!--Définitivement-->
         </li>
         <li class="nav-item">
             <a href="#">Vider le dossier</a>
@@ -55,50 +64,48 @@
 
 <div class="d-flex flex-column">
 
-    @foreach (var tup in Model)
+    @foreach (var contenu in Model)
     {
-        PetitesPuces.Models.PPDestinataires destinataires = tup.Item1;
-        PetitesPuces.Models.PPMessages message = destinataires.PPMessages;
+        string strMessDebut = new string(contenu.Message.DescMsg.Take(70 - contenu.Message.objet.Length).ToArray());
+        string strDateEnvioFormat = contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy");
 
-        string strMessDebut = new string(message.DescMsg.Take(50).ToArray());
-        string strDateEnvioFormat = message.dateEnvoi.Value.ToString("dd MMMM yyyy");
+        string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
 
-        string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = message.NoMsg });
-
-        string strMessageEtat = destinataires.EtatLu == 0 ? "font-weight: bold;" : "";
+        string strMessageEtat = contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "";
 
         <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
-            <div class="col-1">
-                @Html.CheckBox("cb" + message.NoMsg, false, new { onchange = "marqueLu();" })
+            <div class="col-auto">
+                @Html.CheckBox("cb" + contenu.Message.NoMsg, false, new { onchange = "marqueLu();" })
             </div>
             <div class="col-3" onclick="location.href='@strActionAffichage'">
-                @Html.DisplayFor(x => tup.Item2)
+                @Html.DisplayFor(x => contenu.StrNomAffichage)
             </div>
 
             <div class="col-1 sActionMessageListe">
                 @{
-                    var nom = "supp_" + message.NoMsg;
+                    var nom = "supp_" + contenu.Message.NoMsg;
                 }
-                <button type="button" title="Supprimer" onclick="uneTache(this)"><span class="fa fa-trash-alt"></span></button>
-                @if (destinataires.EtatLu == 0)
+                <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom" ><span class="fa fa-trash-alt"></span></button>
+                @if (contenu.Destinataire.EtatLu == 0)
                  {
-                    nom = "lu_" + message.NoMsg;
+                    nom = "lu_" + contenu.Message.NoMsg;
                     <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope-open"></span></button>
                 }
                 else
                 {
-                    nom = "nonlu_" + message.NoMsg;
+                    nom = "nonlu_" + contenu.Message.NoMsg;
                     <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)" ><span class="far fa-envelope"></span></button>
                 }
             </div>
             <div class="col-1" onclick="location.href='@strActionAffichage'">
-                @if (message.FichierJoint != null)
+                @if (contenu.Message.FichierJoint != null)
                 {
                     <span class="fas fa-paperclip"></span>
                 }
             </div>
             <div class="col-4" onclick="location.href='@strActionAffichage'">
-                @Html.DisplayFor(x => strMessDebut)
+                @Html.DisplayFor(x => contenu.Message.objet)             
+                @Html.DisplayFor(x => strMessDebut )
             </div>
             <div class="col-2" onclick="location.href='@strActionAffichage'">
                 @Html.DisplayFor(x => strDateEnvioFormat)
