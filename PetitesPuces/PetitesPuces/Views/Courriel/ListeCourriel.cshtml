@@ -32,89 +32,101 @@
     }
 
 </script>
+
+@{
+    const string strBoiteReception = "Reception";
+    const string strAffichageMessage = "AffichageMessage";
+    const string strBoiteSupprime = "SupprimePartiel";
+    const string strSupprimeDefinitivement = "SupprimeTotal";
+    const string strBrouillon = "Brouillon";
+    const string strNouveauMessage = "NouveauMessage";
+    const string strEnvoye = "Envoyer";
+}
+
+
 @using (Html.BeginForm())
 {
-<div class="bg-light">
-    @Html.Hidden("ElementSelectionner")
-    @Html.Hidden("uneAction")
-    <ul class="nav navbar bd-navbar mr-auto">
-        <li class="nav-item">
-            <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
-        </li>
-        <li class="nav-item">
-            <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
-        </li>
-        <li class="nav-item">
-            <a href="#">Répondre</a>
-        </li>
-        <li class="nav-item">
-            <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><span class="fa fa-trash-alt"></span> Supprimer</button>
-        </li>
-        <li class="nav-item">
-            <a href="#">Supprimer</a> <!--Définitivement-->
-        </li>
-        <li class="nav-item">
-            <a href="#">Vider le dossier</a>
-        </li>
-        <li class="nav-item">
-            <a href="#">Restaurer</a>
-        </li>
-    </ul>
-</div>
+    <div class="bg-light">
+        @Html.Hidden("ElementSelectionner")
+        @Html.Hidden("uneAction")
+        <ul class="nav navbar bd-navbar mr-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
+            </li>
+            <li class="nav-item">
+                <a href="#">Répondre</a>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><span class="fa fa-trash-alt"></span> Supprimer</button>
+            </li>
+            <li class="nav-item">
+                <a href="#">Supprimer</a> <!--Définitivement-->
+            </li>
+            <li class="nav-item">
+                <a href="#">Vider le dossier</a>
+            </li>
+            <li class="nav-item">
+                <a href="#">Restaurer</a>
+            </li>
+        </ul>
+    </div>
 
-<div class="d-flex flex-column">
+    <div class="d-flex flex-column">
 
-    @foreach (var contenu in Model)
-    {
-        string strMessDebut = new string(contenu.Message.DescMsg.Take(70 - contenu.Message.objet.Length).ToArray());
-        string strDateEnvioFormat = contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy");
+        @foreach (var contenu in Model)
+        {
+            string strMessDebut = new string(contenu.Message.DescMsg.Take(70 - contenu.Message.objet.Length).ToArray());
+            string strDateEnvioFormat = contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy");
 
-        string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
+            string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
 
-        string strMessageEtat = contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "";
+            string strMessageEtat = contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "";
 
-        <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
-            <div class="col-auto">
-                @Html.CheckBox("cb" + contenu.Message.NoMsg, false, new { onchange = "marqueLu();" })
+            <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
+                <div class="col-auto">
+                    @Html.CheckBox("cb" + contenu.Message.NoMsg, false, new { onchange = "marqueLu();" })
+                </div>
+                <div class="col-3" onclick="location.href='@strActionAffichage'">
+                    @Html.DisplayFor(x => contenu.StrNomAffichage)
+                </div>
+
+                <div class="col-1 sActionMessageListe">
+                    @{
+                        var nom = "supp_" + contenu.Message.NoMsg;
+                    }
+                    <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom"><span class="fa fa-trash-alt"></span></button>
+                    @if (contenu.Destinataire.EtatLu == 0)
+                    {
+                        nom = "lu_" + contenu.Message.NoMsg;
+                        <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope-open"></span></button>
+                    }
+                    else
+                    {
+                        nom = "nonlu_" + contenu.Message.NoMsg;
+                        <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope"></span></button>
+                    }
+                </div>
+                <div class="col-1" onclick="location.href='@strActionAffichage'">
+                    @if (contenu.Message.FichierJoint != null)
+                    {
+                        <span class="fas fa-paperclip"></span>
+                    }
+                </div>
+                <div class="col-4" onclick="location.href='@strActionAffichage'">
+                    @Html.DisplayFor(x => contenu.Message.objet)
+                    @Html.DisplayFor(x => strMessDebut)
+                </div>
+                <div class="col-2" onclick="location.href='@strActionAffichage'">
+                    @Html.DisplayFor(x => strDateEnvioFormat)
+                </div>
             </div>
-            <div class="col-3" onclick="location.href='@strActionAffichage'">
-                @Html.DisplayFor(x => contenu.StrNomAffichage)
-            </div>
-
-            <div class="col-1 sActionMessageListe">
-                @{
-                    var nom = "supp_" + contenu.Message.NoMsg;
-                }
-                <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom" ><span class="fa fa-trash-alt"></span></button>
-                @if (contenu.Destinataire.EtatLu == 0)
-                 {
-                    nom = "lu_" + contenu.Message.NoMsg;
-                    <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope-open"></span></button>
-                }
-                else
-                {
-                    nom = "nonlu_" + contenu.Message.NoMsg;
-                    <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)" ><span class="far fa-envelope"></span></button>
-                }
-            </div>
-            <div class="col-1" onclick="location.href='@strActionAffichage'">
-                @if (contenu.Message.FichierJoint != null)
-                {
-                    <span class="fas fa-paperclip"></span>
-                }
-            </div>
-            <div class="col-4" onclick="location.href='@strActionAffichage'">
-                @Html.DisplayFor(x => contenu.Message.objet)             
-                @Html.DisplayFor(x => strMessDebut )
-            </div>
-            <div class="col-2" onclick="location.href='@strActionAffichage'">
-                @Html.DisplayFor(x => strDateEnvioFormat)
-            </div>
-        </div>
 
 
-    }
-</div>
+        }
+    </div>
 }
 
 

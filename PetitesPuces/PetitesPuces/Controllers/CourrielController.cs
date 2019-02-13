@@ -40,20 +40,20 @@ namespace PetitesPuces.Views
 
 
             //Type d'utilisateur
-            String strTypeUtilisateur = "";
+            //String strTypeUtilisateur = "";
             dynamic utilisateur;
             long lngNoUtilisateur = 0;
 
             if (Session["clientObj"] != null)
             {
-                strTypeUtilisateur = strClient;
+                //strTypeUtilisateur = strClient;
                 utilisateur = contextPP.PPClients
                     .FirstOrDefault(client => client.NoClient == (Session["clientObj"] as PPClients).NoClient);
                 lngNoUtilisateur = (utilisateur as PPClients).NoClient;
             }
             else if (Session["vendeurObj"] != null)
             {
-                strTypeUtilisateur = strVendeur;
+                //strTypeUtilisateur = strVendeur;
                 utilisateur = contextPP.PPVendeurs
                     .FirstOrDefault(vendeur => vendeur.NoVendeur == (Session["vendeurObj"] as PPVendeurs).NoVendeur);
 
@@ -61,7 +61,7 @@ namespace PetitesPuces.Views
             }
             else
             {
-                strTypeUtilisateur = strGestionnaire;
+                //strTypeUtilisateur = strGestionnaire;
                 /*
                 utilisateur = contextPP.PPGestionnaire
                 .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
