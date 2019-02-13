@@ -156,9 +156,6 @@ namespace PetitesPuces.Views
             }
 
 
-            
-
-
             if (id == "AffichageMessage" && message.HasValue)
             {
                 courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur);
@@ -173,73 +170,14 @@ namespace PetitesPuces.Views
             }
             else
             {
-                //SectionBoiteReception(ref courrielVM, "Reception");
 
                 courrielVM.iplListeMessageAffiche = ListeCourrielDestinataire(lstDestinataire).ToPagedList(1, 20); //1,20 tempo
             }
 
 
-            
-
-            /*
-            if (ElementSelectionner != null)
-            {
-                MarqueLu(new List<String>(ElementSelectionner.Split(',')), lngNoUtilisateur);
-            }*/
-
-
-
-
 
             return View(courrielVM);
         }
-        /*
-        private void SectionBoiteReception(ref ViewModels.CourrielVM courrielVM,List<PPDestinataires> lstDestinataires)
-        {
-            List<ViewModels.MessageAfficheVM> lstMessageAfficher = new List<ViewModels.MessageAfficheVM>();
-
-            //parcour les destinataires pour recuperer le nom a afficher 
-            lstDestinataires.ForEach(dest =>
-            {
-                dynamic dynExpediteur;
-                int intNoExpediteur = dest.PPMessages.NoExpediteur.Value;
-
-                ViewModels.MessageAfficheVM messVM = new ViewModels.MessageAfficheVM
-                {
-                    Destinataire = dest,
-                    Message = dest.PPMessages,
-                    ShrEtat = 0
-                };
-
-
-                //Si le client n'a pas inscrit de prenom ou de nom, l'adresse courriel va etre afficher au lieu du nom
-                if ((dynExpediteur = contextPP.PPClients.FirstOrDefault(predicate: client => client.NoClient == intNoExpediteur)) != null)
-                {
-                    PPClients unClient = (dynExpediteur as PPClients);
-
-                    String strNomAffichage = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom;
-
-                    messVM.StrNomAffichage = strNomAffichage;
-
-                    lstMessageAfficher.Add(messVM);
-                }
-                else if ((dynExpediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur)) != null)
-                {
-                    messVM.StrNomAffichage = (dynExpediteur as PPVendeurs).NomAffaires;
-
-                    lstMessageAfficher.Add(messVM);
-                }
-                else
-                {
-                    messVM.StrNomAffichage = (dynExpediteur as PPGestionnaire).AdresseEmail;
-
-                    lstMessageAfficher.Add(messVM);
-                }
-
-            });
-            courrielVM.iplListeMessageAffiche = lstMessageAfficher.ToPagedList(1, 20);
-
-        }*/
 
         private List<ViewModels.MessageAfficheVM> ListeCourrielDestinataire(List<PPDestinataires> lstDestinataires)
         {
@@ -461,30 +399,6 @@ namespace PetitesPuces.Views
 
             return new Tuple<Dictionary<short, int>, List<PPDestinataires>>(dicNbNotification, lstDestinatairesBR);
         }
-        /*
-        private void MarqueLu(List<String> lstElementATaiter, long lngNoUtilisateur)
-        {
-            List<PPDestinataires> lstTempoDestinataire = new List<PPDestinataires>();
-
-            lstElementATaiter.ForEach(element =>
-            {
-                PPDestinataires destinataire = contextPP.PPDestinataires
-                    .FirstOrDefault(desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == int.Parse(element.Substring(2)));
-
-                destinataire.EtatLu = 1;
-
-                lstTempoDestinataire.Add(destinataire);
-            });
-
-            try
-            {
-                contextPP.SubmitChanges();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }*/
 
         //Applique changement au destinataire
         private void optionListeMessages(List<String> lstElementATraiter,long lngNoUtilisateur, string strAction)
