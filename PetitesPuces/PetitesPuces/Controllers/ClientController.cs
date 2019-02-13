@@ -934,7 +934,8 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
-            
+
+            PPCommandes commande = new PPCommandes();
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
@@ -982,7 +983,7 @@ namespace PetitesPuces.Controllers
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
-                        PPCommandes commande = new PPCommandes
+                        commande = new PPCommandes
                         {
                             // MontAvantTx TPS/TVQ ???????
                             NoCommande = maxCommande,
@@ -1086,7 +1087,6 @@ namespace PetitesPuces.Controllers
                         trans.Complete();
 
                         HtmlToPdf pdfFacture = new HtmlToPdf();
-                        return View(commande);
                     }
                     catch (Exception e)
                     {
@@ -1095,8 +1095,7 @@ namespace PetitesPuces.Controllers
 
                 }
             }
-            PPCommandes commandeVide = new PPCommandes();
-            return View(commandeVide);
+            return View(commande);
         }
 
         public ActionResult Facture()

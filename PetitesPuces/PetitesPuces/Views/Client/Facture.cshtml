@@ -23,70 +23,74 @@
         <div class="col-md-6 text-left"><h1>Destinataire</h1></div>
         <div class="col-md-6 text-right"><h1>Expéditeur</h1></div>
     </div>
-    <div class="row" style="margin:0">
-        <div class="col-md-5 border border-dark" style="padding:5px">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3>@Model.PPClients.Prenom  @Model.PPClients.Nom</h3>
+    @if (Model.PPClients != null && Model.PPVendeurs != null)
+    {
+
+        <div class="row" style="margin:0">
+            <div class="col-md-5 border border-dark" style="padding:5px">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>@Model.PPClients.Prenom  @Model.PPClients.Nom</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Client # : @Model.PPClients.NoClient</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPClients.AdresseEmail</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPClients.Rue, @Model.PPClients.Ville, @Model.PPClients.Province @Model.PPClients.Pays, @Model.PPClients.CodePostal</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPClients.Tel1</h5>
+                        <h5>@Model.PPClients.Tel2</h5>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>Client # : @Model.PPClients.NoClient</h5>
+            <div class="offset-md-2"></div>
+            <div class="col-md-5 border border-dark" style="padding:5px">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPVendeurs.NomAffaires</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPClients.AdresseEmail</h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPVendeurs.Prenom  @Model.PPVendeurs.Nom</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPClients.Rue, @Model.PPClients.Ville, @Model.PPClients.Province @Model.PPClients.Pays, @Model.PPClients.CodePostal</h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Vendeur # : @Model.PPVendeurs.NoVendeur</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPClients.Tel1</h5>
-                    <h5>@Model.PPClients.Tel2</h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPVendeurs.AdresseEmail</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPVendeurs.Rue, @Model.PPVendeurs.Ville, @Model.PPVendeurs.Province @Model.PPVendeurs.Pays, @Model.PPVendeurs.CodePostal</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>@Model.PPVendeurs.Tel1</h5>
+                        <h5>@Model.PPVendeurs.Tel2</h5>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="offset-md-2"></div>
-        <div class="col-md-5 border border-dark" style="padding:5px">
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPVendeurs.NomAffaires</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPVendeurs.Prenom  @Model.PPVendeurs.Nom</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>Vendeur # : @Model.PPVendeurs.NoVendeur</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPVendeurs.AdresseEmail</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPVendeurs.Rue, @Model.PPVendeurs.Ville, @Model.PPVendeurs.Province @Model.PPVendeurs.Pays, @Model.PPVendeurs.CodePostal</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <h5>@Model.PPVendeurs.Tel1</h5>
-                    <h5>@Model.PPVendeurs.Tel2</h5>
-                </div>
-            </div>
-        </div>
-    </div>
+    }
     <br />
     <div class="row">
         <table class="table table-striped">
@@ -141,51 +145,51 @@
 
     <hr />
     <div class="row">
-            <div class="offset-md-7"></div>
-            <div class="col-md-3 text-left border-left">
-                <h5>
-                    <strong>
-                        Sous-total<br />
-                        @if (Model.CoutLivraison > 0)
-                        {
-                            <span>Frais de livraison<br /></span>
-                        }
-                        @if (Model.TPS > 0)
-                        {
+        <div class="offset-md-7"></div>
+        <div class="col-md-3 text-left border-left">
+            <h5>
+                <strong>
+                    Sous-total<br />
+                    @if (Model.CoutLivraison > 0)
+                    {
+                        <span>Frais de livraison<br /></span>
+                    }
+                    @if (Model.TPS > 0)
+                    {
 
-                            <span>TPS<br /></span>
-                        }
-                        @if (Model.TVQ > 0)
-                        {
+                        <span>TPS<br /></span>
+                    }
+                    @if (Model.TVQ > 0)
+                    {
 
-                            <span>TVQ<br /></span>
-                        }
-                        Total <br />
-                    </strong>
-                </h5>
-            </div>
-            <div class="col-md-2 text-right">
-                <h5>
-                    <strong>
-                        @Double.Parse(Model.MontantTotAvantTaxes.ToString()).ToString("0.00") $<br />
-                        @if (Model.CoutLivraison > 0)
-                        {
-                            <span>@Double.Parse(Model.CoutLivraison.ToString()).ToString("0.00") $<br /></span>
-                        }
-                        @if (Model.TPS > 0)
-                        {
-
-                            <span>@Double.Parse(Model.TPS.ToString()).ToString("0.00") $<br /></span>
-                        }
-                        @if (Model.TVQ > 0)
-                        {
-
-                            <span>@Double.Parse(Model.TVQ.ToString()).ToString("0.00") $<br /></span>
-                        }
-                        @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString()).ToString("0.00")) $<br />
-                    </strong>
-                </h5>
-            </div>
+                        <span>TVQ<br /></span>
+                    }
+                    Total <br />
+                </strong>
+            </h5>
         </div>
-    <div class="align-items-center"><input type="button" class="btn btn-primary" value="Imprimer en PDF"/></div>
+        <div class="col-md-2 text-right">
+            <h5>
+                <strong>
+                    @Double.Parse(Model.MontantTotAvantTaxes.ToString().Replace(",",".")).ToString("0.00") $<br />
+                    @if (Model.CoutLivraison > 0)
+                    {
+                        <span>@Double.Parse(Model.CoutLivraison.ToString().Replace(",", ".")).ToString("0.00") $<br /></span>
+                    }
+                    @if (Model.TPS > 0)
+                    {
+
+                        <span>@Double.Parse(Model.TPS.ToString().Replace(",", ".")).ToString("0.00") $<br /></span>
+                    }
+                    @if (Model.TVQ > 0)
+                    {
+
+                        <span>@Double.Parse(Model.TVQ.ToString().Replace(",", ".")).ToString("0.00") $<br /></span>
+                    }
+                    @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString().Replace(",", ".")).ToString("0.00")) $<br />
+                </strong>
+            </h5>
+        </div>
+    </div>
+    <div class="align-items-center"><input type="button" class="btn btn-primary" value="Imprimer en PDF" /></div>
 </div>m
