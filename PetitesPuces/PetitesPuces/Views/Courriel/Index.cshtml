@@ -8,6 +8,7 @@
     const string strSupprimeDefinitivement = "SupprimeTotal";
     const string strBrouillon = "Brouillon";
     const string strNouveauMessage = "NouveauMessage";
+    const string strEnvoye = "Envoyer";
 }
 <!DOCTYPE html>
 <html>
@@ -81,9 +82,21 @@
                             {
                                 affichage = strBoiteReception;
                             }
+                            else if (lieux.NoLieu == 2)
+                            {
+                                affichage = strEnvoye;
+                            }
+                            else if (lieux.NoLieu == 3)
+                            {
+                                affichage = strBoiteSupprime;
+                            }
                             else if (lieux.NoLieu == 4)
                             {
                                 affichage = strBrouillon;
+                            }
+                            else if (lieux.NoLieu == 5)
+                            {
+                                affichage = strSupprimeDefinitivement;
                             }
 
                             <li class="nav-item">
@@ -129,6 +142,8 @@
 
                         <main class="col-12 col-md-9 col-xl-10" id="divCorps">
                             @{
+                                ViewBag.LaPage = Model.strPage;
+
                                 if (Model.strPage == strNouveauMessage)
                                 {
                                     @Html.Partial("RedactionMessage")
@@ -136,10 +151,6 @@
                                 else if (Model.strPage == strAffichageMessage)
                                 {
                                     @Html.Partial("AffichageMessage", Model.valtupAfficheMessage)
-                                }
-                                else if (Model.strPage == strBoiteSupprime)
-                                {
-
                                 }
                                 else
                                 {
