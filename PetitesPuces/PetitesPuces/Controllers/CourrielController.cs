@@ -107,6 +107,10 @@ namespace PetitesPuces.Views
             {
                 courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur);
             }
+            else if (id == "SupprimePartiel")
+            {
+
+            }
             else
             {
                 SectionBoiteReception(ref courrielVM, lstDestinatairesBoiteReception);
@@ -115,14 +119,14 @@ namespace PetitesPuces.Views
 
             if (ElementSelectionner != null && uneAction != null)
             {
-                changeEtatVisionnment(new List<string>(ElementSelectionner.Split(',')), lngNoUtilisateur, uneAction);
+                optionListeMessages(new List<string>(ElementSelectionner.Split(',')), lngNoUtilisateur, uneAction);
             }
 
-
+            /*
             if (ElementSelectionner != null)
             {
                 MarqueLu(new List<String>(ElementSelectionner.Split(',')), lngNoUtilisateur);
-            }
+            }*/
 
 
 
@@ -136,7 +140,8 @@ namespace PetitesPuces.Views
         */
         private void SectionBoiteReception(ref ViewModels.CourrielVM courrielVM, List<PPDestinataires> lstDestinataires)
         {
-            List<Tuple<PPDestinataires, String>> lstDestinataireEtExpediteur = new List<Tuple<PPDestinataires, string>>();
+            //List<Tuple<PPDestinataires, String>> lstDestinataireEtExpediteur = new List<Tuple<PPDestinataires, string>>();
+            List<ViewModels.MessageAfficheVM> lstMessageAfficher = new List<ViewModels.MessageAfficheVM>();
 
             //parcour les destinataires pour recuperer le nom a afficher 
             lstDestinataires.ForEach(dest =>
@@ -151,11 +156,32 @@ namespace PetitesPuces.Views
 
                     String strNomAffichage = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom;
 
-                    lstDestinataireEtExpediteur.Add(new Tuple<PPDestinataires, string>(dest, strNomAffichage));
+                    ViewModels.MessageAfficheVM messVM = new ViewModels.MessageAfficheVM
+                    {
+                        Destinataire = dest,
+                        Message = dest.PPMessages,
+                        ShrEtat = 0,
+                        StrNomAffichage = strNomAffichage
+                    };
+
+                    lstMessageAfficher.Add(messVM);
+
+                    //lstDestinataireEtExpediteur.Add(new Tuple<PPDestinataires, string>(dest, strNomAffichage));
                 }
                 else if ((dynExpediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur)) != null)
                 {
-                    lstDestinataireEtExpediteur.Add(new Tuple<PPDestinataires, string>(dest, (dynExpediteur as PPVendeurs).NomAffaires));
+
+                    ViewModels.MessageAfficheVM messVm = new ViewModels.MessageAfficheVM
+                    {
+                        Destinataire = dest,
+                        Message = dest.PPMessages,
+                        ShrEtat = 0,
+                        StrNomAffichage = (dynExpediteur as PPVendeurs).NomAffaires
+                    };
+
+                    lstMessageAfficher.Add(messVm);
+
+                    //lstDestinataireEtExpediteur.Add(new Tuple<PPDestinataires, string>(dest, (dynExpediteur as PPVendeurs).NomAffaires));
                 }
                 else
                 {
@@ -164,7 +190,8 @@ namespace PetitesPuces.Views
 
             });
 
-            courrielVM.iplDestionataireBoiteReception = lstDestinataireEtExpediteur.ToPagedList(1, 20);
+            //courrielVM.iplDestionataireBoiteReception = lstDestinataireEtExpediteur.ToPagedList(1, 20);
+            courrielVM.iplListeMessageAffiche = lstMessageAfficher.ToPagedList(1, 20);
 
         }
 
@@ -307,7 +334,7 @@ namespace PetitesPuces.Views
         }
 
         //Applique changement au destinataire
-        private void changeEtatVisionnment(List<String> lstElementATraiter,long lngNoUtilisateur, string strAction)
+        private void optionListeMessages(List<String> lstElementATraiter,long lngNoUtilisateur, string strAction)
         {
             List<PPDestinataires> lstTempoDestinataire = new List<PPDestinataires>();
 

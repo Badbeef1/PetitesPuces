@@ -23,6 +23,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     <script type="text/javascript">
+        /*
         $(document).ready(function () {
 
             $.selection = function () {
@@ -37,7 +38,7 @@
                 return element;
             };
 
-        });
+        });*/
 
         function test() {
             console.log("parfait");
@@ -126,7 +127,7 @@
                         </div>
 
 
-                        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5" id="divCorps">
+                        <main class="col-12 col-md-9 col-xl-10" id="divCorps">
                             @{
                                 if (Model.strPage == strNouveauMessage)
                                 {
@@ -136,20 +137,19 @@
                                 {
                                     @Html.Partial("AffichageMessage", Model.valtupAfficheMessage)
                                 }
+                                else if (Model.strPage == strBoiteSupprime)
+                                {
+
+                                }
                                 else
                                 {
-                                    @Html.Partial("ListeCourriel", Model.iplDestionataireBoiteReception)
+                                    @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
                                 }
 
                             }
 
                         </main>
                     </div>
-
-
                 </div>
-            
-
-
             </body>
         </html>

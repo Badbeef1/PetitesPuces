@@ -834,34 +834,46 @@ namespace PetitesPuces.Controllers
             }
         }
 
-       //GET: Evaluations
-       public ActionResult Evaluations(long numero)
-       {
-          if (!contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
-          
-         var model = new ViewModels.EvaluationsViewModel()
-         {
-            LstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList(),
-            LstEvalEtNomClient = new List<Tuple<PPEvaluations, string>>(),
-            Produit = contextPP.PPProduits.FirstOrDefault(x => x.NoProduit == numero),
-            LstPourcentage = new List<int>()
-         };
+        //GET: Evaluations
+        public ActionResult Evaluations(long numero)
+        {
+            if (!contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
 
-          model.FormattedRating = Math.Round(model.LstEvaluations.Average(x => x.Cote).Value, 1);
+            var model = new ViewModels.EvaluationsViewModel()
+            {
+                LstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList(),
+                LstEvalEtNomClient = new List<Tuple<PPEvaluations, string>>(),
+                Produit = contextPP.PPProduits.FirstOrDefault(x => x.NoProduit == numero),
+                LstPourcentage = new List<decimal>()
+            };
 
-          foreach (var eval in model.LstEvaluations) { 
-            model.LstEvalEtNomClient.Add(new Tuple<PPEvaluations,string>(eval,
-               (from cli in contextPP.PPClients
-                  where cli.NoClient == eval.NoClient select new {nom = cli.Nom + " " + cli.Prenom}).FirstOrDefault()
-               ?.nom));
-          }
+            
+            //Get Evaluation et nom de l'evaluateur s'il en a 
+            foreach (var eval in model.LstEvaluations)
+            {
+                model.LstEvalEtNomClient.Add(new Tuple<PPEvaluations, string>(eval,
+                   (from cli in contextPP.PPClients
+                    where cli.NoClient == eval.NoClient
+                    select new { nom = cli.Nom + " " + cli.Prenom }).FirstOrDefault()?.nom));
+            }
 
-          for(int i=0,cote = 5; i< 5; i++,cote--) { 
-            model.LstPourcentage.Add(model.LstEvaluations.Count(x => x.Cote == cote) / model.LstEvaluations.Count() * 100);
-          }
+            //Check c'est pas 0 parce que division
+            var total = (decimal)model.LstEvaluations.Count();
+            if (total != 0)
+            {
+                //La moyenne des evaluations
+                model.FormattedRating = Math.Round(model.LstEvaluations.Average(x => x.Cote).Value, 1);
 
-         return View(model);
-       }
+                //Calcul pourcentage
+                for (int i = 0, cote = 5; i < 5; i++, cote--)
+                    {
+                        var u = decimal.Parse(model.LstEvaluations.Where(x => x.Cote == cote).Count().ToString());
+                        var pourcentage = Math.Round(u / total * 100,1);
+                        model.LstPourcentage.Add(pourcentage);
+                    }
+            }
+            return View(model);
+        }
 
         // GET: ProduitDetaille
         public ActionResult ProduitDetaille(long numero)
@@ -881,7 +893,15 @@ namespace PetitesPuces.Controllers
             //Check pour si le client a recu ce item
            model.ClientARecuCeProduit = (from commande in contextPP.PPCommandes
                                           from detail in commande.PPDetailsCommandes
-                                        where detail.NoProduit == numero && commande.Statut == 'L' select commande).Any(); 
+                                        where detail.NoProduit == numero && commande.Statut == 'L' select commande).Any();
+            model.nbEvaluateurs = contextPP.PPEvaluations.Count(x => x.NoProduit == model.Produit.NoProduit);
+
+            if(model.nbEvaluateurs != 0)
+            {
+                //La moyenne des evaluations
+                model.FormattedRating = Math.Round(contextPP.PPEvaluations
+                    .Where(e => e.NoProduit == model.Produit.NoProduit).Average(x => x.Cote).Value, 1);
+            }
 
 
            return View("ProduitDetaille",model);
@@ -891,35 +911,42 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult Evaluer(ViewModels.ProduitDetailViewModel model)
         {
-           if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit);
+            //S'il veut voir tout les commentaires
+            if (Request["submitVal"] == "Voir les commentaires") return RedirectToAction("Evaluations", new { numero = model.Evaluation.NoProduit });
+            //Invalide alors return
+            if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit);
 
-           model.Evaluation.NoClient = ((PPClients) Session["clientObj"]).NoClient;
-           var evalAvant = contextPP.PPEvaluations
-              .Where(x => x.NoProduit == model.Evaluation.NoProduit && x.NoClient == model.Evaluation.NoClient)?
-              .FirstOrDefault();
+            using (var contextPP2 = new DataClasses1DataContext())
+            {
+                model.Evaluation.NoClient = ((PPClients)Session["clientObj"]).NoClient;
+                var evalAvant = contextPP2.PPEvaluations
+                   .Where(x => x.NoProduit == model.Evaluation.NoProduit && x.NoClient == model.Evaluation.NoClient)?
+                   .FirstOrDefault();
 
-           if (evalAvant != null) {
-              evalAvant.Cote = model.Evaluation.Cote;
-              evalAvant.Commentaire = model.Evaluation.Commentaire;
-              evalAvant.DateMAJ = DateTime.Now;
-              
-           }
-           else {
-              model.Evaluation.DateCreation = DateTime.Now;
-              contextPP.PPEvaluations.InsertOnSubmit(model.Evaluation);
-           }
+                if (evalAvant != null)
+                {
+                    evalAvant.Cote = model.Evaluation.Cote;
+                    evalAvant.Commentaire = model.Evaluation.Commentaire;
+                    evalAvant.DateMAJ = DateTime.Now;
 
-           try
-           {
-              contextPP.SubmitChanges();
-              return RedirectToAction("Evaluations", model.Evaluation.NoProduit);
-           }
-           catch (Exception e)
-           {
-              Console.WriteLine(e);
-           }
+                }
+                else
+                {
+                    model.Evaluation.DateCreation = DateTime.Now;
+                    contextPP2.PPEvaluations.InsertOnSubmit(model.Evaluation);
+                }
 
-           return ProduitDetaille(model.Evaluation.NoProduit);
+                try
+                {
+                    contextPP2.SubmitChanges();
+                    return RedirectToAction("Evaluations", new { numero = model.Evaluation.NoProduit });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+            return ProduitDetaille(model.Evaluation.NoProduit);
         }
 
 
