@@ -837,15 +837,30 @@ namespace PetitesPuces.Controllers
        //GET: Evaluations
        public ActionResult Evaluations(long numero)
        {
-          if (contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
-
-
-         var model = new ViewModels.ProduitDetailViewModel()
+          if (!contextPP.PPProduits.Any(x => x.NoProduit == numero)) return View();
+          
+         var model = new ViewModels.EvaluationsViewModel()
          {
-            lstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList()
+            LstEvaluations = contextPP.PPEvaluations.Where(x => x.NoProduit == numero).ToList(),
+            LstEvalEtNomClient = new List<Tuple<PPEvaluations, string>>(),
+            Produit = contextPP.PPProduits.FirstOrDefault(x => x.NoProduit == numero),
+            LstPourcentage = new List<int>()
          };
 
-          return View(model);
+          model.FormattedRating = Math.Round(model.LstEvaluations.Average(x => x.Cote).Value, 1);
+
+          foreach (var eval in model.LstEvaluations) { 
+            model.LstEvalEtNomClient.Add(new Tuple<PPEvaluations,string>(eval,
+               (from cli in contextPP.PPClients
+                  where cli.NoClient == eval.NoClient select new {nom = cli.Nom + " " + cli.Prenom}).FirstOrDefault()
+               ?.nom));
+          }
+
+          for(int i=0,cote = 5; i< 5; i++,cote--) { 
+            model.LstPourcentage.Add(model.LstEvaluations.Count(x => x.Cote == cote) / model.LstEvaluations.Count() * 100);
+          }
+
+         return View(model);
        }
 
         // GET: ProduitDetaille
@@ -874,7 +889,7 @@ namespace PetitesPuces.Controllers
 
         //Sauvegarder son commentaire
         [HttpPost]
-        public ActionResult Evaluation(ViewModels.ProduitDetailViewModel model)
+        public ActionResult Evaluer(ViewModels.ProduitDetailViewModel model)
         {
            if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit);
 
@@ -897,6 +912,7 @@ namespace PetitesPuces.Controllers
            try
            {
               contextPP.SubmitChanges();
+              return RedirectToAction("Evaluations", model.Evaluation.NoProduit);
            }
            catch (Exception e)
            {
@@ -918,7 +934,8 @@ namespace PetitesPuces.Controllers
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
-            
+
+            PPCommandes commande = new PPCommandes();
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
 
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
@@ -966,18 +983,19 @@ namespace PetitesPuces.Controllers
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
-                        PPCommandes commande = new PPCommandes
+                        commande = new PPCommandes
                         {
+                            // MontAvantTx TPS/TVQ ???????
                             NoCommande = maxCommande,
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
-                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd",CultureInfo.InvariantCulture),
-                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ",")),
+                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd HH:mm:ss",CultureInfo.InvariantCulture),
+                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
                             TypeLivraison = typeLivraison.First().CodeLivraison,
-                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4].Replace(".", ",")),
-                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5].Replace(".", ",")),
-                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6].Replace(".", ",")),
-                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")),
+                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
+                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
+                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
+                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
                             Statut = c,
                             NoAutorisation = NoAutorisation
                         };
@@ -1001,6 +1019,10 @@ namespace PetitesPuces.Controllers
                             if(DateTime.Now <= produit.First().DateVente)
                             {
                                 prix = (decimal) produit.First().PrixVente;
+                            }
+                            else
+                            {
+                                prix = (decimal)produit.First().PrixDemande;
                             }
                             PPDetailsCommandes detCommande = new PPDetailsCommandes
                             {
@@ -1052,8 +1074,8 @@ namespace PetitesPuces.Controllers
                             NoCommande = commande.NoCommande,
                             DateVente = commande.DateCommande,
                             NoAutorisation = commande.NoAutorisation,
-                            FraisLesi = Decimal.Parse(FraisMarchand.Replace(".", ",")),
-                            Redevance = Decimal.Parse((commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100)).ToString().Replace(".",",")),
+                            FraisLesi = Decimal.Parse(FraisMarchand),
+                            Redevance = Decimal.Parse((commande.MontantTotAvantTaxes*(vendeur.First().Pourcentage/100)).ToString()),
                             FraisLivraison = commande.CoutLivraison,
                             FraisTPS = commande.TPS,
                             FraisTVQ = commande.TVQ
@@ -1073,7 +1095,7 @@ namespace PetitesPuces.Controllers
 
                 }
             }
-            return View();
+            return View(commande);
         }
 
         public ActionResult Facture()
