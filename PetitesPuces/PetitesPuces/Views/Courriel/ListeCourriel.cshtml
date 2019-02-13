@@ -31,6 +31,21 @@
         document.getElementsByTagName("form")[0].submit();
     }
 
+    function desTachesSurTous(element) {
+        var tabCb = new Array();
+        document.querySelectorAll('input[type=checkbox]').forEach(list => {
+            tabCb.push(list.id.substring(2));
+        });
+
+        document.getElementById('ElementSelectionner').value = tabCb;
+        document.getElementById("uneAction").value = element.value;
+
+        if (confirm("Êtes-vous sûr de vouloir appliquer l'action sur les " + tabCb.length + " messages?")) {
+            document.getElementsByTagName("form")[0].submit();
+        }
+
+    }
+
 </script>
 
 @{
@@ -53,24 +68,41 @@
             <li class="nav-item">
                 <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
             </li>
-            <li class="nav-item">
-                <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
+            <li class="nav-item" id="liMarqueLuSelect">
+                <button type="button" class="btn btn-link" value="lu" onclick="desTachesSurTous(this)"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="liRepondreSelec">
                 <a href="#">Répondre</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="liSupprimeSelec">
                 <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><span class="fa fa-trash-alt"></span> Supprimer</button>
             </li>
-            <li class="nav-item">
-                <a href="#">Supprimer</a> <!--Définitivement-->
-            </li>
-            <li class="nav-item">
-                <a href="#">Vider le dossier</a>
-            </li>
-            <li class="nav-item">
-                <a href="#">Restaurer</a>
-            </li>
+            @if (ViewBag.LaPage == strSupprimeDefinitivement)
+            {
+                <li class="nav-item">
+                    <a href="#">Supprimer</a> <!--Définitivement-->
+                </li>
+            }
+
+            @if (ViewBag.LaPage != strBoiteReception)
+            {
+                <li class="nav-item">
+                    <button type="button" class="btn btn-link" value="supp"><span class="fa fa-trash-alt"></span> Vider le dossier</button>
+                </li>
+            }
+            @if (ViewBag.LaPage == strSupprimeDefinitivement)
+            {
+                <li class="nav-item">
+                    <button type="button" class="btn btn-link" value="suppdef"><span class="fa fa-trash-alt"></span> Vider le dossier</button>
+                </li>
+            }
+            @if (ViewBag.LaPage == strBoiteSupprime)
+            {
+                <li class="nav-item" id="liRestaurer">
+                    <button type="button" class="btn btn-link" value="restau" onclick="desTaches(this)"><span class="fas fa-undo"></span> Restaurer</button>
+                </li>
+            }
+
         </ul>
     </div>
 
