@@ -8,7 +8,7 @@ using PetitesPuces.Models;
 using PagedList;
 using System.Transactions;
 using System.Globalization;
-using IronPdf;
+using System.IO;
 
 namespace PetitesPuces.Controllers
 {
@@ -989,7 +989,7 @@ namespace PetitesPuces.Controllers
                             NoCommande = maxCommande,
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
-                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd HH:mm:ss",CultureInfo.InvariantCulture),
+                            DateCommande = DateTime.ParseExact(DateAutorisation,"yyyy-MM-dd",CultureInfo.InvariantCulture),
                             CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
                             TypeLivraison = typeLivraison.First().CodeLivraison,
                             MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
@@ -1083,10 +1083,14 @@ namespace PetitesPuces.Controllers
                         
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
-                        contextPP.Connection.Close();
                         trans.Complete();
 
-                        HtmlToPdf pdfFacture = new HtmlToPdf();
+                        String path = Server.MapPath("/PDFFacture/" + commande.NoCommande + ".pdf");
+                        var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { FileName = commande.NoCommande + ".pdf" };
+                        var byteArray = actionResult.BuildFile(ControllerContext);
+                        var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+                        fileStream.Write(byteArray, 0, byteArray.Length);
+                        fileStream.Close();
                     }
                     catch (Exception e)
                     {

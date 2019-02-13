@@ -7,8 +7,6 @@ using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
 using PetitesPuces.Models;
 
 namespace PetitesPuces.Controllers
@@ -789,36 +787,6 @@ namespace PetitesPuces.Controllers
                   }
                   date = DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0];
                   path = "~/Inactiver/" + date + ".pdf";
-                  Document pdf = new Document();
-                  PdfWriter wri = PdfWriter.GetInstance(pdf, new FileStream(Server.MapPath(path), FileMode.Create));
-                  pdf.Open();
-                  PdfPTable pTable = new PdfPTable(3);
-                  int pdfCounter = 0;
-                  foreach (PPClients clientPDF in lstClientsPDF)
-                  {
-                     PdfPCell pNumero = new PdfPCell(new Phrase(pdfCounter + 1));
-                     pNumero.HorizontalAlignment = 2;
-                     PdfPCell pNom = new PdfPCell(new Phrase(clientPDF.Nom + ", " + clientPDF.Prenom));
-                     pNom.HorizontalAlignment = 0;
-                     PdfPCell pVisite = new PdfPCell(new Phrase("Nombre de vendeurs visités " + lstClientsVisitesPDF[clientPDF.NoClient.ToString()]));
-                     pVisite.HorizontalAlignment = 0;
-                     pTable.AddCell(pNumero);
-                     pTable.AddCell(pNom);
-                     pTable.AddCell(pVisite);
-                     foreach (PPCommandes commPDF in lstClientsCommandesPDF[clientPDF.NoClient.ToString()])
-                     {
-                        PdfPCell pTitreCommande = new PdfPCell(new Phrase("Numéro de commande: " + commPDF.NoCommande));
-                        pTitreCommande.Colspan = 3;
-                        pTable.AddCell(pTitreCommande);
-                        foreach (PPDetailsCommandes detComm in lstCommandesDtail[commPDF])
-                        {
-
-                        }
-                     }
-                  }
-                  pdf.Add(pTable);
-                  pdf.Close();
-                  System.Web.HttpContext.Current.Response.Write(pdf);
                   // On met le statut à 2 (Intégrité)
                   dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
