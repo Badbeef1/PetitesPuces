@@ -1,0 +1,37 @@
+﻿@using PetitesPuces.Models
+@model Dictionary<PPHistoriquePaiements,PPVendeurs>
+
+<table class="table table-striped">
+   <thead>
+      <tr>
+         <th>Date de paiement</th>
+         <th>No de Vendeur</th>
+         <th>Nom d'affaires</th>
+         <th>Nom Complet</th>
+         <th>Province</th>
+         <th>No T&eacute;l&eacute;phone</th>
+         <th>No de commande</th>
+         <th>Montant due ($)</th>
+         <th>Payer</th>
+      </tr>
+   </thead>
+   <tbody>
+      @foreach (var historique in Model)
+      {
+         double montantDue = Convert.ToDouble(historique.Key.Redevance.ToString());
+         DateTime datePaiement = (DateTime)historique.Key.DateVente;
+         <tr>
+            <td>@datePaiement.ToString("yyyy-MM-dd")</td>
+            <td>@historique.Key.NoVendeur</td>
+            <td>@historique.Value.NomAffaires</td>
+            <td>@historique.Value.Prenom @historique.Value.Nom</td>
+            <td>@historique.Value.Province</td>
+            <td>@historique.Value.Tel1</td>
+            <td>@historique.Key.NoCommande</td>
+            <td>@montantDue.ToString("0.00") $</td>
+            <td><button id="btn_payer_@historique.Key.NoHistorique" class="btn btn-success" onclick='payerRedevance("@historique.Key.NoHistorique", "@historique.Value.NomAffaires", "@historique.Key.Redevance");'>Confirmer le paiement</button></td>
+         </tr>
+      }
+
+   </tbody>
+</table>

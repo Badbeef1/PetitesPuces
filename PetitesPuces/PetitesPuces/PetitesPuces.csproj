@@ -464,6 +464,7 @@
     <Content Include="Views\Shared\Client\EcrireEvaluation.cshtml" />
     <Content Include="Views\Client\Facture.cshtml" />
     <Content Include="Views\Client\Evaluations.cshtml" />
+    <Content Include="Views\Shared\Gestionnaire\RedevancesDues.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
