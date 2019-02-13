@@ -167,12 +167,12 @@
 
         @foreach (var contenu in Model)
         {
-            string strMessDebut = new string(contenu.Message.DescMsg.Take(70 - contenu.Message.objet.Length).ToArray());
-            string strDateEnvioFormat = contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy");
+            string strMessDebut = new string(contenu.Message.DescMsg.Take(60 - contenu.Message.objet.Length).ToArray());
+            string strDateEnvioFormat = contenu.Message.dateEnvoi.HasValue ? contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy") : "";
 
             string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
 
-            string strMessageEtat = contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "";
+            string strMessageEtat = contenu.Destinataire != null ? (contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "" ): "";
 
             <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
                 <div class="col-auto">
@@ -187,15 +187,18 @@
                         var nom = "supp_" + contenu.Message.NoMsg;
                     }
                     <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom"><i class="fa fa-trash-alt"></i></button>
-                    @if (contenu.Destinataire.EtatLu == 0)
+                    @if (contenu.Destinataire != null)
                     {
-                        nom = "lu_" + contenu.Message.NoMsg;
-                        <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope-open"></i></button>
-                    }
-                    else
-                    {
-                        nom = "nonlu_" + contenu.Message.NoMsg;
-                        <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope"></i></button>
+                        if (contenu.Destinataire.EtatLu == 0)
+                        {
+                            nom = "lu_" + contenu.Message.NoMsg;
+                            <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope-open"></i></button>
+                        }
+                        else
+                        {
+                            nom = "nonlu_" + contenu.Message.NoMsg;
+                            <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope"></i></button>
+                        }
                     }
                 </div>
                 <div class="col-1" onclick="location.href='@strActionAffichage'">
