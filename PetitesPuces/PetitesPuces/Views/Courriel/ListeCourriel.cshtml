@@ -2,13 +2,64 @@
 @using PagedList.Mvc;
 
 <script type="text/javascript">
-    function marqueLu() {
+    function selection() {
         var tabCb = new Array();
         document.querySelectorAll('input[type=checkbox]:checked').forEach(list => {
             tabCb.push(list.id.substring(2));
-        })
+        });
 
         document.getElementById('ElementSelectionner').value = tabCb;
+
+        //Affiche les options selon le nombre de message selectionner
+        var nbElement = tabCb.length;
+
+        console.log("Resultat: " + nbElement);
+
+        var arrAucun = document.querySelectorAll('.aucun-Select');
+        var arrUn = document.querySelectorAll('.un-Select');
+        var arrUnOuPlusieurs = document.querySelectorAll('.unOuPlus-Select');
+
+
+        if (nbElement == 0) {
+            arrAucun.forEach(element => {
+                element.setAttribute('style', 'display: inline-block;');
+            });
+
+            arrUn.forEach(element => {
+                element.setAttribute('style', 'display: none;');
+            });
+
+            arrUnOuPlusieurs.forEach(element => {
+                element.setAttribute('style', 'display: none;');
+            });
+        }
+        else if (nbElement == 1) {
+            arrAucun.forEach(element => {
+                element.setAttribute('style', 'display: none;');
+            });
+
+            arrUn.forEach(element => {
+                element.setAttribute('style', 'display: inline-block;');
+            });
+
+            arrUnOuPlusieurs.forEach(element => {
+                element.setAttribute('style', 'display: inline-block;');
+            });
+        }
+        else {
+            arrAucun.forEach(element => {
+                element.setAttribute('style', 'display: none;');
+            });
+
+            arrUn.forEach(element => {
+                element.setAttribute('style', 'display: none;');
+            });
+
+            arrUnOuPlusieurs.forEach(element => {
+                element.setAttribute('style', 'display: inline-block;');
+            });
+        }
+
     }
 
     function uneTache(element) {
@@ -61,50 +112,56 @@
 
 @using (Html.BeginForm())
 {
-    <div class="bg-light">
+    <nav class=" navbar bg-light">
         @Html.Hidden("ElementSelectionner")
         @Html.Hidden("uneAction")
-        <ul class="nav navbar bd-navbar mr-auto">
+        <ul class="navbar-nav navbar-expand bd-navbar">
             <li class="nav-item">
-                <a href="@Url.Action("Index/NouveauMessage")" class="nav-link">Nouveau Message +</a>
+                <a href="@Url.Action("Index/NouveauMessage")" class="nav-link"><i class="fas fa-plus"></i> Nouveau Message</a>
             </li>
-            <li class="nav-item" id="liMarqueLuSelect">
-                <button type="button" class="btn btn-link" value="lu" onclick="desTachesSurTous(this)"><span class="far fa-envelope-open"></span> Marquer tous comme lu</button>
+            <li class="nav-item aucun-Select">
+                <button type="button" class="btn btn-link" value="lu" onclick="desTachesSurTous(this)"><i class="far fa-envelope-open"></i> Marquer tous comme lu</button>
             </li>
-            <li class="nav-item" id="liRepondreSelec">
-                <a href="#">Répondre</a>
+            <li class="nav-item un-Select">
+                <a href="#" class="btn btn-link"><i class="fas fa-reply-all"></i> Répondre</a>
             </li>
-            <li class="nav-item" id="liSupprimeSelec">
-                <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><span class="fa fa-trash-alt"></span> Supprimer</button>
+            <li class="nav-item unOuPlus-Select">
+                <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
+            </li>
+            <li class="nav-item unOuPlus-Select">
+                <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><i class="far fa-envelope-open"></i> Marquer comme lu</button>
+            </li>
+            <li class="nav-item unOuPlus-Select">
+                <button type="button" class="btn btn-link" value="nonlu" onclick="desTaches(this)"><i class="far fa-envelope"></i> Marquer comme non lu</button>
             </li>
             @if (ViewBag.LaPage == strSupprimeDefinitivement)
             {
-                <li class="nav-item">
-                    <a href="#">Supprimer</a> <!--Définitivement-->
-                </li>
+            <li class="nav-item unOuPlus-Select">
+                <button type="button" class="btn btn-link" value="suppdef" onclick="desTaches(this)"><i class="fa fa-trash-alt"> Supprimer</i></button><!--Définitivement-->
+            </li>
             }
 
-            @if (ViewBag.LaPage != strBoiteReception)
+            @if (ViewBag.LaPage != strBoiteReception && ViewBag.LaPage != strSupprimeDefinitivement)
             {
-                <li class="nav-item">
-                    <button type="button" class="btn btn-link" value="supp"><span class="fa fa-trash-alt"></span> Vider le dossier</button>
+                <li class="nav-item aucun-Select">
+                    <button type="button" class="btn btn-link aucun-Select" value="supp"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
                 </li>
             }
             @if (ViewBag.LaPage == strSupprimeDefinitivement)
             {
-                <li class="nav-item">
-                    <button type="button" class="btn btn-link" value="suppdef"><span class="fa fa-trash-alt"></span> Vider le dossier</button>
+                <li class="nav-item aucun-Select">
+                    <button type="button" class="btn btn-link aucun-Select" value="suppdef"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
                 </li>
             }
             @if (ViewBag.LaPage == strBoiteSupprime)
             {
-                <li class="nav-item" id="liRestaurer">
-                    <button type="button" class="btn btn-link" value="restau" onclick="desTaches(this)"><span class="fas fa-undo"></span> Restaurer</button>
+                <li class="nav-item unOuPlus-Select">
+                    <button type="button" class="btn btn-link" value="restau" onclick="desTaches(this)"><i class="fas fa-undo"></i> Restaurer</button>
                 </li>
             }
 
         </ul>
-    </div>
+    </nav>
 
     <div class="d-flex flex-column">
 
@@ -119,7 +176,7 @@
 
             <div class="row p-2 sMessListe" style="cursor:pointer;@strMessageEtat">
                 <div class="col-auto">
-                    @Html.CheckBox("cb" + contenu.Message.NoMsg, false, new { onchange = "marqueLu();" })
+                    @Html.CheckBox("cb" + contenu.Message.NoMsg, false, new { onchange = "selection();" })
                 </div>
                 <div class="col-3" onclick="location.href='@strActionAffichage'">
                     @Html.DisplayFor(x => contenu.StrNomAffichage)
@@ -129,16 +186,16 @@
                     @{
                         var nom = "supp_" + contenu.Message.NoMsg;
                     }
-                    <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom"><span class="fa fa-trash-alt"></span></button>
+                    <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom"><i class="fa fa-trash-alt"></i></button>
                     @if (contenu.Destinataire.EtatLu == 0)
                     {
                         nom = "lu_" + contenu.Message.NoMsg;
-                        <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope-open"></span></button>
+                        <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope-open"></i></button>
                     }
                     else
                     {
                         nom = "nonlu_" + contenu.Message.NoMsg;
-                        <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)"><span class="far fa-envelope"></span></button>
+                        <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope"></i></button>
                     }
                 </div>
                 <div class="col-1" onclick="location.href='@strActionAffichage'">
