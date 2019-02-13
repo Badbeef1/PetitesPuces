@@ -82,24 +82,26 @@ namespace PetitesPuces.Controllers
          return View(nouveauProduit);
       }
 
-      public ActionResult ProduitDetaille(long noProduit)
-      {
-         PPProduits produitDetail;
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
+        public ActionResult ProduitDetaille(long noProduit)
+        {
+            var model = new ViewModels.ProduitDetailViewModel();
+            var dcontext = new DataClasses1DataContext();
 
-         var produit = (from prod in db.GetTable<PPProduits>()
-                        where prod.NoProduit.Equals(noProduit)
-                        select prod
-                        );
-         produitDetail = produit.First();
+            model.Produit = dcontext.PPProduits.FirstOrDefault(p => p.NoProduit == noProduit);
+            model.nbEvaluateurs = dcontext.PPEvaluations.Count(x => x.NoProduit == model.Produit.NoProduit);
 
-         db.Connection.Close();
-         return View(produitDetail);
-      }
+            if (model.nbEvaluateurs != 0)
+            {
+                //La moyenne des evaluations
+                model.FormattedRating = Math.Round(dcontext.PPEvaluations
+                    .Where(e => e.NoProduit == model.Produit.NoProduit).Average(x => x.Cote).Value, 1);
+            }
 
-      //GET
-      public ActionResult Inscription()
+            return View(model);
+        }
+
+        //GET
+        public ActionResult Inscription()
       {
 
          var a = Session["vendeurObj"] as PPVendeurs;

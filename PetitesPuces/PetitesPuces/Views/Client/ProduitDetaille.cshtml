@@ -24,12 +24,16 @@
         @RenderPage("~/Views/Client/index.cshtml")
     </div>
     <br /><br /><br />
-    <div class="container mb-5">
-       @Html.Partial("Client/DetailProduit", Model)
-       
-       @if (Model.ClientARecuCeProduit) { 
-           @Html.Partial("Client/EcrireEvaluation",Model)
-       }
-    </div>
+                <div class="container mb-5">
+                    @Html.Partial("Client/DetailProduit", Model)
+
+                    @Html.Partial("Client/EcrireEvaluation", Model)
+
+                    @if (Request.UrlReferrer != null)
+                    {
+                    <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
+                    }
+                </div>
+
 </body>
 </html>

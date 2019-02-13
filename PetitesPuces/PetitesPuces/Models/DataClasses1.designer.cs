@@ -5210,7 +5210,7 @@ namespace PetitesPuces.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Cote", DbType = "Decimal(1,0)")]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Cote", DbType = "Numeric(1,0)")]
         [Required(ErrorMessage = "Le cote est requis.")]
         public System.Nullable<decimal> Cote
         {

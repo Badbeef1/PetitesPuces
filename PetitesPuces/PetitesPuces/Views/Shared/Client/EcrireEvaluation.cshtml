@@ -22,43 +22,56 @@
         font-size: 80%;
         color: #dc3545;
     }
-
 </style>
 
 @using (Html.BeginForm("Evaluer", "client", FormMethod.Post))
 {
+
+
     @Html.HiddenFor(x => x.Evaluation.NoProduit)
-    <div class="card mt-3 mb-5">
-        <div class="card-body">
-            <h5 class="card-title">Laisser un commentaire</h5>
-            <div class="row">
-                <div class="col-12 mb-1">
-                    <div class="stars br-theme-bootstrap-stars">
-                       @Html.DropDownListFor(x => x.Evaluation.Cote,
-                      new SelectList(new List<int> {
-                          1,2,3,4,5
-                      }), new { @id="ddlCote" } )
-                    </div>
-                    @Html.ValidationMessageFor(x => x.Evaluation.Cote)
-                </div>
-            </div>
-            @Html.TextAreaFor(x => x.Evaluation.Commentaire, new { @class="w-100", @rows="5", @placeholder = "Entrer votre commentaire ..." })
-            @Html.ValidationMessageFor(x => x.Evaluation.Commentaire)
-            <div class="w-100 text-right">
-                <input type="submit" class="btn btn-primary pull-right" value="Sauvegarder">
-                <input type="reset" class="btn btn-danger pull-right" value="Annuler">
+        <div class="card mt-3 mb-3">
+            <div class="card-body m-3 text-right">
+                <input name="submitVal" type="submit" 
+                       class="btn btn-secondary btn-block @(Model.nbEvaluateurs == 0 ? "disabled":"" )" 
+                       value="Voir les commentaires" @(Model.nbEvaluateurs == 0 ? "disabled":"" )/>
+                @if (!Model.ClientARecuCeProduit)
+                {
+                    <small class="text-muted"> Vous n'avez pas achet&eacute; ce produit pour laisser un commentaire.</small>
+                }
             </div>
         </div>
-    </div>
-}
-<script type="text/javascript">
-    $(function () {
-       $('#ddlCote').barrating({
-          theme: 'bootstrap-stars',
-          onSelect: function (value, text, event) {
-              $('#ddlCote').val(text).change();
-           }
+    if (Model.ClientARecuCeProduit)
+    {
+        <div class="card mt-3 mb-5">
+            <div class="card-body">
+                <h5 class="card-title">@(Model.Evaluation.Commentaire == null ? "Laisser un" : "Votre") commentaire</h5>
+                <div class="row">
+                    <div class="col-12 mb-1">
+                        <div class="stars br-theme-bootstrap-stars">
+                            @Html.DropDownListFor(x => x.Evaluation.Cote, new SelectList(new List<int> { 1, 2, 3, 4, 5 }), new { @id = "ddlCote" })
+                        </div>
+                        @Html.ValidationMessageFor(x => x.Evaluation.Cote)
+                    </div>
+                </div>
+                @Html.TextAreaFor(x => x.Evaluation.Commentaire, new { @class = "w-100", @rows = "5", @placeholder = "Entrer votre commentaire ..." })
+                @Html.ValidationMessageFor(x => x.Evaluation.Commentaire)
+                <div class="w-100 text-right">
+                    <input name="submitVal" type="submit" class="btn btn-primary pull-right" value="Sauvegarder">
+                    <input type="reset" class="btn btn-danger pull-right" value="Annuler">
+                </div>
+            </div>
+        </div>
+    }
 
+
+    <script type="text/javascript">
+        $(function () {
+            $('#ddlCote').barrating({
+                theme: 'bootstrap-stars',
+                onSelect: function (value, text, event) {
+                    $('#ddlCote').val(text).change();
+                }
+            });
         });
-    });
-</script>
+    </script>
+}
