@@ -367,6 +367,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\CatalogueViewModel.cs" />
+    <Compile Include="ViewModels\MessageAfficheVM.cs" />
     <Compile Include="ViewModels\ProduitDetailViewModel.cs" />
     <Compile Include="ViewModels\XmlDataViewModel.cs" />
     <Compile Include="ViewModels\CourrielVM.cs" />
