@@ -21,6 +21,10 @@ namespace PetitesPuces.Controllers
       public ActionResult AccueilVendeur()
       {
          //A changer dans le futur pour la variable de session vendeur
+         if(Session["vendeurObj"] == null)
+         {
+            return PartialView("index");
+         }
          long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();

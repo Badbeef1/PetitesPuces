@@ -2,6 +2,7 @@
 @using System.Globalization
 @{
    Culture = UICulture = "en-US";
+      
 }
 @model AccueilGestionnaireViewModel
 <!doctype html>
@@ -301,7 +302,7 @@
                               if (vendeur.Value.Equals(true))
                               {
 
-                                 <input  type="number" min="0" max="100" step="0.25" value="@poucentage" disabled="disabled">
+                                 <input type="number" min="0" max="100" step="0.25" value="@poucentage" disabled="disabled">
                               }
                               else
                               {
@@ -332,7 +333,6 @@
             <!--<form>-->
             @using (Html.BeginForm("AccueilGestionnaire", "Gestionnaire", FormMethod.Post))
             {
-               @Html.AntiForgeryToken()
                <br>
                <div class="card">
                   <div class="card-body">

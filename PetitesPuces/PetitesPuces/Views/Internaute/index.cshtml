@@ -1,4 +1,19 @@
-﻿<header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
+﻿@{ 
+   if (Session["vendeurObj"] != null)
+   {
+      Response.Redirect(Url.Action("AccueilVendeur", "Vendeur"));
+   }
+   else if (Session["clientObj"] != null)
+   {
+      Response.Redirect(Url.Action("AccueilClient", "Client"));
+   }
+   else if (Session["gestionnaireObj"] != null)
+   {
+      Response.Redirect(Url.Action("AccueilGestionnaire", "Gestionnaire"));
+   }
+}
+
+<header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <a class="navbar-brand" href="/Internaute/AccueilInternaute">Petites Puces</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
