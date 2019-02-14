@@ -85,7 +85,7 @@
                         @foreach (var tuple in Model.lstDestinataires.Where(x => x.Item1 == 2))
                         {
                             <option value="@tuple.Item2" @(tuple.Item5 ? "selected" : "")>
-                                @tuple.Item3 @(tuple.Item4 != null ? "(" + tuple.Item4 + ")" : "")
+                                @tuple.Item3 @(tuple?.Item4 != "" ? "(" + tuple.Item4 + ")" : "")
                             </option>
                         }
                     </optgroup>

@@ -616,14 +616,15 @@ namespace PetitesPuces.Views
                     foreach (var gest in contextPP.PPGestionnaire)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (1, gest.NoGestionnaire, gest.AdresseEmail, null,destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                            (0, gest.NoGestionnaire, gest.AdresseEmail, null,destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
                     }
 
                     //Get tous les clients
                     foreach(var cli in contextPP.PPClients)
                     {
-                        liste.Add(new Tuple<short, long, string, string, bool>s
-                            (1, cli.NoClient, cli.AdresseEmail, cli.Nom + " " + cli.Prenom,
+                        
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (2, cli.NoClient, cli.AdresseEmail, (cli.Nom + " " + cli.Prenom).Trim(),
                             destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
                     }
 
@@ -647,7 +648,7 @@ namespace PetitesPuces.Views
                     foreach (var cli in contextPP.PPClients)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (1, cli.NoClient, cli.AdresseEmail, cli.Nom + " " + cli.Prenom,
+                            (2, cli.NoClient, cli.AdresseEmail, (cli.Nom + " " + cli.Prenom).Trim(),
                             destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
                     }
 
@@ -657,7 +658,7 @@ namespace PetitesPuces.Views
                     foreach (var gest in contextPP.PPGestionnaire)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (1, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                            (0, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
                     }
 
                     break;
@@ -677,14 +678,14 @@ namespace PetitesPuces.Views
                     foreach (var gest in contextPP.PPGestionnaire)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (1, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                            (0, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
                     }
 
                     //Get tous les clients
                     foreach (var cli in contextPP.PPClients)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (1, cli.NoClient, cli.AdresseEmail, cli.Nom + " " + cli.Prenom,
+                            (2, cli.NoClient, cli.AdresseEmail, (cli.Nom + " " + cli.Prenom).Trim(),
                             destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
                     }
 
