@@ -367,7 +367,11 @@ namespace PetitesPuces.Views
                         .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == lngNoUtilisateur)
                         .ToList();
 
-                    dicNbNotification.Add(unLieu.NoLieu, lstDestinataires03.Count);
+                    List<PPMessages> lstMessages03 = contextPP.PPMessages
+                        .Where(predicate: mess => mess.Lieu == unLieu.NoLieu && mess.NoExpediteur == lngNoUtilisateur)
+                        .ToList();
+
+                    dicNbNotification.Add(unLieu.NoLieu, lstDestinataires03.Count + lstMessages03.Count);
                 }
                 //Brouillon
                 else if (unLieu.NoLieu == 4)
