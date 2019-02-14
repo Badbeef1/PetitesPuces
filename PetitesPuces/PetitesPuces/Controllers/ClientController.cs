@@ -40,10 +40,6 @@ namespace PetitesPuces.Controllers
       public ActionResult AccueilClient()
       {
          List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
-         if (Session["clientObj"] == null)
-         {
-            return PartialView("test");
-         }
          String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
          //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
@@ -1136,12 +1132,23 @@ namespace PetitesPuces.Controllers
          return View(commande);
       }
 
-      public ActionResult Facture()
-      {
-         PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()
-                                 orderby unCommande.NoCommande descending
-                                 select unCommande).First();
-         return View(commande);
-      }
-   }
+        public ActionResult Facture()
+        {
+            PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()
+                                   orderby unCommande.NoCommande descending
+                                   select unCommande).First();
+            String directory = Server.MapPath("/PDFFacture");
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            String path = Server.MapPath("/PDFFacture/" + commande.NoCommande + ".pdf");
+            var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
+            var byteArray = actionResult.BuildFile(ControllerContext);
+            var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+            fileStream.Write(byteArray, 0, byteArray.Length);
+            fileStream.Close();
+            return View(commande);
+        }
+    }
 }

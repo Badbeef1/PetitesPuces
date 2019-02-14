@@ -90,5 +90,13 @@
     </div>
     <!--On affiche la facture-->
     @Html.Partial("Facture", Model)
+
+    <script>
+        var valeurComm = @Model.NoCommande;
+        $("#formPDF").attr('action', '/PDFFacture/' + valeurComm + '.pdf');
+    </script>
+    <form id="formPDF">
+        <div class="text-center"><input type="submit" class="btn btn-primary" value="Imprimer en PDF" formtarget="_blank" /></div>
+    </form>
 </body>
 </html>
