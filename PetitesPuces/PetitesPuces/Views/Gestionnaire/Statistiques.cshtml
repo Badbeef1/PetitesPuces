@@ -1,6 +1,7 @@
 ﻿@using PetitesPuces.Models
 @model StatistiquesViewModel
 
+
 <!DOCTYPE html>
 
 <html>
@@ -82,17 +83,12 @@
       <hr class="m-5" />
 
       <div class="text-center p-3">
-         <h3>Nombre de connexions client</h3>
+         <h3>Nombre de connexions en tant que client: <span style="color:rgb(0, 123, 255);">@Model.nbConnexionsClient</span></h3>
       </div>
       <div class="row">
          <div class="col-md-2"></div>
 
          <!-- BAR CHART Connexions -->
-         <div class="box box-success col-md-8">
-            <div class="box-body chart-responsive">
-               <div class="chart" id="nbConnexions-chart" style="height: 300px;"></div>
-            </div>
-         </div>
          <!-- BAR END -->
 
          <div class="col-md-2"></div>
@@ -263,8 +259,7 @@
             { y: '3 mois', a: @Model.nbVendeurTroisMois, b: @Model.nbClientsTroisMois },
             { y: '6 mois', a: @Model.nbVendeurSixMois, b: @Model.nbClientsSixMois },
             { y: '9 mois', a: @Model.nbVendeurNeufMois, b: @Model.nbClientsNeufMois },
-            { y: '12 mois', a: @Model.nbVendeurDouzeMois, b: @Model.nbClientsDouzeMois },
-            { y: 'Total', a: 5, b:5 }
+            { y: '12 mois', a: @Model.nbVendeurDouzeMois, b: @Model.nbClientsDouzeMois }
          ],
          barColors: ['#17a2b8', '#007bff'],
          xkey: 'y',
@@ -273,6 +268,7 @@
          hideHover: 'auto'
       });
 
+      /*
       //BAR CHART Connexion
       var bar2 = new Morris.Bar({
          element: 'nbConnexions-chart',
@@ -290,7 +286,7 @@
          ykeys: ['a'],
          labels: ['Nombre de connexions des clients'],
          hideHover: 'auto'
-      });
+      });*/
 
 
       //Section vendeur
@@ -307,11 +303,6 @@
          ],
          hideHover: 'auto'
       });
-      
-
-
-      //Section client
-
 
 
    })

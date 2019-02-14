@@ -1155,6 +1155,8 @@ namespace PetitesPuces.Controllers
          int nbVendeurNeufMois = 0;
          int nbVendeurDouzeMois = 0;
 
+         int nbConnexionsClients = 0;
+
          var vendeurs = (from v in db.GetTable<PPVendeurs>()
                          select v
                          ).ToList();
@@ -1250,6 +1252,12 @@ namespace PetitesPuces.Controllers
                nbVendeurDouzeMois++;
             }
          }
+
+         //Nombre de connexions des clients
+         foreach(var cli in clients)
+         {
+            nbConnexionsClients += int.Parse(cli.NbConnexions.ToString());
+         }
  
 
          StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
@@ -1272,6 +1280,8 @@ namespace PetitesPuces.Controllers
          statistiquesViewModel.nbVendeurSixMois = nbVendeurSixMois;
          statistiquesViewModel.nbVendeurNeufMois = nbVendeurNeufMois;
          statistiquesViewModel.nbVendeurDouzeMois = nbVendeurDouzeMois;
+
+         statistiquesViewModel.nbConnexionsClient = nbConnexionsClients;
 
          db.Connection.Close();
          return View(statistiquesViewModel);

@@ -29,6 +29,9 @@ namespace PetitesPuces.Models
       public int nbVendeurNeufMois { get; set; }
       public int nbVendeurDouzeMois { get; set; }
 
+      //Nombre total de connexions clients
+      public int nbConnexionsClient { get; set; }
+
       public StatistiquesViewModel()
       {
 
