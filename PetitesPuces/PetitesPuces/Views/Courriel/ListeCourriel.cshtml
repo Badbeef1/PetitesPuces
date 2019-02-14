@@ -173,7 +173,7 @@
             string strActionAffichage = "";
             if (ViewBag.LaPage == strBrouillon)
             {
-                strActionAffichage = Url.Action("Index/NouveauMessage");
+                strActionAffichage = Url.Action("Index/NouveauMessage", new { @message = contenu?.Message?.NoMsg });
             }
             else
             {

@@ -20,6 +20,8 @@ namespace PetitesPuces.ViewModels
         public List<string> lstVendeursCourriels { get; set; }
         public List<string> lstGestionnairesCourriels { get; set; }
 
+        public List<Tuple<short, long, string, string, bool>> lstDestinataires { get; set; }
+
         [Required]
         public string addresseExpediteur { get; set; }
         [Required]

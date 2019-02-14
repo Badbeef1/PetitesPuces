@@ -30,65 +30,71 @@
                 int noAutorisation = int.Parse(TempData["NoAutorisation"].ToString());
                 if (noAutorisation >= 1000 && noAutorisation <= 5000)
                 {
-                    <div class="col-md-5">
-                        <div class="row">Numéro d'autorisation</div>
-                        <div class="row">Date d'autorisation</div>
-                    </div>
-                    <div class="offset-md-1"></div>
-                    <div class="col-md-5">
-                        <div class="row">@TempData["NoAutorisation"]</div>
-                        <div class="row">@TempData["DateAutorisation"]</div>
-                        <div class="row">@TempData["InfoSuppl"]</div>
-                        @if (ViewData["CheckPoint"] != null)
-                        {
-
-                            <div class="row">@ViewData["CheckPoint"]</div>
-                        }
-                    </div>
+            <div class="col-md-5">
+                <div class="row">Numéro d'autorisation</div>
+                <div class="row">Date d'autorisation</div>
+            </div>
+            <div class="offset-md-1"></div>
+            <div class="col-md-5">
+                <div class="row">@TempData["NoAutorisation"]</div>
+                <div class="row">@TempData["DateAutorisation"]</div>
+                <div class="row">@TempData["InfoSuppl"]</div>
+            </div>
                 }
                 else
                 {
-                    <div class="col-md-5">
-                        <div class="row">Numéro de refus</div>
-                        <div class="row">Raison</div>
-                        <div class="row">Date de refus</div>
-                    </div>
-                    <div class="offset-md-1"></div>
-                    <div class="col-md-5">
-                        <div class="row">@TempData["NoAutorisation"]</div>
-                        @switch (noAutorisation)
+            <div class="col-md-5">
+                <div class="row">Numéro de refus</div>
+                <div class="row">Raison</div>
+                <div class="row">Date de refus</div>
+            </div>
+            <div class="offset-md-1"></div>
+            <div class="col-md-5">
+                <div class="row">@TempData["NoAutorisation"]</div>
+                @switch (noAutorisation)
                         {
                             case 0:
-                                <div class="row">Transaction annulée par l'utilisateur</div>
+                <div class="row">Transaction annulée par l'utilisateur</div>
                                 break;
                             case 1:
-                                <div class="row">Transaction refusée : Date d'expiration dépassée</div>
+                <div class="row">Transaction refusée : Date d'expiration dépassée</div>
                                 break;
                             case 2:
-                                <div class="row">Transaction refusée : Limite de crédit atteinte</div>
+                <div class="row">Transaction refusée : Limite de crédit atteinte</div>
                                 break;
                             case 3:
-                                <div class="row">Transaction refusée : Carte refusée</div>
+                <div class="row">Transaction refusée : Carte refusée</div>
                                 break;
                             default:
-                                <div class="row">Erreur de validation</div>
+                <div class="row">Erreur de validation</div>
                                 break;
                         }
-                        <div class="row">@TempData["DateAutorisation"]</div>
-                    </div>
+                <div class="row">@TempData["DateAutorisation"]</div>
+            </div>
                 }
             }
             else
             {
-                <div class="align-items-center">
-                    <text>
-                        <h1>Accès interdit</h1>
-                    </text>
-                </div>
+            <div class="align-items-center">
+                <text>
+                    <h1>Accès interdit</h1>
+                </text>
+            </div>
             }
         </div>
     </div>
-    <!--On affiche la facture-->
+    @if(Model != null){
     @Html.Partial("Facture", Model)
+
+    <script>
+        var valeurComm = @Model.NoCommande;
+        $("#formPDF").attr('action', '/PDFFacture/' + valeurComm + '.pdf');
+    </script>
+    <form id="formPDF">
+        <div class="text-center"><input type="submit" class="btn btn-primary" value="Imprimer en PDF" formtarget="_blank" /></div>
+    </form>
+    }
+    <!--On affiche la facture-->
+
 </body>
 </html>
