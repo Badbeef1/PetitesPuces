@@ -6,7 +6,7 @@
 
 @using (Html.BeginForm("Soumettre", "Courriel", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-
+   @Html.AntiForgeryToken()
    <style>
       .custom-file-input ~ .custom-file-label::after {
          content: "Choisir";
@@ -29,7 +29,7 @@
       }
 
       .input-group-prepend {
-         width: 120px;
+         width: auto;
       }
 
          .input-group-prepend label {
@@ -48,7 +48,7 @@
              htmlAttributes = new
              {
                  @class = "form-control",
-                 @value = Model.addresseExpediteur ?? Session["adresseEmail"],
+                 @value = Model.addresseExpediteur,
                  @readonly = ""
              }
          })
@@ -129,14 +129,17 @@
             })
       </div>
       <div class="p-2 form-row">
-         <div class="col-4">
-            <input name="submit" type="submit" value="Envoyer" class="btn btn-outline-primary" />
-            <input name="submit" type="submit" value="Enregistrer" class="btn btn-outline-primary" />
-            <input type="reset" value="Effacer" class="btn btn-outline-danger" />
+         <div class="col-3">
+            <input name="submit" type="submit" value="Envoyer" class="btn btn-primary" />
+            <input name="submit" type="submit" value="Enregistrer" class="btn btn-success" />
+            <input type="reset" value="Effacer" class="btn btn-warning" />
          </div>
-         <div class="col-8">
-            <span class="text-danger"> @Html.DisplayFor(m => m.msgErreurCourriel)</span>
-            <span class="text-success"> @Html.DisplayFor(m => m.msgSuccesCourriel)</span>
+         <div class="col-9 text-center m-auto">
+            <small class="text-danger"> @Html.DisplayFor(m => m.msgErreurCourriel)</small>
+            <small class="text-success"> @Html.DisplayFor(m => m.msgSuccesCourriel)</small>
+            
+            <input name="submit" type="submit" value="Supprimer" class="btn btn-danger float-right" @(Model.noMessageOuvert == 0 ?"disabled":"") />
+
          </div>
       </div>
       <script>

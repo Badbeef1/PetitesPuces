@@ -114,6 +114,7 @@ namespace PetitesPuces.Views
             GetListePourRedactionMessage(utilisateur, null, courrielVM);
             courrielVM.msgErreurCourriel = msgErreur;
             courrielVM.msgSuccesCourriel = msgSucces;
+            msgErreur = msgSucces = "";
 
          List<PPDestinataires> lstDestinataire = new List<PPDestinataires>();
             List<PPMessages> lstMessage = new List<PPMessages>();
@@ -435,7 +436,7 @@ namespace PetitesPuces.Views
             }
         }
 
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult Soumettre(string submit, ViewModels.CourrielVM model)
         {
@@ -449,8 +450,7 @@ namespace PetitesPuces.Views
             var noExpediteur = listeNoDestEtAdresse.Where(m => m.Item2.Equals(model.addresseExpediteur)).Select(s => s.Item1).FirstOrDefault();
             //Nb messages present
            var messageOuvert = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == model.noMessageOuvert);
-            var noMessage = messageOuvert?.NoMsg?? contextPP.PPMessages.Count() + 1;
-           msgErreur = msgSucces = "";
+            var noMessage = messageOuvert?.NoMsg?? contextPP.PPMessages.Max(x =>x.NoMsg) + 1;
          switch (submit)
          {
             case "Envoyer":
@@ -519,9 +519,10 @@ namespace PetitesPuces.Views
                break;
             case "Enregistrer":
 
-               if (!ModelState.IsValid)
+               if (model.objetMessage == null && model.messageCourriel == null && 
+                   model.fichierJoint == null && Request["ddlDestinataires"] == null)
                {
-                  msgErreur = "Erreur d'enregistrement: L'objet du message ni le message ne peuvent pas être vides.";
+                  msgErreur = "Erreur d'enregistrement: Rien à sauvegarder.";
                   return RedirectToAction("Index", new { id = strNouveauMessage });
                }
 
@@ -533,7 +534,7 @@ namespace PetitesPuces.Views
                      DescMsg = model.messageCourriel,
                      FichierJoint = model.fichierJoint?.FileName,
                      Lieu = 4,
-                     //dateEnvoi = DateTime.Now,
+                     dateEnvoi = DateTime.Now,
                      objet = model.objetMessage
                   });
                }
@@ -543,7 +544,7 @@ namespace PetitesPuces.Views
                   messageOuvert.DescMsg = model.messageCourriel;
                   messageOuvert.objet = model.objetMessage;
                   messageOuvert.Lieu = 4;
-                  messageOuvert.dateEnvoi = null;
+                  messageOuvert.dateEnvoi = DateTime.Now;
                   messageOuvert.FichierJoint = model.fichierJoint?.FileName;
                   contextPP.SubmitChanges();
                }
@@ -554,16 +555,19 @@ namespace PetitesPuces.Views
                   contextPP.PPDestinataires.DeleteAllOnSubmit(messageOuvert.PPDestinataires);
                   contextPP.SubmitChanges();
                }
-               var lstNoDest1 = Request["ddlDestinataires"]?.Split(',');
-               //Liste des destinataires à insérer dans la table PPDestinataires
-               var lstEnvoi1 = lstNoDest1.Select(destinataire => new PPDestinataires()
-               {
-                  NoMsg = noMessage,
-                  NoDestinataire = int.Parse(destinataire),
-                  EtatLu = -1,
-                  Lieu = 1
-               }).ToList();
+               if(Request["ddlDestinataires"] != null) { 
+                  var lstNoDest1 = Request["ddlDestinataires"]?.Split(',');
+                  //Liste des destinataires à insérer dans la table PPDestinataires
+                  var lstEnvoi1 = lstNoDest1?.Select(destinataire => new PPDestinataires()
+                  {
+                     NoMsg = noMessage,
+                     NoDestinataire = int.Parse(destinataire),
+                     EtatLu = -1,
+                     Lieu = 1
+                  }).ToList();
 
+                  contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
+               }
                if (model.fichierJoint != null)
                {
                   var path1 = Server.MapPath("~/Uploads/");
@@ -571,8 +575,7 @@ namespace PetitesPuces.Views
                      Directory.CreateDirectory(path1);
                   model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
                }
-
-               contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
+               
                try
                {
                   contextPP.SubmitChanges();
@@ -583,12 +586,15 @@ namespace PetitesPuces.Views
                   msgErreur = ex.Message;
                }
                break;
-            case "Supprimer brouillon":
-
-
+            case "Supprimer":
+               if(messageOuvert != null) { 
+                  messageOuvert.Lieu = 3;
+                  contextPP.SubmitChanges();
+               }
                break;
             default:
-               msgErreur = "Action invalide !";break;
+               msgErreur = "Action invalide !";
+               break;
 
          }
 
