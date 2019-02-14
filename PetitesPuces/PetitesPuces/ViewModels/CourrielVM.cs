@@ -15,11 +15,7 @@ namespace PetitesPuces.ViewModels
         public Dictionary<short, int> dicNotificationLieu { get; set; }
         public (Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur) valtupAfficheMessage { get; set; }
         public String strPage { get; set; }
-
-        public List<string> lstClientsCourriels { get; set; }
-        public List<string> lstVendeursCourriels { get; set; }
-        public List<string> lstGestionnairesCourriels { get; set; }
-
+        
         public List<Tuple<short, long, string, string, bool>> lstDestinataires { get; set; }
 
         [Required]
