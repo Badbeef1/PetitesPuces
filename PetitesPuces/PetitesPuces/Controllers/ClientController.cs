@@ -720,8 +720,7 @@ namespace PetitesPuces.Controllers
 
 
                ViewData["cbChecked"] = tarif;
-               Decimal dclPoids = Decimal.Parse(poids.Replace(".", ","));
-
+                    decimal dclPoids = decimal.Parse(poids, new NumberFormatInfo { NumberDecimalSeparator = "." });
                // On trouve le code poids
                var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
                                     where pLiv.PoidsMin <= dclPoids && pLiv.PoidsMax >= dclPoids

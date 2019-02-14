@@ -946,13 +946,27 @@ namespace PetitesPuces.Controllers
 
       public ActionResult GestionInactivite()
       {
-         List<Inactiver> lstClient = creeClient();
+
+            List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
+        {
+            new ddLInactiviter { Valeur = "0", Texte = ""},
+            new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
+            new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
+            new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
+            new ddLInactiviter { Valeur = "4", Texte = "1 an et +"},
+            new ddLInactiviter { Valeur = "5", Texte = "2 an et +"},
+            new ddLInactiviter { Valeur = "6", Texte = "3 an et +"},
+        };
+            ViewBag.ListeDdlClient = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+
+            ViewBag.ListDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+
+            List<Inactiver> lstClient = creeClient();
          List<Inactiver> lstVendeur = creeVendeur();
          InactiviteViewModel iVM = new InactiviteViewModel
          {
             cbClients = lstClient,
-            cbVendeurs = lstVendeur,
-            blnOpenPDF = false
+            cbVendeurs = lstVendeur
          };
          return View("GestionInactivite", iVM);
 
@@ -969,11 +983,7 @@ namespace PetitesPuces.Controllers
          List<PPArticlesEnPanier> lstPanierAVider = new List<PPArticlesEnPanier>();
          List<PPProduits> lstProduitNonCommander = new List<PPProduits>();
 
-         List<PPClients> lstClientsPDF = new List<PPClients>();
-         Dictionary<string, List<PPCommandes>> lstClientsCommandesPDF = new Dictionary<string, List<PPCommandes>>();
-         Dictionary<string, int> lstClientsVisitesPDF = new Dictionary<string, int>();
-         Dictionary<PPCommandes, List<PPDetailsCommandes>> lstCommandesDtail = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
-
+            List<PPClients> lstClientRetirer = new List<PPClients>();
          List<PPCommandes> lstCommDynamique = new List<PPCommandes>();
          List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
 
@@ -986,11 +996,6 @@ namespace PetitesPuces.Controllers
          {
             if (client.IsSelected == true)
             {
-               lstClientsPDF.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient.ToString()).First());
-               lstClientsVisitesPDF.Add(client.idClient, 0);
-               lstClientsCommandesPDF.Add(client.idClient, null);
-               dc.Connection.Open();
-
                // On vide le panier
                foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
                {
@@ -1001,77 +1006,26 @@ namespace PetitesPuces.Controllers
                   dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
                }
 
-               // On retire les visites
-               foreach (PPVendeursClients vencli in dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+               // Si le client a utilisé le site Web
+               if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
                {
-                  lstClientsVisitesPDF[client.idClient]++;
-                  dc.GetTable<PPVendeursClients>().DeleteOnSubmit(vencli);
-               }
-
-               // Client ayant une commande, donc le plus d'endroit dans la BDD
-               if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
-               {
-
-                  // Si la table HistoCommandes n'existe pas on la crée et y met les informations qu'on retire
-                  try
-                  {
-                     dc.ExecuteCommand("SELECT * INTO HistoCommandes FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
-                  }
-                  // Sinon on insère simplement les données
-                  catch (Exception e)
-                  {
-                     dc.ExecuteCommand("INSERT INTO HistoCommandes SELECT * FROM PPCommandes WHERE NoClient = '" + client.idClient + "'");
-                  }
-
-                  // On retire les commandes actives
-                  foreach (PPCommandes comm in dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-                  {
-                     lstCommDynamique.Add(comm);
-                     //Même chose, mais pour HistoDetailsCommandes
-                     try
-                     {
-                        dc.ExecuteCommand("SELECT * INTO HistoDetailsCommandes FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
-                     }
-                     catch (Exception e)
-                     {
-                        dc.ExecuteCommand("INSERT INTO HistoDetailsCommandes SELECT * FROM PPDetailsCommandes WHERE NoCommande = '" + comm.NoCommande + "'");
-
-                     }
-                     // Puis on supprime
-                     lstDetCommDynamique = new List<PPDetailsCommandes>();
-                     foreach (PPDetailsCommandes det in dc.GetTable<PPDetailsCommandes>().Where(m => m.NoCommande == comm.NoCommande).ToList())
-                     {
-                        lstDetCommDynamique.Add(det);
-                        dc.GetTable<PPDetailsCommandes>().DeleteOnSubmit(det);
-                     }
-                     lstCommandesDtail.Add(comm, lstDetCommDynamique);
-                     dc.GetTable<PPCommandes>().DeleteOnSubmit(comm);
-
-                  }
-                  lstClientsCommandesPDF[client.idClient] = lstCommDynamique;
-                  if (!Directory.Exists(Server.MapPath("~/Inactiver")))
-                  {
-                     Directory.CreateDirectory(Server.MapPath("~/Inactiver"));
-                  }
-                  date = DateTime.Now.ToUniversalTime().Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds.ToString().Split(',')[0];
-                  path = "~/Inactiver/" + date + ".pdf";
-                  // On met le statut à 2 (Intégrité)
+                        // On met le statut à 2 (Intégrité)
+                    lstClientRetirer.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
                   dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
-                  // Stats? 
-
                }
-               // Client n'ayant pas de commande (Avec ou sans panier)
+
+               // Client n'ayant pas utilisé le site Web
                else
                {
                   // On delete (Déjà retiré des autres tables)
                   dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
                }
                dc.SubmitChanges();
-               dc.Connection.Close();
             }
             else
             {
+               // On renvoit les clients non-retirés
                lstClients.Add(client);
             }
          }
@@ -1081,7 +1035,6 @@ namespace PetitesPuces.Controllers
          {
             if (vendeur.IsSelected == true)
             {
-               dc.Connection.Open();
                foreach (PPProduits produitNonCommande in dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).ToList())
                {
                   if (produitNonCommande.DateVente == null)
@@ -1093,46 +1046,52 @@ namespace PetitesPuces.Controllers
                      produitNonCommande.Disponibilité = false;
                   }
                }
-               dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
-               dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
-               dc.SubmitChanges();
-               dc.Connection.Close();
+                dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
+                dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
+                dc.SubmitChanges();
             }
             else
             {
+               // On renvoit les vendeurs non-retirés
                lstVendeurs.Add(vendeur);
             }
          }
          ModelState.Clear();
          dc = new DataClasses1DataContext();
-         InactiviteViewModel renvoyer = new InactiviteViewModel
-         {
-            cbClients = lstClients,
-            cbVendeurs = lstVendeurs,
-            blnOpenPDF = true,
-            lastPDF = date
+
+            //ViewData["ddlClient"] = Request["ddlClient"];
+            //ViewData["ddlVendeur"] = Request["ddlVendeur"];
+            InactiviteViewModel renvoyer = new InactiviteViewModel
+            {
+                cbClients = lstClients,
+                lstClientsRetirer = lstClientRetirer,
+            cbVendeurs = lstVendeurs
          };
 
          return View("GestionInactivite", renvoyer);
       }
-
-      public ActionResult seePDF(string date)
-      {
-
-         string filePath = "~/Inactiver/" + date + ".pdf";
-
-         Response.AddHeader("Content-Disposition", "inline; filename=" + date + ".pdf");
-         System.Diagnostics.Debug.WriteLine(date);
-         return File(filePath, "application/pdf");
-
-      }
+      
       public ActionResult Statistiques() => View();
       public ActionResult ddlChanger(string id)
       {
          List<Inactiver> cbClients = creeClient();
          List<Inactiver> cbVendeur = creeVendeur();
 
-         switch (id.Split(';')[0])
+
+            List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
+        {
+            new ddLInactiviter { Valeur = "0", Texte = ""},
+            new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
+            new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
+            new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
+            new ddLInactiviter { Valeur = "4", Texte = "1 an et +"},
+            new ddLInactiviter { Valeur = "5", Texte = "2 an et +"},
+            new ddLInactiviter { Valeur = "6", Texte = "3 an et +"},
+        };
+            ViewBag.ListeDdlClient = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+
+            ViewBag.ListDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+            switch (id.Split(';')[0])
          {
             case "1":
                cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
@@ -1185,6 +1144,8 @@ namespace PetitesPuces.Controllers
                break;
          }
          ModelState.Clear();
+         ViewData["ddlClientSelect"] = Request["ddlClient"];
+           // ViewData["ddlVendeur"] = Request["ddlVendeur"];
          InactiviteViewModel renvoyer = new InactiviteViewModel
          {
             cbClients = cbClients,

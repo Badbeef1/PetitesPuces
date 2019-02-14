@@ -1,0 +1,84 @@
+﻿@using PetitesPuces.Models
+@model PPClients
+<div class="card shopping-cart" id="@("client_"+Model.NoClient)" style="margin-top:0px">
+    <div class="card-header" id="@("heading_Client_"+@Model.NoClient)">
+
+        <div class="float-left">
+            <h5 class="mb-0">
+                <button class="btn btn-link text-s" type="button" data-toggle="collapse" data-target="@("#collapse_Client_"+@Model.NoClient)" aria-expanded="true" aria-controls="@("#collapse_Client_"+@Model.NoClient)">
+                    Client #@Model.NoClient : @Model.Prenom @Model.Nom
+                </button>
+            </h5>
+        </div>
+        <div class="float-right">
+            <h5 class="mb-0">
+                <span>
+                    @{
+                        DataClasses1DataContext dc = new DataClasses1DataContext();
+                        var val = from unLien in dc.GetTable<PPVendeursClients>()
+                                  where unLien.NoClient.Equals(Model.NoClient)
+                                  select unLien;
+                    }
+                    Avait visité(e) un catalogue: @val.ToList().Count fois
+                </span>
+            </h5>
+        </div>
+    </div>
+    @if (Model.PPCommandes.Count > 0)
+    {
+        <div id="@("collapse_Client_"+@Model.NoClient)" class="collapse" aria-labelledby="@("#heading_Client_"+Model.NoClient)" data-parent="@("#client_"+Model.NoClient)">
+
+            <div class="card-body">
+                @foreach (PPCommandes comm in Model.PPCommandes)
+                {
+                    <div class="card shopping-cart" id="@("commande_"+comm.NoCommande)">
+                        <div class="card-header" id="@("heading_Commande_"+comm.NoCommande)">
+
+                            <div class="float-left">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link text-s" type="button" data-toggle="collapse" data-target="@("#collapse_Commande_"+comm.NoCommande)" aria-expanded="true" aria-controls="@("#collapse_Commande_"+comm.NoCommande)">
+                                        Commande #@comm.NoCommande
+                                    </button>
+                                </h5>
+                            </div>
+                        </div>
+
+
+                        <div id="@("collapse_Commande_"+comm.NoCommande)" class="collapse" aria-labelledby="@("#heading_Commande_"+comm.NoCommande)" data-parent="@("#commande_"+comm.NoCommande)">
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="text-right">#</th>
+                                            <th scope="col" class="text-left">Nom</th>
+                                            <th scope="col" class="text-right">Prix unitaire</th>
+                                            <th scope="col" class="text-right">Quantité</th>
+                                            <th scope="col" class="text-right">Sous-total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            double counter = 0;
+                                        }
+                                        @foreach (PPDetailsCommandes det in comm.PPDetailsCommandes)
+                                        {
+                                            counter++;
+                                            <tr>
+                                                <th scope="row" class="text-right">@counter</th>
+                                                <td class="text-left">@det.PPProduits.Nom</td>
+                                                <td class="text-right">@(decimal.Parse(det.PrixVente.ToString()).ToString("0.00")) $</td>
+                                                <td class="text-right">@det.Quantité</td>
+                                                <td class="text-right">@(decimal.Parse((det.PrixVente * det.Quantité).ToString()).ToString("0.00")) $</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+</div>

@@ -361,6 +361,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ProjetFinal.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ddLInactiviter.cs" />
     <Compile Include="Models\Province.cs" />
     <Compile Include="Models\SaisieCommandeViewModel.cs" />
     <Compile Include="Models\ValidationDateVente.cs" />
@@ -465,6 +466,7 @@
     <Content Include="Views\Client\Facture.cshtml" />
     <Content Include="Views\Client\Evaluations.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\RedevancesDues.cshtml" />
+    <Content Include="Views\Gestionnaire\ClientInactiverStats.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
