@@ -1126,7 +1126,156 @@ namespace PetitesPuces.Controllers
          return File(filePath, "application/pdf");
 
       }
-      public ActionResult Statistiques() => View();
+
+      /// <summary>
+      /// Cette méthode permet d'accéder au statistiques et fait les requetes nécessaire pour accéder au données
+      /// </summary>
+      /// <returns></returns>
+      public ActionResult Statistiques()
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Aller chercher le nombre de vendeur actif et inactif
+         int nbVendeurActif = 0;
+         int nbVendeurInactif = 0;
+
+         int nbClientActif = 0;
+         int nbClientPotentiel = 0;
+         int nbClientVisiteurs = 0;
+
+         int nbClientUnMois = 0;
+         int nbClientTroisMois = 0;
+         int nbClientSixMois = 0;
+         int nbClientNeufMois = 0;
+         int nbClientDouzeMois = 0;
+
+         int nbVendeurUnMois = 0;
+         int nbVendeurTroisMois = 0;
+         int nbVendeurSixMois = 0;
+         int nbVendeurNeufMois = 0;
+         int nbVendeurDouzeMois = 0;
+
+         var vendeurs = (from v in db.GetTable<PPVendeurs>()
+                         select v
+                         ).ToList();
+         foreach(var item in vendeurs)
+         {
+            if (item.Statut==1)
+            {
+               nbVendeurActif++;
+            }
+            if (item.Statut==2)
+            {
+               nbVendeurInactif++;
+            }   
+         }
+
+         //Aller chercher Nombre total de clients (actif, potentiel et visiteur)
+         var clients = (from c in db.GetTable<PPClients>()
+                        select c
+                        ).ToList();
+
+         foreach(var cli in clients)
+         {
+            var dejaCommande = (from commande in db.GetTable<PPCommandes>()
+                                where commande.NoClient.Equals(cli.NoClient)
+                                select commande
+                                ).ToList();
+
+            var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
+                                 where cli.NoClient.Equals(panier.NoClient)
+                                 select panier
+                                 ).ToList();
+
+            if(dejaCommande.Count > 0)
+            {
+               nbClientActif++;
+            }
+            else if(possedePanier.Count() > 0)
+            {
+               nbClientPotentiel++;
+            }
+            else
+            {
+               nbClientVisiteurs++;
+            }
+         }
+
+         //Aller chercher les nouveau comptes clients/vendeurs depuis 1, 3, 6, 9 et 12 mois
+         foreach(var client in clients)
+         {
+            if((client.DateCreation <= DateTime.Now) && (client.DateCreation >= DateTime.Now.AddMonths(-1)))
+            {
+               nbClientUnMois++;
+            }
+            if ((client.DateCreation <= DateTime.Now) && (client.DateCreation >= DateTime.Now.AddMonths(-3)))
+            {
+               nbClientTroisMois++;
+            }
+            if ((client.DateCreation <= DateTime.Now) && (client.DateCreation >= DateTime.Now.AddMonths(-6)))
+            {
+               nbClientSixMois++;
+            }
+            if ((client.DateCreation <= DateTime.Now) && (client.DateCreation >= DateTime.Now.AddMonths(-9)))
+            {
+               nbClientNeufMois++;
+            }
+            if ((client.DateCreation <= DateTime.Now) && (client.DateCreation >= DateTime.Now.AddMonths(-12)))
+            {
+               nbClientDouzeMois++;
+            }
+
+         }
+
+         foreach(var vendeur in vendeurs)
+         {
+            if ((vendeur.DateCreation <= DateTime.Now) && (vendeur.DateCreation >= DateTime.Now.AddMonths(-1)))
+            {
+               nbVendeurUnMois++;
+            }
+            if ((vendeur.DateCreation <= DateTime.Now) && (vendeur.DateCreation >= DateTime.Now.AddMonths(-3)))
+            {
+               nbVendeurTroisMois++;
+            }
+            if ((vendeur.DateCreation <= DateTime.Now) && (vendeur.DateCreation >= DateTime.Now.AddMonths(-6)))
+            {
+               nbVendeurSixMois++;
+            }
+            if ((vendeur.DateCreation <= DateTime.Now) && (vendeur.DateCreation >= DateTime.Now.AddMonths(-9)))
+            {
+               nbVendeurNeufMois++;
+            }
+            if ((vendeur.DateCreation <= DateTime.Now) && (vendeur.DateCreation >= DateTime.Now.AddMonths(-12)))
+            {
+               nbVendeurDouzeMois++;
+            }
+         }
+ 
+
+         StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
+         //Instancier les propriétés du model
+         statistiquesViewModel.nbVendeurAccepte = nbVendeurActif;
+         statistiquesViewModel.nbVendeurRefuse = nbVendeurInactif;
+
+         statistiquesViewModel.nbClientActif = nbClientActif;
+         statistiquesViewModel.nbClientPotentiel = nbClientPotentiel;
+         statistiquesViewModel.nbClientVisiteurs = nbClientVisiteurs;
+
+         statistiquesViewModel.nbClientsUnMois = nbClientUnMois;
+         statistiquesViewModel.nbClientsTroisMois = nbClientTroisMois;
+         statistiquesViewModel.nbClientsSixMois = nbClientSixMois;
+         statistiquesViewModel.nbClientsNeufMois = nbClientNeufMois;
+         statistiquesViewModel.nbClientsDouzeMois = nbClientDouzeMois;
+
+         statistiquesViewModel.nbVendeurUnMois = nbVendeurUnMois;
+         statistiquesViewModel.nbVendeurTroisMois = nbVendeurTroisMois;
+         statistiquesViewModel.nbVendeurSixMois = nbVendeurSixMois;
+         statistiquesViewModel.nbVendeurNeufMois = nbVendeurNeufMois;
+         statistiquesViewModel.nbVendeurDouzeMois = nbVendeurDouzeMois;
+
+         db.Connection.Close();
+         return View(statistiquesViewModel);
+      }
       public ActionResult ddlChanger(string id)
       {
          List<Inactiver> cbClients = creeClient();
