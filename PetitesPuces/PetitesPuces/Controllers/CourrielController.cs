@@ -143,6 +143,8 @@ namespace PetitesPuces.Views
                     lstMessage = contextPP.PPMessages
                         .Where(predicate: mess => mess.Lieu == ((id == strBrouillon) ? 4 : 2) && mess.NoExpediteur == lngNoUtilisateur)
                         .ToList();
+                    
+
                     break;
                 case strBoiteSupprime:
                 case strSupprimeDefinitivement:
@@ -168,6 +170,13 @@ namespace PetitesPuces.Views
             else if (id == strEnvoye || id == strBrouillon)
             {
                 courrielVM.iplListeMessageAffiche = ListeCourrielMessage(lstMessage).ToPagedList(1, 20);
+            }
+            else if(id == strNouveauMessage && message != null)
+            {
+                var msgObj = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == message);
+                courrielVM.messageCourriel = msgObj.DescMsg;
+                courrielVM.objetMessage = msgObj.objet;
+                courrielVM = GetListePourRedactionMessage(utilisateur,message,courrielVM);
             }
             else
             {
@@ -581,6 +590,117 @@ namespace PetitesPuces.Views
 
             return liste;
         }
+
+        //Categorie :   0=admin, 1=vendeur, 2=client
+        //Tuple<Categorie utilisateur, noUtilisateur, adresseEmail, nom + prenom/ NomAffaires, selectionné?>
+        public ViewModels.CourrielVM GetListePourRedactionMessage(dynamic util,int? noMsg, ViewModels.CourrielVM model)
+        {
+            var objMsg = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == noMsg);
+            var destinataires = objMsg.PPDestinataires;
+
+            var liste = new List<Tuple<short, long, string, string, bool>>();
+
+            switch (util)
+            {
+                case PPClients c:
+                    model.addresseExpediteur = c.AdresseEmail;
+
+                    //Get tous les vendeurs
+                    foreach(var vendeur in contextPP.PPVendeurs) { 
+                        liste.Add(new Tuple<short, long, string,string, bool>
+                            (1,vendeur.NoVendeur,vendeur.AdresseEmail,vendeur.NomAffaires,
+                            destinataires.Any(x=> x.NoDestinataire == vendeur.NoVendeur)));
+                    }
+
+                    //Get tous les gestionnaires
+                    foreach (var gest in contextPP.PPGestionnaire)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (1, gest.NoGestionnaire, gest.AdresseEmail, null,destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                    }
+
+                    //Get tous les clients
+                    foreach(var cli in contextPP.PPClients)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>s
+                            (1, cli.NoClient, cli.AdresseEmail, cli.Nom + " " + cli.Prenom,
+                            destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
+                    }
+
+                    //Get vendeurs
+                    //model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
+                    //Get gestionnaires
+                    //model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    break;
+                case PPVendeurs v:
+                    model.addresseExpediteur = v.AdresseEmail;
+                    
+                    //Get soi-même
+                    //model.lstVendeursCourriels = contextPP.PPVendeurs.Where(a => a.AdresseEmail == v.AdresseEmail).Select(m => m.AdresseEmail).ToList();
+                    liste.Add(new Tuple<short, long, string, string, bool>
+                        (1,v.NoVendeur,v.AdresseEmail,v.NomAffaires, destinataires.Any(x => x.NoDestinataire == v.NoVendeur)));
+                    
+                    
+                    //Get clients
+                    //model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
+                    //Get tous les clients
+                    foreach (var cli in contextPP.PPClients)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (1, cli.NoClient, cli.AdresseEmail, cli.Nom + " " + cli.Prenom,
+                            destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
+                    }
+
+                    //Get gestionnaires
+                    //model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    //Get tous les gestionnaires
+                    foreach (var gest in contextPP.PPGestionnaire)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (1, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                    }
+
+                    break;
+
+                case PPGestionnaire g:
+                    model.addresseExpediteur = g.AdresseEmail;
+
+                    //Get tous les vendeurs
+                    foreach (var vendeur in contextPP.PPVendeurs)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (1, vendeur.NoVendeur, vendeur.AdresseEmail, vendeur.NomAffaires,
+                            destinataires.Any(x => x.NoDestinataire == vendeur.NoVendeur)));
+                    }
+
+                    //Get tous les gestionnaires
+                    foreach (var gest in contextPP.PPGestionnaire)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (1, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                    }
+
+                    //Get tous les clients
+                    foreach (var cli in contextPP.PPClients)
+                    {
+                        liste.Add(new Tuple<short, long, string, string, bool>
+                            (1, cli.NoClient, cli.AdresseEmail, cli.Nom + " " + cli.Prenom,
+                            destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
+                    }
+
+                    //Get gestionnaires
+                    //model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    //Get clients
+                    //model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
+                    //Get vendeurs
+                    //model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
+                    break;
+            }
+            model.lstDestinataires = liste;
+
+            return model;
+        }
+
 
         private ViewModels.CourrielVM InitModelCourriel(dynamic util, ViewModels.CourrielVM model)
         {

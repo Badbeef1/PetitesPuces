@@ -56,35 +56,36 @@
             </div>
             <select id="ddlDestinataires" multiple name="ddlDestinataires" class="selectpicker form-control" title="Rien de sélectionné"
                     data-selected-text-format="count > 5">
-                @if (Model.lstGestionnairesCourriels != null)
+
+                @if (Model.lstDestinataires.Any(x=>x.Item1 == 0))
                 {
                     <optgroup label="Liste de gestionnaires">
-                        @foreach (var destinataire in Model.lstGestionnairesCourriels)
+                        @foreach (var tuple in Model.lstDestinataires.Where(x => x.Item1 == 0))
                         {
-                            <option value="@destinataire">
-                                @destinataire
+                            <option value="@tuple.Item2" @(tuple.Item5? "selected":"")>
+                                @tuple.Item3
                             </option>
                         }
                     </optgroup>
                 }
-                @if (Model.lstVendeursCourriels != null)
+                @if (Model.lstDestinataires.Any(x => x.Item1 == 1))
                 {
                     <optgroup label="Liste de vendeurs">
-                        @foreach (var destinataire in Model.lstVendeursCourriels)
+                        @foreach (var tuple in Model.lstDestinataires.Where(x => x.Item1 == 1))
                         {
-                            <option value="@destinataire">
-                                @destinataire
+                            <option value="@tuple.Item2" @(tuple.Item5 ? "selected" : "")>
+                                @tuple.Item3 @(tuple.Item4 != null ? "(" + tuple.Item4 + ")" : "")
                             </option>
                         }
                     </optgroup>
                 }
-                @if (Model.lstClientsCourriels != null)
+                @if (Model.lstDestinataires.Any(x => x.Item1 == 2))
                 {
                     <optgroup label="Liste de clients" id="grpClient">
-                        @foreach (var destinataire in Model.lstClientsCourriels)
+                        @foreach (var tuple in Model.lstDestinataires.Where(x => x.Item1 == 2))
                         {
-                            <option value="@destinataire">
-                                @destinataire
+                            <option value="@tuple.Item2" @(tuple.Item5 ? "selected" : "")>
+                                @tuple.Item3 @(tuple.Item4 != null ? "(" + tuple.Item4 + ")" : "")
                             </option>
                         }
                     </optgroup>
