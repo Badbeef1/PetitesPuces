@@ -101,7 +101,6 @@ namespace PetitesPuces.Controllers
       }
 
       [HttpPost]
-      [ValidateAntiForgeryToken]
       public ActionResult AccueilGestionnaire(AccueilGestionnaireViewModel viewModel)
       {
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
@@ -275,10 +274,28 @@ namespace PetitesPuces.Controllers
                dicCategories.Add(cat, true);
             }
          }
+         //Aller chercher la liste des redevances dues trié par date.
+         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+         var listeRedevances = (from red in db.GetTable<PPHistoriquePaiements>()
+                                where red.Redevance > 0
+                                orderby red.DateVente ascending
+                                select red
+                                ).ToList();
+
+         foreach (var paiement in listeRedevances)
+         {
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals(paiement.NoVendeur)
+                           select v
+                           ).ToList();
+
+            dicRedevances.Add(paiement, vendeur.First());
+         }
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
          accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
+         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -356,9 +373,28 @@ namespace PetitesPuces.Controllers
             }
          }
 
+         //Aller chercher la liste des redevances dues trié par date.
+         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+         var listeRedevances = (from redevance in db.GetTable<PPHistoriquePaiements>()
+                                where redevance.Redevance > 0
+                                orderby redevance.DateVente ascending
+                                select redevance
+                                ).ToList();
+
+         foreach (var paiement in listeRedevances)
+         {
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals(paiement.NoVendeur)
+                           select v
+                           ).ToList();
+
+            dicRedevances.Add(paiement, vendeur.First());
+         }
+
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
          accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
+         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -434,9 +470,27 @@ namespace PetitesPuces.Controllers
                dicCategories.Add(cat, true);
             }
          }
+         //Aller chercher la liste des redevances dues trié par date.
+         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+         var listeRedevances = (from red in db.GetTable<PPHistoriquePaiements>()
+                                where red.Redevance > 0
+                                orderby red.DateVente ascending
+                                select red
+                                ).ToList();
+
+         foreach (var paiement in listeRedevances)
+         {
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals(paiement.NoVendeur)
+                           select v
+                           ).ToList();
+
+            dicRedevances.Add(paiement, vendeur.First());
+         }
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -512,10 +566,28 @@ namespace PetitesPuces.Controllers
                dicCategories.Add(cat, true);
             }
          }
+         //Aller chercher la liste des redevances dues trié par date.
+         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+         var listeRedevances = (from redevance in db.GetTable<PPHistoriquePaiements>()
+                                where redevance.Redevance > 0
+                                orderby redevance.DateVente ascending
+                                select redevance
+                                ).ToList();
+
+         foreach (var paiement in listeRedevances)
+         {
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals(paiement.NoVendeur)
+                           select v
+                           ).ToList();
+
+            dicRedevances.Add(paiement, vendeur.First());
+         }
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
          accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
+         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -591,9 +663,28 @@ namespace PetitesPuces.Controllers
             }
          }
 
+         //Aller chercher la liste des redevances dues trié par date.
+         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+         var listeRedevances = (from red in db.GetTable<PPHistoriquePaiements>()
+                                where red.Redevance > 0
+                                orderby red.DateVente ascending
+                                select red
+                                ).ToList();
+
+         foreach (var paiement in listeRedevances)
+         {
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals(paiement.NoVendeur)
+                           select v
+                           ).ToList();
+
+            dicRedevances.Add(paiement, vendeur.First());
+         }
+
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
          accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
+         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -693,9 +784,28 @@ namespace PetitesPuces.Controllers
                dicCategories.Add(cat, true);
             }
          }
+
+         //Aller chercher la liste des redevances dues trié par date.
+         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+         var listeRedevances = (from redevance in db.GetTable<PPHistoriquePaiements>()
+                                where redevance.Redevance > 0
+                                orderby redevance.DateVente ascending
+                                select redevance
+                                ).ToList();
+
+         foreach (var paiement in listeRedevances)
+         {
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals(paiement.NoVendeur)
+                           select v
+                           ).ToList();
+
+            dicRedevances.Add(paiement, vendeur.First());
+         }
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
          accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
+         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
@@ -757,11 +867,11 @@ namespace PetitesPuces.Controllers
          db.Connection.Open();
          Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
          
-         if (tri.Equals("Date"))
+         if (tri.Equals("DateA"))
          {
             var query = (from redevance in db.GetTable<PPHistoriquePaiements>()
                          where redevance.Redevance > 0
-                         orderby redevance.DateVente descending
+                         orderby redevance.DateVente ascending
                          select redevance
                          ).ToList();
             //query.GroupBy(a => a.NoVendeur);
@@ -775,18 +885,17 @@ namespace PetitesPuces.Controllers
 
                dicRedevances.Add(red, coucou.First());
             }
-
+            db.Connection.Close();
             return PartialView("Gestionnaire/RedevancesDues", dicRedevances);
-
          }
-         else if (tri.Equals("Client"))
+         else if (tri.Equals("DateD"))
          {
             var query = (from redevance in db.GetTable<PPHistoriquePaiements>()
                          where redevance.Redevance > 0
                          orderby redevance.DateVente descending
                          select redevance
                          ).ToList();
-            query.GroupBy(a => a.NoVendeur);
+            //query.GroupBy(a => a.NoVendeur);
 
             foreach (var red in query)
             {
@@ -797,12 +906,33 @@ namespace PetitesPuces.Controllers
 
                dicRedevances.Add(red, coucou.First());
             }
+            db.Connection.Close();
+            return PartialView("Gestionnaire/RedevancesDues", dicRedevances);
+         }
+         else if (tri.Equals("Vendeur"))
+         {
+            var query = (from redevance in db.GetTable<PPHistoriquePaiements>()
+                         where redevance.Redevance > 0
+                         orderby redevance.NoVendeur ascending
+                         select redevance
+                         ).ToList();
 
+            foreach (var red in query)
+            {
+               var coucou = (from vendeur in db.GetTable<PPVendeurs>()
+                             where vendeur.NoVendeur.Equals(red.NoVendeur)
+                             select vendeur
+                             ).ToList();
+
+               dicRedevances.Add(red, coucou.First());
+            }
+            db.Connection.Close();
             return PartialView("Gestionnaire/RedevancesDues", dicRedevances);
          }
 
-
-         return View();
+         //Le tri n'est pas dans les choix permis
+         db.Connection.Close();
+         return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
       }
 
       public ActionResult GestionInactivite()
