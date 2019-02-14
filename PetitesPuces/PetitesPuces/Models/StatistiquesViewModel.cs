@@ -33,7 +33,10 @@ namespace PetitesPuces.Models
       public int nbConnexionsClient { get; set; }
 
       //Listes des dernière connexion
-      public List<PPClients> lstDereniereConnexion { get; set; }
+      public List<PPClients> lstDereniereConnexion { get; set; } 
+
+      //Listes de tout les vendeurs
+      public List<PPVendeurs> lstVendeurs { get; set; }
 
       public StatistiquesViewModel()
       {

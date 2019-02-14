@@ -1,35 +1,37 @@
 ﻿@using PetitesPuces.Models
 @model StatistiquesViewModel
-
+@{
+   SelectList list = new SelectList(Model.lstVendeurs, "NoVendeur", "NomAffaires");
+}
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>TestStatistiques</title>
+   <meta name="viewport" content="width=device-width" />
+   <title>TestStatistiques</title>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <!-- jQuery library -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <!-- Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <!-- Popper JS -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-
-
-    <!-- Font Awesome (Icons) -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-
-    <link href="~/Content/css/morris.css" rel="stylesheet" />
+   <!-- Latest compiled JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 
 
-    <script src="~/Content/scripts/raphael.js"></script>
-    <script src="~/Content/scripts/morris.js"></script>
+   <!-- Font Awesome (Icons) -->
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+   <link href="~/Content/css/morris.css" rel="stylesheet" />
+
+
+   <script src="~/Content/scripts/raphael.js"></script>
+   <script src="~/Content/scripts/morris.js"></script>
 
 </head>
 <body>
@@ -205,30 +207,18 @@
             <th class="col">Nom et prénom</th>
             <th class="col">Nb de connexions</th>
          </tr>
-         <tr class="row">
-            <td class="col">2018-01-12</td>
-            <td class="col">10001</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1231</td>
-         </tr>
-         <tr class="row">
-            <td class="col">2018-01-12</td>
-            <td class="col">10001</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1231</td>
-         </tr>
-         <tr class="row">
-            <td class="col">2018-01-12</td>
-            <td class="col">10001</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1231</td>
-         </tr>
-         <tr class="row">
-            <td class="col">2018-01-12</td>
-            <td class="col">10001</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1231</td>
-         </tr>
+         @foreach (var cli in Model.lstDereniereConnexion)
+         {
+            DateTime date = (DateTime)cli.DateDerniereConnexion;
+
+            <tr class="row">
+               <td class="col">@date.ToString("yyyy-MM-dd")</td>
+               <td class="col">@cli.NoClient</td>
+               <td class="col">@cli.Prenom @cli.Nom</td>
+               <td class="col">@cli.NbConnexions</td>
+            </tr>
+         }
+
       </table>
 
    </div>

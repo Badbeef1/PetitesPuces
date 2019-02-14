@@ -1243,6 +1243,8 @@ namespace PetitesPuces.Controllers
 
          statistiquesViewModel.nbConnexionsClient = nbConnexionsClients;
 
+         statistiquesViewModel.lstDereniereConnexion = derniereConnexionClient;
+         statistiquesViewModel.lstVendeurs = vendeurs;
          
 
          db.Connection.Close();
