@@ -119,18 +119,25 @@
             <li class="nav-item">
                 <a href="@Url.Action("Index/NouveauMessage")" class="nav-link"><i class="fas fa-plus"></i> Nouveau Message</a>
             </li>
+            @if (ViewBag.LaPage == strBoiteReception)
+            {
             <li class="nav-item aucun-Select">
                 <button type="button" class="btn btn-link" value="lu" onclick="desTachesSurTous(this)"><i class="far fa-envelope-open"></i> Marquer tous comme lu</button>
             </li>
+            }
             <li class="nav-item un-Select">
                 <a href="#" class="btn btn-link"><i class="fas fa-reply-all"></i> Répondre</a>
             </li>
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
             </li>
+
+            @if (ViewBag.LaPage == strBoiteReception)
+            {
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><i class="far fa-envelope-open"></i> Marquer comme lu</button>
             </li>
+            }
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="nonlu" onclick="desTaches(this)"><i class="far fa-envelope"></i> Marquer comme non lu</button>
             </li>
