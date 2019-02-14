@@ -145,13 +145,31 @@
       //Cette fonction permet de faire un tri sur les redevances dues
       function triDate() {
          //Vérifier si c'est un tri ascendant ou descendant
+         var classeCss = $("#fa_date").attr('class');
+
+         //tri ascendant
+         if (classeCss === 'fas fa-sort-amount-down') {
+            $("#fa_date").attr('class','fas fa-sort-amount-up');
+            $.ajax({
+               url: "/Gestionnaire/triRedevance",
+               data: { "tri": 'DateA' },
+               success: successTri,
+               error: error,
+            });
+         }
+         else {
+            //tri descendant
+            $("#fa_date").attr('class', 'fas fa-sort-amount-down');
+
+            $.ajax({
+               url: "/Gestionnaire/triRedevance",
+               data: { "tri": 'DateD' },
+               success: successTri,
+               error: error,
+            });
+         }
          //var strClass = $('');
-         $.ajax({
-            url: "/Gestionnaire/triRedevance",
-            data: { "tri": 'Date' },
-            success: successTri,
-            error: error,
-         });
+
       }
 
       //Cette fonction permet de faire un tri sur les clients
@@ -277,12 +295,12 @@
                <div class="col-sm-1">
                   <button class="btn btn-outline-primary" onclick="triDate();">
                      Tri Par Date
-                     <span class="fas fa-sort-amount-down"></span>
+                     <span id="fa_date" class="fas fa-sort-amount-down"></span>
                   </button>
                </div>
                <div class="col-sm-1">
                   <button class="btn btn-outline-primary" onclick="triVendeur();">
-                     Tri Par Client
+                     Tri Par Vendeur
                   </button>
                </div>
             </div>
