@@ -490,6 +490,7 @@ namespace PetitesPuces.Controllers
 
          PPCategories c = new PPCategories();
          AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
          accueilGestionnaireViewModel.lstRedevances = dicRedevances;
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
@@ -694,11 +695,19 @@ namespace PetitesPuces.Controllers
       {
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
+         int noMessages = 1;
          //Aller chercher le dernier noMessage
          var messages = (from msg in db.GetTable<PPMessages>()
-                         select msg
+                         group msg by true into r
+                         select new
+                         {
+                            max = r.Max(max => max.NoMsg)
+                         }
                          ).ToList();
-         int noMessages = messages.Count() + 1;
+         if(messages.Count() > 0)
+         {
+            noMessages = messages.First().max + 1;
+         }
 
          //Ajouter un message
          PPMessages ppMessage = new PPMessages

@@ -25,7 +25,7 @@
          if ($('#saisie_courriel').css("visibility") == "hidden") {
             var objSaisieMessage = document.getElementById('saisie_courriel');
             objSaisieMessage.style.visibility = "visible";
-            var message = 'Bonjour M. @Model.Nom, j\'ai l\'honneur de vous annoncez que votre demande de vendeur a été accepté.';
+            var message = 'Bonjour M. @Model.Nom, j\'ai l\'honneur de vous annoncer que votre demande de vendeur a été acceptée.';
             $('#form_message').text(message);
             $('#btn_accepter').prop("disabled", true);
             $('#btn_refuser').prop("disabled", true);
@@ -46,7 +46,7 @@
             var objSaisieMessage = document.getElementById('saisie_courriel');
             objSaisieMessage.style.visibility = "visible";
 
-            var strMessageAuto = 'Bonjour M. @Model.Nom, je suis désoler de vous annoncez que votre demande a été refusé.';
+            var strMessageAuto = 'Bonjour M. @Model.Nom, je suis désolé de vous annoncer que votre demande a été refusée.';
             $('#form_message').text(strMessageAuto);
             $('#btn_accepter').prop("disabled", true);
             $('#btn_refuser').prop("disabled", true);
@@ -75,7 +75,7 @@
       }
       function confirmer(noExpediteur, noDestinataire){
          //Aller chercher le message
-         var message = $('#form_message').text();
+         var message = $('#form_message').val();
          console.log('message: ' + message);
          if (message.trim() != '') {
             $.ajax({
@@ -224,7 +224,7 @@
                   <h4>% de redevances:</h4>
                </div>
                <div class="col-sm-4">
-                  <input id="redevance" type="number" min="0" max="100" step="0.25">
+                  <input id="redevance" type="number" min="0" max="100" step="0.25"> %
                </div>
                <div class="col-sm-4">
                   <div class="row">

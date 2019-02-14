@@ -17,6 +17,8 @@ select * from PPLieu
 
 select * from PPDetailsCommandes
 
+
+update PPVendeurs set Statut = 0 where NoVendeur = 12
 --Ajouter un vendeur
 insert into PPVendeurs values(1,'Childish', 'Blanchet-Plante', 'Kevin','Notre-Dame', 'Montréal','QC','J7W8H5', 'Canada','514-453-8546',null,'kev@gmail.com','Password1',10,20,1,10,null,GETDATE(),GETDATE(),1)
 
@@ -86,6 +88,7 @@ INSERT INTO PPHistoriquePaiements
 VALUES(1,45.00,10,10000,1,GETDATE(),'FSJGFD545GDFG',10.00,10.00,5.00,2.00,1.50)
 
 update PPCommandes set Statut = 'N' where NoCommande = 1
+
 
 --Ajouter les lieux dans la BD
 INSERT INTO PPLieu
