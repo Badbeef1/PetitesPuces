@@ -949,7 +949,7 @@ namespace PetitesPuces.Controllers
 
             List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
         {
-            new ddLInactiviter { Valeur = "0", Texte = ""},
+            new ddLInactiviter { Valeur = "", Texte = ""},
             new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
             new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
             new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
@@ -959,14 +959,16 @@ namespace PetitesPuces.Controllers
         };
             ViewBag.ListeDdlClient = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
 
-            ViewBag.ListDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+            ViewBag.ListeDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
 
             List<Inactiver> lstClient = creeClient();
          List<Inactiver> lstVendeur = creeVendeur();
          InactiviteViewModel iVM = new InactiviteViewModel
          {
             cbClients = lstClient,
-            cbVendeurs = lstVendeur
+            cbVendeurs = lstVendeur,
+            valDdlClient = "",
+            valDdlVendeur = "",
          };
          return View("GestionInactivite", iVM);
 
@@ -976,7 +978,21 @@ namespace PetitesPuces.Controllers
       // Bouton confirmer
       public ActionResult GestionInactivite(InactiviteViewModel form)
       {
-         List<Inactiver> lstClients = new List<Inactiver>();
+            List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
+        {
+            new ddLInactiviter { Valeur = "", Texte = ""},
+            new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
+            new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
+            new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
+            new ddLInactiviter { Valeur = "4", Texte = "1 an et +"},
+            new ddLInactiviter { Valeur = "5", Texte = "2 an et +"},
+            new ddLInactiviter { Valeur = "6", Texte = "3 an et +"},
+        };
+            ViewBag.ListeDdlClient = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+
+            ViewBag.ListeDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+
+            List<Inactiver> lstClients = new List<Inactiver>();
          List<Inactiver> lstVendeurs = new List<Inactiver>();
          List<Inactiver> lstClientsDeleter = new List<Inactiver>();
          List<Inactiver> lstVendeursDeleter = new List<Inactiver>();
@@ -986,10 +1002,6 @@ namespace PetitesPuces.Controllers
             List<PPClients> lstClientRetirer = new List<PPClients>();
          List<PPCommandes> lstCommDynamique = new List<PPCommandes>();
          List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
-
-         String path = "";
-         String date = "";
-
 
          //Retirer client
          foreach (Inactiver client in form.cbClients)
@@ -1061,25 +1073,26 @@ namespace PetitesPuces.Controllers
 
             //ViewData["ddlClient"] = Request["ddlClient"];
             //ViewData["ddlVendeur"] = Request["ddlVendeur"];
+            string valeurRechercheClient = "";
+            string valeurRechercheVendeur = "";
+            if(form.valDdlVendeur != null)
+            {
+                valeurRechercheVendeur = form.valDdlVendeur;
+            }
+            if(form.valDdlClient != null)
+            {
+                valeurRechercheClient = form.valDdlClient;
+            }
             InactiviteViewModel renvoyer = new InactiviteViewModel
             {
                 cbClients = lstClients,
                 lstClientsRetirer = lstClientRetirer,
-            cbVendeurs = lstVendeurs
-         };
+            cbVendeurs = lstVendeurs,
+            valDdlClient = valeurRechercheClient,
+            valDdlVendeur = valeurRechercheVendeur
+            };
 
          return View("GestionInactivite", renvoyer);
-      }
-
-      public ActionResult seePDF(string date)
-      {
-
-         string filePath = "~/Inactiver/" + date + ".pdf";
-
-         Response.AddHeader("Content-Disposition", "inline; filename=" + date + ".pdf");
-         System.Diagnostics.Debug.WriteLine(date);
-         return File(filePath, "application/pdf");
-
       }
 
       /// <summary>
@@ -1256,7 +1269,7 @@ namespace PetitesPuces.Controllers
 
             List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
         {
-            new ddLInactiviter { Valeur = "0", Texte = ""},
+            new ddLInactiviter { Valeur = "", Texte = ""},
             new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
             new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
             new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
@@ -1266,17 +1279,18 @@ namespace PetitesPuces.Controllers
         };
             ViewBag.ListeDdlClient = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
 
-            ViewBag.ListDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+            ViewBag.ListeDdlVendeur = new SelectList(lstInactiviterDdl, "Valeur", "Texte");
+
             switch (id.Split(';')[0])
          {
             case "1":
-               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
+               cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-1)).ToList();
                break;
             case "2":
-               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
+               cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-3)).ToList();
                break;
             case "3":
-               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
+               cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-6)).ToList();
                break;
             case "4":
                cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
@@ -1286,9 +1300,6 @@ namespace PetitesPuces.Controllers
                break;
             case "6":
                cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
-               break;
-            case "7":
-               cbClients = cbClients.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
                break;
             default:
                break;
@@ -1313,19 +1324,16 @@ namespace PetitesPuces.Controllers
             case "6":
                cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
                break;
-            case "7":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence == DateTime.MinValue).ToList();
-               break;
             default:
                break;
          }
          ModelState.Clear();
-         ViewData["ddlClientSelect"] = Request["ddlClient"];
-           // ViewData["ddlVendeur"] = Request["ddlVendeur"];
          InactiviteViewModel renvoyer = new InactiviteViewModel
          {
             cbClients = cbClients,
-            cbVendeurs = cbVendeur
+            cbVendeurs = cbVendeur,
+            valDdlClient = id.Split(';')[0],
+            valDdlVendeur = id.Split(';')[1]
          };
          return View("GestionInactivite", renvoyer);
 

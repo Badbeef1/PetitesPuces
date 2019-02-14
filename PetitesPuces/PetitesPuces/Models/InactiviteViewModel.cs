@@ -12,8 +12,8 @@ namespace PetitesPuces.Models
         public List<PPClients> lstClientsRetirer { get; set; }
         public List<Inactiver> cbVendeurs { get; set; }
 
-        public string valDdlClient { get; set; }
-        public string valDdlVendeur { get; set; }
+        public String valDdlClient { get; set; }
+        public String valDdlVendeur { get; set; }
         
     }
 

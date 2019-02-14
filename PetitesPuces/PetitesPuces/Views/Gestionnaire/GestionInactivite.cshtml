@@ -47,9 +47,8 @@
         <div id="divClient">
             <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
             <br />
-            @Html.DropDownListFor(x => x.valDdlClient, (SelectList)ViewBag.ListeDdlClient, new { @class = "form-control" });
             <span style="display:inline;float:right;padding-right:10px">Inactivité depuis : </span>
-
+            @Html.DropDownListFor(x => x.valDdlClient, (SelectList)ViewBag.ListeDdlClient, new { @onchange = "ddlChange()" })
             <br />
             <div id="tableauClient">
                 <table class="table table-bordered">
@@ -99,8 +98,8 @@
             <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
             <br />
             <div>
-                @Html.DropDownListFor(m => m.valDdlVendeur, (SelectList)ViewBag.ListeDdlVendeur, new { @class = "form-control" });
                 <span style="display:inline;float:right;padding-right:10px;">Inactivité depuis : </span>
+                @Html.DropDownListFor(m => m.valDdlVendeur, (SelectList)ViewBag.ListeDdlVendeur, new { @onchange = "ddlChange()" })
             </div>
             <br />
             <div id="tableauVendeur">
@@ -156,7 +155,7 @@
 </body>
 </html>
 <script>
-        $(document).ready(function () {
+    $(document).ready(function () {
         // Bouton final
         $("#btnConfirmer").click(function () {
             var countClientCocher = 0
@@ -192,40 +191,30 @@
                 document.getElementById("cbClients_" + i + "__IsSelected").checked = $('#cbClientAll').prop("checked");
             };
         });
-        
-         // Combo box de l'entête vendeur
+
+        // Combo box de l'entête vendeur
         $('#cbVendeurAll').click(function () {
             for (var i = 0; i < @Model.cbVendeurs.Count; i++) {
                 document.getElementById("cbVendeurs_" + i + "__IsSelected").checked = $('#cbVendeurAll').prop("checked");
             };
-            });
-            $('#ddlClient').change(function () {
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("ddlChanger", "Gestionnaire")',
-                data: {
-                    "id": $("#ddlClient").val() + ";" + $("#ddlVendeur").val() },
-                success: success,
-                error: error,
-            });
         });
-        $('#ddlVendeur').change(function () {
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("ddlChanger", "Gestionnaire")',
-                data: { "id": $("#ddlClient").val() + ";" + $("#ddlVendeur").val() },
-                success: success,
-                error: error,
-            });
-        });
-        function success(model) {
-            $("#body").html(model);
-            
-        }
-
-        function error(error) {
-            console.log("ERROR " + error)
-        }
     });
             
+            function ddlChange() {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("ddlChanger", "Gestionnaire")',
+                    data: { "id": $("#valDdlClient").val() + ";" + $("#valDdlVendeur").val() },
+                    success: success,
+                    error: error,
+                });
+            }
+        function success(model) {
+                $("#body").html(model);
+
+            }
+
+        function error(error) {
+                console.log("ERROR " + error)
+            }
 </script>
