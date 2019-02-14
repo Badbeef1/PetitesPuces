@@ -174,7 +174,7 @@
 
         @foreach (var contenu in Model)
         {
-            string strMessDebut = new string(contenu.Message.DescMsg.Take(60 - contenu.Message.objet.Length).ToArray());
+            string strMessDebut = new string(contenu.Message.DescMsg.Take(60 - contenu.Message.objet.Count()).ToArray());
             string strDateEnvioFormat = contenu.Message.dateEnvoi.HasValue ? contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy") : "";
 
             string strActionAffichage = "";

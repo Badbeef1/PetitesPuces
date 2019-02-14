@@ -1,9 +1,9 @@
-﻿@model (PetitesPuces.Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur)
+﻿@model PetitesPuces.ViewModels.MessageAfficheVM
 @{ 
-    PetitesPuces.Models.PPMessages message = (Model.objDestinataire as PetitesPuces.Models.PPDestinataires).PPMessages;
+    //PetitesPuces.Models.PPMessages message = (Model.objDestinataire as PetitesPuces.Models.PPDestinataires).PPMessages;
 
-    string strNomExpediteur = Model.Item2; //A suivre ... Philippe &lsaquo;PhilousLeLoup@Netscape.com&rsaquo;
-    string strDateEnvoie = message.dateEnvoi.Value.ToString("dd MMMM yyyy");
+    string strNomExpediteur = Model.StrNomAffichageExpediteur; //A suivre ... Philippe &lsaquo;PhilousLeLoup@Netscape.com&rsaquo;
+    string strDateEnvoie = Model.Message.dateEnvoi.Value.ToString("dd MMMM yyyy");
 
 }
 
@@ -24,28 +24,28 @@
 
 <div>
     <div style="height: 30px;">
-        <h6>@message.objet</h6>
+        <h6>@Model.Message.objet</h6>
     </div>
     <div>
         <div>
             <div>
-                <span>@Model.affExpediteur</span><br />
+                <span>@Model.StrNomAffichageExpediteur</span><br />
                 <span>@strDateEnvoie</span><br />
-                <small>@Model.affDestinataire</small>
+                <small>@Model.StrNomAffichageDestinataire</small>
             </div>
-            @if (message.FichierJoint != null)
+            @if (Model.Message.FichierJoint != null)
             {
                 <br />
                 <div>
-                    <span>@message.FichierJoint.ToString()</span>
-                    @Html.ActionLink("Télécharger", "TelechargeFichierJoin", new { nom = message.FichierJoint}, new { @class = "btn btn-outline-primary"})
+                    <span>@Model.Message.FichierJoint.ToString()</span>
+                    @Html.ActionLink("Télécharger", "TelechargeFichierJoin", new { nom = Model.Message.FichierJoint}, new { @class = "btn btn-outline-primary"})
                 </div>
             }
         </div>
         <br />
         <div>
             <p>
-                @message.DescMsg
+                @Model.Message.DescMsg
             </p>
         </div>
 
