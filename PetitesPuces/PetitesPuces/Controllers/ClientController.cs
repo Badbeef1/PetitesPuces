@@ -927,10 +927,17 @@ namespace PetitesPuces.Controllers
 
             if (evalAvant != null)
             {
-               evalAvant.Cote = model.Evaluation.Cote;
-               evalAvant.Commentaire = model.Evaluation.Commentaire;
-               evalAvant.DateMAJ = DateTime.Now;
-
+               var eval = new PPEvaluations()
+               {
+                  NoClient = evalAvant.NoClient,
+                  NoProduit = evalAvant.NoProduit,
+                  Cote = model.Evaluation.Cote,
+                  Commentaire = model.Evaluation.Commentaire,
+                  DateMAJ = DateTime.Now,
+                  DateCreation = evalAvant.DateCreation
+               };
+               contextPP2.PPEvaluations.DeleteOnSubmit(evalAvant);
+               contextPP2.PPEvaluations.InsertOnSubmit(eval);
             }
             else
             {
