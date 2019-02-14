@@ -1,4 +1,24 @@
-﻿<header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
+﻿@using PetitesPuces.Models
+
+@{
+   if (Session["gestionnaireObj"] == null)
+   {
+      if (Session["vendeurObj"] != null)
+      {
+         Response.Redirect(Url.Action("AccueilVendeur", "Vendeur"));
+      }
+      else if (Session["clientObj"] != null)
+      {
+         Response.Redirect(Url.Action("AccueilClient", "Client"));
+      }
+      else
+      {
+         Response.Redirect(Url.Action("Index", "Internaute"));
+      }
+   }
+}
+
+<header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
    <nav class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
       <a class="navbar-brand" href="/Gestionnaire/AccueilGestionnaire">Petites Puces</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +36,7 @@
                </a>
             </li>
             <li class="nav-item">
-               <a class="nav-link" href="#">
+               <a class="nav-link" href="/Courriel/Index">
                   Messagerie
                   <i class="fas fa-envelope"></i>
                </a>

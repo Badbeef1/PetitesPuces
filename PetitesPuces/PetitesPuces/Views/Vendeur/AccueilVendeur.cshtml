@@ -102,7 +102,13 @@
       <div class="row">
          <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
             <ul class="nav nav-pills flex-column">
-               <h4>Commandes non traités</h4>
+               @{
+                  if (Model.lstCommandesNonTraites.Count() > 0)
+                  {
+                     <h4>Commandes non traités</h4>
+                  }
+               }
+
                @foreach (var commandes in Model.lstCommandesNonTraites)
                {
                   <li class="nav-item">
@@ -110,7 +116,13 @@
                   </li>
                }
 
-               <h4>Paniers courants</h4>
+               @{
+                  if (Model.lstClientPanier.Count() > 0)
+                  {
+                     <h4>Paniers courants</h4>
+                  }
+               }
+
                @foreach (var panier in Model.lstClientPanier)
                {
                   <li class="nav-item">
@@ -123,7 +135,19 @@
 
          <!--Les catégories avec entreprises-->
          <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-            <h3>Les Commandes non traitées</h3>
+            @{
+               if (Model.lstCommandesNonTraites.Count() > 0)
+               {
+                  <h3>Les Commandes non traitées</h3>
+               }
+               else
+               {
+                  <h3>Vous n'avez aucune commandes non traitées</h3>
+                  <br />
+                  <hr />
+               }
+            }
+
             <br>
             <div id="accordion">
                @foreach (var commande in Model.lstCommandesNonTraites)
@@ -194,7 +218,17 @@
                   </div>
                }
                <hr>
-               <h3>Les Paniers courants</h3>
+               @{
+                  if (Model.lstClientPanier.Count() > 0)
+                  {
+                     <h3>Les Paniers courants</h3>
+                  }
+                  else
+                  {
+                     <h3>Vous n'avez aucun panier courant.</h3>
+                  }
+               }
+
                @foreach (var articlesPanier in Model.lstClientPanier)
                {
                   <div class="card">
@@ -246,7 +280,7 @@
                               </div>
                               <div class="card-footer">
                                  <div class="d-flex justify-content-start">
-                                    @Html.ActionLink("Voir le panier détaillé", "PanierDetailVendeur", "Vendeur", new { id = articlesPanier.Key.NoClient}, new { @class="btn btn-primary"})
+                                    @Html.ActionLink("Voir le panier détaillé", "PanierDetailVendeur", "Vendeur", new { id = articlesPanier.Key.NoClient }, new { @class = "btn btn-primary" })
                                  </div>
                               </div>
                            </div>

@@ -1,99 +1,116 @@
 ﻿@using PetitesPuces.Models
 @model AccueilClientViewModel
 <div class="row">
-    <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-        <h4>Les paniers</h4>
-        <ul class="nav nav-pills flex-column">
-            @{
-                int compteur = 1;
-                foreach (var item in Model.lstPanierVendeur)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @item.Key.NomAffaires<span class="sr-only">(current)</span></a>
-                    </li>
-                    compteur++;
-                }
-                <h3>Catégories</h3>
-                foreach (var item in Model.lstEntreCategories)
-                {
-                    if (item.lstVendeurs.Count() > 0)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="#headingCat_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
-                        </li>
-                    }
-                }
+   <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+      @{
+         if (Model.lstPanierVendeur.Count() > 0)
+         {
+            <h4>Les paniers</h4>
+         }
+      }
+
+      <ul class="nav nav-pills flex-column">
+         @{
+            int compteur = 1;
+            foreach (var item in Model.lstPanierVendeur)
+            {
+               <li class="nav-item">
+                  <a class="nav-link" href="#heading_@item.Key.NoVendeur">Panier @item.Key.NomAffaires<span class="sr-only">(current)</span></a>
+               </li>
+               compteur++;
             }
-        </ul>
-    </nav>
+            <h3>Catégories</h3>
+            foreach (var item in Model.lstEntreCategories)
+            {
+               if (item.lstVendeurs.Count() > 0)
+               {
+                  <li class="nav-item">
+                     <a class="nav-link" href="#headingCat_@item.categorie.NoCategorie">@item.categorie.Description<span class="sr-only">(current)</span></a>
+                  </li>
+               }
+            }
+         }
+      </ul>
+   </nav>
 
     <!--Les catégories avec entreprises-->
-    <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-       <hr>
-       <h3>Bienvenue !</h3>
-       <hr />
-       <h4>Voici vos paniers</h4>
-       
-       <div id="accordionPanier">
-          @foreach (var articlesVendeur in Model.lstPanierVendeur)
-          {
-             <div class="card">
-                <div class="card-header" id="heading_@articlesVendeur.Key.NoVendeur">
-                   <div class="float-left">
-                      <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="50px width="50px">
-                   </div>
-                   <div class="float-center">
-                      <h5 class="mb-0">
-                         <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@articlesVendeur.Key.NoVendeur" aria-expanded="true" aria-controls="collapse_@articlesVendeur.Key.NoVendeur">
-                            @articlesVendeur.Key.NomAffaires
-                         </button>
-                      </h5>
-                   </div>
-                </div>
+   <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+      <hr>
+      <h3>Bienvenue !</h3>
+      <hr />
+      @{
+         if (Model.lstPanierVendeur.Count() > 0)
+         {
+            <h4>Voici vos paniers</h4>
+         }
+         else
+         {
+            <h4>Vous n'avez pas de panier pour l'instant</h4>
+            <br />
+            <hr />
+         }
+      }
 
-                <div id="collapse_@articlesVendeur.Key.NoVendeur" class="collapse" aria-labelledby="heading_@articlesVendeur.Key.NoVendeur" data-parent="#accordionPanier">
+      <div id="accordionPanier">
+         @foreach (var articlesVendeur in Model.lstPanierVendeur)
+         {
+            <div class="card">
+               <div class="card-header" id="heading_@articlesVendeur.Key.NoVendeur">
+                  <div class="float-left">
+                     <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="50px width="50px">
+                  </div>
+                  <div class="float-center">
+                     <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@articlesVendeur.Key.NoVendeur" aria-expanded="true" aria-controls="collapse_@articlesVendeur.Key.NoVendeur">
+                           @articlesVendeur.Key.NomAffaires
+                        </button>
+                     </h5>
+                  </div>
+               </div>
 
-                   <div class="card-body">
-                      <div class="card">
-                         <div class="card-header">
-                            <h4>@articlesVendeur.Key.NomAffaires</h4>
-                         </div>
-                         <div class="card-body">
-                            <div class="row">
-                               @foreach (var article in articlesVendeur)
-                               {
-                                  double dblPrixVente = (double)article.PPProduits.PrixDemande;
-                                  <div class="col-sm-2">
-                                     <div class="card">
-                                        <div class="card-header">
-                                           <h5>@article.PPProduits.Nom</h5>
-                                        </div>
-                                        <div class="card-body">
-                                           <div class="float-center">
-                                              <img src="~/Content/images/@article.PPProduits.Photo" alt="" width="125px" height="125px" class="rounded-circle">
-                                           </div>
-                                        </div>
-                                        <div class="card-footer">
-                                           <h5>@dblPrixVente.ToString("0.00") $</h5>
-                                        </div>
-                                     </div>
-                                  </div>
-                               }
-                            </div>
-                         </div>
-                         <div class="card-footer">
-                            @Html.ActionLink("Détail du panier", "PanierDetail", "Client", new { id = articlesVendeur.Key.NoVendeur }, new { @class = "btn btn-primary" })
-                            <!-- <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>-->
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             </div>
-             <hr />
-          }
-       </div>
-       <h3>Les catégories</h3>
-       @Html.Partial("Client/Categories", Model.lstEntreCategories)
+               <div id="collapse_@articlesVendeur.Key.NoVendeur" class="collapse" aria-labelledby="heading_@articlesVendeur.Key.NoVendeur" data-parent="#accordionPanier">
 
-    </main>
+                  <div class="card-body">
+                     <div class="card">
+                        <div class="card-header">
+                           <h4>@articlesVendeur.Key.NomAffaires</h4>
+                        </div>
+                        <div class="card-body">
+                           <div class="row">
+                              @foreach (var article in articlesVendeur)
+                              {
+                                 double dblPrixVente = (double)article.PPProduits.PrixDemande;
+                                 <div class="col-sm-2">
+                                    <div class="card">
+                                       <div class="card-header">
+                                          <h5>@article.PPProduits.Nom</h5>
+                                       </div>
+                                       <div class="card-body">
+                                          <div class="float-center">
+                                             <img src="~/Content/images/@article.PPProduits.Photo" alt="" width="125px" height="125px" class="rounded-circle">
+                                          </div>
+                                       </div>
+                                       <div class="card-footer">
+                                          <h5>@dblPrixVente.ToString("0.00") $</h5>
+                                       </div>
+                                    </div>
+                                 </div>
+                              }
+                           </div>
+                        </div>
+                        <div class="card-footer">
+                           @Html.ActionLink("Détail du panier", "PanierDetail", "Client", new { id = articlesVendeur.Key.NoVendeur }, new { @class = "btn btn-primary" })
+                           <!-- <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>-->
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <hr />
+         }
+      </div>
+      <h3>Les catégories</h3>
+      @Html.Partial("Client/Categories", Model.lstEntreCategories)
+
+   </main>
 </div>

@@ -8,6 +8,7 @@
     const string strSupprimeDefinitivement = "SupprimeTotal";
     const string strBrouillon = "Brouillon";
     const string strNouveauMessage = "NouveauMessage";
+    const string strEnvoye = "Envoyer";
 }
 <!DOCTYPE html>
 <html>
@@ -16,6 +17,7 @@
     <title>Courriel</title>
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
+    <link rel="stylesheet" href="~/Content/css/Catalogue.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
@@ -23,22 +25,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
     <script type="text/javascript">
-        /*
-        $(document).ready(function () {
-
-            $.selection = function () {
-
-                var element = $('input:checkbox:checked').map(function () {
-                    return this.value;
-                }).get();
-
-                console.log('Aurevoir');
-                console.log(element);
-
-                return element;
-            };
-
-        });*/
 
         function test() {
             console.log("parfait");
@@ -63,17 +49,30 @@
         .sMessListe:hover {
             background-color: lightgrey;
         }
+
+        .aucun-Select {
+            display: inline-block;
+        }
+
+        .un-Select {
+            display: none;
+        }
+
+        .unOuPlus-Select {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
-    <header class="navbar bd-navbar">
+    <header class="navbar bd-navbar navbar-expand-lg">
         <a class="navbar-brand" href="#">Petites Puces</a>
     </header>
     <div class="container-fluid">
         <div class="row flex-xl-nowrap">
-            <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
-                <nav class=" bg-faded sidebar">
-                    <ul class="nav nav-pills flex-column bg-light">
+            <div class="col-12 col-md-3 col-xl-2 bd-sidebar bg-light">
+                <nav class="sidebar">
+                    <ul class="nav nav-pills flex-column ">
                         @foreach (var lieux in Model.lstLieu)
                         {
                             var affichage = "";
@@ -81,32 +80,44 @@
                             {
                                 affichage = strBoiteReception;
                             }
+                            else if (lieux.NoLieu == 2)
+                            {
+                                affichage = strEnvoye;
+                            }
+                            else if (lieux.NoLieu == 3)
+                            {
+                                affichage = strBoiteSupprime;
+                            }
                             else if (lieux.NoLieu == 4)
                             {
                                 affichage = strBrouillon;
                             }
+                            else if (lieux.NoLieu == 5)
+                            {
+                                affichage = strSupprimeDefinitivement;
+                            }
 
-                            <li class="nav-item">
+                            <li class="nav-item mt-2 mb-2">
                                 <a href="@Url.Action("Index/" + affichage)">
                                     @if (lieux.NoLieu == 1)
                                     {
-                                        <span class="fa fa-inbox"></span>
+                                        <i class="fa fa-inbox"></i>
                                     }
                                     else if (lieux.NoLieu == 2)
                                     {
-                                        <span class="fa fa-paper-plane"></span>
+                                        <i class="fa fa-paper-plane"></i>
                                     }
                                     else if (lieux.NoLieu == 3)
                                     {
-                                        <span class="fa fa-trash-alt"></span>
+                                        <i class="fa fa-trash-alt"></i>
                                     }
                                     else if (lieux.NoLieu == 4)
                                     {
-                                        <span class="fa fa-pencil-alt"></span>
+                                        <i class="fa fa-pencil-alt"></i>
                                     }
                                     else if (lieux.NoLieu == 5)
                                     {
-                                        <span class="fa fa-trash-alt"></span>
+                                        <i class="fa fa-trash-alt"></i>
                                     }
                                     @lieux.Description
                                 </a>
@@ -116,12 +127,6 @@
                                     }
                                 </li>
                             }
-
-                                    <!--
-                                    <li class="nav-item"><a href="#"><span class="fa fa-inbox"></span> Boite de réception</a> <span class="badge badge-primary">120</span></li>
-                                    <li><a href="#"><span class="fa fa-pencil-alt"></span> Brouillons</a> <span class="badge badge-primary">1</span></li>
-                                    <li><a href="#"><span class="fa fa-paper-plane"></span> Éléments envoyés</a></li>
-                                    <li><a href="#"><span class="fa fa-trash-alt"></span> Éléments supprimés</a> <span class="badge badge-primary">13</span></li>-->
                                 </ul>
                             </nav>
                         </div>
@@ -129,17 +134,15 @@
 
                         <main class="col-12 col-md-9 col-xl-10" id="divCorps">
                             @{
+                                ViewBag.LaPage = Model.strPage;
+
                                 if (Model.strPage == strNouveauMessage)
                                 {
-                                    @Html.Partial("RedactionMessage")
+                                    @Html.Partial("RedactionMessage", Model)
                                 }
                                 else if (Model.strPage == strAffichageMessage)
                                 {
                                     @Html.Partial("AffichageMessage", Model.valtupAfficheMessage)
-                                }
-                                else if (Model.strPage == strBoiteSupprime)
-                                {
-
                                 }
                                 else
                                 {
