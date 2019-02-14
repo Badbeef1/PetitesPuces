@@ -25,7 +25,7 @@ namespace PetitesPuces.ViewModels
         [Required]
         public string messageCourriel { get; set; }
 
-        public Models.PPMessages messageOuvert { get; set; }
+        public int noMessageOuvert { get; set; }
 
         public string msgErreurCourriel { get; set; }
         public string msgSuccesCourriel { get; set; }

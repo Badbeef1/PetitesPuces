@@ -7,7 +7,8 @@ namespace PetitesPuces.ViewModels
 {
     public class MessageAfficheVM
     {
-        public String StrNomAffichage { get; set; }
+        public String StrNomAffichageDestinataire { get; set; }
+        public String StrNomAffichageExpediteur { get; set; }
         public short ShrEtat { get; set; }
         public Models.PPDestinataires Destinataire { get; set; }
         public Models.PPMessages Message { get; set; }
