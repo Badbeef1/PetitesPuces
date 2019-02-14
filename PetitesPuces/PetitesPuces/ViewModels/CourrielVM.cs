@@ -13,7 +13,8 @@ namespace PetitesPuces.ViewModels
         public short lieu { get; set; }
         public IPagedList<MessageAfficheVM> iplListeMessageAffiche { get; set; }
         public Dictionary<short, int> dicNotificationLieu { get; set; }
-        public (Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur) valtupAfficheMessage { get; set; }
+        //public (Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur) valtupAfficheMessage { get; set; }
+        public MessageAfficheVM AfficheMessage { get; set; }
         public String strPage { get; set; }
         
         public List<Tuple<short, long, string, string, bool>> lstDestinataires { get; set; }
@@ -25,7 +26,7 @@ namespace PetitesPuces.ViewModels
         [Required]
         public string messageCourriel { get; set; }
 
-        public Models.PPMessages messageOuvert { get; set; }
+        public int noMessageOuvert { get; set; }
 
         public string msgErreurCourriel { get; set; }
         public string msgSuccesCourriel { get; set; }

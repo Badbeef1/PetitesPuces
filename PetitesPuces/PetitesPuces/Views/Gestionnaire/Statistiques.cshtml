@@ -1,7 +1,6 @@
-﻿
-@{
-   Layout = null;
-}
+﻿@using PetitesPuces.Models
+@model StatistiquesViewModel
+
 
 <!DOCTYPE html>
 
@@ -84,17 +83,12 @@
       <hr class="m-5" />
 
       <div class="text-center p-3">
-         <h3>Nombre de connexions client</h3>
+         <h3>Nombre de connexions en tant que client: <span style="color:rgb(0, 123, 255);">@Model.nbConnexionsClient</span></h3>
       </div>
       <div class="row">
          <div class="col-md-2"></div>
 
          <!-- BAR CHART Connexions -->
-         <div class="box box-success col-md-8">
-            <div class="box-body chart-responsive">
-               <div class="chart" id="nbConnexions-chart" style="height: 300px;"></div>
-            </div>
-         </div>
          <!-- BAR END -->
 
          <div class="col-md-2"></div>
@@ -237,8 +231,8 @@
          resize: true,
          colors: ["#17a2b8", "#007bff"],
          data: [
-            { label: "Vendeurs actifs", value: 1424 },
-            { label: "Clients inscrit", value: 8545 }
+            { label: "Vendeurs actifs", value: @Model.nbVendeurAccepte },
+            { label: "Vendeurs inactifs", value: @Model.nbVendeurRefuse }
          ],
          hideHover: 'auto'
       });
@@ -249,9 +243,9 @@
          resize: true,
          colors: ["#17a2b8", "#007bff", "#6c757d"],
          data: [
-            { label: "Clients actifs", value: 6743 },
-            { label: "Clients potentiel", value: 2431 },
-            { label: "Clients visiteurs", value: 10232 }
+            { label: "Clients actifs", value: @Model.nbClientActif },
+            { label: "Clients potentiel", value: @Model.nbClientPotentiel },
+            { label: "Clients visiteurs", value: @Model.nbClientVisiteurs }
          ],
          hideHover: 'auto'
       });
@@ -261,12 +255,11 @@
          element: 'nbNouveaux-chart',
          resize: true,
          data: [
-            { y: '1 mois', a: 50, b: 140 },
-            { y: '3 mois', a: 124, b: 440 },
-            { y: '6 mois', a: 185, b: 937 },
-            { y: '9 mois', a: 254, b: 1304 },
-            { y: '12 mois', a: 321, b: 1508 },
-            { y: 'Total', a: 1554, b: 8545 }
+            { y: '1 mois', a: @Model.nbVendeurUnMois, b: @Model.nbClientsUnMois },
+            { y: '3 mois', a: @Model.nbVendeurTroisMois, b: @Model.nbClientsTroisMois },
+            { y: '6 mois', a: @Model.nbVendeurSixMois, b: @Model.nbClientsSixMois },
+            { y: '9 mois', a: @Model.nbVendeurNeufMois, b: @Model.nbClientsNeufMois },
+            { y: '12 mois', a: @Model.nbVendeurDouzeMois, b: @Model.nbClientsDouzeMois }
          ],
          barColors: ['#17a2b8', '#007bff'],
          xkey: 'y',
@@ -275,6 +268,7 @@
          hideHover: 'auto'
       });
 
+      /*
       //BAR CHART Connexion
       var bar2 = new Morris.Bar({
          element: 'nbConnexions-chart',
@@ -292,7 +286,7 @@
          ykeys: ['a'],
          labels: ['Nombre de connexions des clients'],
          hideHover: 'auto'
-      });
+      });*/
 
 
       //Section vendeur
@@ -309,11 +303,6 @@
          ],
          hideHover: 'auto'
       });
-      
-
-
-      //Section client
-
 
 
    })

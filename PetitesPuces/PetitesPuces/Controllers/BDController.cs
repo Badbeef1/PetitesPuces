@@ -519,13 +519,16 @@ namespace PetitesPuces.Controllers
          {
             context.Connection.Open();
             context.Transaction = context.Connection.BeginTransaction();
-            
+
             context.PPArticlesEnPanier.DeleteAllOnSubmit(context.PPArticlesEnPanier);
             context.PPDetailsCommandes.DeleteAllOnSubmit(context.PPDetailsCommandes);
             context.PPCommandes.DeleteAllOnSubmit(context.PPCommandes);
             context.PPVendeursClients.DeleteAllOnSubmit(context.PPVendeursClients);
             context.PPHistoriquePaiements.DeleteAllOnSubmit(context.PPHistoriquePaiements);
-            
+            context.PPEvaluations.DeleteAllOnSubmit(context.PPEvaluations);
+            context.SubmitChanges(ConflictMode.ContinueOnConflict);
+            context.PPProduits.DeleteAllOnSubmit(context.PPProduits);
+
             context.PPCategories.DeleteAllOnSubmit(context.PPCategories);
             context.PPTaxeFederale.DeleteAllOnSubmit(context.PPTaxeFederale);
             context.PPTaxeProvinciale.DeleteAllOnSubmit(context.PPTaxeProvinciale);
@@ -533,7 +536,6 @@ namespace PetitesPuces.Controllers
             context.PPTypesLivraison.DeleteAllOnSubmit(context.PPTypesLivraison);
             context.PPTypesPoids.DeleteAllOnSubmit(context.PPTypesPoids);
 
-            context.PPProduits.DeleteAllOnSubmit(context.PPProduits);
             context.PPVendeurs.DeleteAllOnSubmit(context.PPVendeurs);
             context.PPClients.DeleteAllOnSubmit(context.PPClients);
             context.PPGestionnaire.DeleteAllOnSubmit(context.PPGestionnaire);

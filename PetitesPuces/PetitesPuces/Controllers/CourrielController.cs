@@ -31,8 +31,11 @@ namespace PetitesPuces.Views
         const string strNouveauMessage = "NouveauMessage";
         const string strEnvoye = "Envoyer";
 
+       public static string msgErreur = "";
+       public static string msgSucces = "";
+
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction)
+        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType)
         {
             
             //Liste de tout les lieux pour la bar de navigation
@@ -85,34 +88,17 @@ namespace PetitesPuces.Views
 
             //Notification par dossier
             Dictionary<short, int> dicNotificationLieu = new Dictionary<short, int>();
-
-            List<PPDestinataires> lstDestinatairesBoiteReception = new List<PPDestinataires>();
             
             switch (utilisateur)
             {
                 case PPClients c:
-                    Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification = notificationParLieu(lstLieu, c.NoClient);
-
-                    dicNotificationLieu = tupNotification.Item1;
-                    lstDestinatairesBoiteReception = tupNotification.Item2;
-
-                    //lngNoUtilisateur = c.NoClient;
+                    dicNotificationLieu = notificationParLieu(lstLieu, c.NoClient);
                     break;
                 case PPVendeurs v:
-                    Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification1 = notificationParLieu(lstLieu, v.NoVendeur);
-
-                    dicNotificationLieu = tupNotification1.Item1;
-                    lstDestinatairesBoiteReception = tupNotification1.Item2;
-
-                    //lngNoUtilisateur = v.NoVendeur;
+                    dicNotificationLieu = notificationParLieu(lstLieu, v.NoVendeur);
                     break;
                 case PPGestionnaire g:
-                    Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification2 = notificationParLieu(lstLieu, g.NoGestionnaire);
-
-                    dicNotificationLieu = tupNotification2.Item1;
-                    lstDestinatairesBoiteReception = tupNotification2.Item2;
-
-                    //lngNoUtilisateur = g.NoGestionnaire;
+                    dicNotificationLieu = notificationParLieu(lstLieu, g.NoGestionnaire);
                     break;
             }
 
@@ -126,8 +112,11 @@ namespace PetitesPuces.Views
 
             //Init lstDestinataires et l'adresse de l'expediteur
             GetListePourRedactionMessage(utilisateur, null, courrielVM);
+            courrielVM.msgErreurCourriel = msgErreur;
+            courrielVM.msgSuccesCourriel = msgSucces;
+            msgErreur = msgSucces = "";
 
-            List<PPDestinataires> lstDestinataire = new List<PPDestinataires>();
+         List<PPDestinataires> lstDestinataire = new List<PPDestinataires>();
             List<PPMessages> lstMessage = new List<PPMessages>();
 
             switch (id)
@@ -135,7 +124,7 @@ namespace PetitesPuces.Views
                 case strBoiteReception:
                 case null:
                     lstDestinataire = contextPP.PPDestinataires
-                        .Where(predicate: des => des.Lieu == 1 && des.NoDestinataire == lngNoUtilisateur)
+                        .Where(predicate: des => des.Lieu == 1 && des.NoDestinataire == lngNoUtilisateur && des.EtatLu >= 0)
                         .ToList();
                     break;
                 case strEnvoye:
@@ -161,7 +150,7 @@ namespace PetitesPuces.Views
 
             if (id == "AffichageMessage" && message.HasValue)
             {
-                courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur);
+                courrielVM.AfficheMessage = AffichageMessage(message.Value, utilisateur, leType);
             }
             else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
             {
@@ -174,6 +163,7 @@ namespace PetitesPuces.Views
             else if(id == strNouveauMessage && message != null)
             {
                 var msgObj = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == message);
+                courrielVM.noMessageOuvert = msgObj.NoMsg;
                 courrielVM.messageCourriel = msgObj.DescMsg;
                 courrielVM.objetMessage = msgObj.objet;
                 courrielVM = GetListePourRedactionMessage(utilisateur,message,courrielVM);
@@ -214,23 +204,18 @@ namespace PetitesPuces.Views
 
                     String strNomAffichage = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom;
 
-                    messVM.StrNomAffichage = strNomAffichage;
-
-                    lstMessageAfficher.Add(messVM);
+                    messVM.StrNomAffichageExpediteur = strNomAffichage;
                 }
                 else if ((dynExpediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur)) != null)
                 {
-                    messVM.StrNomAffichage = (dynExpediteur as PPVendeurs).NomAffaires;
-
-                    lstMessageAfficher.Add(messVM);
+                    messVM.StrNomAffichageExpediteur = (dynExpediteur as PPVendeurs).NomAffaires;
                 }
                 else
                 {
-                    messVM.StrNomAffichage = (dynExpediteur as PPGestionnaire).AdresseEmail;
-
-                    lstMessageAfficher.Add(messVM);
+                    messVM.StrNomAffichageExpediteur = (dynExpediteur as PPGestionnaire).AdresseEmail;
                 }
 
+                lstMessageAfficher.Add(messVM);
             });
             
             return lstMessageAfficher;
@@ -260,7 +245,7 @@ namespace PetitesPuces.Views
                 int intNbDestinataire = lstDestinataires.Count;
                 if (intNbDestinataire > 1)
                 {
-                    messVM.StrNomAffichage = intNbDestinataire.ToString() + " destinataires ...";
+                    messVM.StrNomAffichageExpediteur = intNbDestinataire.ToString() + " destinataires ...";
 
                 }
                 else if (intNbDestinataire == 1)
@@ -274,21 +259,15 @@ namespace PetitesPuces.Views
 
                         String strNomAffichage = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom;
 
-                        messVM.StrNomAffichage = strNomAffichage;
-
-                        //lstMessageAfficher.Add(messVM);
+                        messVM.StrNomAffichageExpediteur = strNomAffichage;
                     }
                     else if ((dynDestinataire = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoDestinataire)) != null)
                     {
-                        messVM.StrNomAffichage = (dynDestinataire as PPVendeurs).NomAffaires;
-
-                        //lstMessageAfficher.Add(messVM);
+                        messVM.StrNomAffichageExpediteur = (dynDestinataire as PPVendeurs).NomAffaires;
                     }
                     else
                     {
-                        messVM.StrNomAffichage = (dynDestinataire as PPGestionnaire).AdresseEmail;
-
-                        //lstMessageAfficher.Add(messVM);
+                        messVM.StrNomAffichageExpediteur = (dynDestinataire as PPGestionnaire).AdresseEmail;
                     }
                 }
 
@@ -299,11 +278,16 @@ namespace PetitesPuces.Views
         }
 
 
-        private (PPDestinataires,string,string) AffichageMessage(int intNoMessage, dynamic utilisateur)
+        private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, dynamic utilisateur, string strTypeMessage)
         {
             String strDestinataire = "";
             String strExpediteur = "";
             long lngNoDestinataire = 0;
+
+            dynamic expediteur;
+            int intNoExpediteur = 0;
+            PPDestinataires destinataires = null;
+            PPMessages messages = null;
 
             switch (utilisateur)
             {
@@ -321,11 +305,37 @@ namespace PetitesPuces.Views
                     break;
             }
 
-            PPDestinataires destinataires = contextPP.PPDestinataires
-                .FirstOrDefault(predicate: dest => dest.NoDestinataire == lngNoDestinataire && dest.NoMsg == intNoMessage);
+            if (strTypeMessage == "Destinataire")
+            {
+                destinataires = contextPP.PPDestinataires
+                    .FirstOrDefault(predicate: dest => dest.NoDestinataire == lngNoDestinataire && dest.NoMsg == intNoMessage);
 
-            dynamic expediteur;
-            int intNoExpediteur = destinataires.PPMessages.NoExpediteur.Value;
+                intNoExpediteur = destinataires.PPMessages.NoExpediteur.Value;
+
+                //Change l'état de non lu à lu
+                if (destinataires.EtatLu == 0)
+                {
+                    destinataires.EtatLu = 1;
+
+                    try
+                    {
+                        contextPP.SubmitChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+
+                    }
+                }
+            }
+            else
+            {
+                messages = contextPP.PPMessages
+                    .FirstOrDefault(predicate: mess => mess.NoMsg == intNoMessage);
+
+                intNoExpediteur = messages.NoExpediteur.Value;
+            }
+
             if ((expediteur = contextPP.PPClients.FirstOrDefault(predicate: client => client.NoClient == intNoExpediteur)) != null)
             {
                 PPClients unClient = (expediteur as PPClients);
@@ -343,32 +353,24 @@ namespace PetitesPuces.Views
                 strExpediteur = (expediteur as PPGestionnaire).AdresseEmail;
             }
 
-            //Change l'état de non lu à lu
-            if (destinataires.EtatLu == 0)
+
+            ViewModels.MessageAfficheVM messVM = new ViewModels.MessageAfficheVM
             {
-                destinataires.EtatLu = 1;
-
-                try
-                {
-                    contextPP.SubmitChanges();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-
-                }
-            }
+                Destinataire = destinataires,
+                Message = destinataires is null ? messages : destinataires.PPMessages,
+                StrNomAffichageDestinataire = strDestinataire,
+                StrNomAffichageExpediteur = strExpediteur,
+                ShrEtat = 0
+            };
 
 
-                return (destinataires, strDestinataire, strExpediteur);
+            return messVM;
         }
 
         //Touve le nombre de notification par lieu
-        //La liste des destinataire est utile dans une autre méthode, donc je l'exporte ...
-        private Tuple­<Dictionary<short, int>, List<PPDestinataires>> notificationParLieu(List<PPLieu> lstDesLieux, long lngNoUtilisateur)
+        private Dictionary<short, int> notificationParLieu(List<PPLieu> lstDesLieux, long lngNoUtilisateur)
         {
             Dictionary<short, int> dicNbNotification = new Dictionary<short, int>();
-            List<PPDestinataires> lstDestinatairesBR = new List<PPDestinataires>();
 
             //Prend en compet que les lieux n'ont pas été altéré 
             lstDesLieux.ForEach(unLieu => {
@@ -377,12 +379,12 @@ namespace PetitesPuces.Views
                 if (unLieu.NoLieu == 1)
                 {
                     //Parcour les destinataires pour trouver les messages de l'utilisateur
-                    lstDestinatairesBR = contextPP.PPDestinataires
+                    List<PPDestinataires> lstDestinataires01 = contextPP.PPDestinataires
                         .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == lngNoUtilisateur)
                         .ToList();
 
                     //Metton que etat non lu == 0
-                    int intMessageNonLu = lstDestinatairesBR
+                    int intMessageNonLu = lstDestinataires01
                         .Where(predicate: des => des.EtatLu.Value == 0)
                         .Count();
 
@@ -396,7 +398,11 @@ namespace PetitesPuces.Views
                         .Where(predicate: des => des.Lieu == unLieu.NoLieu && des.NoDestinataire == lngNoUtilisateur)
                         .ToList();
 
-                    dicNbNotification.Add(unLieu.NoLieu, lstDestinataires03.Count);
+                    List<PPMessages> lstMessages03 = contextPP.PPMessages
+                        .Where(predicate: mess => mess.Lieu == unLieu.NoLieu && mess.NoExpediteur == lngNoUtilisateur)
+                        .ToList();
+
+                    dicNbNotification.Add(unLieu.NoLieu, lstDestinataires03.Count + lstMessages03.Count);
                 }
                 //Brouillon
                 else if (unLieu.NoLieu == 4)
@@ -410,7 +416,7 @@ namespace PetitesPuces.Views
                 }
             });
 
-            return new Tuple<Dictionary<short, int>, List<PPDestinataires>>(dicNbNotification, lstDestinatairesBR);
+            return new Dictionary<short, int>(dicNbNotification);
         }
 
         //Applique changement au destinataire
@@ -455,7 +461,7 @@ namespace PetitesPuces.Views
             }
         }
 
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult Soumettre(string submit, ViewModels.CourrielVM model)
         {
@@ -468,109 +474,159 @@ namespace PetitesPuces.Views
             //ID de l'expediteur (utilisateur courant)
             var noExpediteur = listeNoDestEtAdresse.Where(m => m.Item2.Equals(model.addresseExpediteur)).Select(s => s.Item1).FirstOrDefault();
             //Nb messages present
-            var noMessage = contextPP.PPMessages.Count() + 1;
-            
-            switch (submit)
-            {
-                case "Envoyer":
-                    if (!ModelState.IsValid || Request["ddlDestinataires"] == null)
-                    {
-                        model.msgErreurCourriel = "Erreur d'envoi: Aucun champ ne doit être vide sauf pour le fichier joint.";
-                        return View("Index", model);
-                    }
+           var messageOuvert = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == model.noMessageOuvert);
+            var noMessage = messageOuvert?.NoMsg?? contextPP.PPMessages.Max(x =>x.NoMsg) + 1;
+         switch (submit)
+         {
+            case "Envoyer":
+               if (!ModelState.IsValid || Request["ddlDestinataires"] == null)
+               {
+                  msgErreur = "Erreur d'envoi: Aucun champ ne doit être vide sauf pour le fichier joint.";
+                  return RedirectToAction("Index", new {id = strNouveauMessage});
+               }
 
-                    var lstNoDest = Request["ddlDestinataires"]?.Split(',');
-                    //var listeNoDestinataires = listeNoDestEtAdresse.Where(m => lstNoDest.Contains(m.Item2)).Select(s => s.Item1);
-                    
-                    var message = new PPMessages()
-                    {
-                        NoMsg = noMessage,
-                        NoExpediteur = int.Parse(noExpediteur.ToString()),
-                        DescMsg = model.messageCourriel,
-                        FichierJoint = model.fichierJoint?.FileName,
-                        Lieu = 2,
-                        dateEnvoi = DateTime.Now,
-                        objet = model.objetMessage
-                    };
+               if(messageOuvert == null) { 
+                  //Cree un nouveau message
+                  var message = new PPMessages()
+                  {
+                     NoMsg = noMessage,
+                     NoExpediteur = int.Parse(noExpediteur.ToString()),
+                     DescMsg = model.messageCourriel,
+                     FichierJoint = model.fichierJoint?.FileName,
+                     Lieu = 2,
+                     dateEnvoi = DateTime.Now,
+                     objet = model.objetMessage
+                  };
+                  contextPP.PPMessages.InsertOnSubmit(message);
+               }
+               else
+               {
+                  //Update le brouillon
+                  messageOuvert.DescMsg = model.messageCourriel;
+                  messageOuvert.objet = model.objetMessage;
+                  messageOuvert.Lieu = 2;
+                  messageOuvert.dateEnvoi = DateTime.Now;
+                  messageOuvert.FichierJoint = model.fichierJoint?.FileName;
+                  contextPP.SubmitChanges();
+               }
 
-                    // Sauvegarde le fichier sur le serveur
-                    string path = Server.MapPath("~/Uploads/");
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    model.fichierJoint?.SaveAs(path + Path.GetFileName(model.fichierJoint?.FileName));
 
-                    contextPP.PPMessages.InsertOnSubmit(message);
+               // Sauvegarde le fichier sur le serveur
+               var path = Server.MapPath("~/Uploads/");
+               if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+               model.fichierJoint?.SaveAs(path + Path.GetFileName(model.fichierJoint?.FileName));
 
-                    var lstEnvoi = new List<PPDestinataires>();
+               if(messageOuvert?.PPDestinataires.Count > 0) { 
+                  contextPP.PPDestinataires.DeleteAllOnSubmit(messageOuvert.PPDestinataires);
+                  contextPP.SubmitChanges();
+               }
+               var lstNoDest = Request["ddlDestinataires"]?.Split(',');
+               //Liste des destinataires à insérer dans la table PPDestinataires
+               var lstEnvoi = lstNoDest.Select(destinataire => new PPDestinataires()
+               {
+                  NoMsg = noMessage,
+                  NoDestinataire = int.Parse(destinataire),
+                  EtatLu = 0,
+                  Lieu = 1
+               }).ToList();
 
-                    foreach (var destinataire in lstNoDest)
-                    {
-                        lstEnvoi.Add(new PPDestinataires()
-                        {
-                            NoMsg = noMessage,
-                            NoDestinataire = int.Parse(destinataire),
-                            EtatLu = 0,
-                            Lieu = 1
-                        });
-                    }
+               contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi);
+               try
+               {
+                  contextPP.SubmitChanges();
+                  msgSucces = "Le courriel a été envoyé à tous les destinataires.";
+               }
+               catch (Exception ex)
+               {
+                  msgErreur = ex.Message;
+               }
+               
+               break;
+            case "Enregistrer":
 
-                    contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi);
+               if (model.objetMessage == null && model.messageCourriel == null && 
+                   model.fichierJoint == null && Request["ddlDestinataires"] == null)
+               {
+                  msgErreur = "Erreur d'enregistrement: Rien à sauvegarder.";
+                  return RedirectToAction("Index", new { id = strNouveauMessage });
+               }
 
-                    contextPP.SubmitChanges();
-                    model.msgSuccesCourriel = "Le courriel a été envoyé à tous les destinataires.";
-                    break;
-                case "Enregistrer":
+               if(messageOuvert == null) { 
+                  contextPP.PPMessages.InsertOnSubmit(new PPMessages()
+                  {
+                     NoMsg = noMessage,
+                     NoExpediteur = int.Parse(noExpediteur.ToString()),
+                     DescMsg = model.messageCourriel,
+                     FichierJoint = model.fichierJoint?.FileName,
+                     Lieu = 4,
+                     dateEnvoi = DateTime.Now,
+                     objet = model.objetMessage
+                  });
+               }
+               else
+               {
+                  //Update le brouillon
+                  messageOuvert.DescMsg = model.messageCourriel;
+                  messageOuvert.objet = model.objetMessage;
+                  messageOuvert.Lieu = 4;
+                  messageOuvert.dateEnvoi = DateTime.Now;
+                  messageOuvert.FichierJoint = model.fichierJoint?.FileName;
+                  contextPP.SubmitChanges();
+               }
+               
+               //Delete les destinataires dans la table
+               if (messageOuvert?.PPDestinataires.Count > 0)
+               {
+                  contextPP.PPDestinataires.DeleteAllOnSubmit(messageOuvert.PPDestinataires);
+                  contextPP.SubmitChanges();
+               }
+               if(Request["ddlDestinataires"] != null) { 
+                  var lstNoDest1 = Request["ddlDestinataires"]?.Split(',');
+                  //Liste des destinataires à insérer dans la table PPDestinataires
+                  var lstEnvoi1 = lstNoDest1?.Select(destinataire => new PPDestinataires()
+                  {
+                     NoMsg = noMessage,
+                     NoDestinataire = int.Parse(destinataire),
+                     EtatLu = -1,
+                     Lieu = 1
+                  }).ToList();
 
-                    if (!ModelState.IsValid)
-                    {
-                        model.msgErreurCourriel = "Erreur d'enregistrement: L'objet du message ni le message ne peuvent pas être vides.";
-                        return View("Index", model);
-                    }
+                  contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
+               }
+               if (model.fichierJoint != null)
+               {
+                  var path1 = Server.MapPath("~/Uploads/");
+                  if (!Directory.Exists(path1))
+                     Directory.CreateDirectory(path1);
+                  model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
+               }
+               
+               try
+               {
+                  contextPP.SubmitChanges();
+                  msgSucces = "Le courriel a été enregistré.";
+               }
+               catch (Exception ex)
+               {
+                  msgErreur = ex.Message;
+               }
+               break;
+            case "Supprimer":
+               if(messageOuvert != null) { 
+                  messageOuvert.Lieu = 3;
+                  contextPP.SubmitChanges();
+               }
+               break;
+            default:
+               msgErreur = "Action invalide !";
+               break;
 
-                    var lstCourriels1 = Request["ddlDestinataires"]?.Split(',');
-                   // var listeNoDestinataires1 = listeNoDestEtAdresse.Where(m => lstCourriels1.Contains(m.Item2)).Select(s => s.Item1);
+         }
 
-                    contextPP.PPMessages.InsertOnSubmit(new PPMessages()
-                    {
-                        NoMsg = noMessage,
-                        NoExpediteur = int.Parse(noExpediteur.ToString()),
-                        DescMsg = model.messageCourriel,
-                        FichierJoint = model.fichierJoint?.FileName,
-                        Lieu = 4,
-                        //dateEnvoi = DateTime.Now,
-                        objet = model.objetMessage
-                    });
+           return RedirectToAction("Index", new { id = strNouveauMessage });
+      }
 
-                    if(Request["ddlDestinataires"] != null) { 
-                        var lstEnvoi1 = new List<PPDestinataires>();
-                        foreach (var destinataire in lstCourriels1)
-                        {
-                            lstEnvoi1.Add(new PPDestinataires()
-                            {
-                                NoMsg = noMessage,
-                                NoDestinataire = int.Parse(destinataire),
-                                EtatLu = -1,
-                                Lieu = 1
-                            });
-                        }
-                        contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
-                    }
-                    contextPP.SubmitChanges();
-
-                    if (model.fichierJoint != null)
-                    {
-                        string path1 = Server.MapPath("~/Uploads/");
-                        if (!Directory.Exists(path1))
-                            Directory.CreateDirectory(path1);
-                        model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
-                    }
-                    model.msgSuccesCourriel = "Le courriel a été enregistré.";
-                    break;
-            }
-
-            return RedirectToAction("Index", model);
-        }
-
-        private List<Tuple<long, string>> GetNoDestinataireEtAdresse(DataClasses1DataContext context)
+      private List<Tuple<long, string>> GetNoDestinataireEtAdresse(DataClasses1DataContext context)
         {
             var clients = from c in context.PPClients select new { c.NoClient, c.AdresseEmail };
             var vendeurs = from v in context.PPVendeurs select new { v.NoVendeur, v.AdresseEmail };
@@ -696,5 +752,5 @@ namespace PetitesPuces.Views
 
             return null;
         }
-    }
+   }
 }
