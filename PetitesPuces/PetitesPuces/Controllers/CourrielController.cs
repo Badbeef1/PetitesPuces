@@ -519,7 +519,10 @@ namespace PetitesPuces.Views
                         model.msgErreurCourriel = "Erreur d'enregistrement: L'objet du message ni le message ne peuvent pas être vides.";
                         return View("Index", model);
                     }
-                    
+
+                    var lstCourriels1 = Request["ddlDestinataires"]?.Split(',');
+                    var listeNoDestinataires1 = listeNoDestEtAdresse.Where(m => lstCourriels1.Contains(m.Item2)).Select(s => s.Item1);
+
                     contextPP.PPMessages.InsertOnSubmit(new PPMessages()
                     {
                         NoMsg = noMessage,
@@ -531,17 +534,34 @@ namespace PetitesPuces.Views
                         objet = model.objetMessage
                     });
 
+                    if(Request["ddlDestinataires"] != null) { 
+                        var lstEnvoi1 = new List<PPDestinataires>();
+                        foreach (var destinataire in listeNoDestinataires1)
+                        {
+                            lstEnvoi1.Add(new PPDestinataires()
+                            {
+                                NoMsg = noMessage,
+                                NoDestinataire = int.Parse(destinataire.ToString()),
+                                EtatLu = -1,
+                                Lieu = 1
+                            });
+                        }
+                        contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
+                    }
                     contextPP.SubmitChanges();
 
-                    string path1 = Server.MapPath("~/Uploads/");
-                    if (!Directory.Exists(path1))
-                        Directory.CreateDirectory(path1);
-                    model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
+                    if (model.fichierJoint != null)
+                    {
+                        string path1 = Server.MapPath("~/Uploads/");
+                        if (!Directory.Exists(path1))
+                            Directory.CreateDirectory(path1);
+                        model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
+                    }
                     model.msgSuccesCourriel = "Le courriel a été enregistré.";
                     break;
             }
 
-            return View("Index", model);
+            return RedirectToAction("Index", model);
         }
 
         private List<Tuple<long, string>> GetNoDestinataireEtAdresse(DataClasses1DataContext context)
