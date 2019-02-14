@@ -1258,7 +1258,12 @@ namespace PetitesPuces.Controllers
          {
             nbConnexionsClients += int.Parse(cli.NbConnexions.ToString());
          }
- 
+
+         //Aller chercher la listes de client en ordre de connexion décroissante
+         var derniereConnexionClient = (from clicli in db.GetTable<PPClients>()
+                                        orderby clicli.DateDerniereConnexion descending
+                                        select clicli
+                                        ).ToList();
 
          StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
          //Instancier les propriétés du model
@@ -1282,6 +1287,8 @@ namespace PetitesPuces.Controllers
          statistiquesViewModel.nbVendeurDouzeMois = nbVendeurDouzeMois;
 
          statistiquesViewModel.nbConnexionsClient = nbConnexionsClients;
+
+         
 
          db.Connection.Close();
          return View(statistiquesViewModel);
