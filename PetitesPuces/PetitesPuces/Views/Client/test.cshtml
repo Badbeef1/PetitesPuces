@@ -9,7 +9,7 @@
       else if (Session["gestionnaireObj"] != null)
       {
          Response.Redirect(Url.Action("AccueilGestionnaire", "Gestionnaire"));
-      }
+      }  
       else
       {
          Response.Redirect(Url.Action("Index", "Internaute"));
@@ -42,7 +42,7 @@
          </a>
       </li>
       <li class="nav-item">
-         <a class="nav-link" href="#">
+         <a class="nav-link" href="/Courriel/Index">
             Messagerie
             <i class="fas fa-envelope"></i>
          </a>

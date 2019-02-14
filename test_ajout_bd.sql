@@ -10,7 +10,7 @@ select * from PPProduits
 select * from PPArticlesEnPanier
 SELECT * FROM PPTypesLivraison
 select * from PPCommandes
-
+select * from PPHistoriquePaiements
 select * from PPMessages
 select * from PPDestinataires
 select * from PPLieu

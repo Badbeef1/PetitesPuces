@@ -96,7 +96,7 @@ namespace PetitesPuces.Views
                     dicNotificationLieu = tupNotification.Item1;
                     lstDestinatairesBoiteReception = tupNotification.Item2;
 
-                    lngNoUtilisateur = c.NoClient;
+                    //lngNoUtilisateur = c.NoClient;
                     break;
                 case PPVendeurs v:
                     Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification1 = notificationParLieu(lstLieu, v.NoVendeur);
@@ -104,7 +104,7 @@ namespace PetitesPuces.Views
                     dicNotificationLieu = tupNotification1.Item1;
                     lstDestinatairesBoiteReception = tupNotification1.Item2;
 
-                    lngNoUtilisateur = v.NoVendeur;
+                    //lngNoUtilisateur = v.NoVendeur;
                     break;
                 case PPGestionnaire g:
                     Tuple­<Dictionary<short, int>, List<PPDestinataires>> tupNotification2 = notificationParLieu(lstLieu, g.NoGestionnaire);
@@ -112,7 +112,7 @@ namespace PetitesPuces.Views
                     dicNotificationLieu = tupNotification2.Item1;
                     lstDestinatairesBoiteReception = tupNotification2.Item2;
 
-                    lngNoUtilisateur = g.NoGestionnaire;
+                    //lngNoUtilisateur = g.NoGestionnaire;
                     break;
             }
 
@@ -121,7 +121,7 @@ namespace PetitesPuces.Views
                 lstLieu = lstLieu,
                 lieu = lieu ?? 1,
                 dicNotificationLieu = dicNotificationLieu,
-                strPage = id
+                strPage = id ?? "Reception"
             };
 
             //Init lstDestinataires et l'adresse de l'expediteur
@@ -133,6 +133,7 @@ namespace PetitesPuces.Views
             switch (id)
             {
                 case strBoiteReception:
+                case null:
                     lstDestinataire = contextPP.PPDestinataires
                         .Where(predicate: des => des.Lieu == 1 && des.NoDestinataire == lngNoUtilisateur)
                         .ToList();
@@ -251,8 +252,9 @@ namespace PetitesPuces.Views
                 if (intNbDestinataire > 1)
                 {
                     messVM.StrNomAffichage = intNbDestinataire.ToString() + " destinataires ...";
+
                 }
-                else
+                else if (intNbDestinataire == 1)
                 {
                     int intNoDestinataire = lstDestinataires[0].NoDestinataire;
 
@@ -265,21 +267,23 @@ namespace PetitesPuces.Views
 
                         messVM.StrNomAffichage = strNomAffichage;
 
-                        lstMessageAfficher.Add(messVM);
+                        //lstMessageAfficher.Add(messVM);
                     }
                     else if ((dynDestinataire = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoDestinataire)) != null)
                     {
                         messVM.StrNomAffichage = (dynDestinataire as PPVendeurs).NomAffaires;
 
-                        lstMessageAfficher.Add(messVM);
+                        //lstMessageAfficher.Add(messVM);
                     }
                     else
                     {
                         messVM.StrNomAffichage = (dynDestinataire as PPGestionnaire).AdresseEmail;
 
-                        lstMessageAfficher.Add(messVM);
+                        //lstMessageAfficher.Add(messVM);
                     }
                 }
+
+                lstMessageAfficher.Add(messVM);
             });
 
             return lstMessageAfficher;
