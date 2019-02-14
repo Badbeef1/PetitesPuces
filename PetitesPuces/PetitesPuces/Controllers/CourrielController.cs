@@ -32,7 +32,7 @@ namespace PetitesPuces.Views
         const string strEnvoye = "Envoyer";
 
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction)
+        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType)
         {
             
             //Liste de tout les lieux pour la bar de navigation
@@ -144,7 +144,7 @@ namespace PetitesPuces.Views
 
             if (id == "AffichageMessage" && message.HasValue)
             {
-                courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur);
+                courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur, leType);
             }
             else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
             {
@@ -272,7 +272,7 @@ namespace PetitesPuces.Views
         }
 
 
-        private (PPDestinataires,string,string) AffichageMessage(int intNoMessage, dynamic utilisateur)
+        private (PPDestinataires,string,string) AffichageMessage(int intNoMessage, dynamic utilisateur, string strTypeMessage)
         {
             String strDestinataire = "";
             String strExpediteur = "";
@@ -293,6 +293,8 @@ namespace PetitesPuces.Views
                     lngNoDestinataire = g.NoGestionnaire;
                     break;
             }
+
+
 
             PPDestinataires destinataires = contextPP.PPDestinataires
                 .FirstOrDefault(predicate: dest => dest.NoDestinataire == lngNoDestinataire && dest.NoMsg == intNoMessage);
@@ -331,9 +333,14 @@ namespace PetitesPuces.Views
 
                 }
             }
+            /*
+            ViewModels.MessageAfficheVM messVM = new ViewModels.MessageAfficheVM
+            {
+                
+            }*/
 
 
-                return (destinataires, strDestinataire, strExpediteur);
+            return (destinataires, strDestinataire, strExpediteur);
         }
 
         //Touve le nombre de notification par lieu
