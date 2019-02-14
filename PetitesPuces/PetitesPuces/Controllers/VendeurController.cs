@@ -216,7 +216,6 @@ namespace PetitesPuces.Controllers
       /// <returns></returns>
       public ActionResult ModifierProduit(int id)
       {
-         
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
 
@@ -339,7 +338,6 @@ namespace PetitesPuces.Controllers
                }
                else
                {
-
                   ViewBag.PrixVenteErreur = "Le prix de vente et la date doivent être rempli si il y a un rabais.";
                }
             }
