@@ -125,7 +125,7 @@ namespace PetitesPuces.Views
             };
 
             //Init lstDestinataires et l'adresse de l'expediteur
-            courrielVM = InitModelCourriel(utilisateur, courrielVM);
+            GetListePourRedactionMessage(utilisateur, null, courrielVM);
 
             List<PPDestinataires> lstDestinataire = new List<PPDestinataires>();
             List<PPMessages> lstMessage = new List<PPMessages>();
@@ -469,10 +469,7 @@ namespace PetitesPuces.Views
             var noExpediteur = listeNoDestEtAdresse.Where(m => m.Item2.Equals(model.addresseExpediteur)).Select(s => s.Item1).FirstOrDefault();
             //Nb messages present
             var noMessage = contextPP.PPMessages.Count() + 1;
-
-            //Repopuler le dropdownlist des destinataires
-            model = InitModelCourriel(Session["vendeurObj"] ?? Session["clientObj"] ?? Session["gestionnaireObj"], model);
-
+            
             switch (submit)
             {
                 case "Envoyer":
@@ -482,9 +479,9 @@ namespace PetitesPuces.Views
                         return View("Index", model);
                     }
 
-                    var lstCourriels = Request["ddlDestinataires"]?.Split(',');
-                    var listeNoDestinataires = listeNoDestEtAdresse.Where(m => lstCourriels.Contains(m.Item2)).Select(s => s.Item1);
-
+                    var lstNoDest = Request["ddlDestinataires"]?.Split(',');
+                    //var listeNoDestinataires = listeNoDestEtAdresse.Where(m => lstNoDest.Contains(m.Item2)).Select(s => s.Item1);
+                    
                     var message = new PPMessages()
                     {
                         NoMsg = noMessage,
@@ -505,12 +502,12 @@ namespace PetitesPuces.Views
 
                     var lstEnvoi = new List<PPDestinataires>();
 
-                    foreach (var destinataire in listeNoDestinataires)
+                    foreach (var destinataire in lstNoDest)
                     {
                         lstEnvoi.Add(new PPDestinataires()
                         {
                             NoMsg = noMessage,
-                            NoDestinataire = int.Parse(destinataire.ToString()),
+                            NoDestinataire = int.Parse(destinataire),
                             EtatLu = 0,
                             Lieu = 1
                         });
@@ -530,7 +527,7 @@ namespace PetitesPuces.Views
                     }
 
                     var lstCourriels1 = Request["ddlDestinataires"]?.Split(',');
-                    var listeNoDestinataires1 = listeNoDestEtAdresse.Where(m => lstCourriels1.Contains(m.Item2)).Select(s => s.Item1);
+                   // var listeNoDestinataires1 = listeNoDestEtAdresse.Where(m => lstCourriels1.Contains(m.Item2)).Select(s => s.Item1);
 
                     contextPP.PPMessages.InsertOnSubmit(new PPMessages()
                     {
@@ -545,12 +542,12 @@ namespace PetitesPuces.Views
 
                     if(Request["ddlDestinataires"] != null) { 
                         var lstEnvoi1 = new List<PPDestinataires>();
-                        foreach (var destinataire in listeNoDestinataires1)
+                        foreach (var destinataire in lstCourriels1)
                         {
                             lstEnvoi1.Add(new PPDestinataires()
                             {
                                 NoMsg = noMessage,
-                                NoDestinataire = int.Parse(destinataire.ToString()),
+                                NoDestinataire = int.Parse(destinataire),
                                 EtatLu = -1,
                                 Lieu = 1
                             });
@@ -596,7 +593,7 @@ namespace PetitesPuces.Views
         public ViewModels.CourrielVM GetListePourRedactionMessage(dynamic util,int? noMsg, ViewModels.CourrielVM model)
         {
             var objMsg = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == noMsg);
-            var destinataires = objMsg.PPDestinataires;
+            var destinataires = objMsg?.PPDestinataires;
 
             var liste = new List<Tuple<short, long, string, string, bool>>();
 
@@ -609,29 +606,24 @@ namespace PetitesPuces.Views
                     foreach(var vendeur in contextPP.PPVendeurs) { 
                         liste.Add(new Tuple<short, long, string,string, bool>
                             (1,vendeur.NoVendeur,vendeur.AdresseEmail,vendeur.NomAffaires,
-                            destinataires.Any(x=> x.NoDestinataire == vendeur.NoVendeur)));
+                            destinataires?.Any(x=> x.NoDestinataire == vendeur.NoVendeur)?? false));
                     }
 
                     //Get tous les gestionnaires
                     foreach (var gest in contextPP.PPGestionnaire)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (0, gest.NoGestionnaire, gest.AdresseEmail, null,destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                            (0, gest.NoGestionnaire, gest.AdresseEmail, null,destinataires?.Any(x => x.NoDestinataire == gest.NoGestionnaire)?? false));
                     }
 
                     //Get tous les clients
                     foreach(var cli in contextPP.PPClients)
                     {
-                        
                         liste.Add(new Tuple<short, long, string, string, bool>
                             (2, cli.NoClient, cli.AdresseEmail, (cli.Nom + " " + cli.Prenom).Trim(),
-                            destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
+                            destinataires?.Any(x => x.NoDestinataire == cli.NoClient)?? false));
                     }
-
-                    //Get vendeurs
-                    //model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
-                    //Get gestionnaires
-                    //model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
+                    
                     break;
                 case PPVendeurs v:
                     model.addresseExpediteur = v.AdresseEmail;
@@ -639,26 +631,22 @@ namespace PetitesPuces.Views
                     //Get soi-même
                     //model.lstVendeursCourriels = contextPP.PPVendeurs.Where(a => a.AdresseEmail == v.AdresseEmail).Select(m => m.AdresseEmail).ToList();
                     liste.Add(new Tuple<short, long, string, string, bool>
-                        (1,v.NoVendeur,v.AdresseEmail,v.NomAffaires, destinataires.Any(x => x.NoDestinataire == v.NoVendeur)));
+                        (1,v.NoVendeur,v.AdresseEmail,v.NomAffaires, destinataires?.Any(x => x.NoDestinataire == v.NoVendeur)??false));
                     
                     
                     //Get clients
-                    //model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
-                    //Get tous les clients
                     foreach (var cli in contextPP.PPClients)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
                             (2, cli.NoClient, cli.AdresseEmail, (cli.Nom + " " + cli.Prenom).Trim(),
-                            destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
+                            destinataires?.Any(x => x.NoDestinataire == cli.NoClient)??false));
                     }
 
                     //Get gestionnaires
-                    //model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
-                    //Get tous les gestionnaires
                     foreach (var gest in contextPP.PPGestionnaire)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (0, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                            (0, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires?.Any(x => x.NoDestinataire == gest.NoGestionnaire)??false));
                     }
 
                     break;
@@ -671,14 +659,14 @@ namespace PetitesPuces.Views
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
                             (1, vendeur.NoVendeur, vendeur.AdresseEmail, vendeur.NomAffaires,
-                            destinataires.Any(x => x.NoDestinataire == vendeur.NoVendeur)));
+                            destinataires?.Any(x => x.NoDestinataire == vendeur.NoVendeur)??false));
                     }
 
                     //Get tous les gestionnaires
                     foreach (var gest in contextPP.PPGestionnaire)
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
-                            (0, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires.Any(x => x.NoDestinataire == gest.NoGestionnaire)));
+                            (0, gest.NoGestionnaire, gest.AdresseEmail, null, destinataires?.Any(x => x.NoDestinataire == gest.NoGestionnaire)??false));
                     }
 
                     //Get tous les clients
@@ -686,61 +674,16 @@ namespace PetitesPuces.Views
                     {
                         liste.Add(new Tuple<short, long, string, string, bool>
                             (2, cli.NoClient, cli.AdresseEmail, (cli.Nom + " " + cli.Prenom).Trim(),
-                            destinataires.Any(x => x.NoDestinataire == cli.NoClient)));
+                            destinataires?.Any(x => x.NoDestinataire == cli.NoClient)??false));
                     }
-
-                    //Get gestionnaires
-                    //model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
-                    //Get clients
-                    //model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
-                    //Get vendeurs
-                    //model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
+                    
                     break;
             }
             model.lstDestinataires = liste;
 
             return model;
         }
-
-
-        private ViewModels.CourrielVM InitModelCourriel(dynamic util, ViewModels.CourrielVM model)
-        {
-            switch (util)
-            {
-                case PPClients c:
-                    model.addresseExpediteur = c.AdresseEmail;
-
-                    //Get vendeurs
-                    model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
-                    //Get gestionnaires
-                    model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
-                    break;
-                case PPVendeurs v:
-                    model.addresseExpediteur = v.AdresseEmail;
-
-                    //Get soi-même
-                    model.lstVendeursCourriels = contextPP.PPVendeurs.Where(a => a.AdresseEmail == v.AdresseEmail).Select(m => m.AdresseEmail).ToList();
-                    //Get clients
-                    model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
-                    //Get gestionnaires
-                    model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
-                    break;
-                    
-                case PPGestionnaire g:
-                    model.addresseExpediteur = g.AdresseEmail;
-
-                    //Get gestionnaires
-                    model.lstGestionnairesCourriels = contextPP.PPGestionnaire.Select(m => m.AdresseEmail).ToList();
-                    //Get clients
-                    model.lstClientsCourriels = contextPP.PPClients.Select(m => m.AdresseEmail).ToList();
-                    //Get vendeurs
-                    model.lstVendeursCourriels = contextPP.PPVendeurs.Select(m => m.AdresseEmail).ToList();
-                    break;
-            }
-
-            return model;
-        }
-
+        
         [HttpGet]
         public FileResult TelechargeFichierJoin(object nom)
         {
