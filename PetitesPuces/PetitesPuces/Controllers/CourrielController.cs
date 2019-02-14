@@ -599,5 +599,18 @@ namespace PetitesPuces.Views
 
             return model;
         }
+
+        [HttpGet]
+        public FileResult TelechargeFichierJoin(object nom)
+        {
+            //Vérifie si le fichier existe dans la base de donnée
+            //...
+
+
+
+
+
+            return null;
+        }
     }
 }
