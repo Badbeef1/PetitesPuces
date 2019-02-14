@@ -2804,7 +2804,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_PrixVente", DbType = "SmallMoney")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:N}")]
         public System.Nullable<decimal> PrixVente
         {
             get

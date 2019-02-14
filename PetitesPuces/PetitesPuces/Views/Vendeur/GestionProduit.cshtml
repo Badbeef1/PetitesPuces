@@ -136,8 +136,8 @@
 
                   <div class="col-2">
                      <label class="col-form-label">Date de vente</label>
-                     @*Html.TextBoxFor(model => model.produit.DateVente, new { @class = "form-control", @type = "date" })*@
-                     @Html.EditorFor(model => model.produit.DateVente, new { htmlAttributes = new { @type = "date", @class = "form-control"} })
+                     @Html.TextBoxFor(model => model.produit.DateVente, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+                     @*Html.EditorFor(model => model.produit.DateVente, new { htmlAttributes = new { @type = "date", @class = "form-control"} })*@
 
                      @Html.ValidationMessageFor(model => model.produit.DateVente)
                      @{

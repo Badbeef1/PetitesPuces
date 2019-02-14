@@ -256,7 +256,7 @@ namespace PetitesPuces.Controllers
 
          if (ModelState.IsValid)
          {
-            if (model.produit.PrixDemande > model.produit.PrixVente)
+            if ((model.produit.PrixDemande > model.produit.PrixVente) || (model.produit.PrixVente.Equals(null)))
             {
                if (DateVentePrixVenteValide(model.produit.PrixVente, model.produit.DateVente))
                {

@@ -211,20 +211,20 @@
                   <a class="nav-link" href="#">Statistiques</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="#">Demandes de vendeurs</a>
+                  <a class="nav-link" href="#sec_demandes_vendeurs">Demandes de vendeurs</a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="#sec_redevances">
                      Les Redevances
                   </a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="#sec_ajout_categorie">
                      Ajouter une cat&eacute;gorie
                   </a>
                </li>
                <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link" href="#sec_suppression_cat">
                      Supression de cat&eacute;gorie
                   </a>
                </li>
@@ -257,7 +257,7 @@
                </div>
             </section>
 
-            <h2>G&eacute;rer les nouvelles demandes de vendeur</h2>
+            <h2 id="sec_demandes_vendeurs">G&eacute;rer les nouvelles demandes de vendeur</h2>
             <div class="table-responsive">
                <table class="table table-striped">
                   <thead>
@@ -289,7 +289,7 @@
                </table>
             </div>
             <hr>
-            <h2>Les redevances dues</h2>
+            <h2 id="sec_redevances">Les redevances dues</h2>
 
             <div class="d-flex flex-row">
                <div class="col-sm-1">
@@ -367,7 +367,7 @@
             </table>
 
             <hr />
-            <h2>Ajout d'une cat&eacute;gorie</h2>
+            <h2 id="sec_ajout_categorie">Ajout d'une cat&eacute;gorie</h2>
             <!--<form>-->
             @using (Html.BeginForm("AccueilGestionnaire", "Gestionnaire", FormMethod.Post))
             {
@@ -411,7 +411,7 @@
             }
             <!--</form>-->
             <hr>
-            <h2>Suppression d'une cat&eacute;gorie</h2>
+            <h2 id="sec_suppression_cat">Suppression d'une cat&eacute;gorie</h2>
             <table class="table table-striped">
                <thead>
                   <tr>
