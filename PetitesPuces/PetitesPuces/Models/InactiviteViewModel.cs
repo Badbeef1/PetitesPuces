@@ -9,11 +9,12 @@ namespace PetitesPuces.Models
     public class InactiviteViewModel
     {
         public List<Inactiver> cbClients { get; set; }
+        public List<PPClients> lstClientsRetirer { get; set; }
         public List<Inactiver> cbVendeurs { get; set; }
 
-        public bool blnOpenPDF { get; set; }
+        public String valDdlClient { get; set; }
+        public String valDdlVendeur { get; set; }
         
-        public string lastPDF { get; set; }
     }
 
 
