@@ -1114,14 +1114,18 @@ namespace PetitesPuces.Controllers
                   contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                   contextPP.SubmitChanges();
                   trans.Complete();
-
-                  String path = Server.MapPath("/PDFFacture/" + commande.NoCommande + ".pdf");
-                  var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { FileName = commande.NoCommande + ".pdf" };
-                  var byteArray = actionResult.BuildFile(ControllerContext);
-                  var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-                  fileStream.Write(byteArray, 0, byteArray.Length);
-                  fileStream.Close();
-               }
+                    String directory = Server.MapPath("/PDFFacture");
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+                        String path = Server.MapPath("/PDFFacture/" + commande.NoCommande + ".pdf");
+                        var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
+                        var byteArray = actionResult.BuildFile(ControllerContext);
+                        var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+                        fileStream.Write(byteArray, 0, byteArray.Length);
+                        fileStream.Close();
+                    }
                catch (Exception e)
                {
                   ViewData["CheckPoint"] = e.StackTrace + "-----------------------|||||||||||||||||||||-------------------------" + e.Message + "-----------------------|||||||||||||||||||||-------------------------" + e;
