@@ -40,10 +40,6 @@ namespace PetitesPuces.Controllers
       public ActionResult AccueilClient()
       {
          List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
-         if (Session["clientObj"] == null)
-         {
-            return PartialView("test");
-         }
          String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
          //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
