@@ -149,7 +149,7 @@ namespace PetitesPuces.Views
 
             if (id == "AffichageMessage" && message.HasValue)
             {
-                courrielVM.valtupAfficheMessage = AffichageMessage(message.Value, utilisateur, leType);
+                courrielVM.AfficheMessage = AffichageMessage(message.Value, utilisateur, leType);
             }
             else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
             {
@@ -277,11 +277,16 @@ namespace PetitesPuces.Views
         }
 
 
-        private (PPDestinataires,string,string) AffichageMessage(int intNoMessage, dynamic utilisateur, string strTypeMessage)
+        private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, dynamic utilisateur, string strTypeMessage)
         {
             String strDestinataire = "";
             String strExpediteur = "";
             long lngNoDestinataire = 0;
+
+            dynamic expediteur;
+            int intNoExpediteur = 0;
+            PPDestinataires destinataires = null;
+            PPMessages messages = null;
 
             switch (utilisateur)
             {
@@ -299,13 +304,37 @@ namespace PetitesPuces.Views
                     break;
             }
 
+            if (strTypeMessage == "Destinataire")
+            {
+                destinataires = contextPP.PPDestinataires
+                    .FirstOrDefault(predicate: dest => dest.NoDestinataire == lngNoDestinataire && dest.NoMsg == intNoMessage);
 
+                intNoExpediteur = destinataires.PPMessages.NoExpediteur.Value;
 
-            PPDestinataires destinataires = contextPP.PPDestinataires
-                .FirstOrDefault(predicate: dest => dest.NoDestinataire == lngNoDestinataire && dest.NoMsg == intNoMessage);
+                //Change l'état de non lu à lu
+                if (destinataires.EtatLu == 0)
+                {
+                    destinataires.EtatLu = 1;
 
-            dynamic expediteur;
-            int intNoExpediteur = destinataires.PPMessages.NoExpediteur.Value;
+                    try
+                    {
+                        contextPP.SubmitChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+
+                    }
+                }
+            }
+            else
+            {
+                messages = contextPP.PPMessages
+                    .FirstOrDefault(predicate: mess => mess.NoMsg == intNoMessage);
+
+                intNoExpediteur = messages.NoExpediteur.Value;
+            }
+
             if ((expediteur = contextPP.PPClients.FirstOrDefault(predicate: client => client.NoClient == intNoExpediteur)) != null)
             {
                 PPClients unClient = (expediteur as PPClients);
@@ -323,29 +352,18 @@ namespace PetitesPuces.Views
                 strExpediteur = (expediteur as PPGestionnaire).AdresseEmail;
             }
 
-            //Change l'état de non lu à lu
-            if (destinataires.EtatLu == 0)
-            {
-                destinataires.EtatLu = 1;
 
-                try
-                {
-                    contextPP.SubmitChanges();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-
-                }
-            }
-            /*
             ViewModels.MessageAfficheVM messVM = new ViewModels.MessageAfficheVM
             {
-                
-            }*/
+                Destinataire = destinataires,
+                Message = destinataires is null ? messages : destinataires.PPMessages,
+                StrNomAffichageDestinataire = strDestinataire,
+                StrNomAffichageExpediteur = strExpediteur,
+                ShrEtat = 0
+            };
 
 
-            return (destinataires, strDestinataire, strExpediteur);
+            return messVM;
         }
 
         //Touve le nombre de notification par lieu
