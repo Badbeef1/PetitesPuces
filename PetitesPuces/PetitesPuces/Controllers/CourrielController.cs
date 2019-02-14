@@ -174,6 +174,7 @@ namespace PetitesPuces.Views
             else if(id == strNouveauMessage && message != null)
             {
                 var msgObj = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == message);
+                courrielVM.noMessageOuvert = msgObj.NoMsg;
                 courrielVM.messageCourriel = msgObj.DescMsg;
                 courrielVM.objetMessage = msgObj.objet;
                 courrielVM = GetListePourRedactionMessage(utilisateur,message,courrielVM);
@@ -468,109 +469,135 @@ namespace PetitesPuces.Views
             //ID de l'expediteur (utilisateur courant)
             var noExpediteur = listeNoDestEtAdresse.Where(m => m.Item2.Equals(model.addresseExpediteur)).Select(s => s.Item1).FirstOrDefault();
             //Nb messages present
-            var noMessage = contextPP.PPMessages.Count() + 1;
-            
-            switch (submit)
-            {
-                case "Envoyer":
-                    if (!ModelState.IsValid || Request["ddlDestinataires"] == null)
-                    {
-                        model.msgErreurCourriel = "Erreur d'envoi: Aucun champ ne doit être vide sauf pour le fichier joint.";
-                        return View("Index", model);
-                    }
+           var messageOuvert = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == model.noMessageOuvert);
+            var noMessage = messageOuvert?.NoMsg?? contextPP.PPMessages.Count() + 1;
 
-                    var lstNoDest = Request["ddlDestinataires"]?.Split(',');
-                    //var listeNoDestinataires = listeNoDestEtAdresse.Where(m => lstNoDest.Contains(m.Item2)).Select(s => s.Item1);
-                    
-                    var message = new PPMessages()
-                    {
+         switch (submit)
+         {
+            case "Envoyer":
+               if (!ModelState.IsValid || Request["ddlDestinataires"] == null)
+               {
+                  model.msgErreurCourriel = "Erreur d'envoi: Aucun champ ne doit être vide sauf pour le fichier joint.";
+                  return RedirectToAction("Index", model);
+               }
+
+               if(messageOuvert == null) { 
+                  //Cree un nouveau message
+                  var message = new PPMessages()
+                  {
+                     NoMsg = noMessage,
+                     NoExpediteur = int.Parse(noExpediteur.ToString()),
+                     DescMsg = model.messageCourriel,
+                     FichierJoint = model.fichierJoint?.FileName,
+                     Lieu = 2,
+                     dateEnvoi = DateTime.Now,
+                     objet = model.objetMessage
+                  };
+                  contextPP.PPMessages.InsertOnSubmit(message);
+               }
+               else
+               {
+                  //Update le brouillon
+                  messageOuvert.DescMsg = model.messageCourriel;
+                  messageOuvert.objet = model.objetMessage;
+                  messageOuvert.Lieu = 2;
+                  messageOuvert.dateEnvoi = DateTime.Now;
+                  messageOuvert.FichierJoint = model.fichierJoint?.FileName;
+                  contextPP.SubmitChanges();
+               }
+
+
+               // Sauvegarde le fichier sur le serveur
+               var path = Server.MapPath("~/Uploads/");
+               if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+               model.fichierJoint?.SaveAs(path + Path.GetFileName(model.fichierJoint?.FileName));
+
+               if(messageOuvert?.PPDestinataires.Count > 0) { 
+                  contextPP.PPDestinataires.DeleteAllOnSubmit(messageOuvert.PPDestinataires);
+                  contextPP.SubmitChanges();
+               }
+               var lstNoDest = Request["ddlDestinataires"]?.Split(',');
+               //Liste des destinataires à insérer dans la table PPDestinataires
+               var lstEnvoi = lstNoDest.Select(destinataire => new PPDestinataires()
+               {
+                  NoMsg = noMessage,
+                  NoDestinataire = int.Parse(destinataire),
+                  EtatLu = 0,
+                  Lieu = 1
+               }).ToList();
+
+               contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi);
+
+               contextPP.SubmitChanges();
+               model.msgSuccesCourriel = "Le courriel a été envoyé à tous les destinataires.";
+               break;
+            case "Enregistrer":
+
+               if (!ModelState.IsValid)
+               {
+                  model.msgErreurCourriel = "Erreur d'enregistrement: L'objet du message ni le message ne peuvent pas être vides.";
+                  return View("Index", model);
+               }
+
+
+               // var listeNoDestinataires1 = listeNoDestEtAdresse.Where(m => lstCourriels1.Contains(m.Item2)).Select(s => s.Item1);
+
+               contextPP.PPMessages.InsertOnSubmit(new PPMessages()
+               {
+                  NoMsg = noMessage,
+                  NoExpediteur = int.Parse(noExpediteur.ToString()),
+                  DescMsg = model.messageCourriel,
+                  FichierJoint = model.fichierJoint?.FileName,
+                  Lieu = 4,
+                  //dateEnvoi = DateTime.Now,
+                  objet = model.objetMessage
+               });
+
+               var lstCourriels1 = Request["ddlDestinataires"]?.Split(',');
+               if (Request["ddlDestinataires"] != null)
+               {
+                  var lstEnvoi1 = new List<PPDestinataires>();
+                  foreach (var destinataire in lstCourriels1)
+                  {
+                     lstEnvoi1.Add(new PPDestinataires()
+                     {
                         NoMsg = noMessage,
-                        NoExpediteur = int.Parse(noExpediteur.ToString()),
-                        DescMsg = model.messageCourriel,
-                        FichierJoint = model.fichierJoint?.FileName,
-                        Lieu = 2,
-                        dateEnvoi = DateTime.Now,
-                        objet = model.objetMessage
-                    };
+                        NoDestinataire = int.Parse(destinataire),
+                        EtatLu = -1,
+                        Lieu = 1
+                     });
+                  }
+                  contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
+               }
 
-                    // Sauvegarde le fichier sur le serveur
-                    string path = Server.MapPath("~/Uploads/");
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    model.fichierJoint?.SaveAs(path + Path.GetFileName(model.fichierJoint?.FileName));
+               try
+               {
+                  contextPP.SubmitChanges();
+               }
+               catch (Exception ex)
+               {
 
-                    contextPP.PPMessages.InsertOnSubmit(message);
+               }
 
-                    var lstEnvoi = new List<PPDestinataires>();
+               if (model.fichierJoint != null)
+               {
+                  var path1 = Server.MapPath("~/Uploads/");
+                  if (!Directory.Exists(path1))
+                     Directory.CreateDirectory(path1);
+                  model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
+               }
+               model.msgSuccesCourriel = "Le courriel a été enregistré.";
+               break;
+            default:
+               model.msgErreurCourriel = "Action invalide !";
+               return RedirectToAction("Index", model);
 
-                    foreach (var destinataire in lstNoDest)
-                    {
-                        lstEnvoi.Add(new PPDestinataires()
-                        {
-                            NoMsg = noMessage,
-                            NoDestinataire = int.Parse(destinataire),
-                            EtatLu = 0,
-                            Lieu = 1
-                        });
-                    }
+         }
 
-                    contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi);
+         return RedirectToAction("Index", model);
+      }
 
-                    contextPP.SubmitChanges();
-                    model.msgSuccesCourriel = "Le courriel a été envoyé à tous les destinataires.";
-                    break;
-                case "Enregistrer":
-
-                    if (!ModelState.IsValid)
-                    {
-                        model.msgErreurCourriel = "Erreur d'enregistrement: L'objet du message ni le message ne peuvent pas être vides.";
-                        return View("Index", model);
-                    }
-
-                    var lstCourriels1 = Request["ddlDestinataires"]?.Split(',');
-                   // var listeNoDestinataires1 = listeNoDestEtAdresse.Where(m => lstCourriels1.Contains(m.Item2)).Select(s => s.Item1);
-
-                    contextPP.PPMessages.InsertOnSubmit(new PPMessages()
-                    {
-                        NoMsg = noMessage,
-                        NoExpediteur = int.Parse(noExpediteur.ToString()),
-                        DescMsg = model.messageCourriel,
-                        FichierJoint = model.fichierJoint?.FileName,
-                        Lieu = 4,
-                        //dateEnvoi = DateTime.Now,
-                        objet = model.objetMessage
-                    });
-
-                    if(Request["ddlDestinataires"] != null) { 
-                        var lstEnvoi1 = new List<PPDestinataires>();
-                        foreach (var destinataire in lstCourriels1)
-                        {
-                            lstEnvoi1.Add(new PPDestinataires()
-                            {
-                                NoMsg = noMessage,
-                                NoDestinataire = int.Parse(destinataire),
-                                EtatLu = -1,
-                                Lieu = 1
-                            });
-                        }
-                        contextPP.PPDestinataires.InsertAllOnSubmit(lstEnvoi1);
-                    }
-                    contextPP.SubmitChanges();
-
-                    if (model.fichierJoint != null)
-                    {
-                        string path1 = Server.MapPath("~/Uploads/");
-                        if (!Directory.Exists(path1))
-                            Directory.CreateDirectory(path1);
-                        model.fichierJoint?.SaveAs(path1 + Path.GetFileName(model.fichierJoint?.FileName));
-                    }
-                    model.msgSuccesCourriel = "Le courriel a été enregistré.";
-                    break;
-            }
-
-            return RedirectToAction("Index", model);
-        }
-
-        private List<Tuple<long, string>> GetNoDestinataireEtAdresse(DataClasses1DataContext context)
+      private List<Tuple<long, string>> GetNoDestinataireEtAdresse(DataClasses1DataContext context)
         {
             var clients = from c in context.PPClients select new { c.NoClient, c.AdresseEmail };
             var vendeurs = from v in context.PPVendeurs select new { v.NoVendeur, v.AdresseEmail };
@@ -696,5 +723,5 @@ namespace PetitesPuces.Views
 
             return null;
         }
-    }
+   }
 }
