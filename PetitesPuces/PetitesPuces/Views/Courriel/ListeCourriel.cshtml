@@ -170,7 +170,17 @@
             string strMessDebut = new string(contenu.Message.DescMsg.Take(60 - contenu.Message.objet.Length).ToArray());
             string strDateEnvioFormat = contenu.Message.dateEnvoi.HasValue ? contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy") : "";
 
-            string strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
+            string strActionAffichage = "";
+            if (ViewBag.LaPage == strBrouillon)
+            {
+                strActionAffichage = Url.Action("Index/NouveauMessage");
+            }
+            else
+            {
+                strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
+            }
+
+
 
             string strMessageEtat = contenu.Destinataire != null ? (contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "" ): "";
 
