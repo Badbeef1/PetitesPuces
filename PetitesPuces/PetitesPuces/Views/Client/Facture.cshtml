@@ -183,22 +183,22 @@
         <div class="col-md-2 text-right">
             <h5>
                 <strong>
-                    @Double.Parse(Model.MontantTotAvantTaxes.ToString()).ToString("0.00") $<br />
+                    @Double.Parse(Model.MontantTotAvantTaxes.ToString().Replace(",", ".")).ToString("0.00") $<br />
                     @if (Model.CoutLivraison > 0)
                     {
-                        <span>@Double.Parse(Model.CoutLivraison.ToString()).ToString("0.00") $<br /></span>
+                        <span>@Double.Parse(Model.CoutLivraison.ToString().Replace(",", ".")).ToString("0.00") $<br /></span>
                     }
                     @if (Model.TPS > 0)
                     {
 
-                        <span>@Double.Parse(Model.TPS.ToString()).ToString("0.00") $<br /></span>
+                        <span>@Double.Parse(Model.TPS.ToString().Replace(",", ".")).ToString("0.00") $<br /></span>
                     }
                     @if (Model.TVQ > 0)
                     {
 
-                        <span>@Double.Parse(Model.TVQ.ToString()).ToString("0.00") $<br /></span>
+                        <span>@Double.Parse(Model.TVQ.ToString().Replace(",", ".")).ToString("0.00") $<br /></span>
                     }
-                    @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString()).ToString("0.00")) $<br />
+                    @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString().Replace(",", ".")).ToString("0.00")) $<br />
                 </strong>
             </h5>
         </div>
