@@ -3,7 +3,7 @@
 {
     @Html.HiddenFor(x => x.NoClient)
     @Html.HiddenFor(x => x.AdresseEmail)
-    @Html.Hidden("strProvenence", "modificationmdp");
+    @Html.Hidden("strProvenence", "");
     <div class="card">
         <h5 class="card-header">Modification du mot de passe</h5>
         @Html.DisplayFor(x => x.MotDePasse)
@@ -30,7 +30,7 @@
             </div>
         </div>
         <div class="card-footer btn-group sPiedPageBouton">
-            <button type="submit" class="btn btn-outline-success">Sauvegarde</button>
+            <button type="submit" class="btn btn-outline-success" value="modificationmdp" onclick="envoieSection(this)">Sauvegarde</button>
             <a href=""/Client/AccueilClient"" class="btn btn-outline-primary">Retour</a>
         </div>
     </div>
