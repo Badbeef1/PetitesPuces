@@ -525,6 +525,7 @@ namespace PetitesPuces.Controllers
         }
 
         // Tout les produits (15 par pages).
+        /*
         public ActionResult Cataloguesss()
         {
             ViewModels.CatalogueViewModel catVM = new ViewModels.CatalogueViewModel
@@ -534,7 +535,7 @@ namespace PetitesPuces.Controllers
             };
 
             return View(catVM);
-        }
+        }*/
 
 
         //Les produits avec une quantité défini par page
@@ -707,6 +708,41 @@ namespace PetitesPuces.Controllers
             }
 
             ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
+
+            //Enregistre la visite si un catalogue d'un vendeur (une fois par jour par personnes)
+            PPClients unClient;
+            PPVendeurs unVendeur;
+            if (((unClient = ((PPClients)Session["clientObj"])) != null) && 
+                (unVendeur = contextPP.PPVendeurs.FirstOrDefault(predicate: ven => ven.NomAffaires == vendeur)) != null)
+            {
+                int intNbVisiteClientJournee = contextPP.PPVendeursClients
+                    .Where(predicate: vencli => vencli.NoClient == unClient.NoClient &&
+                        vencli.NoVendeur == unVendeur.NoVendeur &&
+                        vencli.DateVisite.Date == DateTime.Now.Date)
+                    .Count();
+
+                //Si c'est la première visite
+                if (intNbVisiteClientJournee == 0)
+                {
+                    PPVendeursClients vendeur_client = new PPVendeursClients
+                    {
+                        NoClient = unClient.NoClient,
+                        NoVendeur = unVendeur.NoVendeur,
+                        DateVisite = DateTime.Now.Date
+                    };
+
+                    contextPP.PPVendeursClients.InsertOnSubmit(vendeur_client);
+
+                    try
+                    {
+                        contextPP.SubmitChanges();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+                }
+            }
 
             return View(catVM);
         }
