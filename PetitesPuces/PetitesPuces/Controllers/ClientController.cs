@@ -507,7 +507,7 @@ namespace PetitesPuces.Controllers
                   }
                }
 
-               TempData["msgConfirmation"] = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
+               ViewBag.uneErreur = clientOriginal.MotDePasse != strAncientMDP ? "succes" : "echec";
             }
          }
 
