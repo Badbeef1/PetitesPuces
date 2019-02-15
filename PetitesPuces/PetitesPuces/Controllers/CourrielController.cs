@@ -22,6 +22,8 @@ namespace PetitesPuces.Views
         const String actionSupprimer = "supp";
         const String actionSupprimerDefinitivement = "suppdef";
         const String actionRestaurer = "restau";
+        const String actionRepondre = "rep";
+        const String actionTransfert = "trans";
 
         const string strBoiteReception = "Reception";
         const string strAffichageMessage = "AffichageMessage";
@@ -37,15 +39,13 @@ namespace PetitesPuces.Views
         // GET: Courriel
         public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType)
         {
-            
             //Liste de tout les lieux pour la bar de navigation
             List<PPLieu> lstLieu = contextPP.PPLieu.ToList();
 
-
             //Type d'utilisateur
-            //String strTypeUtilisateur = "";
             dynamic utilisateur;
             long lngNoUtilisateur = 0;
+            string strAdresseCourriel = "";
 
             if (Session["clientObj"] != null)
             {
@@ -53,6 +53,7 @@ namespace PetitesPuces.Views
                 utilisateur = contextPP.PPClients
                     .FirstOrDefault(client => client.NoClient == (Session["clientObj"] as PPClients).NoClient);
                 lngNoUtilisateur = (utilisateur as PPClients).NoClient;
+                strAdresseCourriel = (utilisateur as PPClients).AdresseEmail;
             }
             else if (Session["vendeurObj"] != null)
             {
@@ -61,6 +62,7 @@ namespace PetitesPuces.Views
                     .FirstOrDefault(vendeur => vendeur.NoVendeur == (Session["vendeurObj"] as PPVendeurs).NoVendeur);
 
                 lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
+                strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
             }
             else
             {
@@ -75,6 +77,9 @@ namespace PetitesPuces.Views
                 utilisateur = contextPP.PPVendeurs.FirstOrDefault();
 
                 lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
+                strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
+
+                //strAdresseCourriel = (utilisateur as PPGestionnaire).AdresseEmail;
 
                 //lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
             }
@@ -150,7 +155,7 @@ namespace PetitesPuces.Views
 
             if (id == "AffichageMessage" && message.HasValue)
             {
-                courrielVM.AfficheMessage = AffichageMessage(message.Value, utilisateur, leType);
+                courrielVM.AfficheMessage = AffichageMessage(message.Value, strAdresseCourriel, lngNoUtilisateur, leType);
             }
             else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
             {
@@ -159,6 +164,28 @@ namespace PetitesPuces.Views
             else if (id == strEnvoye || id == strBrouillon)
             {
                 courrielVM.iplListeMessageAffiche = ListeCourrielMessage(lstMessage).ToPagedList(1, 20);
+            }
+            else if (id == strNouveauMessage && uneAction == actionTransfert && message != null)
+            {
+                PPMessages messageATransfere = contextPP.PPMessages
+                    .FirstOrDefault(mess => mess.NoMsg == message);
+
+                courrielVM.messageCourriel = messageATransfere.DescMsg;
+                courrielVM.objetMessage = "Tr: " + messageATransfere.objet;
+                courrielVM.addresseExpediteur = strAdresseCourriel;
+
+                string chemin = Server.MapPath("~/Uploads/");
+                courrielVM.fichierJoint?.SaveAs(chemin + Path.GetFileName(messageATransfere.FichierJoint.ToString()));
+            }
+            else if (id == strNouveauMessage && uneAction == actionRepondre && message != null)
+            {
+
+                PPMessages messageATransfere = contextPP.PPMessages
+                    .FirstOrDefault(mess => mess.NoMsg == message);
+
+                courrielVM.objetMessage = "Re: " + messageATransfere.objet;
+
+                courrielVM = GetListePourRedactionMessage(utilisateur, message, courrielVM);
             }
             else if(id == strNouveauMessage && message != null)
             {
@@ -278,32 +305,15 @@ namespace PetitesPuces.Views
         }
 
 
-        private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, dynamic utilisateur, string strTypeMessage)
+        private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, string strAdresseDestinataire, long lngNoDestinataire, string strTypeMessage)
         {
-            String strDestinataire = "";
             String strExpediteur = "";
-            long lngNoDestinataire = 0;
 
             dynamic expediteur;
             int intNoExpediteur = 0;
+
             PPDestinataires destinataires = null;
             PPMessages messages = null;
-
-            switch (utilisateur)
-            {
-                case PPClients c:
-                    strDestinataire = c.AdresseEmail;
-                    lngNoDestinataire = c.NoClient ;
-                    break;
-                case PPVendeurs v:
-                    strDestinataire = v.AdresseEmail;
-                    lngNoDestinataire = v.NoVendeur;
-                    break;
-                case PPGestionnaire g:
-                    strDestinataire = g.AdresseEmail;
-                    lngNoDestinataire = g.NoGestionnaire;
-                    break;
-            }
 
             if (strTypeMessage == "Destinataire")
             {
@@ -358,7 +368,7 @@ namespace PetitesPuces.Views
             {
                 Destinataire = destinataires,
                 Message = destinataires is null ? messages : destinataires.PPMessages,
-                StrNomAffichageDestinataire = strDestinataire,
+                StrNomAffichageDestinataire = strAdresseDestinataire,
                 StrNomAffichageExpediteur = strExpediteur,
                 ShrEtat = 0
             };

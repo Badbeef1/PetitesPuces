@@ -13,7 +13,6 @@ namespace PetitesPuces.ViewModels
         public short lieu { get; set; }
         public IPagedList<MessageAfficheVM> iplListeMessageAffiche { get; set; }
         public Dictionary<short, int> dicNotificationLieu { get; set; }
-        //public (Models.PPDestinataires objDestinataire, string affDestinataire, string affExpediteur) valtupAfficheMessage { get; set; }
         public MessageAfficheVM AfficheMessage { get; set; }
         public String strPage { get; set; }
         
@@ -25,6 +24,8 @@ namespace PetitesPuces.ViewModels
         public string objetMessage { get; set; }
         [Required]
         public string messageCourriel { get; set; }
+
+        public string nomFichierJoin { get; set; }
 
         public int noMessageOuvert { get; set; }
 

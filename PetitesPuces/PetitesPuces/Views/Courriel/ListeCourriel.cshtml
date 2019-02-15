@@ -19,7 +19,6 @@
         var arrUn = document.querySelectorAll('.un-Select');
         var arrUnOuPlusieurs = document.querySelectorAll('.unOuPlus-Select');
 
-
         if (nbElement == 0) {
             arrAucun.forEach(element => {
                 element.setAttribute('style', 'display: inline-block;');
@@ -59,10 +58,9 @@
                 element.setAttribute('style', 'display: inline-block;');
             });
         }
-
     }
 
-    function uneTache(element) {
+    function uneTacheSansSelection(element) {
         var strElement = element.value;
 
         var tabChampsModification = strElement.split("_");
@@ -74,6 +72,15 @@
         document.getElementById("uneAction").value = action;
 
         document.getElementsByTagName("form")[0].submit();
+    }
+
+    function uneTache(element) {
+        var noMessage = document.getElementById("ElementSelectionner").value.split('_')[1];
+        var nomAction = document.getElementById("uneAction").value = element.value;
+
+
+        location.href = "Index/NouveauMessage?message=" + noMessage + "&uneAction=" + nomAction;
+        //document.getElementsByTagName("form")[0].submit();
     }
 
     function desTaches(element) {
@@ -94,9 +101,7 @@
         if (confirm("Êtes-vous sûr de vouloir appliquer l'action sur les " + tabCb.length + " messages?")) {
             document.getElementsByTagName("form")[0].submit();
         }
-
     }
-
 </script>
 
 @{
@@ -125,8 +130,12 @@
             </li>
             }
             <li class="nav-item un-Select">
-                <a href="#" class="btn btn-link"><i class="fas fa-reply-all"></i> Répondre</a>
+                <button type="button" class="btn btn-link" value="rep" onclick="uneTache(this)"><i class="fas fa-reply"></i> Répondre</button>
             </li>
+            <li class="nav-item un-Select">
+                <button type="button" class="btn btn-link" value="trans" onclick="uneTache(this)"><i class="fas fa-reply-all"></i> Transférer</button>
+            </li>
+
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
             </li>
@@ -205,18 +214,18 @@
                     @{
                         var nom = "supp_" + contenu.Message.NoMsg;
                     }
-                    <button type="button" title="Supprimer" onclick="uneTache(this)" value="@nom"><i class="fa fa-trash-alt"></i></button>
+                    <button type="button" title="Supprimer" onclick="uneTacheSansSelection(this)" value="@nom"><i class="fa fa-trash-alt"></i></button>
                     @if (contenu.Destinataire != null)
                     {
                         if (contenu.Destinataire.EtatLu == 0)
                         {
                             nom = "lu_" + contenu.Message.NoMsg;
-                            <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope-open"></i></button>
+                            <button type="button" title="Marquer comme lu" value="@nom" onclick="uneTacheSansSelection(this)"><i class="far fa-envelope-open"></i></button>
                         }
                         else
                         {
                             nom = "nonlu_" + contenu.Message.NoMsg;
-                            <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTache(this)"><i class="far fa-envelope"></i></button>
+                            <button type="button" title="Marquer comme non lu" value="@nom" onclick="uneTacheSansSelection(this)"><i class="far fa-envelope"></i></button>
                         }
                     }
                 </div>
