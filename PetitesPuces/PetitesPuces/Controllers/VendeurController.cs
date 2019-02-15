@@ -521,10 +521,73 @@ namespace PetitesPuces.Controllers
       }
 
       // GET: Vendeur
-      public ActionResult GestionCommande() => View();
+      public ActionResult GestionCommande()
+        {
+            List<GererCommandeViewModel.GererCommande> lstAGerer = new List<GererCommandeViewModel.GererCommande>();
+            if (Session["vendeurObj"] == null)
+            {
+                return PartialView("index");
+            }
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
 
-      //GET: GestionProduit
-      public ActionResult GestionProduit() => View();
+            // Action qui va sevir à marqué les commandes cochez comme L au lieu de N
+
+            List<PPCommandes> lstCommandeEnAttente = (from uneCommande in contextPP.GetTable<PPCommandes>()
+                                                      where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('N')
+                                                      orderby uneCommande.DateCommande descending
+                                                      select uneCommande).ToList();
+            foreach(PPCommandes comm in lstCommandeEnAttente)
+            {
+                GererCommandeViewModel.GererCommande unComm = new GererCommandeViewModel.GererCommande
+                {
+                    commande = comm,
+                    isChecked = false
+                };
+                lstAGerer.Add(unComm);
+            }
+
+            List<PPCommandes> lstCommandeLivré = (from uneCommande in contextPP.GetTable<PPCommandes>()
+                                                  where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
+                                                  orderby uneCommande.DateCommande descending
+                                                  select uneCommande).ToList();
+            GererCommandeViewModel gererComm = new GererCommandeViewModel
+            {
+                lstCommandeLivrer = lstCommandeLivré,
+                lstCommandeNonLivrer = lstAGerer
+            };
+
+            return View(gererComm);
+        }
+
+        // Lorsqu'une commande est marquée comme livrée
+        [HttpPost]
+        public ActionResult GestionCommande(string bidon)
+        {
+            if (Session["vendeurObj"] == null)
+            {
+                return PartialView("index");
+            }
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+
+            // Action qui va sevir à marqué les commandes cochez comme L au lieu de N
+
+            List<PPCommandes> lstCommandeEnAttente = (from uneCommande in contextPP.GetTable<PPCommandes>()
+                                                      where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('N')
+                                                      orderby uneCommande.DateCommande descending
+                                                      select uneCommande).ToList();
+
+            List<PPCommandes> lstCommandeLivré = (from uneCommande in contextPP.GetTable<PPCommandes>()
+                                                  where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
+                                                  orderby uneCommande.DateCommande descending
+                                                  select uneCommande).ToList();
+            List<List<PPCommandes>> lstDeuxCommandes = new List<List<PPCommandes>>();
+            lstDeuxCommandes.Add(lstCommandeEnAttente);
+            lstDeuxCommandes.Add(lstCommandeLivré);
+
+            return View(lstDeuxCommandes);
+        }
+        //GET: GestionProduit
+        public ActionResult GestionProduit() => View();
 
       //GET: CatalogueVendeur
       public ActionResult CatalogueVendeur(string tri, string categorie, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 5, int noPage = 1)

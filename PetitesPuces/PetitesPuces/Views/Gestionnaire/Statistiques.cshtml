@@ -1,8 +1,6 @@
 ﻿@using PetitesPuces.Models
 @model StatistiquesViewModel
-@{
-   SelectList list = new SelectList(Model.lstVendeurs, "NoVendeur", "NomAffaires");
-}
+
 
 <!DOCTYPE html>
 
@@ -32,6 +30,14 @@
 
    <script src="~/Content/scripts/raphael.js"></script>
    <script src="~/Content/scripts/morris.js"></script>
+
+   <script type="text/javascript">
+      function nbClientAfficher() {
+         var myselect = document.getElementById("ddlNbClients");
+         alert(myselect.options[myselect.selectedIndex].value);
+         //TODO: Requête ajax qui va permettre de refaire le tableau des dernières connexion en fonction du nombre d'item.
+      }
+   </script>
 
 </head>
 <body>
@@ -121,7 +127,13 @@
          <h3>Statistique d'un vendeur spécifique</h3>
       </div>
 
-      <label for="tbRechercheVendeur">Nom du vendeur : <input type="text" class="form-control " id="tbRechercheVendeur" /></label>
+      <label for="tbRechercheVendeur">Nom du vendeur : </label>
+      <select id="ddlVendeurs">
+         @foreach (var vend in Model.lstVendeurs)
+         {
+            <option value="@vend.NoVendeur">@vend.NomAffaires</option>
+         }
+      </select>
 
 
       <div class="row">
@@ -196,7 +208,13 @@
          <div class="">
             <span class="float-right">
                Nb de clients à afficher :&nbsp;
+               <select id="ddlNbClients" onchange="nbClientAfficher();">
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="30">30</option>
+               </select>
             </span>
+            
          </div>
       </div>
 

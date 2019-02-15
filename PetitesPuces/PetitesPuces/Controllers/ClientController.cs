@@ -1165,7 +1165,7 @@ namespace PetitesPuces.Controllers
             {
                 Directory.CreateDirectory(directory);
             }
-            String path = Server.MapPath("/PDFFacture/" + commande.NoCommande + ".pdf");
+            String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
             var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
             var byteArray = actionResult.BuildFile(ControllerContext);
             var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
