@@ -84,7 +84,7 @@
         </div>
     </div>
     @if(Model != null){
-    @Html.Partial("Facture", Model)
+    @Html.Partial("Facture", (PPCommandes)ViewBag.Commande)
 
     <script>
         var valeurComm = @Model.NoCommande;

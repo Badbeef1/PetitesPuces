@@ -1127,7 +1127,7 @@ namespace PetitesPuces.Controllers
                             FraisTPS = commande.TPS,
                             FraisTVQ = commande.TVQ
                         };
-
+                        ViewBag.Commande = commande;
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
                         trans.Complete();
@@ -1153,7 +1153,7 @@ namespace PetitesPuces.Controllers
             return View(commande);
         }
 
-       /* public ActionResult Facture()
+       public ActionResult Facture()
         {
             PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()
                                     orderby unCommande.NoCommande descending
@@ -1169,7 +1169,8 @@ namespace PetitesPuces.Controllers
             var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
             fileStream.Write(byteArray, 0, byteArray.Length);
             fileStream.Close();
+            ViewBag.Test = "Un test";
             return View(commande);
-        }*/
+        }
     }
 }
