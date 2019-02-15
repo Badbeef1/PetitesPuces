@@ -1,5 +1,4 @@
 ﻿@using PetitesPuces.Models
-@using System.Globalization
 @model PPCommandes
 @{
     Layout = null;
@@ -14,7 +13,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-
+<script>
+    $(document).ready(function () {
+        @if(ViewBag.Test!= null)
+            {
+                 <text>
+                    console.log(@ViewBag.Test)
+                </text>
+            }
+        });
+</script>
 <style>
     h5 {
         overflow-wrap: break-word;
