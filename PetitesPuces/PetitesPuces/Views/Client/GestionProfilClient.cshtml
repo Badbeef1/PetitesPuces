@@ -20,6 +20,13 @@
             background-color: white;
         }
     </style>
+    <script type="text/javascript">
+        function envoieSection(laSection) {
+            document.querySelectorAll('#strProvenence').forEach(unElement => {
+                unElement.value = laSection.value;
+            });
+        }
+    </script>
 </head>
 <body>
     @Html.Partial("Test")
@@ -29,7 +36,7 @@
         <br />
         @Html.Partial("ModificationMDP", Model)
     </div>
-    <div class="modal" tabindex="-1" role="dialog" id="modSucces" aria-hidden="true">
+    <div class="modal" tabindex="-1" role="dialog" id="modSucces" aria-hidden="true" style="z-index:1072;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -47,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div class="modal" tabindex="-1" role="dialog" aria-labelledby="modEchec" id="modEchec" aria-hidden="true">
+    <div class="modal" tabindex="-1" role="dialog" aria-labelledby="modEchec" id="modEchec" aria-hidden="true" style="z-index:1072;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -74,10 +81,8 @@
             if (ViewBag.uneErreur != null)
             {
 
-                System.Diagnostics.Debug.WriteLine("Rendu par ici");
-
-                var script = "console.log('est rentrer');";
-                if ((String)ViewBag.uneErreur== "succes")
+                var script = "";
+                if (((String)ViewBag.uneErreur) == "succes")
                 {
                     script += "$('#modSucces').modal('show');";
                 }
