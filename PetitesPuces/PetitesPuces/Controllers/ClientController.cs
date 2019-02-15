@@ -513,16 +513,13 @@ namespace PetitesPuces.Controllers
                     else
                     {
                         ViewBag.uneErreur = "echec";
-                    }
-                    
+                    }  
                 }
             }
             else
             {
                 ViewBag.uneErreur = "echec";
             }
-
-            //strProvenence = "";
 
             return View(clientOriginal);
         }
