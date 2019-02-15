@@ -19,6 +19,13 @@
             background-color: white;
         }
     </style>
+    <script type="text/javascript">
+        function envoieSection(laSection) {
+            document.querySelectorAll('#strProvenence').forEach(unElement => {
+                unElement.value = laSection.value;
+            });
+        }
+    </script>
 </head>
 <body>
     @Html.Partial("index")
@@ -31,7 +38,7 @@
         {
             @Html.HiddenFor(x => x.NoVendeur)
             @Html.HiddenFor(x => x.AdresseEmail)
-            @Html.Hidden("strProvenence", "informationVendeur")
+            @Html.Hidden("strProvenence", "")
 
             <div class="card">
                 <h5 class="card-header">Section Vendeur</h5>
@@ -72,18 +79,18 @@
                         </div>
                         <div class="col-3">
                             <label class="col-form-label">Prélèvement de la taxe</label>
-                            @Html.CheckBox("Taxes", Model.Taxes.Value, new { @class = "form-control"})
+                            @Html.CheckBox("Taxes", Model.Taxes.Value, new { @class = "form-control" })
                         </div>
                     </div>
                 </div>
                 <div class="card-footer btn-group sPiedPageBouton">
-                    <button type="submit" class="btn btn-outline-success">Sauvegarder</button>
+                    <button type="submit" class="btn btn-outline-success" value="informationVendeur" onclick="envoieSection(this)">Sauvegarder</button>
                     <a href="/Vendeur/" class="btn btn-outline-primary">Retour</a>
                 </div>
             </div>
         }
         <br />
-        
+
         @using (Html.BeginForm("GestionProfilVendeur", "Vendeur", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.HiddenFor(x => x.NoVendeur)
@@ -131,19 +138,74 @@
 
                 </div>
                 <div class="card-footer btn-group sPiedPageBouton">
-                    <button type="submit" class="btn btn-outline-success">Sauvegarder</button>
+                    <button type="submit" class="btn btn-outline-success" value="configurationCatalogue" onclick="envoieSection(this)">Sauvegarder</button>
                     <a href="/Vendeur/" class="btn btn-outline-primary">Retour</a>
                 </div>
 
             </div>
         }
     </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="modSucces" aria-hidden="true" style="z-index:1072;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Succès</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Les informations ont été enregistrées!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" aria-labelledby="modEchec" id="modEchec" aria-hidden="true" style="z-index:1072;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Échec</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Les informations n'ont pas été enregistrées! Veuillez à bien remplir les champs!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="~/Scripts/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-colorpicker@3.0.3/dist/js/bootstrap-colorpicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script type="text/javascript">
+    @{
+        if (ViewBag.uneErreur != null)
+        {
+
+            var script = "";
+            if (((String)ViewBag.uneErreur) == "succes")
+            {
+                script += "$('#modSucces').modal('show');";
+            }
+            else
+            {
+                script += "$('#modEchec').modal('show');";
+            }
+
+            @MvcHtmlString.Create(script);
+        }
+    }
         $(function () {
             //Masque
             $("#tel1").mask("(999) 999-9999");
