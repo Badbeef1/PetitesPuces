@@ -973,9 +973,7 @@ namespace PetitesPuces.Controllers
             return View(client);
         }
         public ActionResult test() => View();
-
-        public ActionResult ConfirmationTransaction() => View();
-
+        
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
         {
@@ -1152,7 +1150,7 @@ namespace PetitesPuces.Controllers
             return View(commande);
         }
 
-        public ActionResult Facture()
+       /* public ActionResult Facture()
         {
             PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()
                                     orderby unCommande.NoCommande descending
@@ -1169,6 +1167,6 @@ namespace PetitesPuces.Controllers
             fileStream.Write(byteArray, 0, byteArray.Length);
             fileStream.Close();
             return View(commande);
-        }
+        }*/
     }
 }
