@@ -409,7 +409,7 @@ namespace PetitesPuces.Views
                 {
                     //Parcour les destinataires pour trouver les messages de l'utilisateur brouillon
                     List<PPMessages> lstMessage04 = contextPP.PPMessages
-                        .Where(predicate: mess => mess.NoExpediteur == lngNoUtilisateur && mess.dateEnvoi.HasValue == false)
+                        .Where(predicate: mess => mess.NoExpediteur == lngNoUtilisateur && mess.Lieu == 4)
                         .ToList();
 
                     dicNbNotification.Add(unLieu.NoLieu, lstMessage04.Count);
@@ -423,32 +423,66 @@ namespace PetitesPuces.Views
         private void optionListeMessages(List<String> lstElementATraiter,long lngNoUtilisateur, string strAction)
         {
             List<PPDestinataires> lstTempoDestinataire = new List<PPDestinataires>();
+            List<PPMessages> lstTempoMessages = new List<PPMessages>();
 
             lstElementATraiter.ForEach(element =>
             {
-                PPDestinataires destinataires = contextPP.PPDestinataires
-                    .FirstOrDefault(predicate: desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == int.Parse(element));
+                var arrObjTraiter = element.Split('_');
+                string strType = arrObjTraiter[0];
+                int intNoMessage = int.Parse(arrObjTraiter[1]);
 
-                switch (strAction)
+                if (strType == "des")
                 {
-                    case actionLu:
-                        destinataires.EtatLu = 1;
-                        break;
-                    case actionNonLu:
-                        destinataires.EtatLu = 0;
-                        break;
-                    case actionSupprimer:
-                        destinataires.Lieu = 3;
-                        break;
-                    case actionRestaurer:
-                        destinataires.Lieu = 1;
-                        break;
-                    case actionSupprimerDefinitivement:
-                        destinataires.Lieu = 5;
-                        break;
-                }
 
-                lstTempoDestinataire.Add(destinataires);
+                    PPDestinataires destinataires = contextPP.PPDestinataires
+                        .FirstOrDefault(predicate: desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == intNoMessage);
+
+                    switch (strAction)
+                    {
+                        case actionLu:
+                            destinataires.EtatLu = 1;
+                            break;
+                        case actionNonLu:
+                            destinataires.EtatLu = 0;
+                            break;
+                        case actionSupprimer:
+                            destinataires.Lieu = 3;
+                            break;
+                        case actionRestaurer:
+                            destinataires.Lieu = 1;
+                            break;
+                        case actionSupprimerDefinitivement:
+                            destinataires.Lieu = 5;
+                            break;
+                    }
+
+                    lstTempoDestinataire.Add(destinataires);
+                }
+                else
+                {
+                    PPMessages messages = contextPP.PPMessages
+                        .FirstOrDefault(predicate: mess => mess.NoMsg == intNoMessage);
+
+                    //recherche s'il a des destinataires pour faire la différence entre un brouillon et un message envoyé
+                    int intNbDestinataires = contextPP.PPDestinataires
+                        .Where(predicate: desti => desti.NoMsg == intNoMessage && desti.Lieu != -1)
+                        .Count();
+
+                    switch (strAction)
+                    {
+                        case actionSupprimer:
+                            messages.Lieu = 3;
+                            break;
+                        case actionRestaurer:
+                            messages.Lieu = short.Parse(intNbDestinataires > 0 ? "2" : "4");
+                            break;
+                        case actionSupprimerDefinitivement:
+                            messages.Lieu = 5;
+                            break;
+                    }
+
+                    lstTempoMessages.Add(messages);
+                }
             });
 
             try

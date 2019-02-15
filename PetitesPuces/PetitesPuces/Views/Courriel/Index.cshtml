@@ -76,28 +76,56 @@
                         @foreach (var lieux in Model.lstLieu)
                         {
                             var affichage = "";
+                            string strStyleFocus = "";
+
                             if (lieux.NoLieu == 1)
                             {
                                 affichage = strBoiteReception;
+
+                                if (Model.strPage == strBoiteReception)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 2)
                             {
                                 affichage = strEnvoye;
+
+                                if (Model.strPage == strEnvoye)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 3)
                             {
                                 affichage = strBoiteSupprime;
+
+                                if (Model.strPage == strBoiteSupprime )
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 4)
                             {
                                 affichage = strBrouillon;
+
+                                if (Model.strPage == strBrouillon)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 5)
                             {
                                 affichage = strSupprimeDefinitivement;
+
+                                if (Model.strPage == strSupprimeDefinitivement)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
 
-                            <li class="nav-item mt-2 mb-2">
+
+                            <li class="nav-item pt-2 pb-2" style="@strStyleFocus">
                                 <a href="@Url.Action("Index/" + affichage)">
                                     @if (lieux.NoLieu == 1)
                                     {
@@ -125,34 +153,31 @@
                                     {
                                         <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
                                     }
-                                </li>
+                            </li>
                             }
-                                </ul>
-                            </nav>
-                        </div>
-
-
-                        <main class="col-12 col-md-9 col-xl-10" id="divCorps">
-                            @{
-                                ViewBag.LaPage = Model.strPage;
-
-                                if (Model.strPage == strNouveauMessage)
-                                {
-                                    @Html.Partial("RedactionMessage", Model)
-                                }
-                                else if (Model.strPage == strAffichageMessage)
-                                {
-                                    @Html.Partial("AffichageMessage", Model.AfficheMessage)
-                                }
-                                else
-                                {
-                                    @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
-                                }
-
-                            }
-
-                        </main>
-                    </div>
+                         </ul>
+                    </nav>
                 </div>
-            </body>
-        </html>
+
+                <main class="col-12 col-md-9 col-xl-10" id="divCorps">
+                    @{
+                        ViewBag.LaPage = Model.strPage;
+
+                        if (Model.strPage == strNouveauMessage)
+                        {
+                            @Html.Partial("RedactionMessage", Model)
+                        }
+                        else if (Model.strPage == strAffichageMessage)
+                        {
+                            @Html.Partial("AffichageMessage", Model.AfficheMessage)
+                        }
+                        else
+                        {
+                            @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
+                        }
+                    }
+                </main>
+                </div>
+            </div>
+</body>
+</html>
