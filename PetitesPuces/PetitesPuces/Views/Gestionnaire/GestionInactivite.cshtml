@@ -9,15 +9,6 @@
 <head>
     <meta charset="utf-8" />
     <title>Gestion de l'inactivité</title>
-    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
-    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
 </head>
 
 <body id="body">
@@ -26,126 +17,126 @@
     @using (Html.BeginForm("GestionInactivite", "Gestionnaire", FormMethod.Post))
     {
 
-    <div class="container sEspaceBarNavigation" id="divPage">
-        <div id="infoPage" style="padding-left:10px;padding-right:10px">
-            <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
-        </div>
-        @if (Model.lstClientsRetirer != null)
-        {
-            foreach (PPClients client in Model.lstClientsRetirer)
+        <div class="container sEspaceBarNavigation" id="divPage">
+            <div id="infoPage" style="padding-left:10px;padding-right:10px">
+                <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
+            </div>
+            @if (Model.lstClientsRetirer != null)
             {
+                foreach (PPClients client in Model.lstClientsRetirer)
+                {
 
-                <div class="container">
-                    @Html.Partial("ClientInactiverStats", client)
-                </div>
+                    <div class="container">
+                        @Html.Partial("ClientInactiverStats", client)
+                    </div>
+                }
             }
-        }
-        <br />
-        <div id="divConfirmationTop" style="text-align:center">
-            <input id="btnConfirmerTop" type="submit" value="Supprimer" class="btn btn-primary" />
-        </div>
-        <div id="divClient">
-            <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
             <br />
-            <span style="display:inline;float:right;padding-right:10px">Inactivité depuis : </span>
-            @Html.DropDownListFor(x => x.valDdlClient, (SelectList)ViewBag.ListeDdlClient, new { @onchange = "ddlChange()" })
-            <br />
-            <div id="tableauClient">
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 5%;text-align:right">#</th>
-                        <th style="width: 30%">Nom</th>
-                        <th style="width: 30%">Prénom</th>
-                        <th style="width: 30%;text-align:right">Dernière activité</th>
-                        <th style="width: 5%" class="text-center"><input type="checkbox" id="cbClientAll" /></th>
-                    </tr>
+            <div id="divConfirmationTop" style="text-align:center">
+                <input id="btnConfirmerTop" type="submit" value="Supprimer" class="btn btn-primary" />
+            </div>
+            <div id="divClient">
+                <h2 style="text-align:left;display:inline"><u>Client(s)</u></h2>
+                <br />
+                <span style="display:inline;float:right;padding-right:10px">Inactivité depuis : </span>
+                @Html.DropDownListFor(x => x.valDdlClient, (SelectList)ViewBag.ListeDdlClient, new { @onchange = "ddlChange()" })
+                <br />
+                <div id="tableauClient">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 5%;text-align:right">#</th>
+                            <th style="width: 30%">Nom</th>
+                            <th style="width: 30%">Prénom</th>
+                            <th style="width: 30%;text-align:right">Dernière activité</th>
+                            <th style="width: 5%" class="text-center"><input type="checkbox" id="cbClientAll" /></th>
+                        </tr>
 
-                    @{
-                        for (int i = 0; i < @Model.cbClients.Count; i++)
-                        {
-                            <tr>
-                                <th style="text-align:right">@(i + 1)</th>
-                                <td>@Model.cbClients[i].Nom</td>
-                                <td>@Model.cbClients[i].Prenom</td>
-                                @if (Model.cbClients[i].dernierPresence == DateTime.MinValue)
-                                {
-                                    <td style="text-align:right">Aucune présence</td>
-                                }
-                                else
-                                {
-                                    <td style="text-align:right">
-                                        @Model.cbClients[i].dernierPresence.ToString("yyyy-MM-dd")
+                        @{
+                            for (int i = 0; i < @Model.cbClients.Count; i++)
+                            {
+                                <tr>
+                                    <th style="text-align:right">@(i + 1)</th>
+                                    <td>@Model.cbClients[i].Nom</td>
+                                    <td>@Model.cbClients[i].Prenom</td>
+                                    @if (Model.cbClients[i].dernierPresence == DateTime.MinValue)
+                                    {
+                                        <td style="text-align:right">Aucune présence</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="text-align:right">
+                                            @Model.cbClients[i].dernierPresence.ToString("yyyy-MM-dd")
 
+                                        </td>
+                                    }
+                                    <td class="text-center">
+                                        @Html.HiddenFor(x => Model.cbClients[i].ID)
+                                        @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected)
+                                        @Html.HiddenFor(x => Model.cbClients[i].idClient)
+                                        @Html.HiddenFor(x => Model.cbClients[i].dernierPresence)
+                                        @Html.HiddenFor(x => Model.cbClients[i].Nom)
+                                        @Html.HiddenFor(x => Model.cbClients[i].Prenom)
                                     </td>
-                                }
-                                <td class="text-center">
-                                    @Html.HiddenFor(x => Model.cbClients[i].ID)
-                                    @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected)
-                                    @Html.HiddenFor(x => Model.cbClients[i].idClient)
-                                    @Html.HiddenFor(x => Model.cbClients[i].dernierPresence)
-                                    @Html.HiddenFor(x => Model.cbClients[i].Nom)
-                                    @Html.HiddenFor(x => Model.cbClients[i].Prenom)
-                                </td>
 
-                            </tr>
+                                </tr>
+                            }
                         }
-                    }
 
-                </table>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div id="divVendeur">
-            <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
-            <br />
-            <div>
-                <span style="display:inline;float:right;padding-right:10px;">Inactivité depuis : </span>
-                @Html.DropDownListFor(m => m.valDdlVendeur, (SelectList)ViewBag.ListeDdlVendeur, new { @onchange = "ddlChange()" })
-            </div>
-            <br />
-            <div id="tableauVendeur">
-                <table class="table table-bordered">
-                    <tr>
-                        <th style="width: 5%;text-align:right">#</th>
-                        <th style="width: 30%">Nom</th>
-                        <th style="width: 30%">Prénom</th>
-                        <th style="width: 30%;text-align:right">Dernière activité</th>
-                        <th style="width: 5%" class="text-center"><input type="checkbox" id="cbVendeurAll" /></th>
-                    </tr>
+            <div id="divVendeur">
+                <h2 style="text-align:left;display:inline"><u>Vendeur(s)</u></h2>
+                <br />
+                <div>
+                    <span style="display:inline;float:right;padding-right:10px;">Inactivité depuis : </span>
+                    @Html.DropDownListFor(m => m.valDdlVendeur, (SelectList)ViewBag.ListeDdlVendeur, new { @onchange = "ddlChange()" })
+                </div>
+                <br />
+                <div id="tableauVendeur">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 5%;text-align:right">#</th>
+                            <th style="width: 30%">Nom</th>
+                            <th style="width: 30%">Prénom</th>
+                            <th style="width: 30%;text-align:right">Dernière activité</th>
+                            <th style="width: 5%" class="text-center"><input type="checkbox" id="cbVendeurAll" /></th>
+                        </tr>
 
 
-                    @{
-                        for (int i = 0; i < @Model.cbVendeurs.Count; i++)
-                        {
-                            <tr>
-                                <th style="text-align:right">@(i + 1)</th>
-                                <td>@Model.cbVendeurs[i].Nom</td>
-                                <td>@Model.cbVendeurs[i].Prenom</td>
-                                @if (Model.cbVendeurs[i].dernierPresence == DateTime.MinValue)
-                                {
-                                    <td style="text-align:right">Aucune présence</td>
-                                }
-                                else
-                                {
-                                    <td style="text-align:right">
-                                        @Model.cbVendeurs[i].dernierPresence.ToString("yyyy-MM-dd")
+                        @{
+                            for (int i = 0; i < @Model.cbVendeurs.Count; i++)
+                            {
+                                <tr>
+                                    <th style="text-align:right">@(i + 1)</th>
+                                    <td>@Model.cbVendeurs[i].Nom</td>
+                                    <td>@Model.cbVendeurs[i].Prenom</td>
+                                    @if (Model.cbVendeurs[i].dernierPresence == DateTime.MinValue)
+                                    {
+                                        <td style="text-align:right">Aucune présence</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="text-align:right">
+                                            @Model.cbVendeurs[i].dernierPresence.ToString("yyyy-MM-dd")
 
+                                        </td>
+                                    }
+                                    <td class="text-center">
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].ID)
+                                        @Html.CheckBoxFor(x => Model.cbVendeurs[i].IsSelected)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].idClient)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].dernierPresence)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].Nom)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].Prenom)
                                     </td>
-                                }
-                                <td class="text-center">
-                                    @Html.HiddenFor(x => Model.cbVendeurs[i].ID)
-                                    @Html.CheckBoxFor(x => Model.cbVendeurs[i].IsSelected)
-                                    @Html.HiddenFor(x => Model.cbVendeurs[i].idClient)
-                                    @Html.HiddenFor(x => Model.cbVendeurs[i].dernierPresence)
-                                    @Html.HiddenFor(x => Model.cbVendeurs[i].Nom)
-                                    @Html.HiddenFor(x => Model.cbVendeurs[i].Prenom)
-                                </td>
-                            </tr>
+                                </tr>
+                            }
                         }
-                    }
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
         <br />
         <br />
         <div id="divConfirmationBottom" style="text-align:center">
@@ -154,7 +145,18 @@
     }
 </body>
 </html>
+
+<link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
 <script>
+
     $(document).ready(function () {
         // Bouton final
         $("#btnConfirmer").click(function () {
@@ -199,7 +201,7 @@
             };
         });
     });
-            
+
             function ddlChange() {
                 $.ajax({
                     type: "GET",
