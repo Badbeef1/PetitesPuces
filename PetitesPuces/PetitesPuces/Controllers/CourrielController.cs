@@ -36,8 +36,10 @@ namespace PetitesPuces.Views
        public static string msgErreur = "";
        public static string msgSucces = "";
 
+        const int intNbMessageParPage = 1;
+
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType)
+        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType, string triActuel, string pageAncienne, int? page)
         {
             //Liste de tout les lieux pour la bar de navigation
             List<PPLieu> lstLieu = contextPP.PPLieu.ToList();
@@ -87,6 +89,12 @@ namespace PetitesPuces.Views
             msgErreur = msgSucces = "";
 
 
+            //tri
+            if (pageAncienne == id && triActuel != null)
+            {
+                ViewData["triActuel"] = triActuel;
+            }
+
             var toutLesMessages = GenereListeMessage(id, lngNoUtilisateur);
 
             List<PPDestinataires> lstDestinataire = toutLesMessages.lstDestinataire;
@@ -99,11 +107,26 @@ namespace PetitesPuces.Views
             }
             else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
             {
-                courrielVM.iplListeMessageAffiche = ListeCourrielDestinataire(lstDestinataire).Concat(ListeCourrielMessage(lstMessage)).ToPagedList(1, 20);
+                List<ViewModels.MessageAfficheVM> lstTempo = ListeCourrielDestinataire(lstDestinataire).Concat(ListeCourrielMessage(lstMessage)).ToList();
+
+                if (pageAncienne == id && triActuel != null)
+                {
+                    lstTempo = TriMessage(lstTempo, triActuel);
+                }
+
+                courrielVM.iplListeMessageAffiche = lstTempo.ToPagedList(page ?? 1, intNbMessageParPage);
             }
             else if (id == strEnvoye || id == strBrouillon)
             {
-                courrielVM.iplListeMessageAffiche = ListeCourrielMessage(lstMessage).ToPagedList(1, 20);
+                List<ViewModels.MessageAfficheVM> lstTempo = ListeCourrielMessage(lstMessage).ToList();
+
+                if (pageAncienne == id && triActuel != null)
+                {
+                    lstTempo = TriMessage(lstTempo, triActuel);
+                }
+
+
+                courrielVM.iplListeMessageAffiche = lstTempo.ToPagedList(page ?? 1, intNbMessageParPage);
             }
             else if (id == strNouveauMessage && uneAction == actionTransfert && message != null)
             {
@@ -137,8 +160,14 @@ namespace PetitesPuces.Views
             }
             else
             {
+                List<ViewModels.MessageAfficheVM> lstTempo = ListeCourrielDestinataire(lstDestinataire).ToList();
 
-                courrielVM.iplListeMessageAffiche = ListeCourrielDestinataire(lstDestinataire).ToPagedList(1, 20); //1,20 tempo
+                if (pageAncienne == id && triActuel != null)
+                {
+                    lstTempo = TriMessage(lstTempo, triActuel);
+                }
+
+                courrielVM.iplListeMessageAffiche = lstTempo.ToPagedList(page ?? 1, intNbMessageParPage);
             }
 
 
@@ -373,19 +402,33 @@ namespace PetitesPuces.Views
 
             return lstMessagesOuDestinataires;
         }
-        /*
-        [HttpPost]
+        
         public ActionResult AppliqueTri(string laPage, string strTri)
         {
             var InfoUtil = RecupereInformationBaseUtilisateur();
 
             var LesMessages = GenereListeMessage(laPage, InfoUtil.lngNoUtilisateur);
 
+            List<ViewModels.MessageAfficheVM> lstATrier;
 
+            if (laPage == strBoiteSupprime)
+            {
+                lstATrier = ListeCourrielDestinataire(LesMessages.lstDestinataire).Concat(ListeCourrielMessage(LesMessages.lstMessage)).ToList();
+            }
+            else if (laPage == strEnvoye || laPage == strBrouillon)
+            {
+                lstATrier = ListeCourrielMessage(LesMessages.lstMessage).ToList();
+            }
+            else
+            {
+                lstATrier = ListeCourrielDestinataire(LesMessages.lstDestinataire).ToList();
+            }
 
+            ViewBag.LaPage = laPage;
+            ViewData["triActuel"] = strTri;
 
-            return PartialView("ListeCourriel", lstMessagesOuDestinataires.ToPagedList(1, 20));
-        }*/
+            return PartialView("ListeCourriel", TriMessage(lstATrier,strTri).ToPagedList(1, intNbMessageParPage));
+        }
 
 
         private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, string strAdresseDestinataire, long lngNoDestinataire, string strTypeMessage)

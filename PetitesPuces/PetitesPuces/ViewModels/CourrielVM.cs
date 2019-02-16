@@ -15,6 +15,7 @@ namespace PetitesPuces.ViewModels
         public Dictionary<short, int> dicNotificationLieu { get; set; }
         public MessageAfficheVM AfficheMessage { get; set; }
         public String strPage { get; set; }
+        public string strTriActuel { get; set; }
         
         public List<Tuple<short, long, string, string, bool>> lstDestinataires { get; set; }
 
