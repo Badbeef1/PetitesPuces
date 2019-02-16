@@ -1,0 +1,25 @@
+﻿@using PetitesPuces.Models
+@model List<TotalCommandesClientParVendeurViewModel>
+
+<table class="table">
+   <tr class="row">
+      <th class="col">Numéro client</th>
+      <th class="col">Nom et prénom</th>
+      <th class="col">Total commande</th>
+      <th class="col">Date dernière commande</th>
+      <th class="col">Numéro vendeur</th>
+      <th class="col">Nom du vendeur</th>
+   </tr>
+   @foreach (var commande in Model)
+   {
+      <tr class="row">
+         <td class="col">@commande.client.NoClient</td>
+         <td class="col">@commande.client.Prenom @commande.client.Nom</td>
+         <td class="col">@commande.dblTotalCommande.ToString("0.00") $</td>
+         <td class="col">@commande.dateDerniereCommande.ToString("yyyy-MM-dd")</td>
+         <td class="col">@commande.vendeur.NoVendeur</td>
+         <td class="col">@commande.vendeur.Prenom @commande.vendeur.Nom</td>
+      </tr>
+   }
+
+</table>
