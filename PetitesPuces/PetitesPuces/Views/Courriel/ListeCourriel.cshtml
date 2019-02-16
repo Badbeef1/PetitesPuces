@@ -124,6 +124,8 @@
 <nav class=" navbar bg-light">
     @Html.Hidden("ElementSelectionner")
     @Html.Hidden("uneAction")
+    @Html.Hidden("pageAncienne", ViewBag.LaPage as string)
+    @Html.Hidden("triActuel")
     <ul class="navbar-nav navbar-expand bd-navbar">
         <li class="nav-item">
             <a href="@Url.Action("Index/NouveauMessage")" class="nav-link"><i class="fas fa-plus"></i> Nouveau Message</a>
@@ -185,23 +187,102 @@
 
     @if (ViewBag.LaPage == strBrouillon || ViewBag.LaPage == strEnvoye || ViewBag.LaPage == strBoiteReception || ViewBag.LaPage == strBoiteSupprime)
     {
-        <div class="ml-auto">
-            <label>Trié par: </label>
-            <button type="button" class="btn btn-outline-primary" value="! + @triDate" onclick="$.gestionTri(this.value)">Date <i class="fas fa-sort-amount-up"></i></button>
+    <div class="ml-auto">
+        <label>Trié par: </label>
 
-            @if (ViewBag.LaPage == strBrouillon)
+        @{
+            string leTriActif = ViewData["triActuel"] as string ?? "";
+            string strClassetri = "btn btn-outline-primary";
+            if (leTriActif.Contains(triDate))
             {
-                <button type="button" class="btn btn-outline-primary" value="@triDestinataire">Destinataire <i class="fas fa-sort-alpha-up"></i></button>
-            }
-            else if (ViewBag.LaPage == strBoiteSupprime || ViewBag.LaPage == strEnvoye)
-            {
-                <button type="button" class="btn btn-outline-primary" value="@triDestinataireExpediteur" >Destinataire/Expéditeur <i class="fas fa-sort-alpha-up"></i></button>
+                strClassetri += " focus";
+                <button id="btnTriDate" type="button" class="@strClassetri" value="@leTriActif" onclick="$.gestionTri(this)">
+                    Date
+                    @if (leTriActif.Substring(0, 1) == "!")
+                    {
+                        <i class="fas fa-sort-amount-down"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-sort-amount-up"></i>
+                    }
+                </button>
             }
             else
             {
-                <button type="button" class="btn btn-outline-primary" value="@triExpediteur">Expéditeur <i class="fas fa-sort-alpha-up"></i></button>
+                <button id="btnTriDate" type="button" class="@strClassetri" value="@triDate" onclick="$.gestionTri(this)">Date <i class="fas fa-sort-amount-up"></i></button>
             }
-        </div>
+
+            strClassetri = "btn btn-outline-primary";
+            if (ViewBag.LaPage == strBrouillon)
+            {
+                if (leTriActif.Contains(triDestinataire))
+                {
+                    strClassetri += " focus";
+                    <button id="btnTriDest" type="button" class="@strClassetri" value="@leTriActif" onclick="$.gestionTri(this)">
+                        Destinataire
+                        @if (leTriActif.Substring(0, 1) == "!")
+                        {
+                            <i class="fas fa-sort-alpha-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-up"></i>
+                        }
+                    </button>
+                }
+                else
+                {
+                    <button id="btnTriDest" type="button" class="@strClassetri" value="@triDestinataire" onclick="$.gestionTri(this)">Destinataire <i class="fas fa-sort-alpha-up"></i></button>
+                }
+            }
+            else if (ViewBag.LaPage == strBoiteSupprime || ViewBag.LaPage == strEnvoye)
+            {
+                if (leTriActif.Contains(triDestinataireExpediteur))
+                {
+                    strClassetri += " focus";
+                    <button id="btnTriDestExp" type="button" class="@strClassetri" value="@leTriActif" onclick="$.gestionTri(this)">
+                        Destinataire/Expéditeur
+                        @if (leTriActif.Substring(0, 1) == "!")
+                        {
+                            <i class="fas fa-sort-alpha-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-up"></i>
+                        }
+                    </button>
+                }
+                else
+                {
+                    <button id="btnTriDestExp" type="button" class="@strClassetri" value="@triDestinataireExpediteur" onclick="$.gestionTri(this)">Destinataire/Expéditeur <i class="fas fa-sort-alpha-up"></i></button>
+                }
+            }
+            else
+            {
+                if (leTriActif.Contains(triExpediteur))
+                {
+                    strClassetri += " focus";
+                    <button id="btnTriExp" type="button" class="@strClassetri" value="@leTriActif" onclick="$.gestionTri(this)">
+                        Expéditeur
+                        @if (leTriActif.Substring(0, 1) == "!")
+                        {
+                            <i class="fas fa-sort-alpha-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-sort-alpha-up"></i>
+                        }
+                    </button>
+                }
+                else
+                {
+                    <button id="btnTriExp" type="button" class="@strClassetri" value="@triExpediteur" onclick="$.gestionTri(this)">Expéditeur <i class="fas fa-sort-alpha-up"></i></button>
+                }
+            }
+        }
+
+    </div>
     }
 
 </nav>
@@ -273,5 +354,5 @@
         }
     </div>
 }
-@Html.PagedListPager(Model, page => Url.Action("Index/Reception", new { @page = 1 }))
+@Html.PagedListPager(Model, page => Url.Action("Index/" + ViewBag.LaPage as string , new { page , triActuel = ViewData["triActuel"] as string, pageAncienne = ViewBag.LaPage as string}))
 
