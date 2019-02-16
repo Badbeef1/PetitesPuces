@@ -1271,9 +1271,22 @@ namespace PetitesPuces.Controllers
          lstStats.Add(nbClientsPotentiel);
          lstStats.Add(nbClientsVisiteurs);
 
+         //Nombre de visites d'un client pour un vendeur
+         Dictionary<PPClients, int> dicVisitesClientsVendeurs = new Dictionary<PPClients, int>();
+         //liste de tout les clients
+         foreach (var client in clients)
+         {
+            var query = (from clientVendeur in db.GetTable<PPVendeursClients>()
+                           where (clientVendeur.NoClient.Equals(client.NoClient)) &&
+                           (clientVendeur.NoVendeur.Equals(vendeurs.First().NoVendeur))
+                           select clientVendeur
+                           ).ToList();
+            dicVisitesClientsVendeurs.Add(client, query.Count());
+         }
 
 
-         StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
+
+            StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
          //Instancier les propriétés du model
          statistiquesViewModel.nbVendeurAccepte = nbVendeurActif;
          statistiquesViewModel.nbVendeurRefuse = nbVendeurInactif;
@@ -1307,6 +1320,8 @@ namespace PetitesPuces.Controllers
          statistiquesViewModel.lstVendeurs = vendeurs;
 
          statistiquesViewModel.lstClientsVendeur = lstStats;
+
+         statistiquesViewModel.dicVisitesClientsVendeurs = dicVisitesClientsVendeurs;
 
          db.Connection.Close();
          return View(statistiquesViewModel);
@@ -1390,6 +1405,46 @@ namespace PetitesPuces.Controllers
          }
          db.Connection.Close();
          return PartialView("Gestionnaire/ListeDerniereConnexions", derniereConnexionClient);
+      }
+
+      public ActionResult nbVisitesClientsVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         Dictionary<PPClients, int> dicVisitesClientsVendeurs = new Dictionary<PPClients, int>();
+
+         var vendeurExiste = (from vendeur in db.GetTable<PPVendeurs>()
+                              where vendeur.NoVendeur.Equals(id)
+                              select vendeur
+                              ).ToList();
+
+         if(vendeurExiste.Count > 0)
+         {
+            //liste de tout les clients
+            var clients = (from c in db.GetTable<PPClients>()
+                           select c
+                           ).ToList();
+
+            foreach (var client in clients)
+            {
+               var query = (from clientVendeur in db.GetTable<PPVendeursClients>()
+                            where (clientVendeur.NoClient.Equals(client.NoClient)) &&
+                            (clientVendeur.NoVendeur.Equals(id))
+                            select clientVendeur
+                            ).ToList();
+               dicVisitesClientsVendeurs.Add(client, query.Count());
+            }
+
+            db.Connection.Close();
+            return PartialView("Gestionnaire/GraphiqueVisitesClientVendeur", dicVisitesClientsVendeurs);
+         }
+         else
+         {
+            db.Connection.Close();
+            //Le vendeur envoyer n'est pas dans la liste des vendeurs
+            return new HttpStatusCodeResult(HttpStatusCode.NotAcceptable);
+         }
+
       }
 
       public ActionResult ddlChanger(string id)

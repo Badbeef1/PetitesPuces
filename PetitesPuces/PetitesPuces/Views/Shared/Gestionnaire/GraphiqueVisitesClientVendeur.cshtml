@@ -1,0 +1,55 @@
+﻿@using PetitesPuces.Models
+@model Dictionary<PPClients,int>
+
+@{ 
+   List<VisitesClients> lstVisitesClients = new List<VisitesClients>();
+   for (int i = 0; i < Model.Count(); i++)
+   {
+      if(Model.ElementAt(i).Value > 0)
+      {
+         lstVisitesClients.Add(new VisitesClients(Model.ElementAt(i).Key.NoClient.ToString(), Model.ElementAt(i).Value));
+      }
+
+   }
+}
+<div class="row">
+   <div class="col-md-2"></div>
+
+   <!-- BAR CHART -->
+   <div class="box box-success col-md-8">
+      <div class="box-body chart-responsive">
+         <div class="chart" id="nbVisitesClientsVendeurs-chart" style="height: 300px;"></div>
+      </div>
+      
+         @if(lstVisitesClients.Count <= 0)
+         {
+            <div class="alert alert-info" role="alert">
+               <h4>Le vendeur sélectionné n'a jamais été visité par un client.</h4>
+            </div>
+         }
+      
+   </div>
+   <!-- BAR END -->
+
+   <div class="col-md-2"></div>
+</div>
+
+
+<script>
+//BAR CHART
+   var data = @Html.Raw(Json.Encode(lstVisitesClients));
+   console.log(data);
+      var bar = new Morris.Bar({
+         element: 'nbVisitesClientsVendeurs-chart',
+         resize: true,
+         data: 
+            data
+            ,
+            barColors: ['#17a2b8'],
+            xkey: 'noClient',
+            ykeys: ['nbVisites'],
+            labels: ['Nombres de visites'],
+            hideHover: 'auto'
+   });
+
+</script>

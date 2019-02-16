@@ -56,6 +56,19 @@
          });
       }
 
+      function nombreVisitesClients() {
+         var myselect = document.getElementById("ddlVendeurs2");
+         //TODO: Requête AJAX qui permet d'aller modifier le grapgique du nombre de visite clients en fonction
+         //du vendeur sélectionné
+         
+         $.ajax({
+            url: "/Gestionnaire/nbVisitesClientsVendeur",
+            data: { "id": myselect.options[myselect.selectedIndex].value },
+            success: successVisitesClient,
+            error: error,
+         });
+      }
+
       function success(model) {
          console.log(model);
          $('#stats_vendeur_client').html(model);
@@ -63,6 +76,10 @@
       function successListe(model) {
          console.log(model);
          $('#lstDerniereConnexions').html(model);
+      }
+      function successVisitesClient(model) {
+         console.log(model);
+         $('#graph_visites_clients').html(model);
       }
 
       function error() {
@@ -120,6 +137,22 @@
       </div>
 
 
+      <hr class="m-5" />
+
+      <div class="text-center p-3">
+         <h3>Nombre de visite d'un client pour un vendeur</h3>
+      </div>
+      <label for="tbRechercheVendeur">Nom du vendeur : </label>
+      <select id="ddlVendeurs2" onchange="nombreVisitesClients();">
+         @foreach (var vend in Model.lstVendeurs)
+         {
+            <option value="@vend.NoVendeur">@vend.NomAffaires</option>
+         }
+      </select>
+      <div id="graph_visites_clients">
+         @Html.Partial("Gestionnaire/GraphiqueVisitesClientVendeur",Model.dicVisitesClientsVendeurs)
+      </div>
+
       <!--Section nombres de visites d'un vendeur-->
       <hr class="m-5" />
 
@@ -150,7 +183,7 @@
          }
       </select>
       <div id="stats_vendeur_client">
-         @Html.Partial("Gestionnaire/StatsVendeurSpecifique",Model.lstClientsVendeur)
+         @Html.Partial("Gestionnaire/StatsVendeurSpecifique", Model.lstClientsVendeur)
       </div>
 
       <hr class="m-5" />
@@ -226,7 +259,7 @@
       </div>
 
       <div id="lstDerniereConnexions">
-         @Html.Partial("Gestionnaire/ListeDerniereConnexions",Model.lstDereniereConnexion)
+         @Html.Partial("Gestionnaire/ListeDerniereConnexions", Model.lstDereniereConnexion)
       </div>
 
    </div>
@@ -245,8 +278,8 @@
          resize: true,
          colors: ["#17a2b8", "#007bff"],
          data: [
-            { label: "Vendeurs actifs", value: @Model.nbVendeurAccepte },
-            { label: "Vendeurs inactifs", value: @Model.nbVendeurRefuse }
+            { label: "Vendeurs acceptés", value: @Model.nbVendeurAccepte },
+            { label: "Vendeurs en attentes", value: @Model.nbVendeurRefuse }
          ],
          hideHover: 'auto'
       });
