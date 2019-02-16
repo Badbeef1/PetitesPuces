@@ -489,6 +489,7 @@
     <Content Include="Views\Shared\Gestionnaire\RedevancesDues.cshtml" />
     <Content Include="Views\Gestionnaire\ClientInactiverStats.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\StatsVendeurSpecifique.cshtml" />
+    <Content Include="Views\Shared\Gestionnaire\ListeDerniereConnexions.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

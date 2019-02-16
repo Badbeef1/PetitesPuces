@@ -1,0 +1,22 @@
+﻿@using PetitesPuces.Models
+@model List<PPClients>
+<table class="table">
+   <tr class="row">
+      <th class="col">Date</th>
+      <th class="col">Numéro Client</th>
+      <th class="col">Nom et prénom</th>
+      <th class="col">Nb de connexions</th>
+   </tr>
+   @foreach (var cli in Model)
+   {
+      DateTime date = (DateTime)cli.DateDerniereConnexion;
+
+      <tr class="row">
+         <td class="col">@date.ToString("yyyy-MM-dd")</td>
+         <td class="col">@cli.NoClient</td>
+         <td class="col">@cli.Prenom @cli.Nom</td>
+         <td class="col">@cli.NbConnexions</td>
+      </tr>
+   }
+
+</table>

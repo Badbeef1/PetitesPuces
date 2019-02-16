@@ -34,7 +34,7 @@
    <script type="text/javascript">
       function nbClientAfficher() {
          var myselect = document.getElementById("ddlNbClients");
-         alert(myselect.options[myselect.selectedIndex].value);
+         //alert(myselect.options[myselect.selectedIndex].value);
          //TODO: Requête ajax qui va permettre de refaire le tableau des dernières connexion en fonction du nombre d'item.
          
          $.ajax({
@@ -62,6 +62,7 @@
       }
       function successListe(model) {
          console.log(model);
+         $('#lstDerniereConnexions').html(model);
       }
 
       function error() {
@@ -224,26 +225,9 @@
          </div>
       </div>
 
-      <table class="table">
-         <tr class="row">
-            <th class="col">Date</th>
-            <th class="col">Numéro Client</th>
-            <th class="col">Nom et prénom</th>
-            <th class="col">Nb de connexions</th>
-         </tr>
-         @foreach (var cli in Model.lstDereniereConnexion)
-         {
-            DateTime date = (DateTime)cli.DateDerniereConnexion;
-
-            <tr class="row">
-               <td class="col">@date.ToString("yyyy-MM-dd")</td>
-               <td class="col">@cli.NoClient</td>
-               <td class="col">@cli.Prenom @cli.Nom</td>
-               <td class="col">@cli.NbConnexions</td>
-            </tr>
-         }
-
-      </table>
+      <div id="lstDerniereConnexions">
+         @Html.Partial("Gestionnaire/ListeDerniereConnexions",Model.lstDereniereConnexion)
+      </div>
 
    </div>
    <div class="m-5"></div>

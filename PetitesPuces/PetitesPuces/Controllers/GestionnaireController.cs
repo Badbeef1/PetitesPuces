@@ -1296,7 +1296,14 @@ namespace PetitesPuces.Controllers
 
          statistiquesViewModel.nbConnexionsClient = nbConnexionsClients;
 
-         statistiquesViewModel.lstDereniereConnexion = derniereConnexionClient;
+         if(derniereConnexionClient.Count > 10)
+         {
+            statistiquesViewModel.lstDereniereConnexion = derniereConnexionClient.Take(10).ToList();
+         }
+         else
+         {
+            statistiquesViewModel.lstDereniereConnexion = derniereConnexionClient;
+         }
          statistiquesViewModel.lstVendeurs = vendeurs;
 
          statistiquesViewModel.lstClientsVendeur = lstStats;
@@ -1370,9 +1377,19 @@ namespace PetitesPuces.Controllers
 
       public ActionResult listeDernieresConnexion(int id)
       {
-
-
-         return View();
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         var derniereConnexionClient = (from clicli in db.GetTable<PPClients>()
+                                        orderby clicli.DateDerniereConnexion descending
+                                        select clicli
+                                        ).ToList();
+         if(id < derniereConnexionClient.Count())
+         {
+            db.Connection.Close();
+            return PartialView("Gestionnaire/ListeDerniereConnexions",derniereConnexionClient.Take(id).ToList());
+         }
+         db.Connection.Close();
+         return PartialView("Gestionnaire/ListeDerniereConnexions", derniereConnexionClient);
       }
 
       public ActionResult ddlChanger(string id)
