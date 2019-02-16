@@ -1125,6 +1125,10 @@ namespace PetitesPuces.Controllers
 
          int nbConnexionsClients = 0;
 
+         int nbClientsActif = 0;
+         int nbClientsPotentiel = 0;
+         int nbClientsVisiteurs = 0;
+
          var vendeurs = (from v in db.GetTable<PPVendeurs>()
                          select v
                          ).ToList();
@@ -1233,6 +1237,42 @@ namespace PetitesPuces.Controllers
                                         select clicli
                                         ).ToList();
 
+         //Aller chercher les stats du premier vendeur de la liste pour les stats client par vendeur
+         //Aller chercher la liste de tous les clients
+
+         //Parcourir tout les clients
+         foreach (var client in clients)
+         {
+            var dejaCommande = (from commande in db.GetTable<PPCommandes>()
+                                where (commande.NoClient.Equals(client.NoClient)) &&
+                                (commande.NoVendeur.Equals(vendeurs.First().NoVendeur))
+                                select commande
+                         ).ToList();
+            var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
+                                 where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals(vendeurs.First().NoVendeur))
+                                 select panier
+                                 ).ToList();
+
+            if (dejaCommande.Count() > 0)
+            {
+               nbClientsActif++;
+            }
+            else if (possedePanier.Count() > 0)
+            {
+               nbClientsPotentiel++;
+            }
+            else
+            {
+               nbClientsVisiteurs++;
+            }
+         }
+         List<int> lstStats = new List<int>();
+         lstStats.Add(nbClientsActif);
+         lstStats.Add(nbClientsPotentiel);
+         lstStats.Add(nbClientsVisiteurs);
+
+
+
          StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
          //Instancier les propriétés du model
          statistiquesViewModel.nbVendeurAccepte = nbVendeurActif;
@@ -1258,11 +1298,83 @@ namespace PetitesPuces.Controllers
 
          statistiquesViewModel.lstDereniereConnexion = derniereConnexionClient;
          statistiquesViewModel.lstVendeurs = vendeurs;
-         
+
+         statistiquesViewModel.lstClientsVendeur = lstStats;
 
          db.Connection.Close();
          return View(statistiquesViewModel);
       }
+
+      /// <summary>
+      /// 
+      /// </summary>
+      public ActionResult StatsClientParVendeur(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+         //Variables utiles pour le calcul des stats
+         int nbClientsActif = 0;
+         int nbClientsPotentiel = 0;
+         int nbClientsVisiteurs = 0;
+
+         var vendeurExiste = (from v in db.GetTable<PPVendeurs>()
+                              where v.NoVendeur.Equals(id)
+                              select v
+                              ).ToList();
+         if(vendeurExiste.Count > 0)
+         {
+            //Aller chercher la liste de tous les clients
+            var clients = (from c in db.GetTable<PPClients>()
+                           select c
+                           ).ToList();
+
+            //Parcourir tout les clients
+            foreach (var client in clients)
+            {
+               var dejaCommande = (from commande in db.GetTable<PPCommandes>()
+                                   where (commande.NoClient.Equals(client.NoClient)) &&
+                                   (commande.NoVendeur.Equals(id))
+                                   select commande
+                            ).ToList();
+               var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
+                                    where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals(id))
+                                    select panier
+                                    ).ToList();
+
+               if (dejaCommande.Count() > 0)
+               {
+                  nbClientsActif++;
+               }
+               else if (possedePanier.Count() > 0)
+               {
+                  nbClientsPotentiel++;
+               }
+               else
+               {
+                  nbClientsVisiteurs++;
+               }
+            }
+            List<int> lstStats = new List<int>();
+            lstStats.Add(nbClientsActif);
+            lstStats.Add(nbClientsPotentiel);
+            lstStats.Add(nbClientsVisiteurs);
+            return PartialView("Gestionnaire/StatsVendeurSpecifique", lstStats);
+         }
+         else
+         {
+            db.Connection.Close();
+            //Le vendeur envoyer n'est pas dans la liste des vendeurs
+            return new HttpStatusCodeResult(HttpStatusCode.NotAcceptable);
+         }  
+      }
+
+      public ActionResult listeDernieresConnexion(int id)
+      {
+
+
+         return View();
+      }
+
       public ActionResult ddlChanger(string id)
       {
          List<Inactiver> cbClients = creeClient();

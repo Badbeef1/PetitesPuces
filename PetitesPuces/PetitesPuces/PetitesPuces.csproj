@@ -488,6 +488,7 @@
     <Content Include="Views\Client\Evaluations.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\RedevancesDues.cshtml" />
     <Content Include="Views\Gestionnaire\ClientInactiverStats.cshtml" />
+    <Content Include="Views\Shared\Gestionnaire\StatsVendeurSpecifique.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

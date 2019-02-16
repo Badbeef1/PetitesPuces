@@ -38,6 +38,9 @@ namespace PetitesPuces.Models
       //Listes de tout les vendeurs
       public List<PPVendeurs> lstVendeurs { get; set; }
 
+      //Liste des stats client par vendeur pour le premier vendeur
+      public List<int> lstClientsVendeur { get; set; }
+
       public StatistiquesViewModel()
       {
 

@@ -38,7 +38,7 @@ namespace PetitesPuces.Controllers
 
             foreach (var commande in commandesNonTraite)
             {
-                List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>();
+                List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>() ;
                 var query = (from detailsCommande in db.PPDetailsCommandes
                              where detailsCommande.NoCommande.Equals(commande.NoCommande)
                              select detailsCommande

@@ -36,6 +36,36 @@
          var myselect = document.getElementById("ddlNbClients");
          alert(myselect.options[myselect.selectedIndex].value);
          //TODO: Requête ajax qui va permettre de refaire le tableau des dernières connexion en fonction du nombre d'item.
+         
+         $.ajax({
+            url: "/Gestionnaire/listeDernieresConnexion",
+            data: { "id": myselect.options[myselect.selectedIndex].value },
+            success: successListe,
+            error: error,
+         });
+      }
+      function statsClientParVendeur() {
+         var myselect = document.getElementById("ddlVendeurs");
+         //alert(myselect.options[myselect.selectedIndex].value);
+         //TODO: Requête ajax qui va permettre de refaire
+         $.ajax({
+            url: "/Gestionnaire/StatsClientParVendeur",
+            data: { "id": myselect.options[myselect.selectedIndex].value},
+            success: success,
+            error: error,
+         });
+      }
+
+      function success(model) {
+         console.log(model);
+         $('#stats_vendeur_client').html(model);
+      }
+      function successListe(model) {
+         console.log(model);
+      }
+
+      function error() {
+         console.log('Erreur');
       }
    </script>
 
@@ -88,21 +118,6 @@
          <div class="col-md-2"></div>
       </div>
 
-      <hr class="m-5" />
-
-      <div class="text-center p-3">
-         <h3>Nombre de connexions en tant que client: <span style="color:rgb(0, 123, 255);">@Model.nbConnexionsClient</span></h3>
-      </div>
-      <div class="row">
-         <div class="col-md-2"></div>
-
-         <!-- BAR CHART Connexions -->
-         <!-- BAR END -->
-
-         <div class="col-md-2"></div>
-      </div>
-
-      <hr class="m-5" />
 
       <!--Section nombres de visites d'un vendeur-->
       <hr class="m-5" />
@@ -122,31 +137,22 @@
       <hr class="m-5" />
 
       <!-- Section vendeur -->
-
       <div class="text-center p-3">
          <h3>Statistique d'un vendeur spécifique</h3>
       </div>
 
       <label for="tbRechercheVendeur">Nom du vendeur : </label>
-      <select id="ddlVendeurs">
+      <select id="ddlVendeurs" onchange="statsClientParVendeur();">
          @foreach (var vend in Model.lstVendeurs)
          {
             <option value="@vend.NoVendeur">@vend.NomAffaires</option>
          }
       </select>
-
-
-      <div class="row">
-         <!-- Clients d'un vendeur categorie-->
-         <div class="box box-danger col-md-12 my-auto">
-            <div class="box-body chart-responsive">
-               <div class="chart" id="clientsVendeur-chart" style="height: 300px; position: relative;"></div>
-               <h5>Clients de ce vendeur</h5>
-            </div>
-         </div>
-         <!-- END CHART -->
+      <div id="stats_vendeur_client">
+         @Html.Partial("Gestionnaire/StatsVendeurSpecifique",Model.lstClientsVendeur)
       </div>
 
+      <hr class="m-5" />
       <div class="text-center p-3 m-3">
          <h3>Liste des clients d'un vendeur</h3>
       </div>
@@ -214,7 +220,7 @@
                   <option value="30">30</option>
                </select>
             </span>
-            
+
          </div>
       </div>
 
@@ -316,7 +322,7 @@
       //Section vendeur
 
       //Clients CHART
-      var donutClients = new Morris.Donut({
+      /*var donutClients = new Morris.Donut({
          element: 'clientsVendeur-chart',
          resize: true,
          colors: ["#17a2b8", "#007bff", "#6c757d"],
@@ -326,7 +332,7 @@
             { label: "Clients visiteurs", value: 10232 }
          ],
          hideHover: 'auto'
-      });
+      });*/
 
 
    })
