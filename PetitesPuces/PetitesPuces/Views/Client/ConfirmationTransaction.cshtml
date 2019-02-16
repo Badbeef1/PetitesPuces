@@ -40,6 +40,10 @@
                 <div class="row">@TempData["DateAutorisation"]</div>
                 <div class="row">@TempData["InfoSuppl"]</div>
             </div>
+                    if(ViewData["CheckPoint"] != null)
+                    {
+                        <div>@ViewData["CheckPoint"].ToString()</div>
+                    }
                 }
                 else
                 {
@@ -84,15 +88,16 @@
         </div>
     </div>
     @if(Model != null){
-    @Html.Partial("Facture", (PPCommandes)ViewBag.Commande)
-
     <script>
-        var valeurComm = @Model.NoCommande;
-        $("#formPDF").attr('action', '/PDFFacture/' + valeurComm + '.pdf');
+            @{
+            <text>
+        console.log(@{
+            Model.ToString();
+        })
+                </text>
+            }
     </script>
-    <form id="formPDF">
-        <div class="text-center"><input type="submit" class="btn btn-primary" value="Imprimer en PDF" formtarget="_blank" /></div>
-    </form>
+    
     }
     <!--On affiche la facture-->
 

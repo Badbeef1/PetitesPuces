@@ -730,7 +730,7 @@ namespace PetitesPuces.Controllers
 
 
                     ViewData["cbChecked"] = tarif;
-                    decimal dclPoids = decimal.Parse(poids, new NumberFormatInfo { NumberDecimalSeparator = "." });
+                    decimal dclPoids = (decimal)double.Parse(poids);
                     // On trouve le code poids
                     var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
                                          where pLiv.PoidsMin <= dclPoids && pLiv.PoidsMax >= dclPoids
@@ -1003,16 +1003,26 @@ namespace PetitesPuces.Controllers
 
                 // Poids de ma livraison
                 var poidsLivraison = from pLiv in contextPP.GetTable<PPTypesPoids>()
-                                     where pLiv.PoidsMin <= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ",")) && pLiv.PoidsMax >= Decimal.Parse(InfoSuppl.Split('-')[2].Replace(".", ","))
+                                     where pLiv.PoidsMin <= (decimal)double.Parse(InfoSuppl.Split('-')[2]) && pLiv.PoidsMax >= (decimal)double.Parse(InfoSuppl.Split('-')[2])
                                      orderby pLiv.CodePoids
                                      select pLiv;
 
+                PPPoidsLivraisons typeLivraison = null;
                 // Type de livraison
-                var typeLivraison = from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
+                if ((decimal)double.Parse(InfoSuppl.Split('-')[3]) == 0){
+                    typeLivraison = (PPPoidsLivraisons)(from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
                                     where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
-                                    typeLiv.Tarif.Equals(Decimal.Parse(InfoSuppl.Split('-')[3].Replace(".", ",")))
-                                    select typeLiv;
+                                    typeLiv.CodeLivraison.Equals(1)
+                                    select typeLiv).ToList().First();
+                }
+                else
+                {
+                    typeLivraison = (PPPoidsLivraisons) (from typeLiv in contextPP.GetTable<PPPoidsLivraisons>()
+                                    where typeLiv.CodePoids.Equals(poidsLivraison.First().CodePoids) &&
+                                    typeLiv.Tarif.Equals((decimal)double.Parse(InfoSuppl.Split('-')[3]))
+                                    select typeLiv).ToList().First();
 
+                }
                 // Trouver prochain numéro de commande
                 var numCommande = from commandeTrouver in contextPP.GetTable<PPCommandes>()
                                   orderby commandeTrouver.NoCommande descending
@@ -1023,23 +1033,21 @@ namespace PetitesPuces.Controllers
                 {
                     try
                     {
-                        contextPP.Connection.Open();
                         Char c = new Char();
                         c = 'N';
                         // Création de la commande
                         commande = new PPCommandes
                         {
-                            // MontAvantTx TPS/TVQ ???????
                             NoCommande = maxCommande,
                             NoClient = panierCommander.First().NoClient,
                             NoVendeur = panierCommander.First().NoVendeur,
                             DateCommande = DateTime.ParseExact(DateAutorisation, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                            CoutLivraison = Decimal.Parse(InfoSuppl.Split('-')[3]),
-                            TypeLivraison = typeLivraison.First().CodeLivraison,
-                            MontantTotAvantTaxes = Decimal.Parse(InfoSuppl.Split('-')[4]),
-                            TPS = Decimal.Parse(InfoSuppl.Split('-')[5]),
-                            TVQ = Decimal.Parse(InfoSuppl.Split('-')[6]),
-                            PoidsTotal = Decimal.Parse(InfoSuppl.Split('-')[2]),
+                            CoutLivraison = (decimal)double.Parse(InfoSuppl.Split('-')[3]),
+                            TypeLivraison = typeLivraison.CodeLivraison,
+                            MontantTotAvantTaxes = (decimal)double.Parse(InfoSuppl.Split('-')[4]),
+                            TPS = (decimal)double.Parse(InfoSuppl.Split('-')[5]),
+                            TVQ = (decimal)double.Parse(InfoSuppl.Split('-')[6]),
+                            PoidsTotal = (decimal)double.Parse(InfoSuppl.Split('-')[2]),
                             Statut = c,
                             NoAutorisation = NoAutorisation
                         };
@@ -1118,8 +1126,8 @@ namespace PetitesPuces.Controllers
                             NoCommande = commande.NoCommande,
                             DateVente = commande.DateCommande,
                             NoAutorisation = commande.NoAutorisation,
-                            FraisLesi = Decimal.Parse(FraisMarchand),
-                            Redevance = Decimal.Parse((commande.MontantTotAvantTaxes * (vendeur.First().Pourcentage / 100)).ToString()),
+                            FraisLesi = (decimal)double.Parse(FraisMarchand),
+                            Redevance = (decimal)double.Parse((commande.MontantTotAvantTaxes * (vendeur.First().Pourcentage/100)).ToString()),
                             FraisLivraison = commande.CoutLivraison,
                             FraisTPS = commande.TPS,
                             FraisTVQ = commande.TVQ
@@ -1127,14 +1135,13 @@ namespace PetitesPuces.Controllers
                         ViewBag.Commande = commande;
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
-                        trans.Complete();
                         String directory = Server.MapPath("~/PDFFacture");
                         if (!Directory.Exists(directory))
                         {
                             Directory.CreateDirectory(directory);
                         }
                         String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
-                        var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
+                        var actionResult = new Rotativa.ActionAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
                         var byteArray = actionResult.BuildFile(ControllerContext);
                         var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
                         fileStream.Write(byteArray, 0, byteArray.Length);
@@ -1142,6 +1149,7 @@ namespace PetitesPuces.Controllers
                     }
                     catch (Exception e)
                     {
+                        
                         ViewData["CheckPoint"] = e.StackTrace + "-----------------------|||||||||||||||||||||-------------------------" + e.Message + "-----------------------|||||||||||||||||||||-------------------------" + e;
                     }
 
@@ -1161,7 +1169,7 @@ namespace PetitesPuces.Controllers
                 Directory.CreateDirectory(directory);
             }
             String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
-            var actionResult = new Rotativa.PartialViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
+            var actionResult = new Rotativa.ViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
             var byteArray = actionResult.BuildFile(ControllerContext);
             var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
             fileStream.Write(byteArray, 0, byteArray.Length);
