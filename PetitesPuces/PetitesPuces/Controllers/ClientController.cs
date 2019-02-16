@@ -1176,8 +1176,9 @@ namespace PetitesPuces.Controllers
                         {
                             Directory.CreateDirectory(directory);
                         }
+                        
                         String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
-                        var actionResult = new Rotativa.ActionAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
+                        var actionResult = new Rotativa.ActionAsPdf("TestFacture", commande) { PageSize = Rotativa.Options.Size.A4 };
                         var byteArray = actionResult.BuildFile(ControllerContext);
                         var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
                         fileStream.Write(byteArray, 0, byteArray.Length);
@@ -1194,6 +1195,10 @@ namespace PetitesPuces.Controllers
             return View(commande);
         }
 
+        public ActionResult TestFacture(PPCommandes comm)
+        {
+            return View(comm);
+        }
        public ActionResult Facture()
         {
             PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()
