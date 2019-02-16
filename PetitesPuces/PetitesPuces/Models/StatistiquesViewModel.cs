@@ -44,6 +44,8 @@ namespace PetitesPuces.Models
       //Dictionnaire pour le graphique du nombre de visites d'un client pour un vendeur
       public Dictionary<PPClients,int> dicVisitesClientsVendeurs { get; set; }
 
+      public List<TotalCommandesClientParVendeurViewModel> lstTotalCommandes { get; set; }
+
       public StatistiquesViewModel()
       {
 

@@ -1285,8 +1285,30 @@ namespace PetitesPuces.Controllers
          }
 
 
+         //Aller chercher le total des commandes de chaque client par vendeur
+         List<TotalCommandesClientParVendeurViewModel> lstTotCommandes = new List<TotalCommandesClientParVendeurViewModel>();
+         PPVendeurs vendeurStatistique = vendeurs.First();
+         foreach (var cli in clients)
+         {
+            double montantTotalCommandes = 0;
+            //double dblPrixTotal = 
+            var commandeClient = (from commande in db.GetTable<PPCommandes>()
+                                  where (commande.NoClient.Equals(cli.NoClient)) && (commande.NoVendeur.Equals(vendeurStatistique.NoVendeur))
+                                  orderby commande.DateCommande descending
+                                  select commande
+                                  ).ToList();
+            if(commandeClient.Count > 0)
+            {
+               foreach (var com in commandeClient)
+               {
+                  double dblMontantTotal = Convert.ToDouble(com.MontantTotAvantTaxes + com.TPS + com.TVQ + com.CoutLivraison);
+                  montantTotalCommandes += dblMontantTotal;
+               }
+               lstTotCommandes.Add(new TotalCommandesClientParVendeurViewModel(cli, vendeurStatistique, montantTotalCommandes, Convert.ToDateTime(commandeClient.First().DateCommande)));
+            }
+         }
 
-            StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
+         StatistiquesViewModel statistiquesViewModel = new StatistiquesViewModel();
          //Instancier les propriétés du model
          statistiquesViewModel.nbVendeurAccepte = nbVendeurActif;
          statistiquesViewModel.nbVendeurRefuse = nbVendeurInactif;
@@ -1322,6 +1344,8 @@ namespace PetitesPuces.Controllers
          statistiquesViewModel.lstClientsVendeur = lstStats;
 
          statistiquesViewModel.dicVisitesClientsVendeurs = dicVisitesClientsVendeurs;
+
+         statistiquesViewModel.lstTotalCommandes = lstTotCommandes;
 
          db.Connection.Close();
          return View(statistiquesViewModel);
@@ -1437,6 +1461,56 @@ namespace PetitesPuces.Controllers
 
             db.Connection.Close();
             return PartialView("Gestionnaire/GraphiqueVisitesClientVendeur", dicVisitesClientsVendeurs);
+         }
+         else
+         {
+            db.Connection.Close();
+            //Le vendeur envoyer n'est pas dans la liste des vendeurs
+            return new HttpStatusCodeResult(HttpStatusCode.NotAcceptable);
+         }
+
+      }
+
+      public ActionResult ListeTotalCommandesClient(int id)
+      {
+         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+         db.Connection.Open();
+
+         //Aller chercher le total des commandes de chaque client par vendeur
+         List<TotalCommandesClientParVendeurViewModel> lstTotCommandes = new List<TotalCommandesClientParVendeurViewModel>();
+         var vendeurSelectionne = (from v in db.GetTable<PPVendeurs>()
+                                   where v.NoVendeur.Equals(id)
+                                   select v
+                                   ).ToList();
+
+         if(vendeurSelectionne.Count() > 0)
+         {
+            var clients = (from cl in db.GetTable<PPClients>()
+                           select cl
+               ).ToList();
+
+
+            //PPVendeurs vendeurStatistique = vendeurs.First();
+            foreach (var cli in clients)
+            {
+               double montantTotalCommandes = 0;
+               //double dblPrixTotal = 
+               var commandeClient = (from commande in db.GetTable<PPCommandes>()
+                                     where (commande.NoClient.Equals(cli.NoClient)) && (commande.NoVendeur.Equals(vendeurSelectionne.First().NoVendeur))
+                                     orderby commande.DateCommande descending
+                                     select commande
+                                     ).ToList();
+               if (commandeClient.Count > 0)
+               {
+                  foreach (var com in commandeClient)
+                  {
+                     double dblMontantTotal = Convert.ToDouble(com.MontantTotAvantTaxes + com.TPS + com.TVQ + com.CoutLivraison);
+                     montantTotalCommandes += dblMontantTotal;
+                  }
+                  lstTotCommandes.Add(new TotalCommandesClientParVendeurViewModel(cli, vendeurSelectionne.First(), montantTotalCommandes, Convert.ToDateTime(commandeClient.First().DateCommande)));
+               }
+            }
+            return PartialView("Gestionnaire/ListeTotalCommandesClients", lstTotCommandes);
          }
          else
          {

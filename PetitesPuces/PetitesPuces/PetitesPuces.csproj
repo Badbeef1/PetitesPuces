@@ -385,6 +385,7 @@
     <Compile Include="Models\Province.cs" />
     <Compile Include="Models\SaisieCommandeViewModel.cs" />
     <Compile Include="Models\StatistiquesViewModel.cs" />
+    <Compile Include="Models\TotalCommandesClientParVendeurViewModel.cs" />
     <Compile Include="Models\ValidationDateVente.cs" />
     <Compile Include="Models\VisitesClients.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -492,6 +493,7 @@
     <Content Include="Views\Shared\Gestionnaire\StatsVendeurSpecifique.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\ListeDerniereConnexions.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\GraphiqueVisitesClientVendeur.cshtml" />
+    <Content Include="Views\Shared\Gestionnaire\ListeTotalCommandesClients.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
