@@ -112,36 +112,41 @@
     const string strBrouillon = "Brouillon";
     const string strNouveauMessage = "NouveauMessage";
     const string strEnvoye = "Envoyer";
+
+    const string triDate = "date";
+    const string triExpediteur = "expediteur";
+    const string triDestinataire = "destinataire";
+    const string triDestinataireExpediteur = "destinataireExpediteur";
 }
 
 @using (Html.BeginForm())
 {
-    <nav class=" navbar bg-light">
-        @Html.Hidden("ElementSelectionner")
-        @Html.Hidden("uneAction")
-        <ul class="navbar-nav navbar-expand bd-navbar">
-            <li class="nav-item">
-                <a href="@Url.Action("Index/NouveauMessage")" class="nav-link"><i class="fas fa-plus"></i> Nouveau Message</a>
-            </li>
-            @if (ViewBag.LaPage == strBoiteReception)
-            {
+<nav class=" navbar bg-light">
+    @Html.Hidden("ElementSelectionner")
+    @Html.Hidden("uneAction")
+    <ul class="navbar-nav navbar-expand bd-navbar">
+        <li class="nav-item">
+            <a href="@Url.Action("Index/NouveauMessage")" class="nav-link"><i class="fas fa-plus"></i> Nouveau Message</a>
+        </li>
+        @if (ViewBag.LaPage == strBoiteReception)
+        {
             <li class="nav-item aucun-Select">
                 <button type="button" class="btn btn-link" value="lu" onclick="desTachesSurTous(this)"><i class="far fa-envelope-open"></i> Marquer tous comme lu</button>
             </li>
-            }
-            <li class="nav-item un-Select">
-                <button type="button" class="btn btn-link" value="rep" onclick="uneTache(this)"><i class="fas fa-reply"></i> Répondre</button>
-            </li>
-            <li class="nav-item un-Select">
-                <button type="button" class="btn btn-link" value="trans" onclick="uneTache(this)"><i class="fas fa-reply-all"></i> Transférer</button>
-            </li>
+        }
+        <li class="nav-item un-Select">
+            <button type="button" class="btn btn-link" value="rep" onclick="uneTache(this)"><i class="fas fa-reply"></i> Répondre</button>
+        </li>
+        <li class="nav-item un-Select">
+            <button type="button" class="btn btn-link" value="trans" onclick="uneTache(this)"><i class="fas fa-reply-all"></i> Transférer</button>
+        </li>
 
-            <li class="nav-item unOuPlus-Select">
-                <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
-            </li>
+        <li class="nav-item unOuPlus-Select">
+            <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
+        </li>
 
-            @if (ViewBag.LaPage == strBoiteReception)
-            {
+        @if (ViewBag.LaPage == strBoiteReception)
+        {
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="lu" onclick="desTaches(this)"><i class="far fa-envelope-open"></i> Marquer comme lu</button>
             </li>
@@ -149,35 +154,57 @@
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="nonlu" onclick="desTaches(this)"><i class="far fa-envelope"></i> Marquer comme non lu</button>
             </li>
-            }
-            @if (ViewBag.LaPage == strSupprimeDefinitivement)
-            {
+        }
+        @if (ViewBag.LaPage == strSupprimeDefinitivement)
+        {
             <li class="nav-item unOuPlus-Select">
                 <button type="button" class="btn btn-link" value="suppdef" onclick="desTaches(this)"><i class="fa fa-trash-alt"> Supprimer</i></button><!--Définitivement-->
             </li>
-            }
+        }
 
-            @if (ViewBag.LaPage != strBoiteReception && ViewBag.LaPage != strSupprimeDefinitivement)
-            {
-                <li class="nav-item aucun-Select">
-                    <button type="button" class="btn btn-link aucun-Select" value="supp"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
-                </li>
-            }
-            @if (ViewBag.LaPage == strSupprimeDefinitivement)
-            {
-                <li class="nav-item aucun-Select">
-                    <button type="button" class="btn btn-link aucun-Select" value="suppdef"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
-                </li>
-            }
-            @if (ViewBag.LaPage == strBoiteSupprime)
-            {
-                <li class="nav-item unOuPlus-Select">
-                    <button type="button" class="btn btn-link" value="restau" onclick="desTaches(this)"><i class="fas fa-undo"></i> Restaurer</button>
-                </li>
-            }
+        @if (ViewBag.LaPage != strBoiteReception && ViewBag.LaPage != strSupprimeDefinitivement)
+        {
+            <li class="nav-item aucun-Select">
+                <button type="button" class="btn btn-link aucun-Select" value="supp"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
+            </li>
+        }
+        @if (ViewBag.LaPage == strSupprimeDefinitivement)
+        {
+            <li class="nav-item aucun-Select">
+                <button type="button" class="btn btn-link aucun-Select" value="suppdef"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
+            </li>
+        }
+        @if (ViewBag.LaPage == strBoiteSupprime)
+        {
+            <li class="nav-item unOuPlus-Select">
+                <button type="button" class="btn btn-link" value="restau" onclick="desTaches(this)"><i class="fas fa-undo"></i> Restaurer</button>
+            </li>
+        }
+    </ul>
+    <!--Tri-->
 
-        </ul>
-    </nav>
+    @if (ViewBag.LaPage == strBrouillon || ViewBag.LaPage == strEnvoye || ViewBag.LaPage == strBoiteReception || ViewBag.LaPage == strBoiteSupprime)
+    {
+        <div class="ml-auto">
+            <label>Trié par: </label>
+            <button type="button" class="btn btn-outline-primary" value="! + @triDate" onclick="$.gestionTri(this.value)">Date <i class="fas fa-sort-amount-up"></i></button>
+
+            @if (ViewBag.LaPage == strBrouillon)
+            {
+                <button type="button" class="btn btn-outline-primary" value="@triDestinataire">Destinataire <i class="fas fa-sort-alpha-up"></i></button>
+            }
+            else if (ViewBag.LaPage == strBoiteSupprime || ViewBag.LaPage == strEnvoye)
+            {
+                <button type="button" class="btn btn-outline-primary" value="@triDestinataireExpediteur" >Destinataire/Expéditeur <i class="fas fa-sort-alpha-up"></i></button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-outline-primary" value="@triExpediteur">Expéditeur <i class="fas fa-sort-alpha-up"></i></button>
+            }
+        </div>
+    }
+
+</nav>
 
     <div class="d-flex flex-column">
 
@@ -247,3 +274,4 @@
     </div>
 }
 @Html.PagedListPager(Model, page => Url.Action("Index/Reception", new { @page = 1 }))
+

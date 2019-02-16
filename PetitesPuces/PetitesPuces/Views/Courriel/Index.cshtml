@@ -100,7 +100,7 @@
                             {
                                 affichage = strBoiteSupprime;
 
-                                if (Model.strPage == strBoiteSupprime )
+                                if (Model.strPage == strBoiteSupprime)
                                 {
                                     strStyleFocus = "background-color: lavender;";
                                 }
@@ -148,35 +148,55 @@
                                     }
                                     @lieux.Description
                                 </a>
-                                    @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
-                                    {
-                                        <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
-                                    }
+                                @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
+                                {
+                                    <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
+                                }
                             </li>
-                            }
-                         </ul>
-                    </nav>
-                </div>
-
-                <main class="col-12 col-md-9 col-xl-10" id="divCorps">
-                    @{
-                        ViewBag.LaPage = Model.strPage;
-
-                        if (Model.strPage == strNouveauMessage)
-                        {
-                            @Html.Partial("RedactionMessage", Model)
                         }
-                        else if (Model.strPage == strAffichageMessage)
-                        {
-                            @Html.Partial("AffichageMessage", Model.AfficheMessage)
-                        }
-                        else
-                        {
-                            @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
-                        }
-                    }
-                </main>
-                </div>
+                    </ul>
+                </nav>
             </div>
+
+            <main class="col-12 col-md-9 col-xl-10" id="divCorps">
+                @{
+                    ViewBag.LaPage = Model.strPage;
+
+                    if (Model.strPage == strNouveauMessage)
+                    {
+                        @Html.Partial("RedactionMessage", Model)
+                    }
+                    else if (Model.strPage == strAffichageMessage)
+                    {
+                        @Html.Partial("AffichageMessage", Model.AfficheMessage)
+                    }
+                    else
+                    {
+                        @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
+                    }
+                }
+            </main>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $.gestionTri = function (leBouton) {
+        $.ajax({
+            url: '@Url.Action("TriMessage", "Courriel")',
+            dataType: "json",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ "strTri": leBouton }),
+            success: function (response) {
+                alert('cool');
+            },
+            failure: function (response) {
+                alert('ok');
+            },
+            error: function (response) {
+                alert('Triste');
+            }
+        });
+    }
+    </script>
 </body>
 </html>
