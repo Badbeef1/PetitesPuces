@@ -11,6 +11,7 @@ namespace PetitesPuces.Models
       public PPHistoriquePaiements historique { get; set; }
       public IQueryable<IGrouping<PPClients,PPArticlesEnPanier>> lstClientPanier { get; set; }
       public int nbVisites { get; set; }
+      public List<int> lstStatsClients { get; set; }
 
       //Constructeur pour la page d'accueil vendeur
       public AccueilVendeurViewModel(Dictionary<PPCommandes, List<PPDetailsCommandes>> lstCommandesNonTraites, IQueryable<IGrouping<PPClients, PPArticlesEnPanier>> lstClientPanier, int nbVisites)

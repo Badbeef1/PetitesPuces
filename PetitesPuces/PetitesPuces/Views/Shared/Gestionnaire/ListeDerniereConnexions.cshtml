@@ -16,14 +16,14 @@
       <td class="col">@cli.NoClient</td>
       @if ((cli.Prenom.Trim().Equals("")) && (cli.Nom.Trim().Equals("")))
       {
-         <td class="col">
-            @cli.Prenom @cli.Nom
-         </td>
+      <td class="col">
+         N/A
+      </td>
       }
       else
       {
          <td class="col">
-           N/A
+            @cli.Prenom @cli.Nom
          </td>
       }
       <td class="col">@cli.NbConnexions</td>
