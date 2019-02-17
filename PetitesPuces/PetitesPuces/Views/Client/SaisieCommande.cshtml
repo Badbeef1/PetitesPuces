@@ -339,26 +339,26 @@
                                                                 <span><strong>@ppTypeLivraison.Description</strong></span>
                                                             }
                                                         }
-                                                         <br /> <br />
-<div>
-                                                @if (Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
-                                                {<div class="col-4 text-right"><strong>(0.00 $)</strong><br /> <br /></div> <br />
-
-                                                }
-                                                else
-                                                {<div class="col-4 text-right"><strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /></div> <br />
-
-                                                }
-
-                                            </div>
-                                                    
                                                     }
-                                        <br />
-                                    </div>
+                                                    </div>
+                                                    <div class="col-4 text-right">
+                                                        @if (Double.Parse(Model.vendeur.LivraisonGratuite.ToString()) <= dblSousTotal && ppTypeLivraison.CodeLivraison == 1)
+                                                        {<strong>(0.00 $)</strong><br /> <br /> <br />
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <strong>(@Double.Parse(lstMontantLivraison.Where(m => m.CodeLivraison == ppTypeLivraison.CodeLivraison).First().Tarif.ToString()).ToString("0.00") $)</strong><br /> <br /><br />
+
+                                                        }
+                                                    </div>
+                                                
                                                 </div>
                                         }
+                                                <br />
+                                            </div>
+                                        
                                 </div>
-                                </div >
 
                             }
                             else
