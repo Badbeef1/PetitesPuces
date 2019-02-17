@@ -145,10 +145,17 @@ namespace PetitesPuces.Views
 
                 PPMessages messageATransfere = contextPP.PPMessages
                     .FirstOrDefault(mess => mess.NoMsg == message);
-
+                courrielVM.messageCourriel = "\n\n\n" +
+                    "______________________________________________________________________ \n\n"
+                    + messageATransfere.DescMsg;
                 courrielVM.objetMessage = "Re: " + messageATransfere.objet;
 
-                courrielVM = GetListePourRedactionMessage(utilisateur, message, courrielVM);
+                courrielVM = GetListePourRedactionMessage(utilisateur, -52354, courrielVM);
+                //Properties are read-only
+                var tuple = courrielVM.lstDestinataires.FirstOrDefault(x => x.Item2 == messageATransfere.NoExpediteur);
+                var tupleNew = new Tuple<short, long, string, string, bool>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, true);
+                courrielVM.lstDestinataires.Remove(tuple);
+                courrielVM.lstDestinataires.Add(tupleNew);
             }
             else if(id == strNouveauMessage && message != null)
             {
@@ -206,9 +213,13 @@ namespace PetitesPuces.Views
                 .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
                 */
 
+                #if DEBUG
+                                utilisateur = contextPP.PPVendeurs.FirstOrDefault();
+                #else
+                                    Console.WriteLine("Mode=Release"); 
+                #endif
 
 
-                utilisateur = contextPP.PPVendeurs.FirstOrDefault();
 
                 lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
                 strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
