@@ -1241,5 +1241,99 @@ namespace PetitesPuces.Controllers
 
             return View(commande);
         }
+
+        [HttpPost]
+        public bool AjoutAuPanier(int intNoProduit, int intNbProduit)
+        {
+            bool booResultat = false;
+            
+            //Récupère information du client
+            PPClients unClient;
+            if ((unClient = Session["clientObj"] as PPClients) != null)
+            {
+                //trouve le produit
+                PPProduits unProduit;
+
+                if ((unProduit = contextPP.PPProduits
+                    .FirstOrDefault(predicate: prod => prod.NoProduit == intNoProduit)) != null)
+                {
+                    //Vérifie que la quantité est disponible
+
+                    //recherche si le client a déjà m'y en panier ce produit
+                    PPArticlesEnPanier articleDuPanier = contextPP.PPArticlesEnPanier
+                        .FirstOrDefault(predicate: article => article.NoClient == unClient.NoClient
+                            && article.NoVendeur == unProduit.NoVendeur
+                            && article.NoProduit == unProduit.NoProduit);
+
+                    int intNbDejaPanier = articleDuPanier != null ? articleDuPanier.NbItems.Value : 0;
+
+                    if (intNbProduit + intNbDejaPanier <= unProduit.NombreItems)
+                    {
+                        if (articleDuPanier != null)
+                        {
+                            articleDuPanier.NbItems =  short.Parse((intNbProduit + intNbDejaPanier).ToString());
+                        }
+                        else
+                        {
+                            long nouveauNumero = contextPP.PPArticlesEnPanier.Count() > 0 ? contextPP.PPArticlesEnPanier.OrderByDescending(article => article.NoPanier).First().NoPanier + 1 : 1;
+
+
+                            PPArticlesEnPanier nouveauArticle = new PPArticlesEnPanier
+                            {
+                                DateCreation = DateTime.Now,
+                                NbItems = short.Parse(intNbProduit.ToString()),
+                                NoClient = unClient.NoClient,
+                                NoPanier = nouveauNumero,
+                                NoProduit = unProduit.NoProduit,
+                                NoVendeur = unProduit.NoVendeur
+                            };
+
+                            contextPP.PPArticlesEnPanier.InsertOnSubmit(nouveauArticle);
+                        }
+
+                        try
+                        {
+                            contextPP.SubmitChanges();
+                            booResultat = true;
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine(ex);
+                        }
+                    }
+                }
+            }
+
+            return booResultat;
+        }
+
+        [HttpPost]
+        public int EtatProduitPanier(int intNoProduit)
+        {
+            int intNbProduitDejaPanier = 0;
+            
+            //Récupère information du client
+            PPClients unClient;
+            if ((unClient = Session["clientObj"] as PPClients) != null)
+            {
+                //trouve le produit
+                PPProduits unProduit;
+
+                if ((unProduit = contextPP.PPProduits
+                    .FirstOrDefault(predicate: prod => prod.NoProduit == intNoProduit)) != null)
+                {
+
+                    //recherche si le client a déjà m'y en panier ce produit
+                    PPArticlesEnPanier articleDuPanier = contextPP.PPArticlesEnPanier
+                        .FirstOrDefault(predicate: article => article.NoClient == unClient.NoClient
+                            && article.NoVendeur == unProduit.NoVendeur
+                            && article.NoProduit == unProduit.NoProduit);
+
+                    intNbProduitDejaPanier = articleDuPanier != null ? articleDuPanier.NbItems.Value : 0;
+                }
+            }
+
+            return intNbProduitDejaPanier;
+        }
     }
 }
