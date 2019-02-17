@@ -22,8 +22,6 @@
                  <h1 id="spPrix">@dblPrixDemande.ToString("0.00") $</h1>
                  <span><span class="font-weight-bold">Vendu par:</span> <a href="#">@Model.Produit.PPVendeurs.NomAffaires</a></span>
                  <br />
-
-
                  @{
                      var sansDecimal = Model.FormattedRating - (Model.FormattedRating % 1);
 
@@ -51,7 +49,7 @@
              </p>
             <hr>
             <p>
-               <!--<button type="button" class="btn btn-outline-primary">Ajouter au panier <span class="fas fa-shopping-cart"></span></button>-->
+               <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit"  onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "") >Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
                <span id="spQqt"><span class="font-weight-bold">Quantité restant:</span> @Model.Produit.NombreItems</span>
             </p>
             <hr>
@@ -65,3 +63,34 @@
       </div>
    </div>
 </div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modAjoutPanier" aria-hidden="true" style="z-index:1072;">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ajout au panier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="color:red; display:none;" id="messageAvertissement">
+                    Attention! Le produit est déjà <br /><span id="spQuantite"></span> fois dans votre panier!
+                </p>
+                <p style="color:red; display:none;" id="messageIndisponible">
+                    L'inventaire ne permet pas de commander plus de ce produit!
+                </p>
+                <div class="d-flex" id="divControleQuantite">
+                    <label for="numNbAjoutPanier" class="col-form-label mr-auto">Quantité: </label>
+                    <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" max="10" step="1" value="1" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnAjoutProduit" type="button" class="btn btn-outline-success" value="@Model.Produit.NoProduit"  onclick="$.AjoutAuPanier(this.value)">Ajouter</button>
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

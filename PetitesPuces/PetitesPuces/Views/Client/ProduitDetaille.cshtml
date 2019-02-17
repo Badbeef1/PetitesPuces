@@ -9,10 +9,12 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Page produit détaillé</title>
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
     <style>
         .checked {
             color: orange;
@@ -24,16 +26,73 @@
         @RenderPage("~/Views/Client/index.cshtml")
     </div>
     <br /><br /><br />
-                <div class="container mb-5">
-                    @Html.Partial("Client/DetailProduit", Model)
+    <div class="container mb-5">
+        @Html.Partial("Client/DetailProduit", Model)
 
-                    @Html.Partial("Client/EcrireEvaluation", Model)
+        @Html.Partial("Client/EcrireEvaluation", Model)
 
-                    @if (Request.UrlReferrer != null)
-                    {
-                    <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
-                    }
-                </div>
+        @if (Request.UrlReferrer != null)
+        {
+            <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
+        }
+    </div>
+    <script type="text/javascript">
+    $.AjoutAuPanier = function (numeroDeProduit) {
+        let qqtProduitDesire = $('#numNbAjoutPanier').val();
 
+        $.ajax({
+            url: '@Url.Action("AjoutAuPanier", "Client")',
+            contentType: 'application/json;',
+            type: "POST",
+            data: JSON.stringify({ "intNoProduit": numeroDeProduit, "intNbProduit": qqtProduitDesire }),
+            success: function (elementRetour, status, xhr) {
+                alert('parfait => ' + elementRetour);
+                $('#modAjoutPanier').modal('hide');
+            },
+            failure: function (response) {
+                alert("La requete d'ajout a échouée!");
+            },
+            error: function (response) {
+                alert("Une erreur dans la requete d'ajout!");
+            }
+        });
+    }
+
+    $.VerificationDisponibilite = function (numeroDeProduit) {
+
+        $.ajax({
+            url: '@Url.Action("EtatProduitPanier", "Client")',
+            contentType: 'application/json;',
+            type: "POST",
+            data: JSON.stringify({ "intNoProduit": numeroDeProduit }),
+            success: function (elementRetour, status, xhr) {
+                alert('parfait => ' + elementRetour);
+
+                if (elementRetour == @Model.Produit.NombreItems) {
+                    $('#messageIndisponible').css("display", "");
+                    $('#divControleQuantite').removeClass("d-flex");
+                    $('#divControleQuantite').css("display", "none");
+                    $('#btnAjoutProduit').css("visibility", "hidden");
+
+                    $('#modAjoutPanier').modal('show');
+                }
+                else if (elementRetour > 0) {
+                    $('#messageAvertissement').css("display", "");
+                    $('#spQuantite').text(elementRetour);
+                    $('#numNbAjoutPanier').prop("max", @Model.Produit.NombreItems - elementRetour);
+
+                    $('#modAjoutPanier').modal('show');
+                }
+
+            },
+            failure: function (response) {
+                alert("La requete d'ajout a échouée!");
+            },
+            error: function (response) {
+                alert("Une erreur dans la requete d'ajout!");
+            }
+        });  
+    }
+    </script>
 </body>
 </html>

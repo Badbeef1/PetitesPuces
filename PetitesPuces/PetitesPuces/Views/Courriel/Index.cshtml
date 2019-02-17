@@ -180,32 +180,29 @@
     </div>
     <script type="text/javascript">
         $.gestionTri = function (leBouton) {
-            console.log(leBouton);
-
-
             var leTri = leBouton.value;
-        $.ajax({
-            url: '@Url.Action("AppliqueTri", "Courriel")',
-            type: "POST",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ "strTri": leTri, "laPage": '@Model.strPage' }),
-            success: function (elementRetour,status, xhr) {
-                $('#divCorps').html(elementRetour);
+            $.ajax({
+                url: '@Url.Action("AppliqueTri", "Courriel")',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ "strTri": leTri, "laPage": '@Model.strPage' }),
+                success: function (elementRetour,status, xhr) {
+                    $('#divCorps').html(elementRetour);
 
-                var leNouveauTri = leTri.substr(0, 1) == '!' ? leTri.substr(1) : "!" + leTri;
+                    var leNouveauTri = leTri.substr(0, 1) == '!' ? leTri.substr(1) : "!" + leTri;
 
-                $('#' + leBouton.id).val(leNouveauTri);
+                    $('#' + leBouton.id).val(leNouveauTri);
 
-                $('#triActuel').val(leNouveauTri);
-            },
-            failure: function (response) {
-                console.log("la requete du tri a échoué!");
-            },
-            error: function (response) {
-                console.log("Une erreur dans la requete du tri!");
-            }
-        });
-    }
+                    $('#triActuel').val(leNouveauTri);
+                },
+                failure: function (response) {
+                    console.log("la requete du tri a échoué!");
+                },
+                error: function (response) {
+                    console.log("Une erreur dans la requete du tri!");
+                }
+            });
+        }
     </script>
 </body>
 </html>
