@@ -91,5 +91,11 @@
     {
         @Html.Partial("Facture", Model)
     }
-    </body>
+    <script type="text/javascript">
+        function openTab(th) {
+            window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+        }
+    </script>
+    <button name="@Model.NoCommande" class="btn btn-primary" onclick="openTab(this)">Version imprimable</button>
+</body>
 </html>
