@@ -34,7 +34,7 @@
                         <tr data-toggle="collapse" data-target="#@("detailCommande"+uneComm.NoCommande)" class="clickable">
                             <th scope="row" class="text-right">@counter</th>
                             <td class="text-right">
-                                Commande #: @uneComm.NoCommande
+                                <a href="@(Server.MapPath("~/PDFFacture/"+uneComm.NoCommande+".pdf"))" target="_blank">Commande #: @uneComm.NoCommande</a>
                             </td>
                             <td class="text-left">
                                 @uneComm.PPClients.Prenom
