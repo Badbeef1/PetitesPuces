@@ -137,6 +137,7 @@ namespace PetitesPuces.Controllers
             try
             {
                 contextPP.SubmitChanges();
+                System.Diagnostics.Debug.WriteLine(strConfiguration);
             }
             catch (Exception e)
             {

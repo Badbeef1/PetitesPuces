@@ -855,7 +855,7 @@ namespace PetitesPuces.Controllers
         }
 
         [HttpPost]
-        public ActionResult GestionProfilVendeur(PPVendeurs vendeur, String strProvenence, String police, String fond, String baniere)
+        public ActionResult GestionProfilVendeur(PPVendeurs vendeur, String strProvenence, String police, String fond, String baniere )
         {
             List<Province> lstProvinces = new List<Province>
             {
@@ -915,29 +915,7 @@ namespace PetitesPuces.Controllers
 
             if (ModelState.IsValid)
             {
-                HttpPostedFileBase fichier = ViewData["fichier"] as HttpPostedFileBase;
-
-                if (fichier != null && fichier.ContentLength > 0)
-                    try
-                    {
-                        string path = Path.Combine(Server.MapPath("~/Content/images"),
-                                                   Path.GetFileName(fichier.FileName));
-                        fichier.SaveAs(path);
-                        baniere = fichier.FileName;
-                        ViewBag.Message = "File uploaded successfully";
-
-                    }
-                    catch (Exception ex)
-                    {
-                        ViewBag.Message = "ERROR:" + ex.Message.ToString();
-                    }
-                else
-                {
-                    ViewBag.Message = "You have not specified a file.";
-                    ViewBag.uneErreur = "echec";
-                }
-
-
+                
                 if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
                 {
                     vendeurDao.modifierProfilInformationPersonnel(vendeur);
@@ -1005,13 +983,48 @@ namespace PetitesPuces.Controllers
                 }
                 else
                 {
-                    vendeurDao.modifierProfilConfiguration(police, fond, baniere);
-                    ViewBag.uneErreur = "succes";
+                    if (Request.Files.Count > 0)
+                    {
+                        HttpPostedFileBase fichier = Request.Files[0];
+                        string strNouveauNomFichier = "";
+
+                        if (fichier != null && fichier.ContentLength > 0)
+                        {
+                            try
+                            {
+                                if (fichier.ContentType == "image/jpeg" || fichier.ContentType == "image/jpg" ||
+                                    fichier.ContentType == "image/pjep" || fichier.ContentType == "image/gif" ||
+                                    fichier.ContentType == "image/x-png" || fichier.ContentType == "image/png")
+                                {
+                                    //Le nom sera l'adresse courriel du vendeur
+                                    string path = Path.Combine(Server.MapPath("~/Content/images"),
+                                           vendeurOriginel.AdresseEmail + Path.GetExtension(fichier.FileName));
+                                    fichier.SaveAs(path);
+                                    strNouveauNomFichier = vendeurOriginel.AdresseEmail + Path.GetExtension(fichier.FileName);
+                                }
+                                else
+                                {
+                                    ViewBag.messageErreurFichier = "Seulement les formats jpeg, jpg, pjep, gif, x-png, png sont abceptés!";
+                                    ViewBag.uneErreur = "echec";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ViewBag.messageErreurFichier = "Le fichier n'a pas été téléversé!";
+                                ViewBag.uneErreur = "echec";
+                            }
+                        }
+
+                        if (ViewBag.uneErreur != "echec")
+                        {
+                            vendeurDao.modifierProfilConfiguration(police, fond, strNouveauNomFichier);
+                            ViewBag.uneErreur = "succes";
+                        }
+                    } 
                 }
             }
             else
             {
-                ViewBag.Message = "You have not specified a file.";
                 ViewBag.uneErreur = "echec";
             }
 

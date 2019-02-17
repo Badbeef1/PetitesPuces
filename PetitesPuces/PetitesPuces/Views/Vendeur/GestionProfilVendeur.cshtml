@@ -115,6 +115,7 @@
                 <div class="card-body">
                     <div class="form-row form-group">
                         @Html.HiddenFor(x => x.Configuration)
+                        @Html.Hidden("LeFichier");
                         <div class="col-3">
                             <label class="col-form-label">Couleur police</label>
                             @Html.TextBoxFor(x => police, new { @class = "form-control" })
@@ -228,6 +229,8 @@
                         .attr('src', e.target.result)
                         .width(1000)
                         .height(250);
+
+                    $('#LeFichier').val($('ViewData_Fichier_').value);
                 };
 
                 reader.readAsDataURL(input.files[0]);
