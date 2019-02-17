@@ -68,7 +68,7 @@
         var action = tabChampsModification[0];
         var sujet = tabChampsModification[1];
 
-        document.getElementById("ElementSelectionner").value = sujet;
+        document.getElementById("ElementSelectionner").value = "des_" + sujet;
         document.getElementById("uneAction").value = action;
 
         document.getElementsByTagName("form")[0].submit();
@@ -291,7 +291,7 @@
         @foreach (var contenu in Model)
         {
             string strMessDebut = new string(contenu.Message.DescMsg.Take(60 - contenu.Message.objet.Count()).ToArray());
-            string strDateEnvioFormat = contenu.Message.dateEnvoi.HasValue ? contenu.Message.dateEnvoi.Value.ToString("dd MMMM yyyy") : "";
+            string strDateEnvioFormat = contenu.Message.dateEnvoi.HasValue ? contenu.Message.dateEnvoi.Value.ToString("yyyy-MM-dd") : "";
 
             string strActionAffichage = "";
             if (ViewBag.LaPage == strBrouillon)
@@ -300,7 +300,14 @@
             }
             else
             {
-                strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg });
+                if (contenu.Destinataire is null)
+                {
+                    strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg, @leType = "Message"});
+                }
+                else
+                {
+                    strActionAffichage = Url.Action("Index/AffichageMessage", new { @message = contenu.Message.NoMsg, @leType = "Destinataire" });
+                }
             }
 
             string strMessageEtat = contenu.Destinataire != null ? (contenu.Destinataire.EtatLu == 0 ? "font-weight: bold;" : "" ): "";
