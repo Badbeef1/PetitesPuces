@@ -12,23 +12,31 @@
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
-    
+    <script src="~/Scripts/jquery-3.3.1.slim.min.js"></script>
+
     <style>
         .input-validation-error {
             border: 1px solid #ff0000;
             background-color: white;
         }
     </style>
+    <script type="text/javascript">
+        function envoieSection(laSection) {
+            document.querySelectorAll('#strProvenence').forEach(unElement => {
+                unElement.value = laSection.value;
+            });
+        }
+    </script>
 </head>
 <body>
     @Html.Partial("Test")
-    
+
     <div class="container mt-4">
         @Html.Partial("~/Views/Client/InformationPersonnel.cshtml", Model)
         <br />
         @Html.Partial("ModificationMDP", Model)
     </div>
-    <div class="modal" tabindex="-1" role="dialog" aria-labelledby="modSucces" aria-hidden="true">
+    <div class="modal" tabindex="-1" role="dialog" id="modSucces" aria-hidden="true" style="z-index:1072;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -46,7 +54,7 @@
             </div>
         </div>
     </div>
-    <div class="modal" tabindex="-1" role="dialog" aria-labelledby="modEchec" aria-hidden="true">
+    <div class="modal" tabindex="-1" role="dialog" aria-labelledby="modEchec" id="modEchec" aria-hidden="true" style="z-index:1072;">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -64,22 +72,23 @@
             </div>
         </div>
     </div>
-    <script src="~/Scripts/jquery-3.3.1.slim.min.js"></script>
+
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
     <script type="text/javascript">
         @{
-            if (TempData["msgConfirmation"] != null)
+            if (ViewBag.uneErreur != null)
             {
+
                 var script = "";
-                if ((String)TempData["msgConfirmation"] == "succes")
+                if (((String)ViewBag.uneErreur) == "succes")
                 {
-                    script = "$('#modSucces').modal('show');";
+                    script += "$('#modSucces').modal('show');";
                 }
                 else
                 {
-                    script = "$('#modEchec').modal('show');";
+                    script += "$('#modEchec').modal('show');";
                 }
 
                 @MvcHtmlString.Create(script);

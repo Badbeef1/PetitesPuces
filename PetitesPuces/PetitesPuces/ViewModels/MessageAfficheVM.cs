@@ -12,5 +12,8 @@ namespace PetitesPuces.ViewModels
         public short ShrEtat { get; set; }
         public Models.PPDestinataires Destinataire { get; set; }
         public Models.PPMessages Message { get; set; }
+
+        public DateTime dtDatePourTri { get; set; }
+        public string strNomdestinataireExpediteurPourTri { get; set; }
     }
 }

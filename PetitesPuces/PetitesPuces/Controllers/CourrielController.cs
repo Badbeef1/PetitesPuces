@@ -22,6 +22,8 @@ namespace PetitesPuces.Views
         const String actionSupprimer = "supp";
         const String actionSupprimerDefinitivement = "suppdef";
         const String actionRestaurer = "restau";
+        const String actionRepondre = "rep";
+        const String actionTransfert = "trans";
 
         const string strBoiteReception = "Reception";
         const string strAffichageMessage = "AffichageMessage";
@@ -34,50 +36,20 @@ namespace PetitesPuces.Views
        public static string msgErreur = "";
        public static string msgSucces = "";
 
+        const int intNbMessageParPage = 1;
+
         // GET: Courriel
-        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType)
+        public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType, string triActuel, string pageAncienne, int? page)
         {
-            
             //Liste de tout les lieux pour la bar de navigation
             List<PPLieu> lstLieu = contextPP.PPLieu.ToList();
 
-
             //Type d'utilisateur
-            //String strTypeUtilisateur = "";
-            dynamic utilisateur;
-            long lngNoUtilisateur = 0;
+            var infoUtil = RecupereInformationBaseUtilisateur();
 
-            if (Session["clientObj"] != null)
-            {
-                //strTypeUtilisateur = strClient;
-                utilisateur = contextPP.PPClients
-                    .FirstOrDefault(client => client.NoClient == (Session["clientObj"] as PPClients).NoClient);
-                lngNoUtilisateur = (utilisateur as PPClients).NoClient;
-            }
-            else if (Session["vendeurObj"] != null)
-            {
-                //strTypeUtilisateur = strVendeur;
-                utilisateur = contextPP.PPVendeurs
-                    .FirstOrDefault(vendeur => vendeur.NoVendeur == (Session["vendeurObj"] as PPVendeurs).NoVendeur);
-
-                lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
-            }
-            else
-            {
-                //strTypeUtilisateur = strGestionnaire;
-                /*
-                utilisateur = contextPP.PPGestionnaire
-                .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
-                */
-
-
-
-                utilisateur = contextPP.PPVendeurs.FirstOrDefault();
-
-                lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
-
-                //lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
-            }
+            dynamic utilisateur = infoUtil.utilisateur;
+            long lngNoUtilisateur = infoUtil.lngNoUtilisateur;
+            string strAdresseCourriel = infoUtil.strAdresse;
 
             //Si des modifications
             if (ElementSelectionner != null && uneAction != null)
@@ -116,7 +88,141 @@ namespace PetitesPuces.Views
             courrielVM.msgSuccesCourriel = msgSucces;
             msgErreur = msgSucces = "";
 
-         List<PPDestinataires> lstDestinataire = new List<PPDestinataires>();
+
+            //tri
+            if (pageAncienne == id && triActuel != null)
+            {
+                ViewData["triActuel"] = triActuel;
+            }
+
+            var toutLesMessages = GenereListeMessage(id, lngNoUtilisateur);
+
+            List<PPDestinataires> lstDestinataire = toutLesMessages.lstDestinataire;
+            List<PPMessages> lstMessage = toutLesMessages.lstMessage;
+
+
+            if (id == "AffichageMessage" && message.HasValue)
+            {
+                courrielVM.AfficheMessage = AffichageMessage(message.Value, strAdresseCourriel, lngNoUtilisateur, leType);
+            }
+            else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
+            {
+                List<ViewModels.MessageAfficheVM> lstTempo = ListeCourrielDestinataire(lstDestinataire).Concat(ListeCourrielMessage(lstMessage)).ToList();
+
+                if (pageAncienne == id && triActuel != null)
+                {
+                    lstTempo = TriMessage(lstTempo, triActuel);
+                }
+
+                courrielVM.iplListeMessageAffiche = lstTempo.ToPagedList(page ?? 1, intNbMessageParPage);
+            }
+            else if (id == strEnvoye || id == strBrouillon)
+            {
+                List<ViewModels.MessageAfficheVM> lstTempo = ListeCourrielMessage(lstMessage).ToList();
+
+                if (pageAncienne == id && triActuel != null)
+                {
+                    lstTempo = TriMessage(lstTempo, triActuel);
+                }
+
+
+                courrielVM.iplListeMessageAffiche = lstTempo.ToPagedList(page ?? 1, intNbMessageParPage);
+            }
+            else if (id == strNouveauMessage && uneAction == actionTransfert && message != null)
+            {
+                PPMessages messageATransfere = contextPP.PPMessages
+                    .FirstOrDefault(mess => mess.NoMsg == message);
+
+                courrielVM.messageCourriel = messageATransfere.DescMsg;
+                courrielVM.objetMessage = "Tr: " + messageATransfere.objet;
+                courrielVM.addresseExpediteur = strAdresseCourriel;
+
+                string chemin = Server.MapPath("~/Uploads/");
+                courrielVM.fichierJoint?.SaveAs(chemin + Path.GetFileName(messageATransfere.FichierJoint.ToString()));
+            }
+            else if (id == strNouveauMessage && uneAction == actionRepondre && message != null)
+            {
+
+                PPMessages messageATransfere = contextPP.PPMessages
+                    .FirstOrDefault(mess => mess.NoMsg == message);
+
+                courrielVM.objetMessage = "Re: " + messageATransfere.objet;
+
+                courrielVM = GetListePourRedactionMessage(utilisateur, message, courrielVM);
+            }
+            else if(id == strNouveauMessage && message != null)
+            {
+                var msgObj = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == message);
+                courrielVM.noMessageOuvert = msgObj.NoMsg;
+                courrielVM.messageCourriel = msgObj.DescMsg;
+                courrielVM.objetMessage = msgObj.objet;
+                courrielVM = GetListePourRedactionMessage(utilisateur,message,courrielVM);
+            }
+            else
+            {
+                List<ViewModels.MessageAfficheVM> lstTempo = ListeCourrielDestinataire(lstDestinataire).ToList();
+
+                if (pageAncienne == id && triActuel != null)
+                {
+                    lstTempo = TriMessage(lstTempo, triActuel);
+                }
+
+                courrielVM.iplListeMessageAffiche = lstTempo.ToPagedList(page ?? 1, intNbMessageParPage);
+            }
+
+
+
+            return View(courrielVM);
+        }
+
+        private (dynamic utilisateur, long lngNoUtilisateur, string strAdresse) RecupereInformationBaseUtilisateur()
+        {
+            dynamic utilisateur;
+            long lngNoUtilisateur = 0;
+            string strAdresseCourriel = "";
+
+            if (Session["clientObj"] != null)
+            {
+                //strTypeUtilisateur = strClient;
+                utilisateur = contextPP.PPClients
+                    .FirstOrDefault(client => client.NoClient == (Session["clientObj"] as PPClients).NoClient);
+                lngNoUtilisateur = (utilisateur as PPClients).NoClient;
+                strAdresseCourriel = (utilisateur as PPClients).AdresseEmail;
+            }
+            else if (Session["vendeurObj"] != null)
+            {
+                //strTypeUtilisateur = strVendeur;
+                utilisateur = contextPP.PPVendeurs
+                    .FirstOrDefault(vendeur => vendeur.NoVendeur == (Session["vendeurObj"] as PPVendeurs).NoVendeur);
+
+                lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
+                strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
+            }
+            else
+            {
+                //strTypeUtilisateur = strGestionnaire;
+                /*
+                utilisateur = contextPP.PPGestionnaire
+                .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
+                */
+
+
+
+                utilisateur = contextPP.PPVendeurs.FirstOrDefault();
+
+                lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
+                strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
+
+                //strAdresseCourriel = (utilisateur as PPGestionnaire).AdresseEmail;
+
+                //lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
+            }
+            return (utilisateur, lngNoUtilisateur, strAdresseCourriel);
+        }
+
+        private (List<PPDestinataires> lstDestinataire, List<PPMessages> lstMessage) GenereListeMessage(string id, long lngNoUtilisateur)
+        {
+            List<PPDestinataires> lstDestinataire = new List<PPDestinataires>();
             List<PPMessages> lstMessage = new List<PPMessages>();
 
             switch (id)
@@ -132,7 +238,7 @@ namespace PetitesPuces.Views
                     lstMessage = contextPP.PPMessages
                         .Where(predicate: mess => mess.Lieu == ((id == strBrouillon) ? 4 : 2) && mess.NoExpediteur == lngNoUtilisateur)
                         .ToList();
-                    
+
 
                     break;
                 case strBoiteSupprime:
@@ -147,37 +253,10 @@ namespace PetitesPuces.Views
                     break;
             }
 
-
-            if (id == "AffichageMessage" && message.HasValue)
-            {
-                courrielVM.AfficheMessage = AffichageMessage(message.Value, utilisateur, leType);
-            }
-            else if (id == strBoiteSupprime || id == strSupprimeDefinitivement)
-            {
-                courrielVM.iplListeMessageAffiche = ListeCourrielDestinataire(lstDestinataire).Concat(ListeCourrielMessage(lstMessage)).ToPagedList(1, 20);
-            }
-            else if (id == strEnvoye || id == strBrouillon)
-            {
-                courrielVM.iplListeMessageAffiche = ListeCourrielMessage(lstMessage).ToPagedList(1, 20);
-            }
-            else if(id == strNouveauMessage && message != null)
-            {
-                var msgObj = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == message);
-                courrielVM.noMessageOuvert = msgObj.NoMsg;
-                courrielVM.messageCourriel = msgObj.DescMsg;
-                courrielVM.objetMessage = msgObj.objet;
-                courrielVM = GetListePourRedactionMessage(utilisateur,message,courrielVM);
-            }
-            else
-            {
-
-                courrielVM.iplListeMessageAffiche = ListeCourrielDestinataire(lstDestinataire).ToPagedList(1, 20); //1,20 tempo
-            }
-
-
-
-            return View(courrielVM);
+            return (lstDestinataire, lstMessage);
         }
+
+
 
         private List<ViewModels.MessageAfficheVM> ListeCourrielDestinataire(List<PPDestinataires> lstDestinataires)
         {
@@ -193,7 +272,8 @@ namespace PetitesPuces.Views
                 {
                     Destinataire = dest,
                     Message = dest.PPMessages,
-                    ShrEtat = 0
+                    ShrEtat = 0,
+                    dtDatePourTri = dest.PPMessages.dateEnvoi.Value
                 };
 
 
@@ -205,14 +285,21 @@ namespace PetitesPuces.Views
                     String strNomAffichage = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom;
 
                     messVM.StrNomAffichageExpediteur = strNomAffichage;
+                    messVM.strNomdestinataireExpediteurPourTri = unClient.AdresseEmail;
                 }
                 else if ((dynExpediteur = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoExpediteur)) != null)
                 {
-                    messVM.StrNomAffichageExpediteur = (dynExpediteur as PPVendeurs).NomAffaires;
+                    PPVendeurs unVendeur = (dynExpediteur as PPVendeurs);
+
+                    messVM.StrNomAffichageExpediteur = unVendeur.NomAffaires;
+                    messVM.strNomdestinataireExpediteurPourTri = unVendeur.AdresseEmail;
                 }
                 else
                 {
-                    messVM.StrNomAffichageExpediteur = (dynExpediteur as PPGestionnaire).AdresseEmail;
+                    PPGestionnaire unGestionnaire = (dynExpediteur as PPGestionnaire);
+
+                    messVM.StrNomAffichageExpediteur = unGestionnaire.AdresseEmail;
+                    messVM.strNomdestinataireExpediteurPourTri = unGestionnaire.AdresseEmail;
                 }
 
                 lstMessageAfficher.Add(messVM);
@@ -235,7 +322,8 @@ namespace PetitesPuces.Views
                 ViewModels.MessageAfficheVM messVM = new ViewModels.MessageAfficheVM
                 {
                     Message = mess,
-                    ShrEtat = 0
+                    ShrEtat = 0,
+                    dtDatePourTri = mess.dateEnvoi.Value
                 };
 
                 List<PPDestinataires> lstDestinataires = contextPP.PPDestinataires
@@ -260,14 +348,21 @@ namespace PetitesPuces.Views
                         String strNomAffichage = (unClient.Nom is null || unClient.Prenom is null) ? unClient.AdresseEmail : unClient.Prenom + " " + unClient.Nom;
 
                         messVM.StrNomAffichageExpediteur = strNomAffichage;
+                        messVM.strNomdestinataireExpediteurPourTri = unClient.AdresseEmail;
                     }
                     else if ((dynDestinataire = contextPP.PPVendeurs.FirstOrDefault(predicate: vendeur => vendeur.NoVendeur == intNoDestinataire)) != null)
                     {
-                        messVM.StrNomAffichageExpediteur = (dynDestinataire as PPVendeurs).NomAffaires;
+                        PPVendeurs unVendeur = (dynDestinataire as PPVendeurs);
+
+                        messVM.StrNomAffichageExpediteur = unVendeur.NomAffaires;
+                        messVM.strNomdestinataireExpediteurPourTri = unVendeur.AdresseEmail;
                     }
                     else
                     {
-                        messVM.StrNomAffichageExpediteur = (dynDestinataire as PPGestionnaire).AdresseEmail;
+                        PPGestionnaire unGestionnaire = (dynDestinataire as PPGestionnaire);
+
+                        messVM.StrNomAffichageExpediteur = unGestionnaire.AdresseEmail;
+                        messVM.strNomdestinataireExpediteurPourTri = unGestionnaire.AdresseEmail;
                     }
                 }
 
@@ -277,33 +372,74 @@ namespace PetitesPuces.Views
             return lstMessageAfficher;
         }
 
-
-        private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, dynamic utilisateur, string strTypeMessage)
+        //tri 
+        public List<ViewModels.MessageAfficheVM> TriMessage(List<ViewModels.MessageAfficheVM> lstMessagesOuDestinataires, string strTri)
         {
-            String strDestinataire = "";
+            const string triDate = "date";
+            const string triExpediteur = "expediteur";
+            const string triDestinataire = "destinataire";
+            const string triDestinataireExpediteur = "destinataireExpediteur";
+
+            switch (strTri)
+            {
+                case triDate:
+                    lstMessagesOuDestinataires = lstMessagesOuDestinataires.OrderBy(mess => mess.dtDatePourTri).ToList();
+                    break;
+                case "!" + triDate:
+                    lstMessagesOuDestinataires = lstMessagesOuDestinataires.OrderByDescending(mess => mess.dtDatePourTri).ToList();
+                    break;
+                case triExpediteur:
+                case triDestinataire:
+                case triDestinataireExpediteur:
+                    lstMessagesOuDestinataires = lstMessagesOuDestinataires.OrderBy(mess => mess.strNomdestinataireExpediteurPourTri).ToList();
+                    break;
+                case "!" + triExpediteur:
+                case "!" + triDestinataire:
+                case "!" + triDestinataireExpediteur:
+                    lstMessagesOuDestinataires = lstMessagesOuDestinataires.OrderByDescending(mess => mess.strNomdestinataireExpediteurPourTri).ToList();
+                    break;
+            }
+
+            return lstMessagesOuDestinataires;
+        }
+        
+        public ActionResult AppliqueTri(string laPage, string strTri)
+        {
+            var InfoUtil = RecupereInformationBaseUtilisateur();
+
+            var LesMessages = GenereListeMessage(laPage, InfoUtil.lngNoUtilisateur);
+
+            List<ViewModels.MessageAfficheVM> lstATrier;
+
+            if (laPage == strBoiteSupprime)
+            {
+                lstATrier = ListeCourrielDestinataire(LesMessages.lstDestinataire).Concat(ListeCourrielMessage(LesMessages.lstMessage)).ToList();
+            }
+            else if (laPage == strEnvoye || laPage == strBrouillon)
+            {
+                lstATrier = ListeCourrielMessage(LesMessages.lstMessage).ToList();
+            }
+            else
+            {
+                lstATrier = ListeCourrielDestinataire(LesMessages.lstDestinataire).ToList();
+            }
+
+            ViewBag.LaPage = laPage;
+            ViewData["triActuel"] = strTri;
+
+            return PartialView("ListeCourriel", TriMessage(lstATrier,strTri).ToPagedList(1, intNbMessageParPage));
+        }
+
+
+        private ViewModels.MessageAfficheVM AffichageMessage(int intNoMessage, string strAdresseDestinataire, long lngNoDestinataire, string strTypeMessage)
+        {
             String strExpediteur = "";
-            long lngNoDestinataire = 0;
 
             dynamic expediteur;
             int intNoExpediteur = 0;
+
             PPDestinataires destinataires = null;
             PPMessages messages = null;
-
-            switch (utilisateur)
-            {
-                case PPClients c:
-                    strDestinataire = c.AdresseEmail;
-                    lngNoDestinataire = c.NoClient ;
-                    break;
-                case PPVendeurs v:
-                    strDestinataire = v.AdresseEmail;
-                    lngNoDestinataire = v.NoVendeur;
-                    break;
-                case PPGestionnaire g:
-                    strDestinataire = g.AdresseEmail;
-                    lngNoDestinataire = g.NoGestionnaire;
-                    break;
-            }
 
             if (strTypeMessage == "Destinataire")
             {
@@ -358,7 +494,7 @@ namespace PetitesPuces.Views
             {
                 Destinataire = destinataires,
                 Message = destinataires is null ? messages : destinataires.PPMessages,
-                StrNomAffichageDestinataire = strDestinataire,
+                StrNomAffichageDestinataire = strAdresseDestinataire,
                 StrNomAffichageExpediteur = strExpediteur,
                 ShrEtat = 0
             };
@@ -409,7 +545,7 @@ namespace PetitesPuces.Views
                 {
                     //Parcour les destinataires pour trouver les messages de l'utilisateur brouillon
                     List<PPMessages> lstMessage04 = contextPP.PPMessages
-                        .Where(predicate: mess => mess.NoExpediteur == lngNoUtilisateur && mess.dateEnvoi.HasValue == false)
+                        .Where(predicate: mess => mess.NoExpediteur == lngNoUtilisateur && mess.Lieu == 4)
                         .ToList();
 
                     dicNbNotification.Add(unLieu.NoLieu, lstMessage04.Count);
@@ -423,32 +559,66 @@ namespace PetitesPuces.Views
         private void optionListeMessages(List<String> lstElementATraiter,long lngNoUtilisateur, string strAction)
         {
             List<PPDestinataires> lstTempoDestinataire = new List<PPDestinataires>();
+            List<PPMessages> lstTempoMessages = new List<PPMessages>();
 
             lstElementATraiter.ForEach(element =>
             {
-                PPDestinataires destinataires = contextPP.PPDestinataires
-                    .FirstOrDefault(predicate: desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == int.Parse(element));
+                var arrObjTraiter = element.Split('_');
+                string strType = arrObjTraiter[0];
+                int intNoMessage = int.Parse(arrObjTraiter[1]);
 
-                switch (strAction)
+                if (strType == "des")
                 {
-                    case actionLu:
-                        destinataires.EtatLu = 1;
-                        break;
-                    case actionNonLu:
-                        destinataires.EtatLu = 0;
-                        break;
-                    case actionSupprimer:
-                        destinataires.Lieu = 3;
-                        break;
-                    case actionRestaurer:
-                        destinataires.Lieu = 1;
-                        break;
-                    case actionSupprimerDefinitivement:
-                        destinataires.Lieu = 5;
-                        break;
-                }
 
-                lstTempoDestinataire.Add(destinataires);
+                    PPDestinataires destinataires = contextPP.PPDestinataires
+                        .FirstOrDefault(predicate: desti => desti.NoDestinataire == lngNoUtilisateur && desti.NoMsg == intNoMessage);
+
+                    switch (strAction)
+                    {
+                        case actionLu:
+                            destinataires.EtatLu = 1;
+                            break;
+                        case actionNonLu:
+                            destinataires.EtatLu = 0;
+                            break;
+                        case actionSupprimer:
+                            destinataires.Lieu = 3;
+                            break;
+                        case actionRestaurer:
+                            destinataires.Lieu = 1;
+                            break;
+                        case actionSupprimerDefinitivement:
+                            destinataires.Lieu = 5;
+                            break;
+                    }
+
+                    lstTempoDestinataire.Add(destinataires);
+                }
+                else
+                {
+                    PPMessages messages = contextPP.PPMessages
+                        .FirstOrDefault(predicate: mess => mess.NoMsg == intNoMessage);
+
+                    //recherche s'il a des destinataires pour faire la différence entre un brouillon et un message envoyé
+                    int intNbDestinataires = contextPP.PPDestinataires
+                        .Where(predicate: desti => desti.NoMsg == intNoMessage && desti.Lieu != -1)
+                        .Count();
+
+                    switch (strAction)
+                    {
+                        case actionSupprimer:
+                            messages.Lieu = 3;
+                            break;
+                        case actionRestaurer:
+                            messages.Lieu = short.Parse(intNbDestinataires > 0 ? "2" : "4");
+                            break;
+                        case actionSupprimerDefinitivement:
+                            messages.Lieu = 5;
+                            break;
+                    }
+
+                    lstTempoMessages.Add(messages);
+                }
             });
 
             try

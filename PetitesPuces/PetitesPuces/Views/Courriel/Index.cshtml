@@ -76,28 +76,55 @@
                         @foreach (var lieux in Model.lstLieu)
                         {
                             var affichage = "";
+                            string strStyleFocus = "";
+
                             if (lieux.NoLieu == 1)
                             {
                                 affichage = strBoiteReception;
+
+                                if (Model.strPage == strBoiteReception)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 2)
                             {
                                 affichage = strEnvoye;
+
+                                if (Model.strPage == strEnvoye)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 3)
                             {
                                 affichage = strBoiteSupprime;
+
+                                if (Model.strPage == strBoiteSupprime)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 4)
                             {
                                 affichage = strBrouillon;
+
+                                if (Model.strPage == strBrouillon)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
                             else if (lieux.NoLieu == 5)
                             {
                                 affichage = strSupprimeDefinitivement;
+
+                                if (Model.strPage == strSupprimeDefinitivement)
+                                {
+                                    strStyleFocus = "background-color: lavender;";
+                                }
                             }
 
-                            <li class="nav-item mt-2 mb-2">
+                            <li class="nav-item pt-2 pb-2" style="@strStyleFocus">
                                 <a href="@Url.Action("Index/" + affichage)">
                                     @if (lieux.NoLieu == 1)
                                     {
@@ -121,38 +148,61 @@
                                     }
                                     @lieux.Description
                                 </a>
-                                    @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
-                                    {
-                                        <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
-                                    }
-                                </li>
-                            }
-                                </ul>
-                            </nav>
-                        </div>
-
-
-                        <main class="col-12 col-md-9 col-xl-10" id="divCorps">
-                            @{
-                                ViewBag.LaPage = Model.strPage;
-
-                                if (Model.strPage == strNouveauMessage)
+                                @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
                                 {
-                                    @Html.Partial("RedactionMessage", Model)
+                                    <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
                                 }
-                                else if (Model.strPage == strAffichageMessage)
-                                {
-                                    @Html.Partial("AffichageMessage", Model.AfficheMessage)
-                                }
-                                else
-                                {
-                                    @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
-                                }
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
 
-                            }
+            <main class="col-12 col-md-9 col-xl-10" id="divCorps">
+                @{
+                    ViewBag.LaPage = Model.strPage;
 
-                        </main>
-                    </div>
-                </div>
-            </body>
-        </html>
+                    if (Model.strPage == strNouveauMessage)
+                    {
+                        @Html.Partial("RedactionMessage", Model)
+                    }
+                    else if (Model.strPage == strAffichageMessage)
+                    {
+                        @Html.Partial("AffichageMessage", Model.AfficheMessage)
+                    }
+                    else
+                    {
+                        @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
+                    }
+                }
+            </main>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $.gestionTri = function (leBouton) {
+            var leTri = leBouton.value;
+            $.ajax({
+                url: '@Url.Action("AppliqueTri", "Courriel")',
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ "strTri": leTri, "laPage": '@Model.strPage' }),
+                success: function (elementRetour,status, xhr) {
+                    $('#divCorps').html(elementRetour);
+
+                    var leNouveauTri = leTri.substr(0, 1) == '!' ? leTri.substr(1) : "!" + leTri;
+
+                    $('#' + leBouton.id).val(leNouveauTri);
+
+                    $('#triActuel').val(leNouveauTri);
+                },
+                failure: function (response) {
+                    console.log("la requete du tri a échoué!");
+                },
+                error: function (response) {
+                    console.log("Une erreur dans la requete du tri!");
+                }
+            });
+        }
+    </script>
+</body>
+</html>

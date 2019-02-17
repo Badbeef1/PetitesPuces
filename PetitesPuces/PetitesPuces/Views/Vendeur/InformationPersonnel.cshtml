@@ -4,7 +4,7 @@
 {
     @Html.HiddenFor(x => x.NoVendeur)
     @Html.HiddenFor(x => x.AdresseEmail)
-    @Html.Hidden("strProvenence", "informationPersonnel")
+    @Html.Hidden("strProvenence", "")
     <div class="card">
         <h5 class="card-header">Modification du profil de <span>@Html.DisplayFor(model => Model.AdresseEmail)</span></h5>
         <div class="card-body">
@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="card-footer btn-group sPiedPageBouton">
-            <button type="submit" class="btn btn-outline-success">Sauvegarder</button>
+            <button type="submit" class="btn btn-outline-success" value="informationPersonnel" onclick="envoieSection(this)" >Sauvegarder</button>
             <a href="/Vendeur/" class="btn btn-outline-primary">Retour</a>
         </div>
     </div>

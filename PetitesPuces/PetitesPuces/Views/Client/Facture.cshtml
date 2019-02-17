@@ -4,16 +4,15 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<link rel="stylesheet" href="@Server.MapPath("/Content/css/styleGeneral.css")">
+<link rel="stylesheet" href="@Server.MapPath("~/Content/css/styleGeneral.css")">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
-<script src="@Server.MapPath("/Scripts/jquery-3.3.1.min.js")"></script>
+<script src="@Server.MapPath("~/Scripts/jquery-3.3.1.min.js")"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="@Server.MapPath("/Scripts/bootstrap.min.js")"></script>
+<script src="@Server.MapPath("~/Scripts/bootstrap.min.js")"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-
 <style>
     h5 {
         overflow-wrap: break-word;
@@ -21,11 +20,11 @@
 </style>
 <div class="container align-items-center">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 col-xs-5">
             <h1 class="d-flex align-items-end h-100">Commande #@Model.NoCommande</h1>
         </div>
         <div class="offset-md-2"></div>
-        <div class="col-md-5">
+        <div class="col-md-5 col-xs-5">
             <h3 class="d-flex align-items-start" style="float:right">Numéro d'autorisation: @ViewData["NoAutorisation"]</h3>
             <h3 class="d-flex align-items-end" style="float:right">Date: @Model.DateCommande</h3>
         </div>
@@ -149,7 +148,7 @@
                                 @montantTotal $
                             </td>
                         </tr>
-                    }
+                                    }
                 }
             </tbody>
         </table>
@@ -183,23 +182,29 @@
         <div class="col-md-2 text-right">
             <h5>
                 <strong>
-                    @Double.Parse(Model.MontantTotAvantTaxes.ToString()).ToString("0.00") $<br />
-                    @if (Model.CoutLivraison > 0)
-                    {
-                        <span>@Double.Parse(Model.CoutLivraison.ToString()).ToString("0.00") $<br /></span>
-                    }
-                    @if (Model.TPS > 0)
-                    {
+                    <span>
+                        @{
+                            string montAvantTx = ((double)Model.MontantTotAvantTaxes).ToString("0.00");
 
-                        <span>@Double.Parse(Model.TPS.ToString()).ToString("0.00") $<br /></span>
-                    }
-                    @if (Model.TVQ > 0)
-                    {
+                        }
+                         @montAvantTx $<br />
+                    </span>
+                        @if (Model.CoutLivraison > 0)
+                        {
+                            <span>@Double.Parse(Model.CoutLivraison.ToString()).ToString("0.00") $<br /></span>
+                        }
+                        @if (Model.TPS > 0)
+                        {
 
-                        <span>@Double.Parse(Model.TVQ.ToString()).ToString("0.00") $<br /></span>
-                    }
-                    @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString()).ToString("0.00")) $<br />
-                </strong>
+                            <span>@Double.Parse(Model.TPS.ToString()).ToString("0.00") $<br /></span>
+                        }
+                        @if (Model.TVQ > 0)
+                        {
+
+                            <span>@Double.Parse(Model.TVQ.ToString()).ToString("0.00") $<br /></span>
+                        }
+                        @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString()).ToString("0.00")) $<br />
+</strong>
             </h5>
         </div>
     </div>

@@ -1,4 +1,5 @@
-﻿
+﻿@using PetitesPuces.Models
+@model GererCommandeViewModel
 @{
     Layout = null;
 }
@@ -6,140 +7,82 @@
 <html>
 <head>
     <meta charset="utf-8" />
-      <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
-    <title></title>
-    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
 </head>
 <body>
     @Html.Partial("index")
-    <div id="infoPage" style="padding-left:10px;padding-right:10px">
-        <h1 style="text-align:center"><u>Gestion des commandes</u></h1>
-        <!-- PAS SUR ENCORE SI JE VEUX METTRE UN BOUTON OU REFRESH À CHAQUE COCHE DE LIVRAISON
-    <div style="text-align:center">
-            <h1><input type="button" id="btnEnregistrerHaut" value="Enregistrer" class="btn btn-primary"/></h1>
-    </div>
-            -->
-        <div id="commandeCourante">
-            <h2>Commande(s) en cours</h2>
-            <table class="table table-bordered">
-                <tr>
-                    <td>
-                        <table class="table table-bordered">
-                            <tr>
+    <div id="commNonLivrer" class="container">
+        <div class="row">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-right">#</th>
+                        <th scope="col" class="text-right"># de commande</th>
+                        <th scope="col" class="text-left">Prénom</th>
+                        <th scope="col" class="text-left">Nom</th>
+                        <th scope="col" class="text-center"><input id="cbAll" type="checkbox" /></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int counter = 0;
+                    }
+                    @foreach (GererCommandeViewModel.GererCommande comm in Model.lstCommandeNonLivrer)
+                    {
+                        PPCommandes uneComm = comm.commande;
+                        ++counter;
+                        <tr data-toggle="collapse" data-target="#@("detailCommande"+uneComm.NoCommande)" class="clickable">
+                            <th scope="row" class="text-right">@counter</th>
+                            <td class="text-right">
+                                <script type="text/javascript">
+                                    function openTab(th) {
+                                        window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+                                    }
+                                </script>
+                                <a name="@uneComm.NoCommande" class="clickable" onclick="openTab(this)" >Commande #: @uneComm.NoCommande</a>
+                            </td>
+                            <td class="text-left">
+                                @uneComm.PPClients.Prenom
+                            </td>
+                            <td class="text-left">
+                                @uneComm.PPClients.Nom
+                            </td>
+                            <td class="text-center">
+                                Livré
+                                <input class="form-control" type="checkbox" id="@(uneComm.NoCommande + "_checkBox")" />
+                            </td>
+                        </tr>
+                        <div id="@("detailCommande"+uneComm.NoCommande)" class="collapse">
+                            <div class="container">
+                                <div class="row">
+                                    <div id="infoClient_Commande_@uneComm.NoCommande" class="col-md-6">
 
-                                <div style="text-align:left">
-                                    <h3>
-                                        <u>
-                                            Commande #12345
-                                        </u>
-                                    </h3>
-                                    <div style="text-align:left;vertical-align:middle">
-                                        <h5>
-                                            Type de livraison : Poste régulière
-                                        </h5>
                                     </div>
-                                    <div style="text-align:left;vertical-align:middle">
-                                        <h5>
-                                            Poids total : 5.00Kg
-                                        </h5>
-                                    </div>
-                                    <div style="text-align:left;vertical-align:middle">
-                                        <h5>
-                                            No autorisation :123666879
-                                        </h5>
-                                    </div>
-                                    <div style="text-align:left;vertical-align:middle">
-                                        <h5>
-                                            Date de la commande : 22-01-2019
-                                        </h5>
-                                    </div>
+                                    <div id="infoClient_Commande_@uneComm.NoCommande" class="col-md-6">
 
-                                    <div style="text-align:left;vertical-align:middle">
-                                        <h5>
-                                            No client : 123456
-                                        </h5>
-                                    </div>
-                                    <div style="float:right">
-                                        <h5>
-                                            <input id="cbLivrer1" type="checkbox" />
-                                            <label for="cbLivrer1" style="vertical-align:middle"> Livré</label>
-                                        </h5>
                                     </div>
                                 </div>
-                            </tr>
-                            <tr>
-                                <td class="col-1" style="text-align:right"><b>#</b></td>
-                                <td class="col-3" style="text-align:left"><b>Nom de l'article</b></td>
-                                <td class="col-1" style="text-align:right"><b>Quantité</b></td>
-                                <td class="col-2" style="text-align:right"><b>Coût</b></td>
-                                <td class="col-2" style="text-align:right"><b>Total</b></td>
-                            </tr>
-                            <tr>
-                                <td class="col-1" style="text-align:right">123123</td>
-                                <td class="col-3" style="text-align:left">Marteau</td>
-                                <td class="col-1" style="text-align:right">1</td>
-                                <td class="col-2" style="text-align:right">10.99$</td>
-                                <td class="col-2" style="text-align:right">10.99$</td>
-                            </tr>
-                            <tr>
-                                <td class="col-1" style="text-align:right">123124</td>
-                                <td class="col-3" style="text-align:left">Clou</td>
-                                <td class="col-1" style="text-align:right">100</td>
-                                <td class="col-2" style="text-align:right">0.05$</td>
-                                <td class="col-2" style="text-align:right">5.00$</td>
-                            </tr>
-                            <tr>
-                                <td style="border:none"></td>
-                                <td style="border:none"></td>
-                                <td style="border:none"></td>
-                                <td style="border:none"></td>
-                                <td>
-                                    <div id="divStaticCommande" style="float:left">
-                                        Frais de livraison
-                                        <br />
-                                        Sous-total
-                                        <br />
-                                        TPS (5%)
-                                        <br />
-                                        TVQ (9.975%)
-                                        <br />
-                                        <br />
-                                        Total
-                                    </div>
-                                    <div id="divDynamiqueCommande" style="float:right;text-align:right">
-                                        5.00$
-                                        <br />
-                                        20.99 $
-                                        <br />
-                                        1.05 $
-                                        <br />
-                                        2.10 $
-                                        <br />
-                                        <br />
-                                        <b>24.14 $</b>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
+                            </div>
+                        </div>
+                    }
+
+                </tbody>
             </table>
         </div>
-        <div id="historiqueCommande">
-            <h2>Commande(s) complétée(s)</h2>
-            <table class="table table-bordered">
-                <tr>
-                    <td class="col-2" style="text-align:right"><b>Commande</b></td>
-                    <td class="col-3" style="text-align:left"><b>Client</b></td>
-                    <td class="col-2" style="text-align:right"><b>Total</b></td>
-                </tr>
-                <tr>
-                    <td class="col-1" style="text-align:right"><a href="">141414</a></td>
-                    <td class="col-3" style="text-align:left"><a href="">Luc Desmarais</a></td>
-                    <td class="col-1" style="text-align:right">18.39 $</td>
-                </tr>
-            </table>
-        </div>
+    </div>
+
+    <div id="commLivrer" class="container">
+
     </div>
 </body>
 </html>
+
+<link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
