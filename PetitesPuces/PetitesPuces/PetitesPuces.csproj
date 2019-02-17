@@ -367,6 +367,7 @@
     <Compile Include="Models\GestionProduitViewModel.cs" />
     <Compile Include="Models\InactiviteViewModel.cs" />
     <Compile Include="Models\MessageViewModel.cs" />
+    <Compile Include="Models\NouveauMDP.cs" />
     <Compile Include="Models\PPClientViewModel.cs" />
     <Compile Include="Models\ProduitPanier.cs" />
     <Compile Include="Models\ProjetFinal.designer.cs">
@@ -380,6 +381,7 @@
     <Compile Include="Models\StatistiquesViewModel.cs" />
     <Compile Include="Models\TotalCommandesClientParVendeurViewModel.cs" />
     <Compile Include="Models\ValidationDateVente.cs" />
+    <Compile Include="Models\ValiderMotPasse.cs" />
     <Compile Include="Models\VisitesClients.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -487,6 +489,7 @@
     <Content Include="Views\Shared\Gestionnaire\ListeDerniereConnexions.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\GraphiqueVisitesClientVendeur.cshtml" />
     <Content Include="Views\Shared\Gestionnaire\ListeTotalCommandesClients.cshtml" />
+    <Content Include="Views\Connexion\ChangerMDP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
