@@ -68,6 +68,20 @@
             error: error,
          });
       }
+      function listeCommandesTotals() {
+         
+         var myselect = document.getElementById("ddlVendeurs3");
+         //TODO: Requête AJAX qui permet d'aller modifier le grapgique du nombre de visite clients en fonction
+         //du vendeur sélectionné
+
+         $.ajax({
+            url: "/Gestionnaire/ListeTotalCommandesClient",
+            data: { "id": myselect.options[myselect.selectedIndex].value },
+            success: successTotalCommandes,
+            error: error,
+         });
+      }
+
 
       function success(model) {
          console.log(model);
@@ -80,6 +94,11 @@
       function successVisitesClient(model) {
          console.log(model);
          $('#graph_visites_clients').html(model);
+      }
+
+      function successTotalCommandes(model) {
+         console.log(model);
+         $('#liste_commandes_client').html(model);
       }
 
       function error() {
@@ -150,7 +169,7 @@
          }
       </select>
       <div id="graph_visites_clients">
-         @Html.Partial("Gestionnaire/GraphiqueVisitesClientVendeur",Model.dicVisitesClientsVendeurs)
+         @Html.Partial("Gestionnaire/GraphiqueVisitesClientVendeur", Model.dicVisitesClientsVendeurs)
       </div>
 
       <!--Section nombres de visites d'un vendeur-->
@@ -188,58 +207,19 @@
 
       <hr class="m-5" />
       <div class="text-center p-3 m-3">
-         <h3>Liste des clients d'un vendeur</h3>
+         <h3>Liste du total des commandes d'un client par vendeur</h3>
       </div>
+      <label for="tbRechercheVendeur">Nom du vendeur : </label>
+      <select id="ddlVendeurs3" onchange="listeCommandesTotals();">
+         @foreach (var vend in Model.lstVendeurs)
+         {
+            <option value="@vend.NoVendeur">@vend.NomAffaires</option>
+         }
+      </select>
 
-      <table class="table">
-         <tr class="row">
-            <th class="col">Numéro client</th>
-            <th class="col">Nom et prénom</th>
-            <th class="col">Total commande</th>
-            <th class="col">Nb de connexions</th>
-            <th class="col">Date dernière commande</th>
-            <th class="col">Numéro vendeur</th>
-            <th class="col">Nb de connexions</th>
-         </tr>
-         <tr class="row">
-            <td class="col">10002</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1230$</td>
-            <td class="col">122</td>
-            <td class="col">2018-01-13</td>
-            <td class="col">11</td>
-            <td class="col">235</td>
-         </tr>
-         <tr class="row">
-            <td class="col">10002</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1230$</td>
-            <td class="col">122</td>
-            <td class="col">2018-01-13</td>
-            <td class="col">11</td>
-            <td class="col">235</td>
-         </tr>
-         <tr class="row">
-            <td class="col">10002</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1230$</td>
-            <td class="col">122</td>
-            <td class="col">2018-01-13</td>
-            <td class="col">11</td>
-            <td class="col">235</td>
-         </tr>
-         <tr class="row">
-            <td class="col">10002</td>
-            <td class="col">Utilisateur Test</td>
-            <td class="col">1230$</td>
-            <td class="col">122</td>
-            <td class="col">2018-01-13</td>
-            <td class="col">11</td>
-            <td class="col">235</td>
-         </tr>
-      </table>
-
-
+      <div id="liste_commandes_client">
+         @Html.Partial("Gestionnaire/ListeTotalCommandesClients", Model.lstTotalCommandes)
+      </div>
 
       <hr class="m-5" />
 

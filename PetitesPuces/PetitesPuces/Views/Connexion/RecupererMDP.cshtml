@@ -1,7 +1,6 @@
-﻿@model PetitesPuces.Models.userExemple
-@{
-   Layout = null;
-}
+﻿@using PetitesPuces.Models
+@model ValiderMotPasse
+
 
 <!DOCTYPE html>
 
@@ -16,7 +15,18 @@
 
    <!-- Font Awesome (Icons) -->
    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
+   <style type="text/css">
+      .input-validation-error {
+         border: 1px solid #ff0000;
+         background-color: white;
+      }
+      /*Copie de la classe alert de bootstrap*/
+      .field-validation-error {
+         color: #b94a48;
+         background-color: #f2dede;
+         border-color: #eed3d7;
+      }
+   </style>
 </head>
 <body>
    <div class="container" style="min-height: 100vh; display: flex">
@@ -28,38 +38,45 @@
             <h5 class="card-title">Oubli de mot de passe</h5>
 
             <br />
-            @using (Html.BeginForm("RecupererPassword", "Login", FormMethod.Post))
+            @using (Html.BeginForm("RecupererMDP", "Connexion", FormMethod.Post))
             {
-
-               <div class="container">
-                  <!-- Email -->
-                  <div class="input-group mb-3">
-                     <div class="input-group-prepend">
-                        <span class="input-group-text text-center" style="width: 45px">
-                           <i class="fa fa-at" aria-hidden="true"></i>
-                        </span>
-                     </div>
-                     @Html.EditorFor(x => x.username, new { htmlAttributes = new {
-                        @class = "form-control",
-                        @placeholder = "Inscrivez votre courriel",
-                        @style = Model != null && Model.username == null ? "border:1px solid red" : "" }
-                     })
+            <div class="container">
+               <!-- Email -->
+               <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                     <span class="input-group-text text-center" style="width: 45px">
+                        <i class="fa fa-at" aria-hidden="true"></i>
+                     </span>
                   </div>
+                  @Html.EditorFor(x => x.courriel, new { htmlAttributes = new {
+                  @class = "form-control",
+                  @placeholder = "Inscrivez votre courriel",
+                  @style = Model != null && Model.courriel == null ? "border:1px solid red" : "" }
+               })
 
-                  <input type="submit" value="Envoyer" class="btn btn-primary btn-block" />
-                  
-                  <br/>
-                  <p>
-                     <a href="/Connexion" style="text-decoration: none;">
-                        <input type="button" value="Retour à la page de connexion" class="btn btn-primary btn-block" />
-                     </a>
-                  </p>
-                  <p>
-                     <a href="/Internaute" style="text-decoration: none;">
-                        <input type="button" value="Retour à la page d'accueil" class="btn btn-primary btn-block" />
-                     </a>
-                  </p>
                </div>
+               @Html.ValidationMessageFor(x => x.courriel)
+               @{ 
+                  if (!ViewBag.msgErreur.Equals(""))
+                  {
+                     <span class="field-validation-error">Il n'existe aucun compte pour ce courriel.</span>
+                  }
+               }
+               <br />
+               <input type="submit" value="Envoyer" class="btn btn-primary btn-block" />
+
+               <br />
+               <p>
+                  <a href="/Connexion" style="text-decoration: none;">
+                     <input type="button" value="Retour à la page de connexion" class="btn btn-primary btn-block" />
+                  </a>
+               </p>
+               <p>
+                  <a href="/Internaute" style="text-decoration: none;">
+                     <input type="button" value="Retour à la page d'accueil" class="btn btn-primary btn-block" />
+                  </a>
+               </p>
+            </div>
             }
          </div>
       </div>

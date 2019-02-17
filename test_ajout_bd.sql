@@ -111,3 +111,5 @@ INSERT [dbo].[PPCategories] ([NoCategorie], [Description], [Details]) VALUES (40
 INSERT [dbo].[PPCategories] ([NoCategorie], [Description], [Details]) VALUES (50, N'Rénovation, bricolage, loisirs', N'Outils, quincaillerie, articles variés')
 
 delete PPProduits where NoProduit = 1060
+
+select * from PPCommandes where NoVendeur = 12

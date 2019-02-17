@@ -9,6 +9,9 @@ using PagedList;
 using System.Transactions;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Web.UI;
+using IronPdf;
 
 namespace PetitesPuces.Controllers
 {
@@ -16,7 +19,21 @@ namespace PetitesPuces.Controllers
     {
         DataClasses1DataContext contextPP = new DataClasses1DataContext();
         ClientDao clientDao;
+        public string RenderToString(PartialViewResult partialView)
+        {
+            var view = ViewEngines.Engines.FindPartialView(ControllerContext, partialView.ViewName).View;
 
+            var sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
+            {
+                using (var tw = new HtmlTextWriter(sw))
+                {
+                    view.Render(new ViewContext(ControllerContext, view, partialView.ViewData, partialView.TempData, tw), tw);
+                }
+            }
+
+            return sb.ToString();
+        }
         public ActionResult Index()
         {
             String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
@@ -1176,13 +1193,15 @@ namespace PetitesPuces.Controllers
                         {
                             Directory.CreateDirectory(directory);
                         }
-                        
+
                         String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
-                        var actionResult = new Rotativa.ActionAsPdf("TestFacture", commande) { PageSize = Rotativa.Options.Size.A4 };
-                        var byteArray = actionResult.BuildFile(ControllerContext);
-                        var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-                        fileStream.Write(byteArray, 0, byteArray.Length);
-                        fileStream.Close();
+                        var html = RenderToString(PartialView("Facture", commande));
+                        var Render = new HtmlToPdf();
+                        var PDF = Render.RenderHtmlAsPdf(html);
+
+                        PDF.SaveAs(path);
+                        
+
                     }
                     catch (Exception e)
                     {
@@ -1209,13 +1228,17 @@ namespace PetitesPuces.Controllers
             {
                 Directory.CreateDirectory(directory);
             }
-            String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
-            var actionResult = new Rotativa.ViewAsPdf("Facture", commande) { PageSize = Rotativa.Options.Size.A4 };
-            var byteArray = actionResult.BuildFile(ControllerContext);
-            var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-            fileStream.Write(byteArray, 0, byteArray.Length);
-            fileStream.Close();
-            ViewBag.Test = "Un test";
+
+            //String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
+            var html = RenderToString(PartialView("Facture",commande));
+            var Render = new HtmlToPdf();
+            var PDF = Render.RenderHtmlAsPdf(html);
+
+
+
+            PDF.SaveAs("~/PDFFacture/"+commande.NoCommande + ".pdf");
+            
+
             return View(commande);
         }
 

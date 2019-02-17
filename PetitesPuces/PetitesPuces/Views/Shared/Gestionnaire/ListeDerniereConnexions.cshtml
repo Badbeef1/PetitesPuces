@@ -11,12 +11,23 @@
    {
       DateTime date = (DateTime)cli.DateDerniereConnexion;
 
-      <tr class="row">
-         <td class="col">@date.ToString("yyyy-MM-dd")</td>
-         <td class="col">@cli.NoClient</td>
-         <td class="col">@cli.Prenom @cli.Nom</td>
-         <td class="col">@cli.NbConnexions</td>
-      </tr>
+   <tr class="row">
+      <td class="col">@date.ToString("yyyy-MM-dd")</td>
+      <td class="col">@cli.NoClient</td>
+      @if ((cli.Prenom.Trim().Equals("")) && (cli.Nom.Trim().Equals("")))
+      {
+         <td class="col">
+            @cli.Prenom @cli.Nom
+         </td>
+      }
+      else
+      {
+         <td class="col">
+           N/A
+         </td>
+      }
+      <td class="col">@cli.NbConnexions</td>
+   </tr>
    }
 
 </table>

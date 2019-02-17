@@ -17,17 +17,17 @@
 
    <!-- BAR CHART -->
    <div class="box box-success col-md-8">
+     
       <div class="box-body chart-responsive">
-         <div class="chart" id="nbVisitesClientsVendeurs-chart" style="height: 300px;"></div>
-      </div>
-      
-         @if(lstVisitesClients.Count <= 0)
+         @if (lstVisitesClients.Count <= 0)
          {
             <div class="alert alert-info" role="alert">
                <h4>Le vendeur sélectionné n'a jamais été visité par un client.</h4>
             </div>
          }
-      
+         <div class="chart" id="nbVisitesClientsVendeurs-chart" style="height: 300px;"></div>
+      </div>
+
    </div>
    <!-- BAR END -->
 
