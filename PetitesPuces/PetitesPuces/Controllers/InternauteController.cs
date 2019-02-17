@@ -210,7 +210,9 @@ namespace PetitesPuces.Controllers
                model.errorMessage = "Nous avons atteint le nombre maximum de vendeurs (100).";
 
             //Email exists             
-            else if (context.PPClients.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
+            else if (context.PPClients.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())) ||
+                    context.PPVendeurs.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())) ||
+                    context.PPGestionnaire.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
             {
                ModelState["vendeur.AdresseEmail"].Errors.Add("Ce courriel est déjà inscrit !");
                model.errorMessage = " ";
@@ -238,7 +240,7 @@ namespace PetitesPuces.Controllers
                   ModelState.Clear();
 
                   context.Connection.Close();
-                  return View(new PPClientViewModel() { okMessage = "L'ajout dans la base de données a réussi. " });
+                  return View(new PPClientViewModel() { okMessage = "Vous vous êtes inscrit comme client." });
                }
                catch (Exception ex)
                {
@@ -271,7 +273,9 @@ namespace PetitesPuces.Controllers
                model.errorMessage = "Nous avons atteint le nombre maximum de vendeurs (100).";
 
             //Email exists
-            else if (context.PPVendeurs.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
+            else if (context.PPClients.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())) ||
+                    context.PPVendeurs.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())) ||
+                    context.PPGestionnaire.Any(x => x.AdresseEmail.ToLower().Equals(model.vendeur.AdresseEmail.ToLower())))
             {
                ModelState["vendeur.AdresseEmail"].Errors.Add("Ce courriel est déjà inscrit !");
                model.errorMessage = " ";
@@ -304,7 +308,7 @@ namespace PetitesPuces.Controllers
                   ModelState.Clear();
 
                   context.Connection.Close();
-                  return View(new PPClientViewModel() { okMessage = "L'ajout dans la base de données a réussi. " });
+                  return View(new PPClientViewModel() { okMessage = "Vous avez envoyé une demande au propriétaire d'être un vendeur. Veuillez attendre pour que le propriétaire accepte votre application." });
                }
                catch (Exception ex)
                {

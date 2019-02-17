@@ -71,7 +71,7 @@ namespace PetitesPuces.Controllers
             }
 
 
-            model.errorMessage = clientLogged?.Statut == 0 || vendeurLogged?.Statut == 0
+            model.errorMessage = clientLogged?.Statut == 2 || vendeurLogged?.Statut == 0 || vendeurLogged?.Statut == 2
                 ? "Votre compte n'est pas actif."
                 : "Le courriel ou le mot de passe n'est pas valide.";
 
