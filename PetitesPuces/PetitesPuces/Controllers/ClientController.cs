@@ -12,6 +12,7 @@ using System.IO;
 using System.Text;
 using System.Web.UI;
 using IronPdf;
+using ExpertPdf.HtmlToPdf;
 
 namespace PetitesPuces.Controllers
 {
@@ -1198,8 +1199,11 @@ namespace PetitesPuces.Controllers
                         var html = RenderToString(PartialView("Facture", commande));
                         var Render = new HtmlToPdf();
                         var PDF = Render.RenderHtmlAsPdf(html);
-
-                        PDF.SaveAs(path);
+                        PdfConverter pdf = new PdfConverter();
+                        pdf.SavePdfFromHtmlStringToFile(html, path);
+                        /*HtmlToPdf pdf = new HtmlToPdf();
+                        pdf.
+                        PDF.SaveAs(path);*/
                         
 
                     }
@@ -1229,15 +1233,13 @@ namespace PetitesPuces.Controllers
                 Directory.CreateDirectory(directory);
             }
 
-            //String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
-            var html = RenderToString(PartialView("Facture",commande));
+            String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
+            var html = RenderToString(PartialView("Facture", commande));
             var Render = new HtmlToPdf();
             var PDF = Render.RenderHtmlAsPdf(html);
+            PdfConverter pdf = new PdfConverter();
+            pdf.SavePdfFromHtmlStringToFile(html, path);
 
-
-
-            PDF.SaveAs("~/PDFFacture/"+commande.NoCommande + ".pdf");
-            
 
             return View(commande);
         }
