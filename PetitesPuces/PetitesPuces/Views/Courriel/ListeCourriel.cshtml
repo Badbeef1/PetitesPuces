@@ -78,8 +78,7 @@
         var noMessage = document.getElementById("ElementSelectionner").value.split('_')[1];
         var nomAction = document.getElementById("uneAction").value = element.value;
 
-
-        location.href = "Index/NouveauMessage?message=" + noMessage + "&uneAction=" + nomAction;
+        location.href ="@Url.Action("Index/NouveauMessage", "Courriel")" + "?message=" + noMessage + "&uneAction=" + nomAction;
         //document.getElementsByTagName("form")[0].submit();
     }
 
