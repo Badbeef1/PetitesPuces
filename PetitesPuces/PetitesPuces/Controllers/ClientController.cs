@@ -1082,9 +1082,7 @@ namespace PetitesPuces.Controllers
                                   orderby commandeTrouver.NoCommande descending
                                   select commandeTrouver;
                 long maxCommande = numCommande.First().NoCommande + 1;
-
-                using (var trans = new TransactionScope())
-                {
+                
                     try
                     {
                         Char c = new Char();
@@ -1189,6 +1187,8 @@ namespace PetitesPuces.Controllers
                         ViewBag.Commande = commande;
                         contextPP.GetTable<PPHistoriquePaiements>().InsertOnSubmit(histoPaiement);
                         contextPP.SubmitChanges();
+                        
+
                         String directory = Server.MapPath("~/PDFFacture");
                         if (!Directory.Exists(directory))
                         {
@@ -1197,13 +1197,9 @@ namespace PetitesPuces.Controllers
 
                         String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
                         var html = RenderToString(PartialView("Facture", commande));
-                        var Render = new HtmlToPdf();
-                        var PDF = Render.RenderHtmlAsPdf(html);
+
                         PdfConverter pdf = new PdfConverter();
                         pdf.SavePdfFromHtmlStringToFile(html, path);
-                        /*HtmlToPdf pdf = new HtmlToPdf();
-                        pdf.
-                        PDF.SaveAs(path);*/
                         
 
                     }
@@ -1212,8 +1208,7 @@ namespace PetitesPuces.Controllers
                         
                         ViewData["CheckPoint"] = e.StackTrace + "-----------------------|||||||||||||||||||||-------------------------" + e.Message + "-----------------------|||||||||||||||||||||-------------------------" + e;
                     }
-
-                }
+                
             }
             return View(commande);
         }
@@ -1235,8 +1230,7 @@ namespace PetitesPuces.Controllers
 
             String path = Server.MapPath("~/PDFFacture/" + commande.NoCommande + ".pdf");
             var html = RenderToString(PartialView("Facture", commande));
-            var Render = new HtmlToPdf();
-            var PDF = Render.RenderHtmlAsPdf(html);
+
             PdfConverter pdf = new PdfConverter();
             pdf.SavePdfFromHtmlStringToFile(html, path);
 

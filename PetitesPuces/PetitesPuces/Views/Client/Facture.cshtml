@@ -4,12 +4,9 @@
     Layout = null;
 }
 <!DOCTYPE html>
-<link rel="stylesheet" href="@Server.MapPath("~/Content/css/styleGeneral.css")">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
-<script src="@Server.MapPath("~/Scripts/jquery-3.3.1.min.js")"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-<script src="@Server.MapPath("~/Scripts/bootstrap.min.js")"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
@@ -25,7 +22,7 @@
         </div>
         <div class="offset-md-2"></div>
         <div class="col-md-5 col-xs-5">
-            <h3 class="d-flex align-items-start" style="float:right">Numéro d'autorisation: @ViewData["NoAutorisation"]</h3>
+            <h3 class="d-flex align-items-start" style="float:right">Numéro d'autorisation: @TempData["NoAutorisation"]</h3>
             <h3 class="d-flex align-items-end" style="float:right">Date: @Model.DateCommande</h3>
         </div>
     </div>

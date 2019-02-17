@@ -23,79 +23,25 @@
 
 <body>
     @Html.Partial("test")
-    <div class="container sEspaceBarNavigation h-100" id="bigDiv">
-        <div class="row">
-            @if (TempData["NoAutorisation"] != null && TempData["DateAutorisation"] != null && TempData["FraisMarchand"] != null && (String)TempData["InfoSuppl"] != "N/A")
-            {
-                int noAutorisation = int.Parse(TempData["NoAutorisation"].ToString());
-                if (noAutorisation >= 1000 && noAutorisation <= 5000)
-                {
-                    <div class="col-md-5">
-                        <div class="row">Numéro d'autorisation</div>
-                        <div class="row">Date d'autorisation</div>
-                    </div>
-                    <div class="offset-md-1"></div>
-                    <div class="col-md-5">
-                        <div class="row">@TempData["NoAutorisation"]</div>
-                        <div class="row">@TempData["DateAutorisation"]</div>
-                        <div class="row">@TempData["InfoSuppl"]</div>
-                    </div>
-                    if (ViewData["CheckPoint"] != null)
-                    {
-                        <div>@ViewData["CheckPoint"].ToString()</div>
-                    }
-                }
-                else
-                {
-                    <div class="col-md-5">
-                        <div class="row">Numéro de refus</div>
-                        <div class="row">Raison</div>
-                        <div class="row">Date de refus</div>
-                    </div>
-                    <div class="offset-md-1"></div>
-                    <div class="col-md-5">
-                        <div class="row">@TempData["NoAutorisation"]</div>
-                        @switch (noAutorisation)
-                        {
-                            case 0:
-                                <div class="row">Transaction annulée par l'utilisateur</div>
-                                break;
-                            case 1:
-                                <div class="row">Transaction refusée : Date d'expiration dépassée</div>
-                                break;
-                            case 2:
-                                <div class="row">Transaction refusée : Limite de crédit atteinte</div>
-                                break;
-                            case 3:
-                                <div class="row">Transaction refusée : Carte refusée</div>
-                                break;
-                            default:
-                                <div class="row">Erreur de validation</div>
-                                break;
-                        }
-                        <div class="row">@TempData["DateAutorisation"]</div>
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="align-items-center">
-                    <text>
-                        <h1>Accès interdit</h1>
-                    </text>
-                </div>
-            }
-        </div>
-    </div>
     @if (Model != null)
     {
         @Html.Partial("Facture", Model)
-    }
-    <script type="text/javascript">
-        function openTab(th) {
-            window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
-        }
-    </script>
-    <button name="@Model.NoCommande" class="btn btn-primary" onclick="openTab(this)">Version imprimable</button>
-</body>
+        <br />
+        <div class="col-md-12 text-center">
+            <button name="@Model.NoCommande" class="btn btn-primary" onclick="openTab(this)">Version imprimable</button>
+            </div>
+            }
+            else
+            {
+            <div class="col-md-12 text-center">
+                <h1>Accès interdit</h1>
+            </div>
+            }
+    </body>
 </html>
+
+<script type="text/javascript">
+    function openTab(th) {
+        window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+    }
+</script>
