@@ -646,7 +646,27 @@ namespace PetitesPuces.Controllers
             return View(gererComm);
         }
 
-        // Lorsqu'une commande est marquée comme livrée
+
+        public FileResult VoirPDFCommande(string Comm)
+        {
+            String contentType = "Application/pdf";
+            var comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                                where uneComm.NoCommande.Equals(Comm)
+                                select uneComm);
+            byte[] arrByte = null;
+            if(comm.ToList().Count > 0)
+            {
+
+                string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
+                arrByte = System.IO.File.ReadAllBytes(path);
+                return File(arrByte, contentType);
+            }
+            else
+            {
+                return File(arrByte,"");
+            }
+        }
+            
         [HttpPost]
         public ActionResult GestionCommande(string bidon)
         {

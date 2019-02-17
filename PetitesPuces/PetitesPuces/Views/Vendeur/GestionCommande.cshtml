@@ -34,7 +34,12 @@
                         <tr data-toggle="collapse" data-target="#@("detailCommande"+uneComm.NoCommande)" class="clickable">
                             <th scope="row" class="text-right">@counter</th>
                             <td class="text-right">
-                                <a href="@(Server.MapPath("~/PDFFacture/"+uneComm.NoCommande+".pdf"))" target="_blank">Commande #: @uneComm.NoCommande</a>
+                                <script type="text/javascript">
+                                    function openTab(th) {
+                                        window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+                                    }
+                                </script>
+                                <a name="@uneComm.NoCommande" class="clickable" onclick="openTab(this)" >Commande #: @uneComm.NoCommande</a>
                             </td>
                             <td class="text-left">
                                 @uneComm.PPClients.Prenom
