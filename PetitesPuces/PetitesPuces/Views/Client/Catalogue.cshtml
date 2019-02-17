@@ -159,7 +159,7 @@
                         </ul>
                     </nav>
                 </div>
-                
+
                 <main class="container">
                     @if (Model.vendeur != null)
                     {
@@ -277,9 +277,105 @@
                 </main>
             </div>
         </div>
+
+        <div class="modal" tabindex="-1" role="dialog" id="modAjoutPanier" aria-hidden="true" style="z-index:1072;">
+            <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajout au panier</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p style="color:red; display:none;" id="messageAvertissement">
+                            Attention! Le produit est déjà <br /><span id="spQuantite"></span> fois dans votre panier!
+                        </p>
+                        <p style="color:red; display:none;" id="messageIndisponible">
+                            L'inventaire ne permet pas de commander plus de ce produit!
+                        </p>
+                        <div class="d-flex" id="divControleQuantite">
+                            <label for="numNbAjoutPanier" class="col-form-label mr-auto">Quantité: </label>
+                            <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" max="10" step="1" value="1" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnAjoutProduit" type="button" class="btn btn-outline-success" onclick="$.AjoutAuPanier(this.value)">Ajouter</button>
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="~/Scripts/jquery-3.3.1.min.js"></script>
         <script src="~/Scripts/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            $.AjoutAuPanier = function (numeroDeProduit) {
+                let nomDossierPricipal = "divItems" + numeroDeProduit;
+                let qqtProduitDesire = $('#' + nomDossierPricipal + ' > #numNbAjoutPanier').val();
 
+                $.ajax({
+                    url: '@Url.Action("AjoutAuPanier", "Client")',
+                    contentType: 'application/json;',
+                    type: "POST",
+                    data: JSON.stringify({ "intNoProduit": numeroDeProduit, "intNbProduit": qqtProduitDesire }),
+                    success: function (elementRetour, status, xhr) {
+                        alert('parfait => ' + elementRetour);
+                        $('#modAjoutPanier').modal('hide');
+                    },
+                    failure: function (response) {
+                        alert("La requete d'ajout a échouée!");
+                    },
+                    error: function (response) {
+                        alert("Une erreur dans la requete d'ajout!");
+                    }
+                });
+            }
+
+            $.VerificationDisponibilite = function (numeroDeProduit, nombreProduitTotal) {
+                let nomDossierPricipal = "divItems" + numeroDeProduit;
+                $.ajax({
+                    url: '@Url.Action("EtatProduitPanier", "Client")',
+                    contentType: 'application/json;',
+                    type: "POST",
+                    data: JSON.stringify({ "intNoProduit": numeroDeProduit }),
+                    success: function (elementRetour, status, xhr) {
+                        alert('parfait => ' + elementRetour);
+
+                        if (elementRetour == nombreProduitTotal) {
+                            $('#messageIndisponible').css("display", "");
+                            $('#divControleQuantite').removeClass("d-flex");
+                            $('#divControleQuantite').css("display", "none");
+                            $('#btnAjoutProduit').css("visibility", "hidden");
+
+                            $('#modAjoutPanier').modal('show');
+                        }
+                        else if (elementRetour > 0) {
+                            $('#messageAvertissement').css("display", "");
+                            $('#spQuantite').text(elementRetour);
+                            $('#numNbAjoutPanier').prop("max", nombreProduitTotal - elementRetour);
+
+                            $('#btnAjoutProduit').val(numeroDeProduit);
+
+                            $('#modAjoutPanier').modal('show');
+                        }
+                        else {
+                            $('#numNbAjoutPanier').prop("max", nombreProduitTotal - elementRetour);
+                            $('#btnAjoutProduit').val(numeroDeProduit);
+
+                            $('#modAjoutPanier').modal('show');
+                        }
+
+                    },
+                    failure: function (response) {
+                        alert("La requete d'ajout a échouée!");
+                    },
+                    error: function (response) {
+                        alert("Une erreur dans la requete d'ajout!");
+                    }
+                });
+            }
+        </script>
     }
 </body>
 </html>

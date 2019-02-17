@@ -3,8 +3,9 @@
 <div class="card-deck">
     @foreach (var produit in Model)
     {
+        string strNomDiv = "divItems" + produit.NoProduit;
 
-        <div id="divItems" class="card border-dark mb-3 p-1 sCardItemCatalogue sCardItemCatalogue">
+        <div id="@strNomDiv" class="card border-dark mb-3 p-1 sCardItemCatalogue sCardItemCatalogue">
             <a href="@Url.Action("ProduitDetaille", "Client", new { @numero = produit.NoProduit})" class="custom-card">
                 <img class="card-img-top" src="~/Content/images/@Html.DisplayFor(x => produit.Photo)" alt="produit ...." style="max-height: 14rem; min-height: 14rem;">
                 <div class="card-body">
@@ -28,7 +29,7 @@
             else
             {
                 <div class="card-footer btn-group" style="width:100%;">
-                    <button type="button" class="btn btn-outline-primary" title="Commander le produit"><i class="fas fa-shopping-cart"></i></button>
+                    <button type="button" class="btn btn-outline-primary" title="Commander le produit" value="@produit.NoProduit"  onclick="$.VerificationDisponibilite(this.value, @produit.NombreItems)"><i class="fas fa-shopping-cart"></i></button>
                 </div>
             }
         </div>

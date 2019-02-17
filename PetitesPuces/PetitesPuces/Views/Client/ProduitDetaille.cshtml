@@ -83,6 +83,11 @@
 
                     $('#modAjoutPanier').modal('show');
                 }
+                else {
+                    $('#numNbAjoutPanier').prop("max", @Model.Produit.NombreItems - elementRetour);
+
+                    $('#modAjoutPanier').modal('show');
+                }
 
             },
             failure: function (response) {
