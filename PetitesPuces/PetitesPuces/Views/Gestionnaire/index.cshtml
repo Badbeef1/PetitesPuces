@@ -16,6 +16,15 @@
          Response.Redirect(Url.Action("Index", "Internaute"));
       }
    }
+   DataClasses1DataContext db = new DataClasses1DataContext();
+   db.Connection.Open();
+
+   var notif = (from desti in db.GetTable<PPDestinataires>()
+                where (desti.NoDestinataire.Equals((Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire)) &&
+                (desti.EtatLu.Equals(0))
+                select desti
+                   ).ToList();
+   db.Connection.Close();
 }
 
 <header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
@@ -39,6 +48,10 @@
                <a class="nav-link" href="/Courriel/Index">
                   Messagerie
                   <i class="fas fa-envelope"></i>
+                  @if(notif.Count() > 0)
+                  {
+                     @notif.Count();
+                  }
                </a>
             </li>
             <li class="nav-item">
