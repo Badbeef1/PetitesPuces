@@ -36,7 +36,7 @@ namespace PetitesPuces.Views
        public static string msgErreur = "";
        public static string msgSucces = "";
 
-        const int intNbMessageParPage = 1;
+        const int intNbMessageParPage = 10;
 
         // GET: Courriel
         public ActionResult Index(string id, short? lieu, int? message, String ElementSelectionner, String uneAction, String leType, string triActuel, string pageAncienne, int? page)

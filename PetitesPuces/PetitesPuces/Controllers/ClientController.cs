@@ -558,7 +558,7 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 5, int noPage = 1)
+        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 15, int noPage = 1)
         {
             const String strTriNum = "numero";
             const String strTriCat = "categorie";
@@ -691,6 +691,7 @@ namespace PetitesPuces.Controllers
             dicSelectionNbItems.Add("15", 15);
             dicSelectionNbItems.Add("20", 20);
             dicSelectionNbItems.Add("25", 25);
+            dicSelectionNbItems.Add("50", 50);
             dicSelectionNbItems.Add("tous", contextPP.PPProduits.Count());
 
             int intNumeroPage = (page ?? 1);
