@@ -11,70 +11,150 @@
 </head>
 <body>
     @Html.Partial("index")
+    <br />
+    @using (Html.BeginForm("GestionLivraison", "Vendeur", FormMethod.Post))
+    {
     <div id="commNonLivrer" class="container">
+        <div id="commNonLivrerTitre" class="row">
+            <h1>Commandes en cours de livraison</h1>
+        </div>
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-primary" id="btnConfirmerHaut">Marquer comme livrée</button>
+            <br />
+            <br />
+        </div>
         <div class="row">
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col" class="text-right">#</th>
-                        <th scope="col" class="text-right"># de commande</th>
-                        <th scope="col" class="text-left">Prénom</th>
-                        <th scope="col" class="text-left">Nom</th>
-                        <th scope="col" class="text-center"><input id="cbAll" type="checkbox" /></th>
+                        <th scope="col" class="text-right">No Commande</th>
+                        <th scope="col" class="text-right">Date</th>
+                        <th scope="col" class="text-left">Nom complet</th>
+                        <th scope="col" class="text-center">
+                            Livré
+                            <input id="cbAll" type="checkbox" />
+                        </th>
+                        <th scope="col" class="text-center">Voir PDF</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{
-                        int counter = 0;
+                        int counterMaisPlusBas = 0;
                     }
-                    @foreach (GererCommandeViewModel.GererCommande comm in Model.lstCommandeNonLivrer)
+                    @for (int i = 0; i < Model.lstCommandeNonLivrer.Count; i++)
                     {
-                        PPCommandes uneComm = comm.commande;
-                        ++counter;
-                        <tr data-toggle="collapse" data-target="#@("detailCommande"+uneComm.NoCommande)" class="clickable">
-                            <th scope="row" class="text-right">@counter</th>
+                        PPCommandes uneComm = Model.lstCommandeNonLivrer[i].commande;
+                        ++counterMaisPlusBas;
+                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.DateCommande)
+                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Prenom)
+                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Prenom)
+                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Nom)
+                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.NoCommande)
+                        <tr data-toggle="collapse" data-target="#@("collapse_commande__" + uneComm.NoCommande)" class="clickable">
+                            <th scope="row" class="text-right">@counterMaisPlusBas</th>
                             <td class="text-right">
+                                @uneComm.NoCommande
+                            </td>
+                            <td class="text-right">
+                                @{
+                                    DateTime date = (DateTime) uneComm.DateCommande;
+
+                                        }
+                                @date.ToShortDateString()
+                            </td>
+                            <td class="text-left">
+                                @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
+                            </td>
+                            <td class="text-center">
+                                @Html.CheckBoxFor(m => m.lstCommandeNonLivrer[i].isChecked, new { @class = "form-control" })
+                            </td>
+                            <td class="text-center">
                                 <script type="text/javascript">
                                     function openTab(th) {
                                         window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
                                     }
                                 </script>
-                                <a name="@uneComm.NoCommande" class="clickable" onclick="openTab(this)" >Commande #: @uneComm.NoCommande</a>
-                            </td>
-                            <td class="text-left">
-                                @uneComm.PPClients.Prenom
-                            </td>
-                            <td class="text-left">
-                                @uneComm.PPClients.Nom
-                            </td>
-                            <td class="text-center">
-                                Livré
-                                <input class="form-control" type="checkbox" id="@(uneComm.NoCommande + "_checkBox")" />
+                                <button name="@uneComm.NoCommande" class="btn btn-secondary" onclick="openTab(this)">Commande # : @uneComm.NoCommande</button>
                             </td>
                         </tr>
-                        <div id="@("detailCommande"+uneComm.NoCommande)" class="collapse">
-                            <div class="container">
-                                <div class="row">
-                                    <div id="infoClient_Commande_@uneComm.NoCommande" class="col-md-6">
-
-                                    </div>
-                                    <div id="infoClient_Commande_@uneComm.NoCommande" class="col-md-6">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <tr id="@("collapse_commande__" + uneComm.NoCommande)" class="collapse">
+                            <td>@uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</td>
+                        </tr>
                     }
 
                 </tbody>
             </table>
         </div>
+        <div class="col-md-12 text-center">
+            <button type="submit" class="btn btn-primary" id="btnConfirmerBas">Marquer comme livrée</button>
+        </div>
     </div>
+                            }
+        <br />
+        <br />
+        <div id="commLivrer" class="container">
+            <div id="commLivrerTitre" class="row">
+                <h1>Commandes livrées</h1>
+            </div>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-right">#</th>
+                            <th scope="col" class="text-right">No Commande</th>
+                            <th scope="col" class="text-right">Date</th>
+                            <th scope="col" class="text-left">Nom complet</th>
+                            <th scope="col" class="text-center">Voir PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 0;
+                        }
+                        @for (int i = 0; i < Model.lstCommandeLivrer.Count; i++)
+                        {
+                            ++counter;
+                            PPCommandes uneComm = Model.lstCommandeLivrer[i];
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].DateCommande);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].PPClients.Nom);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].PPClients.Prenom);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].NoCommande);
+                        @Html.HiddenFor(m => m.lstCommandeLivrer)
+                            <tr data-toggle="collapse" data-target="#@("collapse_commande__"+uneComm.NoCommande)" class="clickable">
+                                <th scope="row" class="text-right">@counter</th>
+                                <td class="text-right">
+                                    @uneComm.NoCommande
+                                </td>
+                                <td class="text-right">
+                                    @{
+                                        DateTime dateDone = (DateTime)uneComm.DateCommande;
 
-    <div id="commLivrer" class="container">
+                                    }
+                                    @dateDone.ToShortDateString()
+                                </td>
+                                <td class="text-left">
+                                    @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
+                                </td>
+                                <td class="text-center">
+                                    <script type="text/javascript">
+                                        function openTab(th) {
+                                            window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+                                        }
+                                    </script>
+                                    <button name="@uneComm.NoCommande" class="btn btn-secondary" onclick="openTab(this)">Commande # : @uneComm.NoCommande</button>
+                                </td>
+                            </tr>
+                            <tr id="@("collapse_commande__"+uneComm.NoCommande)" class="collapse">
+                                <td>@uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</td>
+                            </tr>
+                        }
 
-    </div>
-</body>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
 </html>
 
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
@@ -86,3 +166,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        // Bouton final
+        $("#btnConfirmerHaut").click(function () {
+            var countClientCocher = 0
+            for (var i = 0; i < @Model.lstCommandeNonLivrer.Count; i++) {
+                if (document.getElementById("lstCommandeNonLivrer_" + i + "__isChecked").checked) {
+                    countClientCocher++;
+                }
+            };
+            if (countClientCocher > 0) {
+
+                if (confirm("Voulez-vous vraiment marquer comme livrée ces commandes?")) {
+                    return true;
+                }
+                else {
+                    event.preventDefault();
+                    return false;
+                }
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
+            $("#btnConfirmerBas").click(function () {
+                var countClientCocher = 0
+                for (var i = 0; i < @Model.lstCommandeNonLivrer.Count; i++) {
+                    if (document.getElementById("lstCommandeNonLivrer_" + i + "__isChecked").checked) {
+                        countClientCocher++;
+                    }
+                };
+                if (countClientCocher > 0) {
+
+                    if (confirm("Voulez-vous vraiment marquer comme livrée ces commandes?")) {
+                        return true;
+                    }
+                    else {
+                        event.preventDefault();
+                        return false;
+                    }
+                } else {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+
+        $('#cbAll').click(function () {
+            for (var i = 0; i < @Model.lstCommandeNonLivrer.Count; i++) {
+                document.getElementById("lstCommandeNonLivrer_" + i + "__isChecked").checked = $('#cbAll').prop("checked");
+            };
+        });
+        });</script>

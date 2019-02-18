@@ -491,6 +491,7 @@
     <Content Include="Views\Shared\Gestionnaire\ListeTotalCommandesClients.cshtml" />
     <Content Include="Views\Connexion\ChangerMDP.cshtml" />
     <Content Include="Views\Vendeur\VoirPDFCommande.cshtml" />
+    <Content Include="Views\Shared\Facture.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
