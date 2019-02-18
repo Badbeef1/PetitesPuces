@@ -822,11 +822,14 @@ namespace PetitesPuces.Controllers
             }
          }
 
-         //Pagination
-         List<string> lstSelectionNbItems = new List<string>
-            {
-                "5","10","15","20","25","tous"
-            };
+        //Pagination
+        Dictionary<string, int> dicSelectionNbItems = new Dictionary<string, int>();
+        dicSelectionNbItems.Add("5", 5);
+        dicSelectionNbItems.Add("10", 10);
+        dicSelectionNbItems.Add("15", 15);
+        dicSelectionNbItems.Add("20", 20);
+        dicSelectionNbItems.Add("25", 25);
+        dicSelectionNbItems.Add("tous", contextPP.PPProduits.Count());
 
          int intNumeroPage = (page ?? 1);
 
@@ -848,7 +851,7 @@ namespace PetitesPuces.Controllers
             catVM.typeRech = typeRech.Value;
          }
 
-         ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
+         ViewBag.ListeNbItems = new SelectList(dicSelectionNbItems, "Value","Key", pageDimension);
 
 
          return View(catVM);

@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
     <link rel="stylesheet" href="~/Content/css/Catalogue.css" />
     <style>
-       @if (Model.vendeur != null)
+       @if (Model.vendeur != null && Model.vendeur != "")
        {
            var tabConfiguration = Model.vendeurCatalogue.Configuration.Split(';');
 
@@ -163,14 +163,14 @@
                 </div>
 
                 <main class="container">
-                    @if (Model.vendeur != null)
+                    @if (Model.vendeur != null && Model.vendeur != "" && nomFichier != "")
                     {
-                        <img src="~/Content/images/@nomFichier" style="max-height:300px; max-width:150px;" />
+                        <img src="~/Content/images/@nomFichier" style="max-height:200px; max-width:1000px; height:200px; width:1000px;" />
                     }
 
                     <h3>
                         Catalogue
-                        @if (Model.vendeur != null)
+                        @if (Model.vendeur != null && Model.vendeur != "")
                         {
                             @Html.DisplayFor(x => x.vendeurCatalogue.NomAffaires)
                         }
