@@ -370,7 +370,8 @@ namespace PetitesPuces.Views
                     }
                     else
                     {
-                        PPGestionnaire unGestionnaire = (dynDestinataire as PPGestionnaire);
+
+                        PPGestionnaire unGestionnaire = contextPP.PPGestionnaire.FirstOrDefault(predicate: gestion => gestion.NoGestionnaire == intNbDestinataire);
 
                         messVM.StrNomAffichageExpediteur = unGestionnaire.AdresseEmail;
                         messVM.strNomdestinataireExpediteurPourTri = unGestionnaire.AdresseEmail;
