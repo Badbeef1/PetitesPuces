@@ -9,14 +9,14 @@
          <div class="col-sm-6">
             <div class="form-group">
                <label for="form_name">Expéditeur</label>
-               <input id="form_name" type="text" name="surname" class="form-control" placeholder="" required="required" data-error="name is required." value="@Model.nomExpediteur">
+               <input id="form_name" type="text" name="surname" class="form-control" placeholder="" required="required" data-error="name is required." value="@Model.nomExpediteur" disabled="disabled">
                <div class="help-block with-errors"></div>
             </div>
          </div>
          <div class="col-sm-6">
             <div class="form-group">
                <label for="form_email">Destinataire</label>
-               <input id="form_email" type="email" name="email" class="form-control" placeholder="" required="required" data-error="Valid email is required." value="@Model.nomDestinataire">
+               <input id="form_email" type="email" name="email" class="form-control" placeholder="" required="required" data-error="Valid email is required." value="@Model.nomDestinataire" disabled="disabled">
                <div class="help-block with-errors"></div>
             </div>
          </div>

@@ -41,7 +41,7 @@ namespace PetitesPuces.Controllers
 
             foreach (var commande in commandesNonTraite)
             {
-                List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>() ;
+                List<PPDetailsCommandes> lstDetailCommandes = new List<PPDetailsCommandes>();
                 var query = (from detailsCommande in db.PPDetailsCommandes
                              where detailsCommande.NoCommande.Equals(commande.NoCommande)
                              select detailsCommande
@@ -62,49 +62,49 @@ namespace PetitesPuces.Controllers
                            select vendeurClient
                            ).ToList();
 
-         //Aller chercher les clients actifs, potentiel et visiteurs du profil connecté.
-         int nbClientsActif = 0;
-         int nbClientsPotentiel = 0;
-         int nbClientsVisiteurs = 0;
+            //Aller chercher les clients actifs, potentiel et visiteurs du profil connecté.
+            int nbClientsActif = 0;
+            int nbClientsPotentiel = 0;
+            int nbClientsVisiteurs = 0;
 
-         var clients = (from c in db.GetTable<PPClients>()
-                        select c
-                        ).ToList();
+            var clients = (from c in db.GetTable<PPClients>()
+                           select c
+                           ).ToList();
 
-         foreach (var client in clients)
-         {
-            var dejaCommande = (from commande in db.GetTable<PPCommandes>()
-                                where (commande.NoClient.Equals(client.NoClient)) &&
-                                (commande.NoVendeur.Equals(noVendeur))
-                                select commande
-                         ).ToList();
-            var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
-                                 where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals(noVendeur))
-                                 select panier
-                                 ).ToList();
-
-            if (dejaCommande.Count() > 0)
+            foreach (var client in clients)
             {
-               nbClientsActif++;
-            }
-            else if (possedePanier.Count() > 0)
-            {
-               nbClientsPotentiel++;
-            }
-            else
-            {
-               nbClientsVisiteurs++;
-            }
-         }
-         List<int> lstStats = new List<int>();
-         lstStats.Add(nbClientsActif);
-         lstStats.Add(nbClientsPotentiel);
-         lstStats.Add(nbClientsVisiteurs);
+                var dejaCommande = (from commande in db.GetTable<PPCommandes>()
+                                    where (commande.NoClient.Equals(client.NoClient)) &&
+                                    (commande.NoVendeur.Equals(noVendeur))
+                                    select commande
+                             ).ToList();
+                var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
+                                     where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals(noVendeur))
+                                     select panier
+                                     ).ToList();
 
-         //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
-         AccueilVendeurViewModel model = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers,visites.Count());
-         model.lstStatsClients = lstStats;
-         db.Connection.Close();
+                if (dejaCommande.Count() > 0)
+                {
+                    nbClientsActif++;
+                }
+                else if (possedePanier.Count() > 0)
+                {
+                    nbClientsPotentiel++;
+                }
+                else
+                {
+                    nbClientsVisiteurs++;
+                }
+            }
+            List<int> lstStats = new List<int>();
+            lstStats.Add(nbClientsActif);
+            lstStats.Add(nbClientsPotentiel);
+            lstStats.Add(nbClientsVisiteurs);
+
+            //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
+            AccueilVendeurViewModel model = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, visites.Count());
+            model.lstStatsClients = lstStats;
+            db.Connection.Close();
 
             return View(model);
         }
@@ -535,54 +535,54 @@ namespace PetitesPuces.Controllers
                            group panier by panier.PPClients
                            );
 
-         
-         //TODO : Aller chercher le nombres de visites quotidienne
-         var visites = (from vendeurClient in db.GetTable<PPVendeursClients>()
-                        where vendeurClient.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
-                        select vendeurClient
-                        ).ToList();
-         //Aller chercher les clients actifs, potentiel et visiteurs du profil connecté.
-         int nbClientsActif = 0;
-         int nbClientsPotentiel = 0;
-         int nbClientsVisiteurs = 0;
 
-         var clients = (from c in db.GetTable<PPClients>()
-                        select c
-                        ).ToList();
+            //TODO : Aller chercher le nombres de visites quotidienne
+            var visites = (from vendeurClient in db.GetTable<PPVendeursClients>()
+                           where vendeurClient.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                           select vendeurClient
+                           ).ToList();
+            //Aller chercher les clients actifs, potentiel et visiteurs du profil connecté.
+            int nbClientsActif = 0;
+            int nbClientsPotentiel = 0;
+            int nbClientsVisiteurs = 0;
 
-         foreach (var client in clients)
-         {
-            var dejaCommande = (from commande in db.GetTable<PPCommandes>()
-                                where (commande.NoClient.Equals(client.NoClient)) &&
-                                (commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur))
-                                select commande
-                         ).ToList();
-            var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
-                                 where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur))
-                                 select panier
-                                 ).ToList();
+            var clients = (from c in db.GetTable<PPClients>()
+                           select c
+                           ).ToList();
 
-            if (dejaCommande.Count() > 0)
+            foreach (var client in clients)
             {
-               nbClientsActif++;
-            }
-            else if (possedePanier.Count() > 0)
-            {
-               nbClientsPotentiel++;
-            }
-            else
-            {
-               nbClientsVisiteurs++;
-            }
-         }
-         List<int> lstStats = new List<int>();
-         lstStats.Add(nbClientsActif);
-         lstStats.Add(nbClientsPotentiel);
-         lstStats.Add(nbClientsVisiteurs);
+                var dejaCommande = (from commande in db.GetTable<PPCommandes>()
+                                    where (commande.NoClient.Equals(client.NoClient)) &&
+                                    (commande.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur))
+                                    select commande
+                             ).ToList();
+                var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
+                                     where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur))
+                                     select panier
+                                     ).ToList();
 
-         //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
-         AccueilVendeurViewModel model2 = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, visites.Count());
-         model2.lstStatsClients = lstStats;
+                if (dejaCommande.Count() > 0)
+                {
+                    nbClientsActif++;
+                }
+                else if (possedePanier.Count() > 0)
+                {
+                    nbClientsPotentiel++;
+                }
+                else
+                {
+                    nbClientsVisiteurs++;
+                }
+            }
+            List<int> lstStats = new List<int>();
+            lstStats.Add(nbClientsActif);
+            lstStats.Add(nbClientsPotentiel);
+            lstStats.Add(nbClientsVisiteurs);
+
+            //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
+            AccueilVendeurViewModel model2 = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, visites.Count());
+            model2.lstStatsClients = lstStats;
             db.Connection.Close();
             return View("AccueilVendeur", model2);
         }
@@ -654,10 +654,10 @@ namespace PetitesPuces.Controllers
         {
             String contentType = "Application/pdf";
             var comm = (from uneComm in contextPP.GetTable<PPCommandes>()
-                                where uneComm.NoCommande.Equals(Comm)
-                                select uneComm);
+                        where uneComm.NoCommande.Equals(Comm)
+                        select uneComm);
             byte[] arrByte = null;
-            if(comm.ToList().Count > 0)
+            if (comm.ToList().Count > 0)
             {
 
                 string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
@@ -679,10 +679,10 @@ namespace PetitesPuces.Controllers
             }
             else
             {
-                return File(arrByte,"");
+                return File(arrByte, "");
             }
         }
-            
+
         [HttpPost]
         public ActionResult GestionCommande(string bidon)
         {
@@ -713,7 +713,7 @@ namespace PetitesPuces.Controllers
         public ActionResult GestionProduit() => View();
 
         //GET: CatalogueVendeur
-        public ActionResult CatalogueVendeur(string tri, string categorie, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 5, int noPage = 1)
+        public ActionResult CatalogueVendeur(string tri, string categorie, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 15, int noPage = 1)
         {
             const String strTriNum = "numero";
             const String strTriCat = "categorie";
@@ -839,10 +839,14 @@ namespace PetitesPuces.Controllers
             }
 
             //Pagination
-            List<string> lstSelectionNbItems = new List<string>
-            {
-                "5","10","15","20","25","tous"
-            };
+            Dictionary<string, int> dicSelectionNbItems = new Dictionary<string, int>();
+            dicSelectionNbItems.Add("5", 5);
+            dicSelectionNbItems.Add("10", 10);
+            dicSelectionNbItems.Add("15", 15);
+            dicSelectionNbItems.Add("20", 20);
+            dicSelectionNbItems.Add("25", 25);
+            dicSelectionNbItems.Add("50", 50);
+            dicSelectionNbItems.Add("tous", contextPP.PPProduits.Count());
 
             int intNumeroPage = (page ?? 1);
 
@@ -864,7 +868,7 @@ namespace PetitesPuces.Controllers
                 catVM.typeRech = typeRech.Value;
             }
 
-            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
+            ViewBag.ListeNbItems = new SelectList(dicSelectionNbItems, "Value", "Key", pageDimension);
 
 
             return View(catVM);
@@ -891,7 +895,7 @@ namespace PetitesPuces.Controllers
         }
 
         [HttpPost]
-        public ActionResult GestionProfilVendeur(PPVendeurs vendeur, String strProvenence, String police, String fond, String baniere )
+        public ActionResult GestionProfilVendeur(PPVendeurs vendeur, String strProvenence, String police, String fond, String baniere)
         {
             List<Province> lstProvinces = new List<Province>
             {
@@ -951,7 +955,7 @@ namespace PetitesPuces.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 if (string.Equals(strProvenence, "informationpersonnel", StringComparison.OrdinalIgnoreCase))
                 {
                     vendeurDao.modifierProfilInformationPersonnel(vendeur);
@@ -1056,7 +1060,7 @@ namespace PetitesPuces.Controllers
                             vendeurDao.modifierProfilConfiguration(police, fond, strNouveauNomFichier);
                             ViewBag.uneErreur = "succes";
                         }
-                    } 
+                    }
                 }
             }
             else
@@ -1074,7 +1078,15 @@ namespace PetitesPuces.Controllers
         {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
+            //Aller chercher le nom complet du vendeur et du client et le passer dans la page à l'aide d'un viewBag
 
+
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                           select v
+                           ).ToList();
+
+            ViewBag.NomVendeur = (vendeur.First().Prenom + " " + vendeur.First().Nom);
             //Aller chercher la commande
             var commandes = (from commande in db.GetTable<PPCommandes>()
                              where commande.NoCommande.Equals(id)
@@ -1097,6 +1109,11 @@ namespace PetitesPuces.Controllers
                               ).ToList();
 
             PPHistoriquePaiements histo = historique.First();
+            var client = (from c in db.GetTable<PPClients>()
+                          where c.NoClient.Equals(histo.NoClient)
+                          select c
+                 ).ToList();
+            ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
             AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, histo);
             db.Connection.Close();
             return View(accueilVendeurViewModel);
@@ -1156,58 +1173,58 @@ namespace PetitesPuces.Controllers
                            group panier by panier.PPClients
                            );
 
-         //TODO : Aller chercher le nombres de visites quotidienne
-         var visites = (from vendeurClient in db.GetTable<PPVendeursClients>()
-                        where vendeurClient.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
-                        select vendeurClient
-                        ).ToList();
+            //TODO : Aller chercher le nombres de visites quotidienne
+            var visites = (from vendeurClient in db.GetTable<PPVendeursClients>()
+                           where vendeurClient.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                           select vendeurClient
+                           ).ToList();
 
-         //Aller chercher les clients actifs, potentiel et visiteurs du profil connecté.
-         int nbClientsActif = 0;
-         int nbClientsPotentiel = 0;
-         int nbClientsVisiteurs = 0;
+            //Aller chercher les clients actifs, potentiel et visiteurs du profil connecté.
+            int nbClientsActif = 0;
+            int nbClientsPotentiel = 0;
+            int nbClientsVisiteurs = 0;
 
-         var clients = (from c in db.GetTable<PPClients>()
-                        select c
-                        ).ToList();
+            var clients = (from c in db.GetTable<PPClients>()
+                           select c
+                           ).ToList();
 
-         foreach (var client in clients)
-         {
-            var dejaCommande = (from commande in db.GetTable<PPCommandes>()
-                                where (commande.NoClient.Equals(client.NoClient)) &&
-                                (commande.NoVendeur.Equals(noVendeur))
-                                select commande
-                         ).ToList();
-            var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
-                                 where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals(noVendeur))
-                                 select panier
-                                 ).ToList();
-
-            if (dejaCommande.Count() > 0)
+            foreach (var client in clients)
             {
-               nbClientsActif++;
-            }
-            else if (possedePanier.Count() > 0)
-            {
-               nbClientsPotentiel++;
-            }
-            else
-            {
-               nbClientsVisiteurs++;
-            }
-         }
-         List<int> lstStats = new List<int>();
-         lstStats.Add(nbClientsActif);
-         lstStats.Add(nbClientsPotentiel);
-         lstStats.Add(nbClientsVisiteurs);
+                var dejaCommande = (from commande in db.GetTable<PPCommandes>()
+                                    where (commande.NoClient.Equals(client.NoClient)) &&
+                                    (commande.NoVendeur.Equals(noVendeur))
+                                    select commande
+                             ).ToList();
+                var possedePanier = (from panier in db.GetTable<PPArticlesEnPanier>()
+                                     where (panier.NoClient.Equals(client.NoClient)) && (panier.NoVendeur.Equals(noVendeur))
+                                     select panier
+                                     ).ToList();
 
-         //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
-         AccueilVendeurViewModel model = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, visites.Count());
-         model.lstStatsClients = lstStats;
+                if (dejaCommande.Count() > 0)
+                {
+                    nbClientsActif++;
+                }
+                else if (possedePanier.Count() > 0)
+                {
+                    nbClientsPotentiel++;
+                }
+                else
+                {
+                    nbClientsVisiteurs++;
+                }
+            }
+            List<int> lstStats = new List<int>();
+            lstStats.Add(nbClientsActif);
+            lstStats.Add(nbClientsPotentiel);
+            lstStats.Add(nbClientsVisiteurs);
 
-         db.Connection.Close();
+            //Créer un object AccueilVendeurViewModel afin de l'envoyer a ma vue
+            AccueilVendeurViewModel model = new AccueilVendeurViewModel(lstDetailsProduitsCommandes, paniers, visites.Count());
+            model.lstStatsClients = lstStats;
 
-         return View("AccueilVendeur", model);
+            db.Connection.Close();
+
+            return View("AccueilVendeur", model);
         }
 
         public bool DateVentePrixVenteValide(decimal? prixVente, DateTime? dateVente)
@@ -1227,14 +1244,91 @@ namespace PetitesPuces.Controllers
 
         public ActionResult PanierDetailVendeur(int id)
         {
+            ViewBag.NomClient = "";
+            ViewBag.NomVendeur = "";
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             //requête pour aller chercher les produits à l'aide d'un vendeur
             List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
                                               where panier.NoClient.Equals(id) && panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
                                               select panier).ToList();
+            //Aller chercher le nom complet du vendeur et du client et le passer dans la page à l'aide d'un viewBag
+            var client = (from c in db.GetTable<PPClients>()
+                          where c.NoClient.Equals(id)
+                          select c
+                          ).ToList();
+
+            var vendeur = (from v in db.GetTable<PPVendeurs>()
+                           where v.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                           select v
+                           ).ToList();
+            ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
+            ViewBag.NomVendeur = (vendeur.First().Prenom + " " + vendeur.First().Nom);
+
             db.Connection.Close();
             return View(items);
+        }
+
+        public ActionResult EnvoyerMessage(int noDestinataire, int noExpediteur, string message)
+        {
+            if (message.Trim().Equals(""))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+            }
+            else
+            {
+                Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+                db.Connection.Open();
+                int noMessages = 1;
+                //Aller chercher le dernier noMessage
+                var messages = (from msg in db.GetTable<PPMessages>()
+                                group msg by true into r
+                                select new
+                                {
+                                    max = r.Max(max => max.NoMsg)
+                                }
+                                ).ToList();
+                if (messages.Count() > 0)
+                {
+                    noMessages = messages.First().max + 1;
+                }
+
+                //Ajouter un message
+                PPMessages ppMessage = new PPMessages
+                {
+                    NoMsg = noMessages,
+                    NoExpediteur = noExpediteur,
+                    DescMsg = message,
+                    FichierJoint = null,
+                    Lieu = 2,
+                    dateEnvoi = DateTime.Now,
+                    objet = "Message concernant votre panier"
+                };
+                //Ajouter un Destinataire
+                PPDestinataires ppDestinataires = new PPDestinataires
+                {
+                    NoMsg = noMessages,
+                    NoDestinataire = noDestinataire,
+                    EtatLu = 0,
+                    Lieu = 1
+                };
+
+                //Ajouter les nouveaux objets à leur collection
+                db.PPMessages.InsertOnSubmit(ppMessage);
+                db.PPDestinataires.InsertOnSubmit(ppDestinataires);
+
+                // Submit the change to the database.
+                try
+                {
+                    db.SubmitChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                db.Connection.Close();
+                return new HttpStatusCodeResult(HttpStatusCode.OK);
+            }
         }
 
         [ChildActionOnly]

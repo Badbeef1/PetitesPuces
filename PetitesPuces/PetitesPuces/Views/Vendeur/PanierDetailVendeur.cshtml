@@ -105,7 +105,7 @@
                 e.preventDefault();
             }
         }
-
+      /*
         function supprimerProduit(id) {
 
             $.ajax({
@@ -124,26 +124,80 @@
                 success: success,
                 error: error,
             });
-        }
+      }*/
 
+         function accepter(id) {
+            console.log($('#saisie_courriel').css("visibility") == "hidden");
+            if ($('#saisie_courriel').css("visibility") == "hidden") {
+               var objSaisieMessage = document.getElementById('saisie_courriel');
+               objSaisieMessage.style.visibility = "visible";
+               //var message = 'Bonjour M.  j\'ai l\'honneur de vous annoncer que votre demande de vendeur a été acceptée.';
+               //$('#form_message').text(message);
+               //$('#btn_accepter').prop("disabled", true);
+               //$('#btn_refuser').prop("disabled", true);
+               //var redevance = $('#redevance').val();
+               //redevance = redevance.replace(",", ".");
+               //redevance = parseFloat(redevance);
 
-        function success(model) {
+               /*$.ajax({
+                  url: "/Gestionnaire/AccepterVendeur",
+                  data: { "id": id, "redevance": redevance },
+                  success: success,
+                  error: error,
+               });*/
+            }
+         }
+
+         function confirmer(noExpediteur, noDestinataire) {
+            //Aller chercher le message
+            var message = $('#form_message').val();
+            console.log('message: ' + message);
+            if (message.trim() != '') {
+               $.ajax({
+                  url: "/Vendeur/EnvoyerMessage",
+                  data: { "noDestinataire": noDestinataire, "noExpediteur": noExpediteur, "message": message },
+                  success: retourAccueil,
+                  error: error,
+               });
+            }
+            else {
+               console.log('écrit un message pour l\'envoyer');
+               alert('Veuillez écrire un message.');
+            }
+         }
+
+         function retourAccueil() {
+            location.href = "/Vendeur/AccueilVendeur";
+         }
+         
+        /*function success(model) {
             $("#panier").html(model)
             //console.log(model);
-        }
+        }*/
 
         function error(error) {
             console.log('erreur : ' + error);
-            location.href = '/Client/AccueilClient';
+            //location.href = '/Client/AccueilClient';
         }
 
    </script>
 </head>
 <body>
    @Html.Partial("index")
+   @{
+      MessageViewModel message = new MessageViewModel((int)Model.First().NoVendeur, (int)Model.First().NoClient, ViewBag.NomVendeur, ViewBag.NomClient, "");
+   }
+
    <br /><br /><br />
    <div id="panier" class="container">
       @Html.Partial("Vendeur/PanierVendeur", Model)
+      <div id="saisie_courriel" style="visibility:hidden">
+         <br />
+         <h4>Envoie d'un message</h4>
+         @Html.Partial("Courriel/Message", message);
+      </div>
    </div>
+
+
 </body>
 </html>

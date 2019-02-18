@@ -1,7 +1,5 @@
 ﻿@using PetitesPuces.Models
 @model List<PPArticlesEnPanier>
-@using (Html.BeginForm("SaisieCommande", "Client", FormMethod.Post))
-{
     <div class="card shopping-cart">
         <div class="card-header">
             <h3>Panier du vendeur: @Model.First().PPVendeurs.NomAffaires</h3>
@@ -71,7 +69,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-end">
-                        <button id="btnPasserCommande" class="btn btn-primary" type="submit">
+                        <button id="btnPasserCommande" class="btn btn-primary" onclick="accepter(@Model.First().NoVendeur);">
                             Envoyer un courriel au client
                         </button>
                     </div>
@@ -79,4 +77,3 @@
             </div>
         </div>
     </div>
-}
