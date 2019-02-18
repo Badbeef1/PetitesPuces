@@ -184,7 +184,7 @@ namespace PetitesPuces.Views
 
         private (dynamic utilisateur, long lngNoUtilisateur, string strAdresse) RecupereInformationBaseUtilisateur()
         {
-            dynamic utilisateur;
+            dynamic utilisateur = null;
             long lngNoUtilisateur = 0;
             string strAdresseCourriel = "";
 

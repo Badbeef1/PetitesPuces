@@ -3,7 +3,7 @@
     //PetitesPuces.Models.PPMessages message = (Model.objDestinataire as PetitesPuces.Models.PPDestinataires).PPMessages;
 
     string strNomExpediteur = Model.StrNomAffichageExpediteur; //A suivre ... Philippe &lsaquo;PhilousLeLoup@Netscape.com&rsaquo;
-    string strDateEnvoie = Model.Message.dateEnvoi.Value.ToString("dd MMMM yyyy");
+    string strDateEnvoie = Model.Message.dateEnvoi.Value.ToString("yyyy-MM-dd");
 
 }
 
@@ -21,28 +21,30 @@
     </ul>
 </nav>
 
-<div>
-    <div style="height: 30px;">
-        <h6>@Model.Message.objet</h6>
+<div class="ml-3">
+    <div style="height: 30px;" class="mt-4">
+        <h3>@Model.Message.objet</h3>
     </div>
+    <hr />
     <div>
         <div>
             <div>
-                <span>@Model.StrNomAffichageExpediteur</span><br />
-                <span>@strDateEnvoie</span><br />
-                <small>@Model.StrNomAffichageDestinataire</small>
+                <span><b>@Model.StrNomAffichageExpediteur</b></span><br />
+                <small>@strDateEnvoie</small><br />
+                <small><b> À : </b>@Model.StrNomAffichageDestinataire</small>
             </div>
+            <hr />
             @if (Model.Message.FichierJoint != null)
             {
-                <br />
-                <div>
-                    <span>@Model.Message.FichierJoint.ToString()</span>
-                    @Html.ActionLink("Télécharger", "TelechargeFichierJoin", new { nom = Model.Message.FichierJoint}, new { @class = "btn btn-outline-primary"})
-                </div>
+            <div>
+                <span><b>Fichier joint: </b>  @Model.Message.FichierJoint.ToString()  </span>&nbsp;&nbsp;
+                <a href="~/Uploads/@Model.Message.FichierJoint" target="_blank" class="btn btn-outline-primary">T&eacute;l&eacute;charger</a>
+            </div>
+                <hr />
             }
         </div>
         <br />
-        <div>
+        <div class="pl-4 ">
             <p>
                 @Model.Message.DescMsg
             </p>
