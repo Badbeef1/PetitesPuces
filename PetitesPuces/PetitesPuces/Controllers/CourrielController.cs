@@ -920,7 +920,7 @@ namespace PetitesPuces.Views
 
             return model;
         }
-        
+        /*
         [HttpGet]
         public FileResult TelechargeFichierJoin(object nom)
         {
@@ -932,6 +932,34 @@ namespace PetitesPuces.Views
 
 
             return null;
-        }
+        }*/
+        /*
+        [HttpPost]
+        public bool SupprimeMessageDepuisMessage(string strElementSupprime)
+        {
+            var infoUtil = RecupereInformationBaseUtilisateur();
+
+            List<string> lstTempo = new List<string>();
+            lstTempo.Add(strElementSupprime);
+
+            optionListeMessages(lstTempo, infoUtil.lngNoUtilisateur, "sup");
+
+            //Vérifi que la supression s'est bien effectuer
+            var messType = strElementSupprime.Split('_');
+            string strType = messType[0];
+            int intNoMessage = int.Parse(messType[1]);
+
+            if (strType == "mes")
+            {
+                contextPP.PPMessages.FirstOrDefault(predicate: mess => mess.NoMsg == intNoMessage && mess.Lieu == 3)
+            }
+
+            contextPP.pp
+            strElementSupprime.Split('_')[1]
+
+
+
+            return false;
+        }*/
    }
 }

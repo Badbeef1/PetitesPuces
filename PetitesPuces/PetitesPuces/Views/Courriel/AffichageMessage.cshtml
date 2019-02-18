@@ -5,19 +5,25 @@
     string strNomExpediteur = Model.StrNomAffichageExpediteur; //A suivre ... Philippe &lsaquo;PhilousLeLoup@Netscape.com&rsaquo;
     string strDateEnvoie = Model.Message.dateEnvoi.Value.ToString("yyyy-MM-dd");
 
+    //string strValeurBoutonSupprimer = (Model.Destinataire is null ? "mes_" : "des_") + Model.Message.NoMsg;
+
 }
 
 <nav class="navbar bg-light">
     <ul class="navbar-nav navbar-expand bd-navbar">
         <li class="nav-item">
-            <a href="#" class="btn btn-link" ><i class="fas fa-plus"></i> Nouveau Message</a>
+            <a href="@Url.Action("Index/NouveauMessage")" class="btn btn-link" ><i class="fas fa-plus"></i> Nouveau Message</a>
         </li>
         <li class="nav-item">
-            <a href="#" class="btn btn-link" ><i class="fas fa-reply-all"></i> Répondre</a>
+            <a href="@Url.Action("Index/NouveauMessage", "Courriel", new { message = Model.Message.NoMsg, uneAction = "rep" })" class="btn btn-link"><i class="fas fa-reply"></i> Répondre</a>
         </li>
         <li class="nav-item">
-            <a href="#" class="btn btn-link"><i class="fa fa-trash-alt"></i> Supprimer</a>
+            <a href="@Url.Action("Index/NouveauMessage", "Courriel", new { message = Model.Message.NoMsg, uneAction = "trans" })" class="btn btn-link"><i class="fas fa-reply-all"></i> Transférer</a>
         </li>
+        <!--
+        <li class="nav-item">
+            <button type="button" class="btn btn-link" value="strValeurBoutonSupprimer" onclick="$.SupprimeDepuisMessage(this.value)"><i class="fa fa-trash-alt"></i> Supprimer</button>
+        </li>-->
     </ul>
 </nav>
 

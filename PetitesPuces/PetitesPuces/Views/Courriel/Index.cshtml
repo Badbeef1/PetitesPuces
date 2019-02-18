@@ -203,6 +203,24 @@
                 }
             });
         }
+        
+        $.SupprimeDepuisMessage = function (leBouton) {
+            $.ajax({
+                url: '@Url.Action("SupprimeMessageDepuisMessage", "Courriel")',
+                type: "POST",
+                contentType: "application/json;",
+                data: JSON.stringify({ "strElementSupprime": leBouton }),
+                success: function(elementRetour, status, xhr) {
+
+                },
+                failure: function (reponse) {
+                    console.log("La requete de supression a échoué!");
+                },
+                error: function (response) {
+                    console.log("Une erreur dans la requete de supression");
+                }
+            });
+        }
     </script>
 </body>
 </html>
