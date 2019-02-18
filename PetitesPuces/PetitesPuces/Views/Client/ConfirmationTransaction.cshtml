@@ -25,19 +25,61 @@
     @Html.Partial("test")
     @if (Model != null)
     {
-        @Html.Partial("Facture", Model)
-        <br />
-        <div class="col-md-12 text-center">
-            <button name="@Model.NoCommande" class="btn btn-primary" onclick="openTab(this)">Version imprimable</button>
+        if (Double.Parse(TempData["NoAutorisation"].ToString()) < 1000 || Double.Parse(TempData["NoAutorisation"].ToString()) > 5000)
+        {
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-right">
+                <h5>Code de refus :</h5>
             </div>
-            }
-            else
-            {
+            <div class="col-md-6 text-left">
+                <h5>@TempData["NoAutorisation"]</h5>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12 text-center">
-                <h1>Accès interdit</h1>
+                @{
+                    string retour = "Raison : ";
+                    switch (TempData["NoAutorisation"].ToString())
+                    {
+                        case "0":
+                            retour += "Transaction annulée par l'utilisateur";
+                            break;
+                        case "1":
+                            retour += "Transaction refusée : Date d'expiration dépassée";
+                            break;
+                        case "2":
+                            retour += "Transaction refusée : Limite de crédit atteinte";
+                            break;
+                        case "3":
+                            retour += "Transaction refusée : Carte refusée";
+                            break;
+                        case "9999":
+                            retour += "Erreur(s) de validation";
+                            break;
+                    }
+                }
+                <h5>@retour</h5>
             </div>
-            }
-    </body>
+        </div>
+    </div>
+        }
+        else
+        {
+            @Html.Partial("Facture", Model)
+            <br />
+            <div class="col-md-12 text-center">
+                <button name="@Model.NoCommande" class="btn btn-primary" onclick="openTab(this)">Version imprimable</button>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-md-12 text-center">
+            <h1>Accès interdit</h1>
+        </div>
+    }
+</body>
 </html>
 
 <script type="text/javascript">
