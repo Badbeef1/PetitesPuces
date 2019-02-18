@@ -65,120 +65,136 @@
     </style>
 </head>
 <body>
-    <header class="navbar bd-navbar navbar-expand-lg">
-        <a class="navbar-brand" href="#">Petites Puces</a>
-    </header>
-    <div class="container-fluid">
-        <div class="row flex-xl-nowrap">
-            <div class="col-12 col-md-3 col-xl-2 bd-sidebar bg-light">
-                <nav class="sidebar">
-                    <ul class="nav nav-pills flex-column ">
-                        @foreach (var lieux in Model.lstLieu)
+   
+   <header class="navbar bd-navbar navbar-expand-lg">
+      <a class="navbar-brand" href="#">Petites Puces</a>
+      @{
+         if (Session["vendeurObj"] != null)
+         {
+            Html.Partial("~/Views/Vendeur/index.cshtml");
+         }
+         else if (Session["gestionnaireObj"] != null)
+         {
+            Html.Partial("~/Views/Gestionnaire/index.cshtml");
+         }
+         else
+         {
+            Html.Partial("~/Views/Client/test.cshtml");
+         }
+      }
+   </header>
+  
+   <div class="container-fluid">
+      <div class="row flex-xl-nowrap">
+         <div class="col-12 col-md-3 col-xl-2 bd-sidebar bg-light">
+            <nav class="sidebar">
+               <ul class="nav nav-pills flex-column ">
+                  @foreach (var lieux in Model.lstLieu)
+                  {
+                     var affichage = "";
+                     string strStyleFocus = "";
+
+                     if (lieux.NoLieu == 1)
+                     {
+                        affichage = strBoiteReception;
+
+                        if (Model.strPage == strBoiteReception)
                         {
-                            var affichage = "";
-                            string strStyleFocus = "";
-
-                            if (lieux.NoLieu == 1)
-                            {
-                                affichage = strBoiteReception;
-
-                                if (Model.strPage == strBoiteReception)
-                                {
-                                    strStyleFocus = "background-color: lavender;";
-                                }
-                            }
-                            else if (lieux.NoLieu == 2)
-                            {
-                                affichage = strEnvoye;
-
-                                if (Model.strPage == strEnvoye)
-                                {
-                                    strStyleFocus = "background-color: lavender;";
-                                }
-                            }
-                            else if (lieux.NoLieu == 3)
-                            {
-                                affichage = strBoiteSupprime;
-
-                                if (Model.strPage == strBoiteSupprime)
-                                {
-                                    strStyleFocus = "background-color: lavender;";
-                                }
-                            }
-                            else if (lieux.NoLieu == 4)
-                            {
-                                affichage = strBrouillon;
-
-                                if (Model.strPage == strBrouillon)
-                                {
-                                    strStyleFocus = "background-color: lavender;";
-                                }
-                            }
-                            else if (lieux.NoLieu == 5)
-                            {
-                                affichage = strSupprimeDefinitivement;
-
-                                if (Model.strPage == strSupprimeDefinitivement)
-                                {
-                                    strStyleFocus = "background-color: lavender;";
-                                }
-                            }
-
-                            <li class="nav-item pt-2 pb-2" style="@strStyleFocus">
-                                <a href="@Url.Action("Index/" + affichage)">
-                                    @if (lieux.NoLieu == 1)
-                                    {
-                                        <i class="fa fa-inbox"></i>
-                                    }
-                                    else if (lieux.NoLieu == 2)
-                                    {
-                                        <i class="fa fa-paper-plane"></i>
-                                    }
-                                    else if (lieux.NoLieu == 3)
-                                    {
-                                        <i class="fa fa-trash-alt"></i>
-                                    }
-                                    else if (lieux.NoLieu == 4)
-                                    {
-                                        <i class="fa fa-pencil-alt"></i>
-                                    }
-                                    else if (lieux.NoLieu == 5)
-                                    {
-                                        <i class="fa fa-trash-alt"></i>
-                                    }
-                                    @lieux.Description
-                                </a>
-                                @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
-                                {
-                                    <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
-                                }
-                            </li>
+                           strStyleFocus = "background-color: lavender;";
                         }
-                    </ul>
-                </nav>
-            </div>
+                     }
+                     else if (lieux.NoLieu == 2)
+                     {
+                        affichage = strEnvoye;
 
-            <main class="col-12 col-md-9 col-xl-10" id="divCorps">
-                @{
-                    ViewBag.LaPage = Model.strPage;
+                        if (Model.strPage == strEnvoye)
+                        {
+                           strStyleFocus = "background-color: lavender;";
+                        }
+                     }
+                     else if (lieux.NoLieu == 3)
+                     {
+                        affichage = strBoiteSupprime;
 
-                    if (Model.strPage == strNouveauMessage)
-                    {
-                        @Html.Partial("RedactionMessage", Model)
-                    }
-                    else if (Model.strPage == strAffichageMessage)
-                    {
-                        @Html.Partial("AffichageMessage", Model.AfficheMessage)
-                    }
-                    else
-                    {
-                        @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
-                    }
-                }
-            </main>
-        </div>
-    </div>
-    <script type="text/javascript">
+                        if (Model.strPage == strBoiteSupprime)
+                        {
+                           strStyleFocus = "background-color: lavender;";
+                        }
+                     }
+                     else if (lieux.NoLieu == 4)
+                     {
+                        affichage = strBrouillon;
+
+                        if (Model.strPage == strBrouillon)
+                        {
+                           strStyleFocus = "background-color: lavender;";
+                        }
+                     }
+                     else if (lieux.NoLieu == 5)
+                     {
+                        affichage = strSupprimeDefinitivement;
+
+                        if (Model.strPage == strSupprimeDefinitivement)
+                        {
+                           strStyleFocus = "background-color: lavender;";
+                        }
+                     }
+
+                     <li class="nav-item pt-2 pb-2" style="@strStyleFocus">
+                        <a href="@Url.Action("Index/" + affichage)">
+                           @if (lieux.NoLieu == 1)
+                           {
+                              <i class="fa fa-inbox"></i>
+                           }
+                           else if (lieux.NoLieu == 2)
+                           {
+                              <i class="fa fa-paper-plane"></i>
+                           }
+                           else if (lieux.NoLieu == 3)
+                           {
+                              <i class="fa fa-trash-alt"></i>
+                           }
+                           else if (lieux.NoLieu == 4)
+                           {
+                              <i class="fa fa-pencil-alt"></i>
+                           }
+                           else if (lieux.NoLieu == 5)
+                           {
+                              <i class="fa fa-trash-alt"></i>
+                           }
+                           @lieux.Description
+                        </a>
+                        @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
+                        {
+                           <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
+                        }
+                     </li>
+                  }
+               </ul>
+            </nav>
+         </div>
+
+         <main class="col-12 col-md-9 col-xl-10" id="divCorps">
+            @{
+               ViewBag.LaPage = Model.strPage;
+
+               if (Model.strPage == strNouveauMessage)
+               {
+                  @Html.Partial("RedactionMessage", Model)
+               }
+               else if (Model.strPage == strAffichageMessage)
+               {
+                  @Html.Partial("AffichageMessage", Model.AfficheMessage)
+               }
+               else
+               {
+                  @Html.Partial("ListeCourriel", Model.iplListeMessageAffiche)
+               }
+            }
+         </main>
+      </div>
+   </div>
+   <script type="text/javascript">
         $.gestionTri = function (leBouton) {
             var leTri = leBouton.value;
             $.ajax({
@@ -203,6 +219,6 @@
                 }
             });
         }
-    </script>
+   </script>
 </body>
 </html>
