@@ -1,0 +1,74 @@
+﻿@using PetitesPuces.Models
+@model GererPanierViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Gestion de panier</title>
+</head>
+<body>
+    @Html.Partial("index")
+    <div class="container">
+        @using (Html.BeginForm("GestionPanier", "Client", FormMethod.Post))
+        {
+
+            <div class="row">
+                <div class="text-center col-md-12">
+                    <h1>Gestion des paniers</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-right col-md-12">
+                    Panier(s) inactif(s) depuis : @Html.DropDownListFor(m => m.valeurDdl, (SelectList)ViewBag.ListeTri, new { @onchange = "ddlChange()" })
+                </div>
+            </div>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-right">#</th>
+                            <th scope="col" class="text-left">Adresse courriel</th>
+                            <th scope="col" class="text-left">Nom complet</th>
+                            <th scope="col" class="text-right">Date d'activité</th>
+                            <th scope="col" class="text-center">Supprimer : <input type="checkbox" id="cbAll" /></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int counter = 0;
+                            for (int i = 0; i < Model.lstPanierAncien.Count; i++)
+                            {
+                                DateTime date = (DateTime)Model.lstPanierAncien[i].ppArtPan[0].DateCreation;
+                                ++counter;
+                                <tr>
+                                    <th scope="row" class="text-right">@counter</th>
+                                    <td class="text-left">@Model.lstPanierAncien[i].ppArtPan[0].PPClients.AdresseEmail</td>
+                                    <td class="text-left">@Model.lstPanierAncien[i].ppArtPan[0].PPClients.Prenom @Model.lstPanierAncien[i].ppArtPan[0].PPClients.Nom</td>
+                                    <td class="text-right">@date.ToString("yyyy-MM-dd")</td>
+                                    <td class="text-right">@Html.CheckBoxFor(p => Model.lstPanierAncien[i].isChecked, new { @class = "form-control" }) </td>
+                                </tr>
+                                }
+                                for (int i = 0; i < Model.lstPanierRecent.Count; i++)
+                                {
+                                    DateTime date = (DateTime)Model.lstPanierRecent[i].ToList()[0].DateCreation;
+                                ++counter;
+                                <tr>
+                                    <th scope="row" class="text-right">@counter</th>
+                                    <td class="text-left">@Model.lstPanierRecent[i].ToList()[0].PPClients.AdresseEmail</td>
+                                    <td class="text-left">@Model.lstPanierRecent[i].ToList()[0].PPClients.Prenom @Model.lstPanierRecent[i].ToList()[0].PPClients.Nom</td>
+                                    <td class="text-right">@date.ToString("yyyy-MM-dd")</td>
+                                    <td class="text-center"></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        }</div>
+</body>
+</html>

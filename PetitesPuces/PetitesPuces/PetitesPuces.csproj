@@ -55,9 +55,6 @@
     <Reference Include="ephtmltopdf, Version=12.3.0.0, Culture=neutral, PublicKeyToken=e0ae9f6e27a97018, processorArchitecture=MSIL">
       <HintPath>..\packages\ExpertPdfHtmlToPdf.12.3.0\lib\net40\ephtmltopdf.dll</HintPath>
     </Reference>
-    <Reference Include="IronPdf, Version=5.0.5.17148, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\IronPdf.5.0.5.2\lib\net40\IronPdf.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -349,6 +346,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\GererPanierViewModel.cs" />
     <Compile Include="Models\GererCommandeViewModel.cs" />
     <Compile Include="Models\AccueilClientViewModel.cs" />
     <Compile Include="Models\AccueilGestionnaireViewModel.cs" />
@@ -492,6 +490,7 @@
     <Content Include="Views\Connexion\ChangerMDP.cshtml" />
     <Content Include="Views\Vendeur\VoirPDFCommande.cshtml" />
     <Content Include="Views\Shared\Facture.cshtml" />
+    <Content Include="Views\Vendeur\GestionPanier.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

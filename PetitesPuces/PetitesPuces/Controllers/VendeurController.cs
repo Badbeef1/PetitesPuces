@@ -1404,5 +1404,50 @@ namespace PetitesPuces.Controllers
             };
             return View("GestionCommande", gererComm);
         }
+
+        public ActionResult GestionPanier()
+        {
+            if (Session["vendeurObj"] == null)
+            {
+                return PartialView("index");
+            }
+
+            Dictionary<int,string> dictioDdl = new Dictionary<int, string>();
+            dictioDdl.Add(0, "");
+            dictioDdl.Add(1, "1 mois et +");
+            dictioDdl.Add(2, "2 mois et +");
+            dictioDdl.Add(3, "3 mois et +");
+            dictioDdl.Add(6, "6 mois et +");
+            ViewBag.ListeTri = new SelectList(dictioDdl, "Key", "Value");
+
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+            Dictionary<long,List<PPArticlesEnPanier>> panierRecent = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation >= DateTime.Now.AddMonths(-6)
+            && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g =>(long) g.Key, g => g.ToList()));
+            Dictionary<long,List<PPArticlesEnPanier>> panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+            && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+            List<GererPanierViewModel.GererPanier> lstPanierGerable = new List<GererPanierViewModel.GererPanier>();
+
+            foreach(var item in panierRecent) { 
+            
+                panierAncien.Remove(item.Key);
+            }
+            foreach (KeyValuePair<long, List<PPArticlesEnPanier>> artPan in panierAncien)
+            {
+                GererPanierViewModel.GererPanier panier = new GererPanierViewModel.GererPanier
+                {
+                    ppArtPan = artPan.Value,
+                    isChecked = false
+                };
+                lstPanierGerable.Add(panier);
+            }
+
+            GererPanierViewModel gpVm = new GererPanierViewModel
+            {
+                lstPanierAncien = lstPanierGerable,
+                lstPanierRecent = panierRecent.Values.ToList()
+            };
+
+            return View(gpVm);
+        }
     }
 }
