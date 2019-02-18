@@ -22,9 +22,19 @@
     </style>
 </head>
 <body>
-    <div id="navigation">
-        @RenderPage("~/Views/Client/test.cshtml")
-    </div>
+   <div id="navigation">
+      @{
+         if (Session["clientObj"] != null)
+         {
+            @Html.Partial("~/Views/Client/test.cshtml")
+         }
+         else
+         {
+            @Html.Partial("~/Views/Vendeur/index.cshtml")
+         }
+      }
+
+   </div>
     <br /><br /><br />
     <div class="container mb-5">
         @Html.Partial("Client/DetailProduit", Model)
