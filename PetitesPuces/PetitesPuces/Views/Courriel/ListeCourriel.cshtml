@@ -142,9 +142,13 @@
             <button type="button" class="btn btn-link" value="trans" onclick="uneTache(this)"><i class="fas fa-reply-all"></i> Transférer</button>
         </li>
 
-        <li class="nav-item unOuPlus-Select">
-            <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
-        </li>
+        @if (ViewBag.LaPage != strBoiteSupprime && ViewBag.LaPage != strSupprimeDefinitivement)
+        {
+            <li class="nav-item unOuPlus-Select">
+                <button type="button" class="btn btn-link" value="supp" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button>
+            </li>
+        }
+
 
         @if (ViewBag.LaPage == strBoiteReception)
         {
@@ -156,23 +160,23 @@
                 <button type="button" class="btn btn-link" value="nonlu" onclick="desTaches(this)"><i class="far fa-envelope"></i> Marquer comme non lu</button>
             </li>
         }
-        @if (ViewBag.LaPage == strSupprimeDefinitivement)
+        @if (ViewBag.LaPage == strBoiteSupprime)
         {
             <li class="nav-item unOuPlus-Select">
-                <button type="button" class="btn btn-link" value="suppdef" onclick="desTaches(this)"><i class="fa fa-trash-alt"> Supprimer</i></button><!--Définitivement-->
+                <button type="button" class="btn btn-link" value="suppdef" onclick="desTaches(this)"><i class="fa fa-trash-alt"></i> Supprimer</button><!--Définitivement-->
             </li>
         }
 
-        @if (ViewBag.LaPage != strBoiteReception && ViewBag.LaPage != strSupprimeDefinitivement)
+        @if (ViewBag.LaPage != strBoiteReception && ViewBag.LaPage != strSupprimeDefinitivement && ViewBag.LaPage != strBoiteSupprime)
         {
             <li class="nav-item aucun-Select">
-                <button type="button" class="btn btn-link aucun-Select" value="supp"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
+                <button type="button" class="btn btn-link aucun-Select" value="supp" onclick="desTachesSurTous(this)"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
             </li>
         }
-        @if (ViewBag.LaPage == strSupprimeDefinitivement)
+        @if (ViewBag.LaPage == strBoiteSupprime)
         {
             <li class="nav-item aucun-Select">
-                <button type="button" class="btn btn-link aucun-Select" value="suppdef"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
+                <button type="button" class="btn btn-link aucun-Select" value="suppdef" onclick="desTachesSurTous(this)"><i class="fa fa-trash-alt"></i> Vider le dossier</button>
             </li>
         }
         @if (ViewBag.LaPage == strBoiteSupprime)
@@ -326,7 +330,11 @@
                 </div>
                 <div class="col-1 sActionMessageListe">
                     @{
-                        var nom = "supp_" + contenu.Message.NoMsg;
+                        var nom = "suppdef_" + contenu.Message.NoMsg;
+                        if (ViewBag.LaPage != strBoiteSupprime)
+                        {
+                            nom = "supp_" + contenu.Message.NoMsg;
+                        }
                     }
                     <button type="button" title="Supprimer" onclick="uneTacheSansSelection(this)" value="@nom"><i class="fa fa-trash-alt"></i></button>
                     @if (contenu.Destinataire != null)
