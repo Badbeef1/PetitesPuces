@@ -8,6 +8,9 @@ using System.Web.Mvc;
 using PagedList;
 using System.IO;
 using System.Net;
+using ExpertPdf.HtmlToPdf;
+using System.Text;
+using System.Web.UI;
 
 namespace PetitesPuces.Controllers
 {
@@ -658,8 +661,21 @@ namespace PetitesPuces.Controllers
             {
 
                 string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
-                arrByte = System.IO.File.ReadAllBytes(path);
-                return File(arrByte, contentType);
+                if (System.IO.File.Exists(path))
+                {
+                    arrByte = System.IO.File.ReadAllBytes(path);
+                    return File(arrByte, contentType);
+                }
+                else
+                {
+                    
+                    var html = RenderToString(PartialView("Facture", comm.ToList().First()));
+                    PdfConverter pdf = new PdfConverter();
+                    pdf.SavePdfFromHtmlStringToFile(html, path);
+                    arrByte = System.IO.File.ReadAllBytes(path);
+
+                    return File(arrByte, contentType);
+                }
             }
             else
             {
@@ -1231,6 +1247,68 @@ namespace PetitesPuces.Controllers
         public ActionResult ModificationMDP()
         {
             return PartialView();
+        }
+        public string RenderToString(PartialViewResult partialView)
+        {
+            var view = ViewEngines.Engines.FindPartialView(ControllerContext, partialView.ViewName).View;
+
+            var sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
+            {
+                using (var tw = new HtmlTextWriter(sw))
+                {
+                    view.Render(new ViewContext(ControllerContext, view, partialView.ViewData, partialView.TempData, tw), tw);
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        [HttpPost]
+        public ActionResult GestionLivraison(GererCommandeViewModel gcvm)
+        {
+            foreach(GererCommandeViewModel.GererCommande comm in gcvm.lstCommandeNonLivrer)
+            {
+                if (comm.isChecked)
+                {
+                    contextPP.GetTable<PPCommandes>().Where(m => m.NoCommande == comm.commande.NoCommande).First().Statut = 'L';
+                    contextPP.SubmitChanges();
+                }
+            }
+            // Renvoyer ce qui reste
+            List<GererCommandeViewModel.GererCommande> lstAGerer = new List<GererCommandeViewModel.GererCommande>();
+            if (Session["vendeurObj"] == null)
+            {
+                return PartialView("index");
+            }
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+
+            ModelState.Clear();
+            DataClasses1DataContext newContext = new DataClasses1DataContext();
+            List<PPCommandes> lstCommandeEnAttente = (from uneCommande in newContext.GetTable<PPCommandes>()
+                                                      where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('N')
+                                                      orderby uneCommande.DateCommande descending
+                                                      select uneCommande).ToList();
+            foreach (PPCommandes comm in lstCommandeEnAttente)
+            {
+                GererCommandeViewModel.GererCommande unComm = new GererCommandeViewModel.GererCommande
+                {
+                    commande = comm,
+                    isChecked = false
+                };
+                lstAGerer.Add(unComm);
+            }
+
+            List<PPCommandes> lstCommandeLivré = (from uneCommande in newContext.GetTable<PPCommandes>()
+                                                  where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
+                                                  orderby uneCommande.DateCommande descending
+                                                  select uneCommande).ToList();
+            GererCommandeViewModel gererComm = new GererCommandeViewModel
+            {
+                lstCommandeLivrer = lstCommandeLivré,
+                lstCommandeNonLivrer = lstAGerer
+            };
+            return View("GestionCommande", gererComm);
         }
     }
 }
