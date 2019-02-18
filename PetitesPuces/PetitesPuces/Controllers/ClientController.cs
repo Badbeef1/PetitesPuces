@@ -95,8 +95,72 @@ namespace PetitesPuces.Controllers
             return View(items);
         }
 
-        // GET: Client
-        public ActionResult SaisieCommande(SaisieCommandeViewModel sViewModelParam)
+
+      public ActionResult EnvoyerMessage(int noDestinataire, int noExpediteur, string message)
+      {
+         if (message.Trim().Equals(""))
+         {
+            return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+         }
+         else
+         {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            int noMessages = 1;
+            //Aller chercher le dernier noMessage
+            var messages = (from msg in db.GetTable<PPMessages>()
+                            group msg by true into r
+                            select new
+                            {
+                               max = r.Max(max => max.NoMsg)
+                            }
+                            ).ToList();
+            if (messages.Count() > 0)
+            {
+               noMessages = messages.First().max + 1;
+            }
+
+            //Ajouter un message
+            PPMessages ppMessage = new PPMessages
+            {
+               NoMsg = noMessages,
+               NoExpediteur = noExpediteur,
+               DescMsg = message,
+               FichierJoint = null,
+               Lieu = 2,
+               dateEnvoi = DateTime.Now,
+               objet = "Question sur un de vos produit"
+            };
+            //Ajouter un Destinataire
+            PPDestinataires ppDestinataires = new PPDestinataires
+            {
+               NoMsg = noMessages,
+               NoDestinataire = noDestinataire,
+               EtatLu = 0,
+               Lieu = 1
+            };
+
+            //Ajouter les nouveaux objets à leur collection
+            db.PPMessages.InsertOnSubmit(ppMessage);
+            db.PPDestinataires.InsertOnSubmit(ppDestinataires);
+
+            // Submit the change to the database.
+            try
+            {
+               db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+               Console.WriteLine(e);
+            }
+            db.Connection.Close();
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+         }
+      }
+
+
+      // GET: Client
+      public ActionResult SaisieCommande(SaisieCommandeViewModel sViewModelParam)
         {
             List<Province> lstProvinces = new List<Province>
             {
@@ -971,6 +1035,13 @@ namespace PetitesPuces.Controllers
                     .Where(e => e.NoProduit == model.Produit.NoProduit).Average(x => x.Cote).Value, 1);
             }
 
+            var vendeur = (from v in contextPP.PPVendeurs
+                           where v.NoVendeur.Equals(model.Produit.NoVendeur)
+                           select v
+                           ).ToList();
+
+            ViewBag.NomClient = cConnecte.Prenom + " " + cConnecte.Nom;
+            ViewBag.NomVendeur = vendeur.First().Prenom + " " + vendeur.First().Nom;
 
             return View("ProduitDetaille", model);
         }

@@ -1,4 +1,5 @@
-﻿@model PetitesPuces.ViewModels.ProduitDetailViewModel
+﻿@using PetitesPuces.Models
+@model PetitesPuces.ViewModels.ProduitDetailViewModel
 @{
     Layout = null;
 }
@@ -36,16 +37,29 @@
 
    </div>
     <br /><br /><br />
-    <div class="container mb-5">
-        @Html.Partial("Client/DetailProduit", Model)
+                <div class="container mb-5">
+                   @Html.Partial("Client/DetailProduit", Model)
 
-        @Html.Partial("Client/EcrireEvaluation", Model)
 
-        @if (Request.UrlReferrer != null)
-        {
-            <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
-        }
-    </div>
+
+                   @Html.Partial("Client/EcrireEvaluation", Model)
+
+                   @if (Request.UrlReferrer != null)
+                   {
+                      <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
+                   }
+                   @if (Session["clientObj"] != null)
+                   {
+
+                      MessageViewModel message = new MessageViewModel((int)((PPClients)Session["clientObj"]).NoClient, (int)Model.Produit.NoVendeur, ViewBag.NomVendeur, ViewBag.NomClient, "");
+
+                      <div id="saisie_courriel" style="visibility:hidden">
+                         <br />
+                         <h4>Envoie d'un message au vendeur du produit</h4>
+                         @Html.Partial("Courriel/Message", message);
+                      </div>
+                   }
+                </div>
     <script type="text/javascript">
     $.AjoutAuPanier = function (numeroDeProduit) {
         let qqtProduitDesire = $('#numNbAjoutPanier').val();
@@ -106,8 +120,52 @@
             error: function (response) {
                 alert("Une erreur dans la requete d'ajout!");
             }
-        });  
-    }
+       });
+       }
+
+       function accepter(id) {
+          console.log($('#saisie_courriel').css("visibility") == "hidden");
+          if ($('#saisie_courriel').css("visibility") == "hidden") {
+             var objSaisieMessage = document.getElementById('saisie_courriel');
+             objSaisieMessage.style.visibility = "visible";
+             location.href += "#saisie_courriel";
+          }
+       }
+
+       function confirmer(noExpediteur, noDestinataire) {
+          //Aller chercher le message
+          var message = $('#form_message').val();
+          console.log('message: ' + message);
+          if (message.trim() != '') {
+             $.ajax({
+                url: "/Client/EnvoyerMessage",
+                data: { "noDestinataire": noDestinataire, "noExpediteur": noExpediteur, "message": message },
+                success: retourAccueil,
+                error: error,
+             });
+          }
+          else {
+             console.log('écrit un message pour l\'envoyer');
+             alert('Veuillez écrire un message.');
+          }
+       }
+
+       function error() {
+          console.log('erreur.');
+       }
+
+       function retourAccueil() {
+          location.href = "/Client/Catalogue";
+       }
+       function annuler(id) {
+          console.log('well cest useless');
+       }
+
+       /*function success(model) {
+           $("#panier").html(model)
+           //console.log(model);
+       }*/
+
     </script>
 </body>
 </html>

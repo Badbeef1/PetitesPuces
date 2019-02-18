@@ -56,9 +56,13 @@
              </p>
             <hr>
             <p>
-               <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit"  onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "") >Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
+               <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit" onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "")>Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
                <span id="spQqt"><span class="font-weight-bold">Quantité restant:</span> @Model.Produit.NombreItems</span>
-            </p>
+               @if (Session["clientObj"] != null)
+               {
+                  <button id="btn_envoyer_message" class="btn btn-outline-primary" onclick="accepter(@Model.Produit.NoVendeur);">Contacter le vendeur</button>
+               }
+               </p>
             <hr>
             <p class="font-weight-bold">Description:</p>
             <p>@Model.Produit.Description</p>
