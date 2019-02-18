@@ -208,10 +208,10 @@ namespace PetitesPuces.Views
             else
             {
                 //strTypeUtilisateur = strGestionnaire;
-                /*
+                
                 utilisateur = contextPP.PPGestionnaire
                 .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
-                */
+               
 
                 #if DEBUG
                                 utilisateur = contextPP.PPVendeurs.FirstOrDefault();
@@ -221,12 +221,12 @@ namespace PetitesPuces.Views
 
 
 
-                lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
-                strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
+                //lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
+                //strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
 
-                //strAdresseCourriel = (utilisateur as PPGestionnaire).AdresseEmail;
+                strAdresseCourriel = (utilisateur as PPGestionnaire).AdresseEmail;
 
-                //lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
+                lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
             }
             return (utilisateur, lngNoUtilisateur, strAdresseCourriel);
         }
