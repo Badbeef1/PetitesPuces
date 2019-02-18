@@ -53,6 +53,19 @@ namespace PetitesPuces.Controllers
             return View("AccueilPanier", paniers);
         }
 
+        public ActionResult HistoriqueCommande()
+        {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            var lstCommandes = (from commande in db.GetTable<PPCommandes>()
+                                where commande.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient)
+                                orderby commande.DateCommande descending
+                                select commande
+                                ).ToList();
+            
+            return View(lstCommandes);
+        }
+
 
         public ActionResult AccueilClient()
         {

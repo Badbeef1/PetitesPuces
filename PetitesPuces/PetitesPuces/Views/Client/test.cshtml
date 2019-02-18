@@ -46,10 +46,15 @@
          </a>
       </li>
       <li class="nav-item">
+         <a class="nav-link" href="/Client/HistoriqueCommande">
+            Historique des commandes
+         </a>
+      </li>
+      <li class="nav-item">
          <a class="nav-link" href="/Courriel/Index">
             Messagerie
             <i class="fas fa-envelope"></i>
-            @if(notif.Count() > 0)
+            @if (notif.Count() > 0)
             {
                @notif.Count();
             }

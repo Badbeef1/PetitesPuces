@@ -1,0 +1,78 @@
+﻿@using PetitesPuces.Models
+@model List<PPCommandes>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>Historiques des commandes</title>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+   <script type="text/javascript">
+      function openTab(th) {
+         window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+      }
+   </script>
+</head>
+<body>
+   @Html.Partial("test")
+   <div class="container">
+      <br />
+      <h2>Historiques de vos commandes</h2>
+      <br />
+      @if (Model.Count() > 0)
+      {
+         <table class="table table-striped">
+            <thead>
+               <tr>
+                  <th scope="col">Date de commande</th>
+                  <th scope="col">Vendeur</th>
+                  <th scope="col">Montant Total $</th>
+                  <th scope="col">Type de livraison</th>
+                  <th scope="col">Livré (Oui/Non)</th>
+                  <th scope="col">Voir le pdf</th>
+               </tr>
+            </thead>
+            <tbody>
+               @foreach (var commande in Model)
+               {
+                  DateTime dateCommande = Convert.ToDateTime(commande.DateCommande);
+                  double dblMontantTotal = Convert.ToDouble(commande.MontantTotAvantTaxes + commande.TPS + commande.TVQ + commande.CoutLivraison);
+                  <tr>
+                     <td>@dateCommande.ToString("yyyy-MM-dd")</td>
+                     <td>@commande.PPVendeurs.NomAffaires</td>
+                     <td>@dblMontantTotal.ToString("0.00") $</td>
+                     <td>@commande.PPTypesLivraison.Description</td>
+                     @if (commande.Statut.Equals('N'))
+                     {
+                        <td>Non</td>
+                     }
+                     else
+                     {
+                        <td>Oui</td>
+                     }
+                        <td>
+                           
+                           <button name="@commande.NoCommande" class="btn btn-outline-primary" onclick="openTab(this)">Voir le pdf de la commande</button>
+                        </td>
+                  </tr>
+               }
+            </tbody>
+         </table>
+      }
+      else
+      {
+         <hr />
+         <div class="alert alert-primary" role="alert">
+            <strong>Vous n'avez jamais effectué de commande.</strong>
+         </div>
+      }
+
+   </div>
+</body>
+</html>
