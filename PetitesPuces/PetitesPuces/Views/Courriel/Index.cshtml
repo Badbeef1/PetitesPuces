@@ -68,20 +68,6 @@
    
    <header class="navbar bd-navbar navbar-expand-lg">
       <a class="navbar-brand" href="#">Petites Puces</a>
-      @{
-         if (Session["vendeurObj"] != null)
-         {
-            Html.Partial("~/Views/Vendeur/index.cshtml");
-         }
-         else if (Session["gestionnaireObj"] != null)
-         {
-            Html.Partial("~/Views/Gestionnaire/index.cshtml");
-         }
-         else
-         {
-            Html.Partial("~/Views/Client/test.cshtml");
-         }
-      }
    </header>
   
    <div class="container-fluid">
