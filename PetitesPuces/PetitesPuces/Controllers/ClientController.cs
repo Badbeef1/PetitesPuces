@@ -575,7 +575,7 @@ namespace PetitesPuces.Controllers
             ViewBag.TriDate = !String.IsNullOrEmpty(tri) && tri.Contains(strTriDate) ? (booOrdre ? strTriDate : "!" + strTriDate) : ViewBag.TriDate ?? strTriDate;
             //System.Diagnostics.Debug.WriteLine("tri1: " + (ViewBag.TriNum as String) + " Tri2: " + (ViewBag.TriCat as String) + " Tri3: " + (ViewBag.TriDate as String));
 
-            List<PPProduits> lstDesProduits = contextPP.PPProduits.ToList();
+            List<PPProduits> lstDesProduits = contextPP.PPProduits.Where(prod =>  prod.Disponibilité == true).ToList();
 
             //tri
             switch (tri)

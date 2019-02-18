@@ -314,7 +314,7 @@
         <script type="text/javascript">
             $.AjoutAuPanier = function (numeroDeProduit) {
                 let nomDossierPricipal = "divItems" + numeroDeProduit;
-                let qqtProduitDesire = $('#' + nomDossierPricipal + ' > #numNbAjoutPanier').val();
+                let qqtProduitDesire = $('#numNbAjoutPanier').val();
 
                 $.ajax({
                     url: '@Url.Action("AjoutAuPanier", "Client")',
