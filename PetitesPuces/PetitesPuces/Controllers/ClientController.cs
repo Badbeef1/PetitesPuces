@@ -558,7 +558,7 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 5, int noPage = 1)
+        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 15, int noPage = 1)
         {
             const String strTriNum = "numero";
             const String strTriCat = "categorie";
@@ -685,10 +685,14 @@ namespace PetitesPuces.Controllers
             }
 
             //Pagination
-            List<string> lstSelectionNbItems = new List<string>
-            {
-                "5","10","15","20","25","tous"
-            };
+            Dictionary<string, int> dicSelectionNbItems = new Dictionary<string, int>();
+            dicSelectionNbItems.Add("5", 5);
+            dicSelectionNbItems.Add("10", 10);
+            dicSelectionNbItems.Add("15", 15);
+            dicSelectionNbItems.Add("20", 20);
+            dicSelectionNbItems.Add("25", 25);
+            dicSelectionNbItems.Add("50", 50);
+            dicSelectionNbItems.Add("tous", contextPP.PPProduits.Count());
 
             int intNumeroPage = (page ?? 1);
 
@@ -725,7 +729,7 @@ namespace PetitesPuces.Controllers
                 catVM.typeRech = typeRech.Value;
             }
 
-            ViewBag.ListeNbItems = new SelectList(lstSelectionNbItems, pageDimension);
+            ViewBag.ListeNbItems = new SelectList(dicSelectionNbItems, "Value", "Key" , pageDimension);
 
             //Enregistre la visite si un catalogue d'un vendeur (une fois par jour par personnes)
             PPClients unClient;

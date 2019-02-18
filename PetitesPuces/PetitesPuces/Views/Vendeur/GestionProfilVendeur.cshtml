@@ -85,7 +85,7 @@
                 </div>
                 <div class="card-footer btn-group sPiedPageBouton">
                     <button type="submit" class="btn btn-outline-success" value="informationVendeur" onclick="envoieSection(this)">Sauvegarder</button>
-                    <a href="/Vendeur/" class="btn btn-outline-primary">Retour</a>
+                    <a href="#" class="btn btn-outline-primary" onclick="history.back(); return false;">Retour</a>
                 </div>
             </div>
         }
@@ -101,7 +101,7 @@
             var config = Model.Configuration.Split(';');
             var police = "";
             var fond = "";
-            var baniere = "";
+            var baniere = "baniere.png";
 
             if (config.Length == 3)
             {
@@ -115,7 +115,7 @@
                 <div class="card-body">
                     <div class="form-row form-group">
                         @Html.HiddenFor(x => x.Configuration)
-                        @Html.Hidden("LeFichier");
+                        @Html.Hidden("LeFichier")
                         <div class="col-3">
                             <label class="col-form-label">Couleur police</label>
                             @Html.TextBoxFor(x => police, new { @class = "form-control" })
@@ -128,19 +128,20 @@
                             @Html.Label("Nouvelle banière", new { @class = "col-form-label" })
                             @Html.TextBoxFor(x => ViewData["Fichier"], new { @type = "file", @class = "form-control", @onchange = "lireURL(this);" })
                         </div>
-                        <div class="col-2">
-                            <button type="button" class="btn btn-outline-primary">Retirer la banière</button>
-                        </div>
+                        @if (ViewBag.messageErreurFichier != null)
+                        {
+                            <span style="color:red">@ViewBag.messageErreurFichier</span>
+                        }
                     </div>
                     <div>
-                        <img id="imgBaniere" src="~/Content/images/baniere.png" width="1000" height="250" />
+                        <img id="imgBaniere" src="~/Content/images/@baniere" width="1000" height="250" />
                     </div>
 
 
                 </div>
                 <div class="card-footer btn-group sPiedPageBouton">
                     <button type="submit" class="btn btn-outline-success" value="configurationCatalogue" onclick="envoieSection(this)">Sauvegarder</button>
-                    <a href="/Vendeur/" class="btn btn-outline-primary">Retour</a>
+                    <a href="#" class="btn btn-outline-primary" onclick="history.back(); return false;" >Retour</a>
                 </div>
 
             </div>
