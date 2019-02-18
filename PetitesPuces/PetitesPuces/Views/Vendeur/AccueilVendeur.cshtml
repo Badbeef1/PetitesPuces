@@ -96,6 +96,11 @@
          padding-bottom: 1.5rem;
       }
    </style>
+   <script type="text/javascript">
+      function openTab(th) {
+         window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+      }
+   </script>
 </head>
 <body>
 
@@ -210,7 +215,7 @@
                                     </div>
                                     <div class="col-sm-6">
                                        <div class="d-flex justify-content-end">
-                                          <button class="btn btn-success">Voir le pdf de la commande</button>
+                                          <button name="@commande.Key.NoCommande" class="btn btn-success" onclick="openTab(this);">Voir le pdf de la commande</button>
                                        </div>
                                     </div>
                                  </div>
