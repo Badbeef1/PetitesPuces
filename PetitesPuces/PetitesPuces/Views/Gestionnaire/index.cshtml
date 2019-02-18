@@ -21,7 +21,7 @@
 
    var notif = (from desti in db.GetTable<PPDestinataires>()
                 where (desti.NoDestinataire.Equals((Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire)) &&
-                (desti.EtatLu.Equals(0))
+                (desti.EtatLu.Equals(0) && desti.Lieu == 1)
                 select desti
                    ).ToList();
    db.Connection.Close();

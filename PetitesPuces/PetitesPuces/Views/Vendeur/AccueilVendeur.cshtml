@@ -106,7 +106,7 @@
          <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
             <ul class="nav nav-pills flex-column">
                @{
-                  if (Model.lstCommandesNonTraites.Count() > 0)
+                  if (Model.lstCommandesNonTraites.Any())
                   {
                      <h4>Commandes non traités</h4>
                   }
@@ -120,7 +120,7 @@
                }
 
                @{
-                  if (Model.lstClientPanier.Count() > 0)
+                  if (Model.lstClientPanier.Any())
                   {
                      <h4>Paniers courants</h4>
                   }
@@ -139,7 +139,7 @@
          <!--Les catégories avec entreprises-->
          <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
             @{
-               if (Model.lstCommandesNonTraites.Count() > 0)
+               if (Model.lstCommandesNonTraites.Any())
                {
                   <h3>Les Commandes non traitées</h3>
                }
@@ -222,7 +222,7 @@
                }
                <hr>
                @{
-                  if (Model.lstClientPanier.Count() > 0)
+                  if (Model.lstClientPanier.Any())
                   {
                      <h3>Les Paniers courants</h3>
                   }
