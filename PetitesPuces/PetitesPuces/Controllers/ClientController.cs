@@ -1121,10 +1121,10 @@ namespace PetitesPuces.Controllers
 
             PPCommandes commande = new PPCommandes();
             List<PPDetailsCommandes> lstDetCommandeEnCours = new List<PPDetailsCommandes>();
-
+            int autorisation = int.Parse(NoAutorisation);
             if (NoAutorisation != null && NoAutorisation.Trim() != "")
             {
-                TempData["NoAutorisation"] = int.Parse(NoAutorisation);
+                TempData["NoAutorisation"] = autorisation;
             }
             if (DateAutorisation != null && DateAutorisation.Trim() != "")
             {
@@ -1134,7 +1134,7 @@ namespace PetitesPuces.Controllers
             {
                 TempData["FraisMarchand"] = FraisMarchand;
             }
-            if (InfoSuppl != null && InfoSuppl.Trim() != "N/A")
+            if (InfoSuppl != null && InfoSuppl.Trim() != "N/A" && autorisation >= 1000 && autorisation <=5000)
             {
                 TempData["InfoSuppl"] = InfoSuppl;
                 var panierCommander = from unPanier in contextPP.GetTable<PPArticlesEnPanier>()
@@ -1304,6 +1304,7 @@ namespace PetitesPuces.Controllers
         {
             return View(comm);
         }
+
        public ActionResult Facture()
         {
             PPCommandes commande = (from unCommande in contextPP.GetTable<PPCommandes>()

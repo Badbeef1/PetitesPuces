@@ -697,16 +697,43 @@ namespace PetitesPuces.Controllers
         }
 
 
-        public FileResult VoirPDFCommande(string Comm)
+        public ActionResult VoirPDFCommande(string Comm)
         {
+            PPClients unClient = null;
+            PPVendeurs unVendeur = null;
+            List<PPCommandes> comm = new List<PPCommandes>();
+
+            if ((unClient = Session["clientObj"] as PPClients) != null)
+            {
+                if ((unVendeur = Session["vendeurObj"] as PPVendeurs) != null)
+                {
+                    comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                            where uneComm.NoCommande.Equals(Comm) &&
+                            uneComm.NoClient.Equals(unClient.NoClient) &&
+                            uneComm.NoVendeur.Equals(unVendeur.NoVendeur)
+                            select uneComm).ToList();
+                }
+                else
+                {
+                    comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                            where uneComm.NoCommande.Equals(Comm) &&
+                                uneComm.NoClient.Equals(unClient.NoClient)
+                            select uneComm).ToList();
+                }
+            }
+            else if ((unVendeur = Session["vendeurObj"] as PPVendeurs) != null)
+            {
+                comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                        where uneComm.NoCommande.Equals(Comm) &&
+                            uneComm.NoVendeur.Equals(unVendeur.NoVendeur)
+                        select uneComm).ToList();
+            }
+
             String contentType = "Application/pdf";
-            var comm = (from uneComm in contextPP.GetTable<PPCommandes>()
-                        where uneComm.NoCommande.Equals(Comm)
-                        select uneComm);
             byte[] arrByte = null;
+
             if (comm.ToList().Count > 0)
             {
-
                 string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
                 if (System.IO.File.Exists(path))
                 {
@@ -726,7 +753,7 @@ namespace PetitesPuces.Controllers
             }
             else
             {
-                return File(arrByte, "");
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
         }
 
