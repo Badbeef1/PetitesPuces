@@ -1234,7 +1234,11 @@ namespace PetitesPuces.Controllers
          //Nombre de connexions des clients
          foreach(var cli in clients)
          {
-            nbConnexionsClients += int.Parse(cli.NbConnexions.ToString());
+            if(cli.NbConnexions != null)
+            {
+               nbConnexionsClients += int.Parse(cli.NbConnexions.ToString());
+            }
+            
          }
 
          //Aller chercher la listes de client en ordre de connexion décroissante
