@@ -93,7 +93,7 @@
                 </p>
                 <div class="d-flex" id="divControleQuantite">
                     <label for="numNbAjoutPanier" class="col-form-label mr-auto">Quantité: </label>
-                    <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" max="10" step="1" value="1" />
+                    <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" step="1" value="1" onKeyUp="if (!Number.isInteger(Number(this.value))) { this.value = '';  } else if (Number(this.value) > Number(this.max)) { this.value = ''; } else if (Number(this.value) < 1) { this.value = '';}" />
                 </div>
             </div>
             <div class="modal-footer">

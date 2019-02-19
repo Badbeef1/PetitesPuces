@@ -298,7 +298,7 @@
                         </p>
                         <div class="d-flex" id="divControleQuantite">
                             <label for="numNbAjoutPanier" class="col-form-label mr-auto">Quantité: </label>
-                            <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" max="10" step="1" value="1" />
+                            <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" step="1" value="1" onKeyUp="if (!Number.isInteger(Number(this.value))) { this.value = '';  } else if (Number(this.value) > Number(this.max)) { this.value = ''; } else if (Number(this.value) < 1) { this.value = '';}"   />
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -313,7 +313,6 @@
         <script src="~/Scripts/bootstrap.min.js"></script>
         <script type="text/javascript">
             $.AjoutAuPanier = function (numeroDeProduit) {
-                let nomDossierPricipal = "divItems" + numeroDeProduit;
                 let qqtProduitDesire = $('#numNbAjoutPanier').val();
 
                 $.ajax({
@@ -322,27 +321,26 @@
                     type: "POST",
                     data: JSON.stringify({ "intNoProduit": numeroDeProduit, "intNbProduit": qqtProduitDesire }),
                     success: function (elementRetour, status, xhr) {
-                        alert('parfait => ' + elementRetour);
+                        console.log('parfait => ' + elementRetour);
                         $('#modAjoutPanier').modal('hide');
                     },
                     failure: function (response) {
-                        alert("La requete d'ajout a échouée!");
+                        console.log("La requete d'ajout a échouée!");
                     },
                     error: function (response) {
-                        alert("Une erreur dans la requete d'ajout!");
+                        console.log("Une erreur dans la requete d'ajout!");
                     }
                 });
             }
 
             $.VerificationDisponibilite = function (numeroDeProduit, nombreProduitTotal) {
-                let nomDossierPricipal = "divItems" + numeroDeProduit;
                 $.ajax({
                     url: '@Url.Action("EtatProduitPanier", "Client")',
                     contentType: 'application/json;',
                     type: "POST",
                     data: JSON.stringify({ "intNoProduit": numeroDeProduit }),
                     success: function (elementRetour, status, xhr) {
-                        alert('parfait => ' + elementRetour);
+                        console.log('parfait => ' + elementRetour);
 
                         if (elementRetour == nombreProduitTotal) {
                             $('#messageIndisponible').css("display", "");
@@ -370,13 +368,14 @@
 
                     },
                     failure: function (response) {
-                        alert("La requete d'ajout a échouée!");
+                        console.log("La requete d'ajout a échouée!");
                     },
                     error: function (response) {
-                        alert("Une erreur dans la requete d'ajout!");
+                        console.log("Une erreur dans la requete d'ajout!");
                     }
                 });
             }
+            
         </script>
     }
 </body>
