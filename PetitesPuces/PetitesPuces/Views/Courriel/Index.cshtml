@@ -129,45 +129,35 @@
                                     strStyleFocus = "background-color: lavender;";
                                 }
                             }
-                            else if (lieux.NoLieu == 5)
+
+                            if (lieux.NoLieu != 5)
                             {
-                                affichage = strSupprimeDefinitivement;
-
-                                if (Model.strPage == strSupprimeDefinitivement)
-                                {
-                                    strStyleFocus = "background-color: lavender;";
-                                }
+                                <li class="nav-item pt-2 pb-2" style="@strStyleFocus">
+                                    <a href="@Url.Action("Index/" + affichage)">
+                                        @if (lieux.NoLieu == 1)
+                                        {
+                                            <i class="fa fa-inbox"></i>
+                                        }
+                                        else if (lieux.NoLieu == 2)
+                                        {
+                                            <i class="fa fa-paper-plane"></i>
+                                        }
+                                        else if (lieux.NoLieu == 3)
+                                        {
+                                            <i class="fa fa-trash-alt"></i>
+                                        }
+                                        else if (lieux.NoLieu == 4)
+                                        {
+                                            <i class="fa fa-pencil-alt"></i>
+                                        }
+                                        @lieux.Description
+                                    </a>
+                                    @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
+                                    {
+                                        <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
+                                    }
+                                </li>
                             }
-
-                            <li class="nav-item pt-2 pb-2" style="@strStyleFocus">
-                                <a href="@Url.Action("Index/" + affichage)">
-                                    @if (lieux.NoLieu == 1)
-                                    {
-                                        <i class="fa fa-inbox"></i>
-                                    }
-                                    else if (lieux.NoLieu == 2)
-                                    {
-                                        <i class="fa fa-paper-plane"></i>
-                                    }
-                                    else if (lieux.NoLieu == 3)
-                                    {
-                                        <i class="fa fa-trash-alt"></i>
-                                    }
-                                    else if (lieux.NoLieu == 4)
-                                    {
-                                        <i class="fa fa-pencil-alt"></i>
-                                    }
-                                    else if (lieux.NoLieu == 5)
-                                    {
-                                        <i class="fa fa-trash-alt"></i>
-                                    }
-                                    @lieux.Description
-                                </a>
-                                @if (Model.dicNotificationLieu.Keys.Contains(lieux.NoLieu) && Model.dicNotificationLieu[lieux.NoLieu] != 0)
-                                {
-                                    <span class="badge badge-primary">@Model.dicNotificationLieu[lieux.NoLieu]</span>
-                                }
-                            </li>
                         }
                     </ul>
                 </nav>
