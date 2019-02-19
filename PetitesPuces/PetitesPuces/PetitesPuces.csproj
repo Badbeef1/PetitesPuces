@@ -254,6 +254,7 @@
     <Content Include="Content\images\4000020.jpg" />
     <Content Include="Content\images\baniere.png" />
     <Content Include="Content\images\cart.jpg" />
+    <Content Include="Content\images\categorie.JPG" />
     <Content Include="Content\images\dell.jpg" />
     <Content Include="Content\images\elec.jpg" />
     <Content Include="Content\images\icon.png" />
@@ -263,6 +264,7 @@
     <Content Include="Content\images\sport.jpg" />
     <Content Include="Content\images\sport2.jpg" />
     <Content Include="Content\images\sport3.jpg" />
+    <Content Include="Content\images\vendeur11%40gmail.com.jpg" />
     <Content Include="Content\images\visites.png" />
     <Content Include="Content\images\voiture.jpg" />
     <Content Include="Content\images\voiture2.jpg" />
