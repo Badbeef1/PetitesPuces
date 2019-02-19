@@ -831,6 +831,11 @@ namespace PetitesPuces.Controllers
                         select ven
                         ).ToList();
 
+         /*var gestionnaire = (from g in db.GetTable<PPGestionnaire>()
+                             where g.NoGestionnaire.Equals(((PPGestionnaire)Session["gestionnaireObj"]).NoGestionnaire)
+                             select g
+                             ).First();*/
+         
          db.Connection.Close();
 
          return View(vendeur.First());
