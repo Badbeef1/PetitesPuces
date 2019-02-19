@@ -70,7 +70,7 @@ namespace PetitesPuces.Controllers
         public ActionResult AccueilClient()
         {
             List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
-            String noClient = ((PPClients)Session["clientObj"])?.NoClient.ToString();
+            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
             /* Compare data with Database */

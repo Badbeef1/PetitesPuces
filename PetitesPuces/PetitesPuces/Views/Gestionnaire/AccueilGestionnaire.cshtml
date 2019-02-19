@@ -93,6 +93,13 @@
          border: 1px solid #ff0000;
          background-color: white;
       }
+
+      /*Copie de la classe alert de bootstrap*/
+      .field-validation-error {
+         color: #b94a48;
+         background-color: #f2dede;
+         border-color: #eed3d7;
+      }
    </style>
    <script type="text/javascript">
       //fonction qui permet de supprimer une catégorie
@@ -198,6 +205,14 @@
    </script>
 </head>
 <body>
+   @if (ViewBag.Section != null)
+   {
+      <script>
+        $(function () {
+                window.location.hash = '#@ViewBag.Section';
+        });
+      </script>
+   }
    <!--Barre de navigation-->
    @Html.Partial("index")
    <div class="container-fluid">
@@ -206,9 +221,6 @@
             <ul class="nav nav-pills flex-column">
                <li class="nav-item">
                   <a class="nav-link active" href="#">Accueil <span class="sr-only">(current)</span></a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#">Statistiques</a>
                </li>
                <li class="nav-item">
                   <a class="nav-link" href="#sec_demandes_vendeurs">Demandes de vendeurs</a>
@@ -232,31 +244,6 @@
          </nav>
 
          <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-            <h1>Statistiques</h1>
-
-            <section class="row text-center placeholders">
-               <div class="col-6 col-sm-3 placeholder">
-                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                  <h4>Label</h4>
-                  <div class="text-muted">Stats #1</div>
-               </div>
-               <div class="col-6 col-sm-3 placeholder">
-                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                  <h4>Label</h4>
-                  <span class="text-muted">Stats #2</span>
-               </div>
-               <div class="col-6 col-sm-3 placeholder">
-                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                  <h4>Label</h4>
-                  <span class="text-muted">Stats #3</span>
-               </div>
-               <div class="col-6 col-sm-3 placeholder">
-                  <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-                  <h4>Label</h4>
-                  <span class="text-muted">Stats #4</span>
-               </div>
-            </section>
-
             <h2 id="sec_demandes_vendeurs">G&eacute;rer les nouvelles demandes de vendeur</h2>
             <div class="table-responsive">
                <table class="table table-striped">
@@ -383,6 +370,7 @@
                                  </div>
                                  @Html.HiddenFor(cat => cat.categorie.NoCategorie)
                                  @Html.EditorFor(cat => cat.categorie.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                 @Html.ValidationMessageFor(cat => cat.categorie.Description)
 
                                  <!--<textarea class="form-control" aria-label="With textarea"></textarea>-->
                               </div>
@@ -396,6 +384,7 @@
                                  </div>
                                  <!--<textarea class="form-control" aria-label="With textarea"></textarea>-->
                                  @Html.EditorFor(cat => cat.categorie.Details, new { htmlAttributes = new { @class = "form-control" } })
+                                 @Html.ValidationMessageFor(cat => cat.categorie.Details)
                               </div>
                            </div>
                         </div>

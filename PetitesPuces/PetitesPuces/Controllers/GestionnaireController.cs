@@ -106,6 +106,7 @@ namespace PetitesPuces.Controllers
          Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
          db.Connection.Open();
 
+         ViewBag.Section = "sec_ajout_categorie";
          if (ModelState.IsValid)
          {
             var query = (from nbCat in db.GetTable<PPCategories>()
@@ -115,7 +116,7 @@ namespace PetitesPuces.Controllers
             viewModel.categorie.NoCategorie = (query.Count() + 1) * 10;
 
             db.PPCategories.InsertOnSubmit(viewModel.categorie);
-
+            ModelState.Clear();
             // Submit the changes to the database.
             try
             {
@@ -830,6 +831,11 @@ namespace PetitesPuces.Controllers
                         select ven
                         ).ToList();
 
+         /*var gestionnaire = (from g in db.GetTable<PPGestionnaire>()
+                             where g.NoGestionnaire.Equals(((PPGestionnaire)Session["gestionnaireObj"]).NoGestionnaire)
+                             select g
+                             ).First();*/
+         
          db.Connection.Close();
 
          return View(vendeur.First());

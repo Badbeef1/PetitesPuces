@@ -322,8 +322,8 @@ namespace PetitesPuces.Models
                 }
             }
         }
-        [Required]
-        [MaxLength(50)]
+        [Required(ErrorMessage = "Le champ description ne peut pas être vide")]
+        [MaxLength(50,ErrorMessage = "Le champ description a une limite de 50 caractères.")]
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Description", DbType = "VarChar(50)")]
         public string Description
         {
@@ -345,7 +345,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Details", DbType = "VarChar(MAX)")]
-        [Required]
+        [Required(ErrorMessage = "Le champ détail ne peut pas être vide.")]
         public string Details
         {
             get
