@@ -29,6 +29,7 @@
             $('#form_message').text(message);
             $('#btn_accepter').prop("disabled", true);
             $('#btn_refuser').prop("disabled", true);
+            $('#redevance').prop("disabled", true);
             var redevance = $('#redevance').val();
             redevance = redevance.replace(",", ".");
             redevance = parseFloat(redevance);
@@ -72,6 +73,7 @@
             success: success,
             error: error,
          });
+         $('#redevance').prop("disabled", false);
       }
       function confirmer(noExpediteur, noDestinataire){
          //Aller chercher le message
@@ -246,7 +248,7 @@
          </div>
       </div>
       @{
-         MessageViewModel message = new MessageViewModel(1, (int)Model.NoVendeur, Model.Prenom + " " + Model.Nom, "Simon le King", "Bienvenue dans le système ... à générer");
+         MessageViewModel message = new MessageViewModel((int)((PPGestionnaire)Session["gestionnaireObj"]).NoGestionnaire, (int)Model.NoVendeur, Model.Prenom + " " + Model.Nom, "admin", "Bienvenue dans le système ... à générer");
       }
 
       <div id="saisie_courriel" style="visibility:hidden">

@@ -150,9 +150,10 @@ namespace PetitesPuces.Controllers
             //Ajouter le produit dans la base de donnée
             if (ModelState.IsValid)
             {
-                if (model.produit.PrixDemande > model.produit.PrixVente)
-                {
-                    if (DateVentePrixVenteValide(model.produit.PrixVente, model.produit.DateVente))
+           
+                if(DateVentePrixVenteValide(model.produit.PrixVente, model.produit.DateVente))
+                {   
+                    if ((model.produit.PrixDemande > model.produit.PrixVente) || (model.produit.PrixVente == null))
                     {
 
                         if (model.file != null && model.file.ContentLength > 0)
@@ -225,13 +226,14 @@ namespace PetitesPuces.Controllers
                     }
                     else
                     {
-                        ViewBag.PrixVenteErreur = "Le prix de vente et la date doivent être rempli si il y a un rabais.";
+                        ViewBag.PrixVenteErreur = "Le prix de vente doit être plus bas que le prix demandé.";
                     }
 
                 }
                 else
                 {
-                    ViewBag.PrixVenteErreur = "Le prix de vente doit être plus bas que le prix demandé.";
+                     ViewBag.PrixVenteErreur = "Le prix de vente et la date doivent être rempli si il y a un rabais.";
+               
                 }
 
             }
@@ -1275,11 +1277,11 @@ namespace PetitesPuces.Controllers
         public bool DateVentePrixVenteValide(decimal? prixVente, DateTime? dateVente)
         {
             bool retour = false;
-            if ((dateVente.Equals(null)) && (prixVente.Equals(null)))
+            if ((dateVente == null) && (prixVente == null))
             {
                 retour = true;
             }
-            else if (!(dateVente.Equals(null)) && !(prixVente.Equals(null)))
+            else if ((dateVente != null) && (prixVente != null))
             {
                 retour = true;
             }
