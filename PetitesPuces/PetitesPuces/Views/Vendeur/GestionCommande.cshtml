@@ -81,23 +81,31 @@
                         </tr>
                         <tr id="@("collapse_commande__" + uneComm.NoCommande)" class="collapse">
                             <td colspan="6">
-                            <div class="col-md-12 text-center">
-                                <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 text-center">
-                                    <h5>@uneComm.PPClients.AdresseEmail</h5>
-                                    <h5>@uneComm.PPClients.Prenom  @uneComm.PPClients.Nom</h5>
-                                    <h5>@uneComm.PPClients.Tel1</h5>
-                                    <h5>@uneComm.PPClients.Tel2</h5>
+                                <div class="col-md-12 text-center">
+                                    <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
                                 </div>
-                                <div class="col-md-6 text-center">
-                                    <h5>@uneComm.PPClients.Rue</h5>
-                                    <h5>@uneComm.PPClients.Ville  @uneComm.PPClients.Province</h5>
-                                    <h5>@uneComm.PPClients.Pays</h5>
-                                    <h5>@uneComm.PPClients.CodePostal</h5>
-                                </div>
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <h4>Frais de transaction : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().FraisLesi).ToString("0.00")) $</h4>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h4>Redevance : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().Redevance).ToString("0.00")) $</h4>
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.AdresseEmail</h5>
+                                            <h5>@uneComm.PPClients.Prenom  @uneComm.PPClients.Nom</h5>
+                                            <h5>@uneComm.PPClients.Tel1</h5>
+                                            <h5>@uneComm.PPClients.Tel2</h5>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.Rue</h5>
+                                            <h5>@uneComm.PPClients.Ville  @uneComm.PPClients.Province</h5>
+                                            <h5>@uneComm.PPClients.Pays</h5>
+                                            <h5>@uneComm.PPClients.CodePostal</h5>
+                                        </div>
+                                    </div>
                             </td>
                         </tr>
                     }
@@ -168,6 +176,14 @@
                                 <td colspan="6">
                                     <div class="col-md-12 text-center">
                                         <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h4>Frais de transaction : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().FraisLesi).ToString("0.00")) $</h4>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h4>Redevance : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().Redevance).ToString("0.00")) $</h4>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 text-center">

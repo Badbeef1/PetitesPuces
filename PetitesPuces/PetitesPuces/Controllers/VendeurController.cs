@@ -687,10 +687,15 @@ namespace PetitesPuces.Controllers
                                                   where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
                                                   orderby uneCommande.DateCommande descending
                                                   select uneCommande).ToList();
-            GererCommandeViewModel gererComm = new GererCommandeViewModel
+
+            List<PPHistoriquePaiements> histoPaiement = (from unHisto in contextPP.GetTable<PPHistoriquePaiements>()
+                                                         where unHisto.NoVendeur == noVendeur
+                                                         select unHisto).ToList();
+             GererCommandeViewModel gererComm = new GererCommandeViewModel
             {
                 lstCommandeLivrer = lstCommandeLivré,
-                lstCommandeNonLivrer = lstAGerer
+                lstCommandeNonLivrer = lstAGerer,
+                lstPaiement = histoPaiement
             };
 
             return View(gererComm);
@@ -1471,10 +1476,17 @@ namespace PetitesPuces.Controllers
                                                   where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
                                                   orderby uneCommande.DateCommande descending
                                                   select uneCommande).ToList();
+
+
+            List<PPHistoriquePaiements> histoPaiement = (from unHisto in contextPP.GetTable<PPHistoriquePaiements>()
+                                                         where unHisto.NoVendeur == noVendeur
+                                                         select unHisto).ToList();
+
             GererCommandeViewModel gererComm = new GererCommandeViewModel
             {
                 lstCommandeLivrer = lstCommandeLivré,
-                lstCommandeNonLivrer = lstAGerer
+                lstCommandeNonLivrer = lstAGerer,
+                lstPaiement = histoPaiement
             };
             return View("GestionCommande", gererComm);
         }
