@@ -169,7 +169,7 @@
 
     $(document).ready(function () {
         // Bouton final
-        $("#btnConfirmer").click(function () {
+        $("#btnConfirmerBottom").click(function () {
             var countClientCocher = 0
             var countVendeurCocher = 0
             for (var i = 0; i < @Model.cbClients.Count; i++) {
@@ -197,6 +197,33 @@
             }
         });
 
+                $("#btnConfirmerTop").click(function () {
+            var countClientCocher = 0
+            var countVendeurCocher = 0
+            for (var i = 0; i < @Model.cbClients.Count; i++) {
+                if (document.getElementById("cbClients_" + i + "__IsSelected").checked) {
+                    countClientCocher++;
+                }
+            };
+            for (var i = 0; i < @Model.cbVendeurs.Count; i++) {
+                if (document.getElementById("cbVendeurs_" + i + "__IsSelected").checked) {
+                    countVendeurCocher++;
+                };
+            };
+            if (countVendeurCocher > 0 || countClientCocher > 0) {
+
+                if (confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?")) {
+                    return true;
+                }
+                else {
+                    event.preventDefault();
+                    return false;
+                }
+            } else {
+                event.preventDefault();
+                return false;
+            }
+        });
         // Combo box de l'entête client
         $('#cbClientAll').click(function () {
             for (var i = 0; i < @Model.cbClients.Count; i++) {
