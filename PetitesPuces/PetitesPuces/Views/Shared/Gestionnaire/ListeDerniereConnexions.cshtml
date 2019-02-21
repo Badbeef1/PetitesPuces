@@ -14,18 +14,29 @@
    <tr class="row">
       <td class="col">@date.ToString("yyyy-MM-dd")</td>
       <td class="col">@cli.NoClient</td>
-      @if ((cli.Prenom.Trim().Equals("")) && (cli.Nom.Trim().Equals("")))
+      @if (cli.Prenom == null && cli.Nom == null)
       {
-      <td class="col">
-         N/A
-      </td>
+         <td class="col">
+            N/A
+         </td>
       }
       else
       {
-         <td class="col">
-            @cli.Prenom @cli.Nom
-         </td>
+         if ((String.IsNullOrEmpty(cli.Prenom.ToString())) && (String.IsNullOrEmpty(cli.Nom.ToString())))
+         {
+            <td class="col">
+               N/A
+            </td>
+         }
+         else
+         {
+            <td class="col">
+               @cli.Prenom @cli.Nom
+            </td>
+         }
       }
+
+
       <td class="col">@cli.NbConnexions</td>
    </tr>
    }

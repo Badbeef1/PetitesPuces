@@ -687,26 +687,58 @@ namespace PetitesPuces.Controllers
                                                   where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
                                                   orderby uneCommande.DateCommande descending
                                                   select uneCommande).ToList();
-            GererCommandeViewModel gererComm = new GererCommandeViewModel
+
+            List<PPHistoriquePaiements> histoPaiement = (from unHisto in contextPP.GetTable<PPHistoriquePaiements>()
+                                                         where unHisto.NoVendeur == noVendeur
+                                                         select unHisto).ToList();
+             GererCommandeViewModel gererComm = new GererCommandeViewModel
             {
                 lstCommandeLivrer = lstCommandeLivré,
-                lstCommandeNonLivrer = lstAGerer
+                lstCommandeNonLivrer = lstAGerer,
+                lstPaiement = histoPaiement
             };
 
             return View(gererComm);
         }
 
 
-        public FileResult VoirPDFCommande(string Comm)
+        public ActionResult VoirPDFCommande(string Comm)
         {
+            PPClients unClient = null;
+            PPVendeurs unVendeur = null;
+            List<PPCommandes> comm = new List<PPCommandes>();
+
+            if ((unClient = Session["clientObj"] as PPClients) != null)
+            {
+                if ((unVendeur = Session["vendeurObj"] as PPVendeurs) != null)
+                {
+                    comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                            where uneComm.NoCommande.Equals(Comm) &&
+                            uneComm.NoClient.Equals(unClient.NoClient) &&
+                            uneComm.NoVendeur.Equals(unVendeur.NoVendeur)
+                            select uneComm).ToList();
+                }
+                else
+                {
+                    comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                            where uneComm.NoCommande.Equals(Comm) &&
+                                uneComm.NoClient.Equals(unClient.NoClient)
+                            select uneComm).ToList();
+                }
+            }
+            else if ((unVendeur = Session["vendeurObj"] as PPVendeurs) != null)
+            {
+                comm = (from uneComm in contextPP.GetTable<PPCommandes>()
+                        where uneComm.NoCommande.Equals(Comm) &&
+                            uneComm.NoVendeur.Equals(unVendeur.NoVendeur)
+                        select uneComm).ToList();
+            }
+
             String contentType = "Application/pdf";
-            var comm = (from uneComm in contextPP.GetTable<PPCommandes>()
-                        where uneComm.NoCommande.Equals(Comm)
-                        select uneComm);
             byte[] arrByte = null;
+
             if (comm.ToList().Count > 0)
             {
-
                 string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
                 if (System.IO.File.Exists(path))
                 {
@@ -726,7 +758,7 @@ namespace PetitesPuces.Controllers
             }
             else
             {
-                return File(arrByte, "");
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
             }
         }
 
@@ -1444,10 +1476,17 @@ namespace PetitesPuces.Controllers
                                                   where uneCommande.NoVendeur.Equals(noVendeur) && uneCommande.Statut.Equals('L')
                                                   orderby uneCommande.DateCommande descending
                                                   select uneCommande).ToList();
+
+
+            List<PPHistoriquePaiements> histoPaiement = (from unHisto in contextPP.GetTable<PPHistoriquePaiements>()
+                                                         where unHisto.NoVendeur == noVendeur
+                                                         select unHisto).ToList();
+
             GererCommandeViewModel gererComm = new GererCommandeViewModel
             {
                 lstCommandeLivrer = lstCommandeLivré,
-                lstCommandeNonLivrer = lstAGerer
+                lstCommandeNonLivrer = lstAGerer,
+                lstPaiement = histoPaiement
             };
             return View("GestionCommande", gererComm);
         }
@@ -1468,7 +1507,7 @@ namespace PetitesPuces.Controllers
             ViewBag.ListeTri = new SelectList(dictioDdl, "Key", "Value");
 
             long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
-            Dictionary<long,List<PPArticlesEnPanier>> panierRecent = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation >= DateTime.Now.AddMonths(-6)
+            Dictionary<long,List<PPArticlesEnPanier>> panierRecent = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation > DateTime.Now.AddMonths(-6)
             && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g =>(long) g.Key, g => g.ToList()));
             Dictionary<long,List<PPArticlesEnPanier>> panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
             && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
@@ -1495,6 +1534,148 @@ namespace PetitesPuces.Controllers
             };
 
             return View(gpVm);
+        }
+
+        // Suppression de panier
+        [HttpPost]
+        public ActionResult GestionPanier(GererPanierViewModel frm)
+        {
+            if (Session["vendeurObj"] == null)
+            {
+                return PartialView("index");
+            }
+
+            foreach(GererPanierViewModel.GererPanier gp in frm.lstPanierAncien)
+            {
+                if (gp.isChecked)
+                {
+                    for(int i = 0; i < gp.ppArtPan.Count; i++)
+                    {
+                        contextPP.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient == gp.ppArtPan[i].NoClient));
+                        contextPP.SubmitChanges();
+                    }
+                }
+            }
+            Dictionary<int, string> dictioDdl = new Dictionary<int, string>();
+            dictioDdl.Add(0, "");
+            dictioDdl.Add(1, "1 mois et +");
+            dictioDdl.Add(2, "2 mois et +");
+            dictioDdl.Add(3, "3 mois et +");
+            dictioDdl.Add(6, "6 mois et +");
+            ViewBag.ListeTri = new SelectList(dictioDdl, "Key", "Value");
+
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+            Dictionary<long, List<PPArticlesEnPanier>> panierRecent = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation > DateTime.Now.AddMonths(-6)
+             && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList()));
+            Dictionary<long, List<PPArticlesEnPanier>> panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+             && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+            List<GererPanierViewModel.GererPanier> lstPanierGerable = new List<GererPanierViewModel.GererPanier>();
+
+            foreach (var item in panierRecent)
+            {
+
+                panierAncien.Remove(item.Key);
+            }
+            foreach (KeyValuePair<long, List<PPArticlesEnPanier>> artPan in panierAncien)
+            {
+                GererPanierViewModel.GererPanier panier = new GererPanierViewModel.GererPanier
+                {
+                    ppArtPan = artPan.Value,
+                    isChecked = false
+                };
+                lstPanierGerable.Add(panier);
+            }
+
+            GererPanierViewModel gpVm = new GererPanierViewModel
+            {
+                lstPanierAncien = lstPanierGerable,
+                lstPanierRecent = panierRecent.Values.ToList()
+            };
+
+            return View("GestionPanier",gpVm);
+
+        }
+
+        //Changement du dropdownlist de la page gestion panier
+            public ActionResult ddlChanger(string id)
+        {
+            if (Session["vendeurObj"] == null)
+            {
+                return PartialView("index");
+            }
+            long noVendeur = (Session["vendeurObj"] as PPVendeurs).NoVendeur;
+            Dictionary<long, List<PPArticlesEnPanier>> panierRecent = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation > DateTime.Now.AddMonths(-6)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList()));
+
+            Dictionary<long, List<PPArticlesEnPanier>> panierRecentAvecDdl = new Dictionary<long, List<PPArticlesEnPanier>>();
+
+            Dictionary<long, List<PPArticlesEnPanier>> panierAncien = new Dictionary<long, List<PPArticlesEnPanier>>();
+            List<GererPanierViewModel.GererPanier> lstPanierGerable = new List<GererPanierViewModel.GererPanier>();
+            Dictionary<int, string> dictioDdl = new Dictionary<int, string>();
+            dictioDdl.Add(0, "");
+            dictioDdl.Add(1, "1 mois et +");
+            dictioDdl.Add(2, "2 mois et +");
+            dictioDdl.Add(3, "3 mois et +");
+            dictioDdl.Add(6, "6 mois et +");
+            ViewBag.ListeTri = new SelectList(dictioDdl, "Key", "Value");
+
+            switch (id)
+            {
+                case "0":
+                    panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+                    break;
+                case "1":
+                    panierRecentAvecDdl = (contextPP.GetTable<PPArticlesEnPanier>().Where(m =>  m.DateCreation > DateTime.Now.AddMonths(-1)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList()));
+                    panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+                    break;
+                case "2":
+                    panierRecentAvecDdl = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation > DateTime.Now.AddMonths(-2)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList()));
+                    panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+                    break;
+                case "3":
+                    panierRecentAvecDdl = (contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation > DateTime.Now.AddMonths(-3)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList()));
+                    panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+                    break;
+                case "6":
+                    panierRecent = new Dictionary<long, List<PPArticlesEnPanier>>();
+                    panierAncien = contextPP.GetTable<PPArticlesEnPanier>().Where(m => m.DateCreation <= DateTime.Now.AddMonths(-6)
+                     && m.NoVendeur == noVendeur).OrderByDescending(m => m.DateCreation).GroupBy(m => m.NoClient).ToDictionary(g => (long)g.Key, g => g.ToList());
+                    break;
+            }
+            foreach(var item in panierRecentAvecDdl)
+            {
+                panierRecent.Remove(item.Key);
+            }
+
+            foreach (var item in panierRecent)
+            {
+
+                panierAncien.Remove(item.Key);
+            }
+            foreach (KeyValuePair<long, List<PPArticlesEnPanier>> artPan in panierAncien)
+            {
+                GererPanierViewModel.GererPanier panier = new GererPanierViewModel.GererPanier
+                {
+                    ppArtPan = artPan.Value,
+                    isChecked = false
+                };
+                lstPanierGerable.Add(panier);
+            }
+            ModelState.Clear();
+            GererPanierViewModel gpVm = new GererPanierViewModel
+            {
+                lstPanierAncien = lstPanierGerable,
+                lstPanierRecent = panierRecent.Values.ToList(),
+                valeurDdl = int.Parse(id)
+            };
+            return View("GestionPanier",gpVm);
         }
     }
 }

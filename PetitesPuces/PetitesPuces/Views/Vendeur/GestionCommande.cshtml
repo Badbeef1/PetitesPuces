@@ -8,6 +8,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
+    <title>Gestion de commande</title>
 </head>
 <body>
     @Html.Partial("index")
@@ -32,7 +33,7 @@
                         <th scope="col" class="text-right">Date</th>
                         <th scope="col" class="text-left">Nom complet</th>
                         <th scope="col" class="text-center">
-                            Livré
+                            Livrée
                             <input id="cbAll" type="checkbox" />
                         </th>
                         <th scope="col" class="text-center">Voir PDF</th>
@@ -61,7 +62,7 @@
                                     DateTime date = (DateTime) uneComm.DateCommande;
 
                                         }
-                                @date.ToShortDateString()
+                                @date.ToString("yyyy-MM-dd")
                             </td>
                             <td class="text-left">
                                 @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
@@ -79,7 +80,33 @@
                             </td>
                         </tr>
                         <tr id="@("collapse_commande__" + uneComm.NoCommande)" class="collapse">
-                            <td>@uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</td>
+                            <td colspan="6">
+                                <div class="col-md-12 text-center">
+                                    <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 text-center">
+                                        <h4>Frais de transaction : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().FraisLesi).ToString("0.00")) $</h4>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <h4>Redevance : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().Redevance).ToString("0.00")) $</h4>
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.AdresseEmail</h5>
+                                            <h5>@uneComm.PPClients.Prenom  @uneComm.PPClients.Nom</h5>
+                                            <h5>@uneComm.PPClients.Tel1</h5>
+                                            <h5>@uneComm.PPClients.Tel2</h5>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.Rue</h5>
+                                            <h5>@uneComm.PPClients.Ville  @uneComm.PPClients.Province</h5>
+                                            <h5>@uneComm.PPClients.Pays</h5>
+                                            <h5>@uneComm.PPClients.CodePostal</h5>
+                                        </div>
+                                    </div>
+                            </td>
                         </tr>
                     }
 
@@ -131,7 +158,7 @@
                                         DateTime dateDone = (DateTime)uneComm.DateCommande;
 
                                     }
-                                    @dateDone.ToShortDateString()
+                                    @dateDone.ToString("yyyy-MM-dd")
                                 </td>
                                 <td class="text-left">
                                     @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
@@ -146,7 +173,33 @@
                                 </td>
                             </tr>
                             <tr id="@("collapse_commande__"+uneComm.NoCommande)" class="collapse">
-                                <td>@uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</td>
+                                <td colspan="6">
+                                    <div class="col-md-12 text-center">
+                                        <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h4>Frais de transaction : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().FraisLesi).ToString("0.00")) $</h4>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h4>Redevance : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().Redevance).ToString("0.00")) $</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.AdresseEmail</h5>
+                                            <h5>@uneComm.PPClients.Prenom  @uneComm.PPClients.Nom</h5>
+                                            <h5>@uneComm.PPClients.Tel1</h5>
+                                            <h5>@uneComm.PPClients.Tel2</h5>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.Rue</h5>
+                                            <h5>@uneComm.PPClients.Ville  @uneComm.PPClients.Province</h5>
+                                            <h5>@uneComm.PPClients.Pays</h5>
+                                            <h5>@uneComm.PPClients.CodePostal</h5>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         }
 

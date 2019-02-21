@@ -23,6 +23,7 @@ namespace PetitesPuces.Models
         public int ID { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
+        public string AdresseEmail { get; set; }
         public string idClient { get; set; }
         public DateTime dernierPresence { get; set; }
         public bool IsSelected { get; set; }

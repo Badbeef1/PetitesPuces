@@ -1025,7 +1025,7 @@ namespace PetitesPuces.Controllers
                }
 
                // Si le client a utilisé le site Web
-               if (dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
+               if (dc.GetTable<PPEvaluations>().Where(m=> m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
                {
                         // On met le statut à 2 (Intégrité)
                     lstClientRetirer.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
@@ -1055,15 +1055,16 @@ namespace PetitesPuces.Controllers
             {
                foreach (PPProduits produitNonCommande in dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).ToList())
                {
-                  if (produitNonCommande.DateVente == null)
+                  if (produitNonCommande.PPDetailsCommandes.ToList().Count == 0)
                   {
                      lstProduitNonCommander.Add(produitNonCommande);
                   }
                   else
                   {
-                     produitNonCommande.Disponibilité = false;
+                     dc.GetTable<PPProduits>().Where(m => m.NoProduit == produitNonCommande.NoProduit).First().Disponibilité = false;
                   }
                }
+                    dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoVendeur.ToString() == vendeur.idClient));
                 dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
                 dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
                 dc.SubmitChanges();
@@ -1234,7 +1235,11 @@ namespace PetitesPuces.Controllers
          //Nombre de connexions des clients
          foreach(var cli in clients)
          {
-            nbConnexionsClients += int.Parse(cli.NbConnexions.ToString());
+            if(cli.NbConnexions != null)
+            {
+               nbConnexionsClients += int.Parse(cli.NbConnexions.ToString());
+            }
+            
          }
 
          //Aller chercher la listes de client en ordre de connexion décroissante
@@ -1645,7 +1650,8 @@ namespace PetitesPuces.Controllers
                    idClient = client.NoClient.ToString(),
                    Nom = client.Nom,
                    Prenom = client.Prenom,
-                   dernierPresence = dateDernierePresence
+                   dernierPresence = dateDernierePresence,
+                   AdresseEmail = client.AdresseEmail
                 });
             counter++;
          }
@@ -1693,7 +1699,8 @@ namespace PetitesPuces.Controllers
                    idClient = vendeur.NoVendeur.ToString(),
                    Nom = vendeur.Nom,
                    Prenom = vendeur.Prenom,
-                   dernierPresence = dateDernierePresence
+                   dernierPresence = dateDernierePresence,
+                   AdresseEmail = vendeur.AdresseEmail
                 });
             counter++;
          }
