@@ -212,13 +212,13 @@ namespace PetitesPuces.Views
                 utilisateur = contextPP.PPGestionnaire
                 .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
                
-
+                /*
                 #if DEBUG
                                 utilisateur = contextPP.PPVendeurs.FirstOrDefault();
                 #else
                                     Console.WriteLine("Mode=Release"); 
                 #endif
-
+                */
 
 
                 //lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
