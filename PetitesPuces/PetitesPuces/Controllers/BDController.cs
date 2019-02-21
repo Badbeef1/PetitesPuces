@@ -44,7 +44,6 @@ namespace PetitesPuces.Controllers
 
         //Insert
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Ajouter(ViewModels.XmlDataViewModel model)
         {
             if (Session["gestionnaireObj"] == null) return View("Index", model);
@@ -519,7 +518,6 @@ namespace PetitesPuces.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Retirer(ViewModels.XmlDataViewModel model)
         {
             if (Session["gestionnaireObj"] == null) return View("Index", model);
@@ -539,6 +537,10 @@ namespace PetitesPuces.Controllers
                 context.PPEvaluations.DeleteAllOnSubmit(context.PPEvaluations);
                 context.SubmitChanges(ConflictMode.ContinueOnConflict);
                 context.PPProduits.DeleteAllOnSubmit(context.PPProduits);
+
+                context.PPDestinataires.DeleteAllOnSubmit(context.PPDestinataires);
+                context.PPMessages.DeleteAllOnSubmit(context.PPMessages);
+                context.PPLieu.DeleteAllOnSubmit(context.PPLieu);
 
                 context.PPCategories.DeleteAllOnSubmit(context.PPCategories);
                 context.PPTaxeFederale.DeleteAllOnSubmit(context.PPTaxeFederale);
@@ -606,6 +608,10 @@ namespace PetitesPuces.Controllers
                {"PPCommandes", context.PPCommandes.Count().ToString()},
                {"PPVendeursClients", context.PPVendeursClients.Count().ToString()},
                {"PPHistoriquePaiements", context.PPHistoriquePaiements.Count().ToString()},
+
+               {"PPDestinataires", context.PPDestinataires.Count().ToString()},
+               {"PPMessages", context.PPMessages.Count().ToString()},
+               {"PPLieu", context.PPLieu.Count().ToString()},
 
                {"PPCategories", context.PPCategories.Count().ToString()},
                {"PPTaxeFederale", context.PPTaxeFederale.Count().ToString()},
