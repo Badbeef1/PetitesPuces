@@ -1,78 +1,85 @@
 ﻿@using PetitesPuces.ViewModels
 @model ProduitDetailViewModel
 @{
-   double dblPrixDemande = (double)Model.Produit.PrixDemande;
+    double dblPrixDemande = (double)Model.Produit.PrixDemande;
 }
 <div class="card">
-   <div class="card-header">
-      <h3 class="card-title">@Model.Produit.Nom</h3>
-      <div class="d-flex justify-content-between">
-         <small>#@Model.Produit.NoProduit</small>
-         <span class="badge badge-success" style="font-size: 15px;">@Model.Produit.PPCategories.Description</span>
-      </div>
-   </div>
-   <div class="card-body">
-      <div class="media">
-         <div class="media-left">
-            <img class="media-object m-2" src="~/Content/images/@Model.Produit.Photo" alt="produit ...." 
-                 style="max-width: 30rem; min-width: 20rem; max-height: 30rem; min-height: 20rem;">
-         </div>
-         <div class="media-body">
-             <p>
-                 <h1 id="spPrix">@dblPrixDemande.ToString("0.00") $ 
-                 
-                 @if(Model.Produit.DateVente.HasValue && DateTime.Now >= Model.Produit.DateVente.Value)
-                 {
-                     <span class="badge badge-warning">Promotion</span>
-                 }
+    <div class="card-header">
+        <h3 class="card-title">@Model.Produit.Nom</h3>
+        <div class="d-flex justify-content-between">
+            <small>#@Model.Produit.NoProduit</small>
+            <span class="badge badge-success" style="font-size: 15px;">@Model.Produit.PPCategories.Description</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="media">
+            <div class="media-left">
+                <img class="media-object m-2" src="~/Content/images/@Model.Produit.Photo" alt="produit ...."
+                     style="max-width: 30rem; min-width: 20rem; max-height: 30rem; min-height: 20rem;">
+            </div>
+            <div class="media-body">
+                <p>
+                    <h1 id="spPrix">
+                        @dblPrixDemande.ToString("0.00") $
 
-                 </h1>
-                 <span><span class="font-weight-bold">Vendu par:</span> <a href="#">@Model.Produit.PPVendeurs.NomAffaires</a></span>
-                 <br />
-                 @{
-                     var sansDecimal = Model.FormattedRating - (Model.FormattedRating % 1);
+                        @if (Model.Produit.DateVente.HasValue && DateTime.Now <= Model.Produit.DateVente.Value)
+                        {
+                            <span class="badge badge-warning">Promotion</span>
+                        }
 
-                     for (var i = 1; i <= 5; i++)
-                     {
-                         if (i <= sansDecimal)
-                         {
-                             <span class="fa fa-star checked"></span>
-                         }
-                         else if (i <= sansDecimal + 1 && Model.FormattedRating % 1 != 0)
-                         {
-                             <i class="fas fa-star-half-alt checked"></i>
-                         }
-                         else
-                         {
-                             <span class="far fa-star checked"></span>
-                         }
-                     }
-                 }
-                 <span>
-                     <small class="badge badge-pill badge-warning">@Model.FormattedRating.ToString("F1")</small>
-                     &nbsp;&nbsp;&nbsp;
-                     <span class="badge badge-pill badge-primary">@Model.nbEvaluateurs commentaire@(Model.nbEvaluateurs != 1 ? "s" : "")</span>
-                 </span>
-             </p>
-            <hr>
-            <p>
-               <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit" onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "")>Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
-               <span id="spQqt"><span class="font-weight-bold">Quantité restant:</span> @Model.Produit.NombreItems</span>
-               @if (Session["clientObj"] != null)
-               {
-                  <button id="btn_envoyer_message" class="btn btn-outline-primary" onclick="accepter(@Model.Produit.NoVendeur);">Contacter le vendeur</button>
-               }
-               </p>
-            <hr>
-            <p class="font-weight-bold">Description:</p>
-            <p>@Model.Produit.Description</p>
-            <p>
-               <span class="font-weight-bold">Poids:</span><span> @Model.Produit.Poids lbs</span><br />
-               <span><span class="font-weight-bold">En vente depuis:</span> @Model.Produit.DateCreation.Value.ToString("yyyy-MM-dd")</span>
-            </p>
-         </div>
-      </div>
-   </div>
+                    </h1>
+                    @if (Model.Produit.DateVente.HasValue && DateTime.Now <= Model.Produit.DateVente.Value)
+                    {
+                        var rabais = Model.Produit.PrixDemande - Model.Produit.PrixVente;
+                        <small>rabais de @rabais.Value.ToString("0.00")$</small><br />
+                        <small>jusqu'au @Model.Produit.DateVente.Value.ToString("yyyy-MM-dd")</small><br />
+                    }
+                    <span><span class="font-weight-bold">Vendu par:</span> <a href="@Url.Action("Catalogue", "Client", new { vendeur = @Model.Produit.PPVendeurs.NomAffaires})">@Model.Produit.PPVendeurs.NomAffaires</a></span>
+                    <br />
+                    @{
+                        var sansDecimal = Model.FormattedRating - (Model.FormattedRating % 1);
+
+                        for (var i = 1; i <= 5; i++)
+                        {
+                            if (i <= sansDecimal)
+                            {
+                                <span class="fa fa-star checked"></span>
+                            }
+                            else if (i <= sansDecimal + 1 && Model.FormattedRating % 1 != 0)
+                            {
+                                <i class="fas fa-star-half-alt checked"></i>
+                            }
+                            else
+                            {
+                                <span class="far fa-star checked"></span>
+                            }
+                        }
+                    }
+                    <span>
+                        <small class="badge badge-pill badge-warning">@Model.FormattedRating.ToString("F1")</small>
+                        &nbsp;&nbsp;&nbsp;
+                        <span class="badge badge-pill badge-primary">@Model.nbEvaluateurs commentaire@(Model.nbEvaluateurs != 1 ? "s" : "")</span>
+                    </span>
+                </p>
+                <hr>
+                <p>
+                    <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit" onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "")>Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
+                    <span id="spQqt"><span class="font-weight-bold">Quantité restant:</span> @Model.Produit.NombreItems</span>
+                    @if (Session["clientObj"] != null)
+                    {
+                        <button id="btn_envoyer_message" class="btn btn-outline-primary" onclick="accepter(@Model.Produit.NoVendeur);">Contacter le vendeur</button>
+                    }
+                </p>
+                <hr>
+                <p class="font-weight-bold">Description:</p>
+                <p>@Model.Produit.Description</p>
+                <p>
+                    <span class="font-weight-bold">Poids:</span><span> @Model.Produit.Poids lbs</span><br />
+                    <span><span class="font-weight-bold">En vente depuis:</span> @Model.Produit.DateCreation.Value.ToString("yyyy-MM-dd")</span>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal" tabindex="-1" role="dialog" id="modAjoutPanier" aria-hidden="true" style="z-index:1072;">
@@ -97,7 +104,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="btnAjoutProduit" type="button" class="btn btn-outline-success" value="@Model.Produit.NoProduit"  onclick="$.AjoutAuPanier(this.value)">Ajouter</button>
+                <button id="btnAjoutProduit" type="button" class="btn btn-outline-success" value="@Model.Produit.NoProduit" onclick="$.AjoutAuPanier(this.value)">Ajouter</button>
                 <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Annuler</button>
             </div>
         </div>
