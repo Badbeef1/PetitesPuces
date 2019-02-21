@@ -71,7 +71,7 @@
                                        @{
                                           if ((PPClients)Session["clientObj"] != null)
                                           {
-                                             @Html.ActionLink("Voir l'entreprise", "Catalogue", "Client", new { vendeur = entreprises.NomAffaires }, new { @class = "btn btn-success" })
+                                             @Html.ActionLink("Voir l'entreprise", "Catalogue", "Client", new { vendeur = entreprises.NomAffaires, categorie = entrepriseCat.categorie.Description }, new { @class = "btn btn-success" })
                                           }
                                           else
                                           {
