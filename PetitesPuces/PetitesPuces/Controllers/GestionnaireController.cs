@@ -1158,7 +1158,7 @@ namespace PetitesPuces.Controllers
             {
                nbVendeurActif++;
             }
-            if (item.Statut==2)
+            if (item.Statut==0)
             {
                nbVendeurInactif++;
             }   
