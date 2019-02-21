@@ -371,6 +371,10 @@
                                  @Html.HiddenFor(cat => cat.categorie.NoCategorie)
                                  @Html.EditorFor(cat => cat.categorie.Description, new { htmlAttributes = new { @class = "form-control" } })
                                  @Html.ValidationMessageFor(cat => cat.categorie.Description)
+                                 @if (ViewBag.ErreurCat != null)
+                                 {
+                                    <span class="field-validation-error">@ViewBag.ErreurCat</span>
+                                 }
 
                                  <!--<textarea class="form-control" aria-label="With textarea"></textarea>-->
                               </div>
