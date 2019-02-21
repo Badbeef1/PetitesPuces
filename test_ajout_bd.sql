@@ -1,5 +1,6 @@
 use BD6B8_424R
 use BD6B8_424R_TESTS
+use BD6B8_424P
 
 select * from PPClients
 select * from PPVendeurs
@@ -16,7 +17,7 @@ select * from PPDestinataires
 select * from PPLieu
 
 select * from PPDetailsCommandes
-
+select * from PPEvaluations
 
 update PPVendeurs set Statut = 0 where NoVendeur = 12
 --Ajouter un vendeur
@@ -113,3 +114,7 @@ INSERT [dbo].[PPCategories] ([NoCategorie], [Description], [Details]) VALUES (50
 delete PPProduits where NoProduit = 1060
 
 select * from PPCommandes where NoVendeur = 12
+
+
+--Test Gestionnaire 
+select * from PPVendeurs where Statut = 0
