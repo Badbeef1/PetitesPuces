@@ -139,7 +139,6 @@ namespace PetitesPuces.Controllers
                ViewBag.ErreurCat = "Cette catégorie existe déjà.";
             }
 
-
          }
 
          Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();

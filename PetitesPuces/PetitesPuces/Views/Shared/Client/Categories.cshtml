@@ -1,6 +1,28 @@
 ﻿@using PetitesPuces.Models
 @model List<EntrepriseCategorie>
 
+@{ 
+   int compteur = 0;
+   DataClasses1DataContext db = new DataClasses1DataContext();
+   db.Connection.Open();
+   Dictionary<int, List<int>> dicNombreProduits = new Dictionary<int, List<int>>();
+
+   foreach(var cat in Model)
+   {
+      List<int> nombreProduits = new List<int>();
+      foreach(var vendeur in cat.lstVendeurs)
+      {
+
+         var query = (from nbProduit in db.GetTable<PPProduits>()
+                      where (nbProduit.NoCategorie.Equals(cat.categorie.NoCategorie)) && (nbProduit.NoVendeur.Equals(vendeur.NoVendeur))
+                      select nbProduit
+                      ).ToList();
+         nombreProduits.Add(query.Count());
+      }
+      dicNombreProduits.Add(cat.categorie.NoCategorie, nombreProduits);
+   }
+}
+
 <div id="accordion">
    @foreach (var entrepriseCat in Model)
    {
@@ -30,12 +52,15 @@
                      </div>
                      <div class="card-body">
                         <div class="row">
+                           @{
+                              int compteurj = 0;
+                            }
                            @foreach (var entreprises in entrepriseCat.lstVendeurs)
                            {
                               <div class="col-sm-3">
                                  <div class="card">
                                     <div class="card-header">
-                                       <h5>@entreprises.NomAffaires</h5>
+                                       <h5>@entreprises.NomAffaires (@dicNombreProduits.ElementAt(compteur).Value.ElementAt(compteurj))</h5>
                                     </div>
                                     <div class="card-body">
                                        <div class="float-center">
@@ -57,6 +82,7 @@
                                     </div>
                                  </div>
                               </div>
+                              compteurj++;
                            }
                         </div>
                      </div>
@@ -70,5 +96,6 @@
          </div>
          <hr />
       }
+      compteur++;
    }
 </div>

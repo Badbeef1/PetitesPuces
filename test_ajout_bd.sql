@@ -6,6 +6,9 @@ select * from PPClients
 select * from PPVendeurs
 select * from PPGestionnaires
 
+
+select * from PPProduits where NoVendeur = 14 AND NoCategorie = 20
+
 select * from PPCategories
 select * from PPProduits
 select * from PPArticlesEnPanier
