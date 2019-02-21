@@ -1,4 +1,4 @@
-﻿@using PetitesPuces.Models
+﻿   @using PetitesPuces.Models
 
 @{
    if (Session["gestionnaireObj"] == null)
@@ -45,10 +45,15 @@
                </a>
             </li>
             <li class="nav-item">
+               <a class="nav-link" href="/BD" id="navbarDropdown">
+                  BD
+               </a>
+            </li>
+            <li class="nav-item">
                <a class="nav-link" href="/Courriel/Index">
                   Messagerie
                   <i class="fas fa-envelope"></i>
-                  @if(notif.Count() > 0)
+                  @if (notif.Count() > 0)
                   {
                      @notif.Count();
                   }
