@@ -123,6 +123,13 @@
         border: 1px solid #ff0000;
         background-color: white;
     }
+    .field-validation-valid {
+        display: none;
+    }
+
+    .validation-summary-valid {
+        display: none;
+    }
 </style>
 <html>
 <head>
@@ -252,7 +259,7 @@
                                     </div>
                                     <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
                                         <div class="quantity">
-                                            <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="0" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
+                                            <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
                                         </div>
                                     </div>
 

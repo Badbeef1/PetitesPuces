@@ -8,10 +8,10 @@
 
         <div class="float-left">
             <h5 class="mb-0">
-                <button id="btnCommande" type="button" class="btn btn-link text-s">
-                    Panier
-                </button>
+                    Votre panier pour le vendeur @Model.vendeur.NomAffaires
             </h5>
+            <br />
+            <button class="btn btn-danger" id="btnViderPanier" type="button" onclick="ViderLePanier(@Model.vendeur.NomAffaires)">Vider le panier</button>
         </div>
         <div class="float-right">
            <a class="btn btn-outline-primary btn-sm btn-block" href="/Client/Catalogue">Continuer à magasiner</a>
@@ -88,7 +88,7 @@
                             </div>
                             <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
                                 <div class="quantity">
-                                    <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="0" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
+                                    <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
                                 </div>
                             </div>
 
@@ -134,21 +134,23 @@
                                     </div>
                                 </div>
                                 <div class="col-3 text-right">
-                                    <div class="row text-right">
-                                        @if (Model.vendeur.PoidsMaxLivraison > poidsLbs)
-                                        {
+                                    @if (Model.vendeur.PoidsMaxLivraison > poidsLbs)
+                                    {
+                                        <div class="text-right">
                                             <span style="color:green"> @poidsLbs Lbs</span>
                                             <br />
                                             <span>@Model.vendeur.PoidsMaxLivraison Lbs</span>
-                                        }
-                                        else
-                                        {
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-right">
                                             <span style="color:red"> @poidsLbs Lbs</span>
                                             <br />
                                             <span>@Model.vendeur.PoidsMaxLivraison Lbs</span>
-                                        }
+                                        </div>
+                                            }
                                     </div>
-                                </div>
                             </div>
                             <div class="row">
                                 <br />

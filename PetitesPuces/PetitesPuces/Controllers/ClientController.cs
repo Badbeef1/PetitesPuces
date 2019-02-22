@@ -234,19 +234,30 @@ namespace PetitesPuces.Controllers
         //Panier Détaillé du client
         public ActionResult PanierDetail(int id)
         {
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
+            SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel();
+            long noClient =((PPClients)Session["clientObj"]).NoClient;
+
             //requête pour aller chercher les produits à l'aide d'un vendeur
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(((PPClients)Session["clientObj"]).NoClient) && panier.NoVendeur.Equals(id)
+            List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                              where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id)
                                               select panier).ToList();
-            SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel
+            if(items.Count> 0)
             {
-                lstArticlePanier = items,
-                vendeur = items[0].PPVendeurs,
-                client = items[0].PPClients
-            };
-            return View(sViewModel);
+                sViewModel = new SaisieCommandeViewModel()
+                {
+                    lstArticlePanier = items,
+                    vendeur = items[0].PPVendeurs,
+                    client = items[0].PPClients
+                };
+                return View(sViewModel);
+            }
+            else
+            {
+                var paniers = from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                              where panier.NoClient.Equals(noClient)
+                              group panier by panier.PPVendeurs;
+                return View("AccueilPanier", paniers);
+            }
         }
 
         /// <summary>
