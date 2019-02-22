@@ -38,12 +38,16 @@
 
                 divDateDebut.classList.add(strVisibleDiv);
                 divDateFin.classList.add(strVisibleDiv);
+
+                autoriseRechercheParDateParution();
             }
             else {
                 elementZonetext.style = strVisibleInput;
 
                 divDateDebut.classList.remove(strVisibleDiv);
                 divDateFin.classList.remove(strVisibleDiv);
+
+                document.getElementById('btnRecherche').disabled = false;
             }
         }
 
@@ -133,10 +137,30 @@
                 ('typeRech=' + typeRecherche);
 
             location.href = lien;
-        }
+       }
+
+       function autoriseRechercheParDateParution() {
+           var rechercheSelection = document.getElementById('selTypeRech');
+
+           if (rechercheSelection.value == 4) {
+               var Debut = document.getElementById('dtRechercheDebut');
+               var Fin = document.getElementById('dtRechercheFin');
+
+               var unBouton = document.getElementById('btnRecherche');
+
+               var dtDebut = Date.parse(Debut.value) || 0;
+               var dtFin = Date.parse(Fin.value) || 0;
+
+               //S'assure qu'il n'y est pas d'inversion entre la date de début et celle de fin
+               Fin.min = (dtDebut > 0) ? Debut.value : "";
+               Debut.max = (dtFin > 0) ? Fin.value : "";
+
+               unBouton.disabled = !(dtDebut > 0 && dtFin > 0);
+           }
+       }
    </script>
 </head>
-<body>
+<body onpageshow="rechercheChangement(document.getElementById('selTypeRech').value)">
     @Html.Partial("index")
 
     @using (Html.BeginForm())
@@ -151,11 +175,11 @@
                         <input type="text" id="tbRecherche" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12">
                         <div id="divRechercheDateDebut" style="display: none;">
                             <label for="dtRechercheDebut" class="col-form-label">Date de début</label>
-                            <input type="date" id="dtRechercheDebut" class="form-control border-primary" />
+                            <input type="date" id="dtRechercheDebut" class="form-control border-primary" onchange="autoriseRechercheParDateParution();" />
                         </div>
                         <div id="divRechercheDateFin" style="display:none;">
                             <label for="dtRechercheFin" class="col-form-label">Date de fin</label>
-                            <input type="date" id="dtRechercheFin" class="form-control border-primary" />
+                            <input type="date" id="dtRechercheFin" class="form-control border-primary"  onchange="autoriseRechercheParDateParution();"/>
                         </div>
                         <br />
                         <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3" onchange="rechercheChangement(this.value)">
@@ -165,7 +189,7 @@
                             <option value="4">Date de parution</option>
                             <option value="5">Catégorie</option>
                         </select>
-                        <button type="button" class="btn btn-outline-primary mt-3 ml-auto" onclick="envoieRecherche()">Lancer recherche <span class="fas fa-search"></span></button>
+                        <button id="btnRecherche" type="button" class="btn btn-outline-primary mt-3 ml-auto" onclick="envoieRecherche()">Lancer recherche <span class="fas fa-search"></span></button>
                     </div>
                 </div>
             </div>

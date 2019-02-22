@@ -831,6 +831,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_AdresseEmail", DbType = "VarChar(100)")]
+        [MaxLength(100, ErrorMessage = "Longueur maximale du champ : 100 caractères")]
         [Required]
         public string AdresseEmail
         {
@@ -852,6 +853,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_MotDePasse", DbType = "VarChar(50)")]
+        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         [DataType(DataType.Password)]
         public string MotDePasse
         {
@@ -874,7 +876,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-
+        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Nom
         {
             get
@@ -896,7 +898,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Prenom", DbType = "VarChar(50)")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-
+        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Prenom
         {
             get
@@ -917,6 +919,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Rue", DbType = "VarChar(50)")]
+        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Rue
         {
             get
@@ -937,6 +940,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ville", DbType = "VarChar(50)")]
+        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Ville
         {
             get
@@ -1020,7 +1024,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel1", DbType = "VarChar(20)")]
         [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Le champs doit contenir seulement des chiffres et respecter le format (999) 999-9999.")]
-
+        [MaxLength(20, ErrorMessage = "Longueur maximale du champ : 20 caractères")]
         public string Tel1
         {
             get
@@ -1042,7 +1046,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel2", DbType = "VarChar(20)")]
         [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Le champs doit contenir seulement des chiffres et respecter le format (999) 999-9999.")]
-
+        [MaxLength(20, ErrorMessage = "Longueur maximale du champ : 20 caractères")]
         public string Tel2
         {
             get

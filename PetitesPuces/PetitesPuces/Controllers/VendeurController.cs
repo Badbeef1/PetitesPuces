@@ -888,20 +888,13 @@ namespace PetitesPuces.Controllers
                     case 4:
                         DateTime dtDebut;
                         DateTime dtFin;
-                        /*
-                        System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Avant)");
-                        lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
-
                         try
                         {
                             dtDebut = Convert.ToDateTime(recherche);
                             dtFin = Convert.ToDateTime(recherche2);
 
                             lstDesProduits = lstDesProduits
-                                .FindAll(pro => pro.DateCreation.Value >= dtDebut && pro.DateCreation.Value <= dtFin);
-                            /*
-                            System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Après)");
-                            lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
+                                .FindAll(pro => pro.DateCreation.Value.Date >= dtDebut && pro.DateCreation.Value.Date <= dtFin);
                         }
                         catch (FormatException fe)
                         {
@@ -1153,12 +1146,14 @@ namespace PetitesPuces.Controllers
 
 
 
-        public ActionResult CommandeDetail(int id)
+        public ActionResult CommandeDetail(string id)
         {
+            int value;
+            if (int.TryParse(id, out value))
+            {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             //Aller chercher le nom complet du vendeur et du client et le passer dans la page à l'aide d'un viewBag
-
 
             var vendeur = (from v in db.GetTable<PPVendeurs>()
                            where v.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
@@ -1172,30 +1167,45 @@ namespace PetitesPuces.Controllers
                              select commande
                              ).ToList();
 
-            //Aller chercher les details cette commande
-            var detailsCommandes = (from details in db.GetTable<PPDetailsCommandes>()
-                                    where details.NoCommande.Equals(commandes.First().NoCommande)
-                                    select details
-                                    ).ToList();
 
-            Dictionary<PPCommandes, List<PPDetailsCommandes>> dictionnaire = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
-            dictionnaire.Add(commandes.First(), detailsCommandes);
+            if ((commandes.Count() > 0) && (commandes.First().NoVendeur.Equals(vendeur.First().NoVendeur)))
+            {
+               //Aller chercher les details cette commande
+               var detailsCommandes = (from details in db.GetTable<PPDetailsCommandes>()
+                                       where details.NoCommande.Equals(commandes.First().NoCommande)
+                                       select details
+                                       ).ToList();
 
-            //Aller chercher l'historique de commande
-            var historique = (from histoCommande in db.GetTable<PPHistoriquePaiements>()
-                              where histoCommande.NoCommande.Equals(id)
-                              select histoCommande
-                              ).ToList();
+               Dictionary<PPCommandes, List<PPDetailsCommandes>> dictionnaire = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+               dictionnaire.Add(commandes.First(), detailsCommandes);
 
-            PPHistoriquePaiements histo = historique.First();
-            var client = (from c in db.GetTable<PPClients>()
-                          where c.NoClient.Equals(histo.NoClient)
-                          select c
-                 ).ToList();
-            ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
-            AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, histo);
-            db.Connection.Close();
-            return View(accueilVendeurViewModel);
+               //Aller chercher l'historique de commande
+               var historique = (from histoCommande in db.GetTable<PPHistoriquePaiements>()
+                                 where histoCommande.NoCommande.Equals(id)
+                                 select histoCommande
+                                 ).ToList();
+
+               PPHistoriquePaiements histo = historique.First();
+               var client = (from c in db.GetTable<PPClients>()
+                             where c.NoClient.Equals(histo.NoClient)
+                             select c
+                    ).ToList();
+               ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
+               AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, histo);
+               db.Connection.Close();
+               return View(accueilVendeurViewModel);
+            }
+            else
+            {
+               db.Connection.Close();
+               //return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+               return Redirect("/Vendeur/AccueilVendeur");
+            }
+         }
+         else
+         {
+            return Redirect("/Vendeur/AccueilVendeur");
+         }
         }
 
         public ActionResult Livrer(int id)
@@ -1321,31 +1331,49 @@ namespace PetitesPuces.Controllers
             return retour;
         }
 
-        public ActionResult PanierDetailVendeur(int id)
+        public ActionResult PanierDetailVendeur(string id)
         {
             ViewBag.NomClient = "";
             ViewBag.NomVendeur = "";
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-            //requête pour aller chercher les produits à l'aide d'un vendeur
-            List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(id) && panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
-                                              select panier).ToList();
-            //Aller chercher le nom complet du vendeur et du client et le passer dans la page à l'aide d'un viewBag
-            var client = (from c in db.GetTable<PPClients>()
-                          where c.NoClient.Equals(id)
-                          select c
-                          ).ToList();
+            int value;
+            if(int.TryParse(id, out value))
+            {
+               Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+               db.Connection.Open();
+               //requête pour aller chercher les produits à l'aide d'un vendeur
+               List<PPArticlesEnPanier> items = (from panier in db.GetTable<Models.PPArticlesEnPanier>()
+                                                 where panier.NoClient.Equals(id) && panier.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                                                 select panier).ToList();
+               if(items.Count() > 0)
+               {
+                  //Aller chercher le nom complet du vendeur et du client et le passer dans la page à l'aide d'un viewBag
+                  var client = (from c in db.GetTable<PPClients>()
+                                where c.NoClient.Equals(id)
+                                select c
+                                ).ToList();
 
-            var vendeur = (from v in db.GetTable<PPVendeurs>()
-                           where v.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
-                           select v
-                           ).ToList();
-            ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
-            ViewBag.NomVendeur = (vendeur.First().Prenom + " " + vendeur.First().Nom);
+                  var vendeur = (from v in db.GetTable<PPVendeurs>()
+                                 where v.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
+                                 select v
+                                 ).ToList();
+                  ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
+                  ViewBag.NomVendeur = (vendeur.First().Prenom + " " + vendeur.First().Nom);
 
-            db.Connection.Close();
-            return View(items);
+                  db.Connection.Close();
+                  return View(items);
+               }
+               else
+               {
+                  return Redirect("/Vendeur/AccueilVendeur");
+               }
+
+            }
+            else
+            {
+               return Redirect("/Vendeur/AccueilVendeur");
+            }
+
+
         }
 
         public ActionResult EnvoyerMessage(int noDestinataire, int noExpediteur, string message)
