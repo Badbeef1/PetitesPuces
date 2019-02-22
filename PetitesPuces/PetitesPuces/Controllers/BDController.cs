@@ -645,7 +645,7 @@ namespace PetitesPuces.Controllers
                 int counter = 0;
                 foreach (var cell in cells)
                 {
-                    tabObj[counter] = (cell.DescendantNodes().FirstOrDefault() as XElement)?.Value;
+                    tabObj[counter] = (cell.DescendantNodes().FirstOrDefault() as XElement)?.Value ?? "";
                     counter++;
                 }
 

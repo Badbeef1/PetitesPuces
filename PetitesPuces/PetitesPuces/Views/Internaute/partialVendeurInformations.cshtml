@@ -8,8 +8,10 @@
      htmlAttributes = new {
          @id = "tbNomAffaires",
          @class = "form-control",
-         @placeholder = "Nom de l'entreprise"
-     }})
+         @placeholder = "Nom de l'entreprise",
+         @maxlength = 50
+     }
+ })
       <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.NomAffaires)</span>
    </div>
 </div>
@@ -22,8 +24,10 @@
      htmlAttributes = new {
          @id = "tbNom",
          @class = "form-control",
-         @placeholder = "Nom"
-     }})
+         @placeholder = "Nom",
+         @maxlength = 50
+     }
+ })
          <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Nom)</span>
       </div>
    </div>
@@ -33,8 +37,10 @@
      htmlAttributes = new {
          @id = "tbPrenom",
          @class = "form-control",
-         @placeholder = "Prénom"
-     }})
+         @placeholder = "Prénom",
+         @maxlength = 50
+     }
+ })
       <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Prenom)</span>
    </div>
 </div>
@@ -46,8 +52,10 @@
      htmlAttributes = new {
          @id = "tbRue",
          @class = "form-control",
-         @placeholder = "15615 Boul Gouin"
-     }})
+         @placeholder = "15615 Boul Gouin",
+         @maxlength = 50
+     }
+ })
       <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Rue)</span>
    </div>
    <div class="form-group col-md-2 tooltipB">
@@ -69,8 +77,10 @@
      htmlAttributes = new {
          @id = "tbVille",
          @class = "form-control",
-         @placeholder = "Dollard-des-Ormeaux"
-     }})
+         @placeholder = "Dollard-des-Ormeaux",
+         @maxlength = 50
+     }
+ })
       <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.Ville)</span>
    </div>
    <div class="form-group col-md-4 tooltipB">
@@ -136,8 +146,11 @@
           htmlAttributes = new {
               @id = "tbPoidsMaxLivraison",
               @class = "form-control",
-              @placeholder = "000000"
-          }})
+              @placeholder = "000000",
+              @max = 999999,
+              @min = 1
+          }
+      })
            <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.PoidsMaxLivraison)</span>
            <div class="input-group-append">
               <span class="input-group-text">
@@ -162,7 +175,9 @@
           htmlAttributes = new {
               @id = "tbLivraisonGratuite",
               @class = "form-control",
-              @placeholder = "000.00"
+              @placeholder = "000.00",
+              @min=0,
+              @max=214000
           }})
            <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.LivraisonGratuite)</span>
            <div class="input-group-append">
