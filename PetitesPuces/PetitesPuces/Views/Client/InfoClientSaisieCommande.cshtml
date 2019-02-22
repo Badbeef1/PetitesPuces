@@ -28,12 +28,12 @@
 
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.TextBoxFor(mod => Model.Prenom, new { @class = "form-control", @Value =Model.Prenom, @onchange = "infoClient('Prenom='+this.value)" })
+                        @Html.EditorFor(mod => Model.Prenom, new { htmlAttributes = new { @class = "form-control", @Value = Model.Prenom, @onchange = "infoClient('Prenom='+this.value)" } })
                         @Html.ValidationMessageFor(mod => Model.Prenom)
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-4">
-                        @Html.TextBoxFor(mod => Model.Nom, new { @class = "form-control", @Value = Model.Nom, @onchange = "infoClient('Nom='+this.value)" })
+                        @Html.EditorFor(mod => Model.Nom, new { htmlAttributes = new { @class = "form-control", @Value = Model.Nom, @onchange = "infoClient('Nom='+this.value)" } })
                         @Html.ValidationMessageFor(mod => Model.Nom)
                     </div>
                 </div>
@@ -48,12 +48,12 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.TextBoxFor(mod => Model.AdresseEmail, new { @class = "form-control", @disabled = "disabled", @Value= Model.AdresseEmail, @onchange = "infoClient('Email='+this.value)" })
+                        @Html.EditorFor(mod => Model.AdresseEmail, new { htmlAttributes =  new { @class = "form-control", @disabled = "disabled", @Value = Model.AdresseEmail, @onchange = "infoClient('Email='+this.value)" }})
                         @Html.ValidationMessageFor(mod => Model.AdresseEmail)
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-4">
-                        @Html.TextBoxFor(mod => Model.Rue, new { @class = "form-control", @Value = Model.Rue, @onchange = "infoClient('Rue='+this.value)" })
+                        @Html.EditorFor(mod => Model.Rue, new { htmlAttributes = new { @class = "form-control", @Value = Model.Rue, @onchange = "infoClient('Rue='+this.value)" } })
                         @Html.ValidationMessageFor(mod => Model.Rue)
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.TextBoxFor(mod => Model.Ville, new { @class = "form-control", @Value = Model.Ville, @onchange = "infoClient('Ville='+this.value)" })
+                        @Html.EditorFor(mod => Model.Ville, new { htmlAttributes = new { @class = "form-control", @Value = Model.Ville, @onchange = "infoClient('Ville='+this.value)" } })
                         @Html.ValidationMessageFor(mod => Model.Ville)
                     </div>
                         <div class="offset-md-1"></div>
@@ -86,12 +86,12 @@
                     <div class="offset-md-1"></div>
 
                     <div class="col-md-5">
-                        @Html.TextBoxFor(mod => Model.Pays, new { @class = "form-control", @disabled = "disabled", @Value = "Canada" })
+                        @Html.EditorFor(mod => Model.Pays, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @Value = "Canada" } })
                         @Html.ValidationMessageFor(mod => Model.Pays)
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-4">
-                        @Html.TextBoxFor(mod => Model.CodePostal, new { @class = "form-control", @Value=Model.CodePostal, @onchange = "infoClient('CodePostal='+this.value)" })
+                        @Html.EditorFor(mod => Model.CodePostal, new { htmlAttributes = new { @class = "form-control", @Value=Model.CodePostal, @onchange = "infoClient('CodePostal='+this.value)" } })
                         @Html.ValidationMessageFor(mod => Model.CodePostal)
                     </div>
                 </div>
@@ -105,12 +105,12 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.TextBoxFor(mod => Model.Tel1, new { @class = "form-control", @Value = Model.Tel1, @onchange = "infoClient('Tel1='+this.value)" })
+                        @Html.EditorFor(mod => Model.Tel1, new { htmlAttributes = new { @class = "form-control", @Value = Model.Tel1, @onchange = "infoClient('Tel1='+this.value)" } })
                         @Html.ValidationMessageFor(mod => Model.Tel1)
                     </div>
                         <div class="offset-md-1"></div>
                         <div class="col-md-4">
-                            @Html.TextBoxFor(mod => Model.Tel2, new { @class = "form-control", @Value = Model.Tel2, @onchange = "infoClient('Tel2='+this.value)" })
+                            @Html.EditorFor(mod => Model.Tel2, new { htmlAttributes = new { @class = "form-control", @Value = Model.Tel2, @onchange = "infoClient('Tel2='+this.value)" } })
                             @Html.ValidationMessageFor(mod => Model.Tel2)
                         </div>
                     </div>
