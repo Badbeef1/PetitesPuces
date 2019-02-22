@@ -955,7 +955,7 @@ namespace PetitesPuces.Controllers
 
             List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
         {
-            new ddLInactiviter { Valeur = "", Texte = ""},
+            new ddLInactiviter { Valeur = "", Texte = "Toutes"},
             new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
             new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
             new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
@@ -986,7 +986,7 @@ namespace PetitesPuces.Controllers
       {
             List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
         {
-            new ddLInactiviter { Valeur = "", Texte = ""},
+            new ddLInactiviter { Valeur = "", Texte = "Toutes"},
             new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
             new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
             new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
@@ -1010,71 +1010,78 @@ namespace PetitesPuces.Controllers
          List<PPDetailsCommandes> lstDetCommDynamique = new List<PPDetailsCommandes>();
 
          //Retirer client
-         foreach (Inactiver client in form.cbClients)
-         {
-            if (client.IsSelected == true)
+         if(form.cbClients != null && form.cbClients.Count > 0)
             {
-               // On vide le panier
-               foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
-               {
-                  lstPanierAVider.Add(art);
-               }
-               if (lstPanierAVider.Count > 0)
-               {
-                  dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
-               }
+                foreach (Inactiver client in form.cbClients)
+                {
+                    if (client.IsSelected == true)
+                    {
+                        // On vide le panier
+                        foreach (PPArticlesEnPanier art in dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoClient.ToString() == client.idClient).ToList())
+                        {
+                            lstPanierAVider.Add(art);
+                        }
+                        if (lstPanierAVider.Count > 0)
+                        {
+                            dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(lstPanierAVider);
+                        }
 
-               // Si le client a utilisé le site Web
-               if (dc.GetTable<PPEvaluations>().Where(m=> m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
-               {
-                        // On met le statut à 2 (Intégrité)
-                    lstClientRetirer.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
-                  dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
+                        // Si le client a utilisé le site Web
+                        if (dc.GetTable<PPEvaluations>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPCommandes>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0 || dc.GetTable<PPVendeursClients>().Where(m => m.NoClient.ToString() == client.idClient).ToList().Count > 0)
+                        {
+                            // On met le statut à 2 (Intégrité)
+                            lstClientRetirer.Add(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
+                            dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First().Statut = 2;
 
-               }
+                        }
 
-               // Client n'ayant pas utilisé le site Web
-               else
-               {
-                  // On delete (Déjà retiré des autres tables)
-                  dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
-               }
-               dc.SubmitChanges();
+                        // Client n'ayant pas utilisé le site Web
+                        else
+                        {
+                            // On delete (Déjà retiré des autres tables)
+                            dc.GetTable<PPClients>().DeleteOnSubmit(dc.GetTable<PPClients>().Where(m => m.NoClient.ToString() == client.idClient).First());
+                        }
+                        dc.SubmitChanges();
+                    }
+                    else
+                    {
+                        // On renvoit les clients non-retirés
+                        lstClients.Add(client);
+                    }
+                }
             }
-            else
+
+         if(form.cbVendeurs != null && form.cbVendeurs.Count > 0)
             {
-               // On renvoit les clients non-retirés
-               lstClients.Add(client);
+                foreach (Inactiver vendeur in form.cbVendeurs)
+                {
+                    if (vendeur.IsSelected == true)
+                    {
+                        foreach (PPProduits produitNonCommande in dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).ToList())
+                        {
+                            if (produitNonCommande.PPDetailsCommandes.ToList().Count == 0)
+                            {
+                                lstProduitNonCommander.Add(produitNonCommande);
+                            }
+                            else
+                            {
+                                dc.GetTable<PPProduits>().Where(m => m.NoProduit == produitNonCommande.NoProduit).First().Disponibilité = false;
+                            }
+                        }
+                        dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoVendeur.ToString() == vendeur.idClient));
+                        dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
+                        dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
+                        dc.SubmitChanges();
+                    }
+                    else
+                    {
+                        // On renvoit les vendeurs non-retirés
+                        lstVendeurs.Add(vendeur);
+                    }
+                }
             }
-         }
-
          //Retirer vendeur
-         foreach (Inactiver vendeur in form.cbVendeurs)
-         {
-            if (vendeur.IsSelected == true)
-            {
-               foreach (PPProduits produitNonCommande in dc.GetTable<PPProduits>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).ToList())
-               {
-                  if (produitNonCommande.PPDetailsCommandes.ToList().Count == 0)
-                  {
-                     lstProduitNonCommander.Add(produitNonCommande);
-                  }
-                  else
-                  {
-                     dc.GetTable<PPProduits>().Where(m => m.NoProduit == produitNonCommande.NoProduit).First().Disponibilité = false;
-                  }
-               }
-                    dc.GetTable<PPArticlesEnPanier>().DeleteAllOnSubmit(dc.GetTable<PPArticlesEnPanier>().Where(m => m.NoVendeur.ToString() == vendeur.idClient));
-                dc.GetTable<PPProduits>().DeleteAllOnSubmit(lstProduitNonCommander);
-                dc.GetTable<PPVendeurs>().Where(m => m.NoVendeur.ToString() == vendeur.idClient).First().Statut = 2;
-                dc.SubmitChanges();
-            }
-            else
-            {
-               // On renvoit les vendeurs non-retirés
-               lstVendeurs.Add(vendeur);
-            }
-         }
+
          ModelState.Clear();
          dc = new DataClasses1DataContext();
 
@@ -1540,7 +1547,7 @@ namespace PetitesPuces.Controllers
 
             List<ddLInactiviter> lstInactiviterDdl = new List<ddLInactiviter>
         {
-            new ddLInactiviter { Valeur = "", Texte = ""},
+            new ddLInactiviter { Valeur = "", Texte = "Toutes"},
             new ddLInactiviter { Valeur = "1", Texte = "1 mois et +"},
             new ddLInactiviter { Valeur = "2", Texte = "3 mois et +"},
             new ddLInactiviter { Valeur = "3", Texte = "6 mois et +"},
@@ -1564,13 +1571,13 @@ namespace PetitesPuces.Controllers
                cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-6)).ToList();
                break;
             case "4":
-               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
+               cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddYears(-1)).ToList();
                break;
             case "5":
-               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
+               cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddYears(-2)).ToList();
                break;
             case "6":
-               cbClients = cbClients.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
+               cbClients = cbClients.Where(m => m.dernierPresence <= DateTime.Today.AddYears(-3)).ToList();
                break;
             default:
                break;
@@ -1578,22 +1585,22 @@ namespace PetitesPuces.Controllers
          switch (id.Split(';')[1])
          {
             case "1":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-1)).ToList();
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-1)).ToList();
                break;
             case "2":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-3)).ToList();
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-3)).ToList();
                break;
             case "3":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddMonths(-6)).ToList();
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence <= DateTime.Today.AddMonths(-6)).ToList();
                break;
             case "4":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-1)).ToList();
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence <= DateTime.Today.AddYears(-1)).ToList();
                break;
             case "5":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-2)).ToList();
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence <= DateTime.Today.AddYears(-2)).ToList();
                break;
             case "6":
-               cbVendeur = cbVendeur.Where(m => m.dernierPresence < DateTime.Today.AddYears(-3)).ToList();
+               cbVendeur = cbVendeur.Where(m => m.dernierPresence <= DateTime.Today.AddYears(-3)).ToList();
                break;
             default:
                break;
