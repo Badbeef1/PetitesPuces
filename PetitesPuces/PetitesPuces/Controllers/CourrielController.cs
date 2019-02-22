@@ -205,20 +205,20 @@ namespace PetitesPuces.Views
                 lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
                 strAdresseCourriel = (utilisateur as PPVendeurs).AdresseEmail;
             }
-            else
+            else if (Session["gestionnaireObj"] != null)
             {
                 //strTypeUtilisateur = strGestionnaire;
                 
                 utilisateur = contextPP.PPGestionnaire
                 .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == (Session["gestionnaireObj"] as PPGestionnaire).NoGestionnaire);
                
-
+                /*
                 #if DEBUG
                                 utilisateur = contextPP.PPVendeurs.FirstOrDefault();
                 #else
                                     Console.WriteLine("Mode=Release"); 
                 #endif
-
+                */
 
 
                 //lngNoUtilisateur = (utilisateur as PPVendeurs).NoVendeur;
@@ -228,6 +228,17 @@ namespace PetitesPuces.Views
 
                 lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
             }
+            //Tempo pour empecher de bug, y devrait avoir un redirection .... ghetto code
+            else
+            {
+                utilisateur = contextPP.PPGestionnaire
+                .FirstOrDefault(gestionnaire => gestionnaire.NoGestionnaire == 1);
+
+                strAdresseCourriel = (utilisateur as PPGestionnaire).AdresseEmail;
+
+                lngNoUtilisateur = (utilisateur as PPGestionnaire).NoGestionnaire;
+            }
+
             return (utilisateur, lngNoUtilisateur, strAdresseCourriel);
         }
 

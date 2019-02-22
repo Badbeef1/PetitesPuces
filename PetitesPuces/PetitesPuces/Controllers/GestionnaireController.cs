@@ -109,23 +109,36 @@ namespace PetitesPuces.Controllers
          ViewBag.Section = "sec_ajout_categorie";
          if (ModelState.IsValid)
          {
-            var query = (from nbCat in db.GetTable<PPCategories>()
-                         select nbCat
-                      ).ToList();
+            var categorieExisteDeja = (from cat in db.GetTable<PPCategories>()
+                                       where cat.Description.Equals(viewModel.categorie.Description.Trim())
+                                       select cat
+                                       ).ToList();
 
-            viewModel.categorie.NoCategorie = (query.Count() + 1) * 10;
+            if(categorieExisteDeja.Count() == 0)
+            {
+               var query = (from nbCat in db.GetTable<PPCategories>()
+                            select nbCat
+               ).ToList();
 
-            db.PPCategories.InsertOnSubmit(viewModel.categorie);
-            ModelState.Clear();
-            // Submit the changes to the database.
-            try
-            {
-               db.SubmitChanges();
+               viewModel.categorie.NoCategorie = (query.Count() + 1) * 10;
+
+               db.PPCategories.InsertOnSubmit(viewModel.categorie);
+               ModelState.Clear();
+               // Submit the changes to the database.
+               try
+               {
+                  db.SubmitChanges();
+               }
+               catch (Exception e)
+               {
+                  Console.WriteLine(e);
+               }
             }
-            catch (Exception e)
+            else
             {
-               Console.WriteLine(e);
+               ViewBag.ErreurCat = "Cette catégorie existe déjà.";
             }
+
          }
 
          Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
@@ -1152,7 +1165,7 @@ namespace PetitesPuces.Controllers
             {
                nbVendeurActif++;
             }
-            if (item.Statut==2)
+            if (item.Statut==0)
             {
                nbVendeurInactif++;
             }   

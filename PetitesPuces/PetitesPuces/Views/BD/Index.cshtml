@@ -55,11 +55,12 @@
                 {
                     <tr class="row">
                         <td class="col-6 text-right"> @Model.tabCount[i, 0] : </td>
-                       <td class="col-6 text-left"><b>@Model.tabCount[i, 1]</b> enregistrement(s)</td>
+                        <td class="col-6 text-left"><b>@Model.tabCount[i, 1]</b> enregistrement(s)</td>
                     </tr>
                 }
             }
         </table>
+        @Html.ActionLink("Retour à l'accueil", "AccueilGestionnaire", "Gestionnaire", new object {  }, new { @class = "btn btn-block btn-primary" })
     </div>
 </body>
 </html>
