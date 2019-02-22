@@ -540,7 +540,6 @@ namespace PetitesPuces.Controllers
 
                 context.PPDestinataires.DeleteAllOnSubmit(context.PPDestinataires);
                 context.PPMessages.DeleteAllOnSubmit(context.PPMessages);
-                context.PPLieu.DeleteAllOnSubmit(context.PPLieu);
 
                 context.PPCategories.DeleteAllOnSubmit(context.PPCategories);
                 context.PPTaxeFederale.DeleteAllOnSubmit(context.PPTaxeFederale);
@@ -611,7 +610,6 @@ namespace PetitesPuces.Controllers
 
                {"PPDestinataires", context.PPDestinataires.Count().ToString()},
                {"PPMessages", context.PPMessages.Count().ToString()},
-               {"PPLieu", context.PPLieu.Count().ToString()},
 
                {"PPCategories", context.PPCategories.Count().ToString()},
                {"PPTaxeFederale", context.PPTaxeFederale.Count().ToString()},
