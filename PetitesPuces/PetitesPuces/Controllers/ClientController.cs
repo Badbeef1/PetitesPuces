@@ -731,9 +731,6 @@ namespace PetitesPuces.Controllers
                     case 4:
                         DateTime dtDebut;
                         DateTime dtFin;
-                        /*
-                        System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Avant)");
-                        lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
 
                         try
                         {
@@ -741,10 +738,7 @@ namespace PetitesPuces.Controllers
                             dtFin = Convert.ToDateTime(recherche2);
 
                             lstDesProduits = lstDesProduits
-                                .FindAll(pro => pro.DateCreation.Value >= dtDebut && pro.DateCreation.Value <= dtFin);
-                            /*
-                            System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Après)");
-                            lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
+                                .FindAll(pro => pro.DateCreation.Value.Date >= dtDebut && pro.DateCreation.Value.Date <= dtFin);
                         }
                         catch (FormatException fe)
                         {
