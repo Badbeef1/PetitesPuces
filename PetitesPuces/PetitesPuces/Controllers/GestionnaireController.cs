@@ -833,25 +833,39 @@ namespace PetitesPuces.Controllers
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
 
-      public ActionResult DetailVendeur(int id)
+      public ActionResult DetailVendeur(string id)
       {
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
+         int value;
+         if(int.TryParse(id,out value))
+         {
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
 
-         //Aller chercher le vendeur pour le NoVendeur passé en paramètre
-         var vendeur = (from ven in db.GetTable<PPVendeurs>()
-                        where ven.NoVendeur.Equals(id)
-                        select ven
-                        ).ToList();
+            //Aller chercher le vendeur pour le NoVendeur passé en paramètre
+            var vendeur = (from ven in db.GetTable<PPVendeurs>()
+                           where ven.NoVendeur.Equals(id)
+                           select ven
+                           ).ToList();
+            if(vendeur.Count() > 0)
+            {
+               db.Connection.Close();
 
-         /*var gestionnaire = (from g in db.GetTable<PPGestionnaire>()
-                             where g.NoGestionnaire.Equals(((PPGestionnaire)Session["gestionnaireObj"]).NoGestionnaire)
-                             select g
-                             ).First();*/
+               return View(vendeur.First());
+            }
+            else
+            {
+               return Redirect("/Gestionnaire/AccueilGestionnaire");
+            }
+            /*var gestionnaire = (from g in db.GetTable<PPGestionnaire>()
+                                where g.NoGestionnaire.Equals(((PPGestionnaire)Session["gestionnaireObj"]).NoGestionnaire)
+                                select g
+                                ).First();*/
+         }
+         else
+         {
+            return Redirect("/Gestionnaire/AccueilGestionnaire");
+         }
          
-         db.Connection.Close();
-
-         return View(vendeur.First());
       }
 
       //permet de payer la redevance

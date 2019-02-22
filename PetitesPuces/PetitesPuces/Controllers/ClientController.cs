@@ -1025,43 +1025,59 @@ namespace PetitesPuces.Controllers
         }
 
         // GET: ProduitDetaille
-        public ActionResult ProduitDetaille(long numero)
+        public ActionResult ProduitDetaille(string numero)
         {
-            var model = new ViewModels.ProduitDetailViewModel
+            long value;
+            if(long.TryParse(numero, out value))
             {
-                Produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == numero)
-            };
+               var model = new ViewModels.ProduitDetailViewModel
+               {
+                  Produit = contextPP.PPProduits.FirstOrDefault(pro => pro.NoProduit == value)
+               };
 
+               if(model.Produit != null)
+               {
+               if (Session["clientObj"] == null) return View("ProduitDetaille", model);
 
-            if (Session["clientObj"] == null) return View("ProduitDetaille", model);
+               var cConnecte = Session["clientObj"] as PPClients;
+               model.Evaluation = contextPP.PPEvaluations
+                                     .FirstOrDefault(e => e.NoClient == cConnecte.NoClient && e.NoProduit == value) ??
+                                  new PPEvaluations() { NoProduit = value };
+               //Check pour si le client a recu ce item
+               model.ClientARecuCeProduit = (from commande in contextPP.PPCommandes
+                                             from detail in commande.PPDetailsCommandes
+                                             where detail.NoProduit == value && commande.Statut == 'L'
+                                             select commande).Any();
+               model.nbEvaluateurs = contextPP.PPEvaluations.Count(x => x.NoProduit == model.Produit.NoProduit);
 
-            var cConnecte = Session["clientObj"] as PPClients;
-            model.Evaluation = contextPP.PPEvaluations
-                                  .FirstOrDefault(e => e.NoClient == cConnecte.NoClient && e.NoProduit == numero) ??
-                               new PPEvaluations() { NoProduit = numero };
-            //Check pour si le client a recu ce item
-            model.ClientARecuCeProduit = (from commande in contextPP.PPCommandes
-                                          from detail in commande.PPDetailsCommandes
-                                          where detail.NoProduit == numero && commande.Statut == 'L'
-                                          select commande).Any();
-            model.nbEvaluateurs = contextPP.PPEvaluations.Count(x => x.NoProduit == model.Produit.NoProduit);
+               if (model.nbEvaluateurs != 0)
+               {
+                  //La moyenne des evaluations
+                  model.FormattedRating = Math.Round(contextPP.PPEvaluations
+                      .Where(e => e.NoProduit == model.Produit.NoProduit).Average(x => x.Cote).Value, 1);
+               }
 
-            if (model.nbEvaluateurs != 0)
-            {
-                //La moyenne des evaluations
-                model.FormattedRating = Math.Round(contextPP.PPEvaluations
-                    .Where(e => e.NoProduit == model.Produit.NoProduit).Average(x => x.Cote).Value, 1);
+               var vendeur = (from v in contextPP.PPVendeurs
+                              where v.NoVendeur.Equals(model.Produit.NoVendeur)
+                              select v
+                              ).ToList();
+
+               ViewBag.NomClient = cConnecte.Prenom + " " + cConnecte.Nom;
+               ViewBag.NomVendeur = vendeur.First().Prenom + " " + vendeur.First().Nom;
+
+               return View("ProduitDetaille", model);
             }
-
-            var vendeur = (from v in contextPP.PPVendeurs
-                           where v.NoVendeur.Equals(model.Produit.NoVendeur)
-                           select v
-                           ).ToList();
-
-            ViewBag.NomClient = cConnecte.Prenom + " " + cConnecte.Nom;
-            ViewBag.NomVendeur = vendeur.First().Prenom + " " + vendeur.First().Nom;
-
-            return View("ProduitDetaille", model);
+            else
+            {
+               return Redirect("/Client/Catalogue");
+            }
+              
+         }
+         else
+         {
+            return Redirect("/Client/Catalogue");
+         }
+            
         }
 
         //Sauvegarder son commentaire
@@ -1071,7 +1087,7 @@ namespace PetitesPuces.Controllers
             //S'il veut voir tout les commentaires
             if (Request["submitVal"] == "Voir les commentaires") return RedirectToAction("Evaluations", new { numero = model.Evaluation.NoProduit });
             //Invalide alors return
-            if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit);
+            if (!ModelState.IsValid) return ProduitDetaille(model.Evaluation.NoProduit.ToString());
 
             using (var contextPP2 = new DataClasses1DataContext())
             {
@@ -1110,7 +1126,7 @@ namespace PetitesPuces.Controllers
                     Console.WriteLine(e);
                 }
             }
-            return ProduitDetaille(model.Evaluation.NoProduit);
+            return ProduitDetaille(model.Evaluation.NoProduit.ToString());
         }
 
 
