@@ -1146,12 +1146,14 @@ namespace PetitesPuces.Controllers
 
 
 
-        public ActionResult CommandeDetail(int id)
+        public ActionResult CommandeDetail(string id)
         {
+            int value;
+            if (int.TryParse(id, out value))
+            {
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
             //Aller chercher le nom complet du vendeur et du client et le passer dans la page à l'aide d'un viewBag
-
 
             var vendeur = (from v in db.GetTable<PPVendeurs>()
                            where v.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
@@ -1165,30 +1167,45 @@ namespace PetitesPuces.Controllers
                              select commande
                              ).ToList();
 
-            //Aller chercher les details cette commande
-            var detailsCommandes = (from details in db.GetTable<PPDetailsCommandes>()
-                                    where details.NoCommande.Equals(commandes.First().NoCommande)
-                                    select details
-                                    ).ToList();
 
-            Dictionary<PPCommandes, List<PPDetailsCommandes>> dictionnaire = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
-            dictionnaire.Add(commandes.First(), detailsCommandes);
+            if ((commandes.Count() > 0) && (commandes.First().NoVendeur.Equals(vendeur.First().NoVendeur)))
+            {
+               //Aller chercher les details cette commande
+               var detailsCommandes = (from details in db.GetTable<PPDetailsCommandes>()
+                                       where details.NoCommande.Equals(commandes.First().NoCommande)
+                                       select details
+                                       ).ToList();
 
-            //Aller chercher l'historique de commande
-            var historique = (from histoCommande in db.GetTable<PPHistoriquePaiements>()
-                              where histoCommande.NoCommande.Equals(id)
-                              select histoCommande
-                              ).ToList();
+               Dictionary<PPCommandes, List<PPDetailsCommandes>> dictionnaire = new Dictionary<PPCommandes, List<PPDetailsCommandes>>();
+               dictionnaire.Add(commandes.First(), detailsCommandes);
 
-            PPHistoriquePaiements histo = historique.First();
-            var client = (from c in db.GetTable<PPClients>()
-                          where c.NoClient.Equals(histo.NoClient)
-                          select c
-                 ).ToList();
-            ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
-            AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, histo);
-            db.Connection.Close();
-            return View(accueilVendeurViewModel);
+               //Aller chercher l'historique de commande
+               var historique = (from histoCommande in db.GetTable<PPHistoriquePaiements>()
+                                 where histoCommande.NoCommande.Equals(id)
+                                 select histoCommande
+                                 ).ToList();
+
+               PPHistoriquePaiements histo = historique.First();
+               var client = (from c in db.GetTable<PPClients>()
+                             where c.NoClient.Equals(histo.NoClient)
+                             select c
+                    ).ToList();
+               ViewBag.NomClient = (client.First().Prenom + " " + client.First().Nom);
+               AccueilVendeurViewModel accueilVendeurViewModel = new AccueilVendeurViewModel(dictionnaire, histo);
+               db.Connection.Close();
+               return View(accueilVendeurViewModel);
+            }
+            else
+            {
+               db.Connection.Close();
+               //return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
+               return Redirect("/Vendeur/AccueilVendeur");
+            }
+         }
+         else
+         {
+            return Redirect("/Vendeur/AccueilVendeur");
+         }
         }
 
         public ActionResult Livrer(int id)
