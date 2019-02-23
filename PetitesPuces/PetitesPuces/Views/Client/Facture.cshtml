@@ -15,6 +15,8 @@
         overflow-wrap: break-word;
     }
 </style>
+<br />
+<br />
 <div class="container align-items-center">
     <div class="row">
         <div class="col-md-5 col-xs-5">
@@ -165,7 +167,7 @@
                                 @montantTotal $
                             </td>
                         </tr>
-                                    }
+                    }
                 }
             </tbody>
         </table>
@@ -204,24 +206,24 @@
                             string montAvantTx = ((double)Model.MontantTotAvantTaxes).ToString("0.00");
 
                         }
-                         @montAvantTx $<br />
+                        @montAvantTx $<br />
                     </span>
-                        @if (Model.CoutLivraison > 0)
-                        {
-                            <span>@Double.Parse(Model.CoutLivraison.ToString()).ToString("0.00") $<br /></span>
-                        }
-                        @if (Model.TPS > 0)
-                        {
+                    @if (Model.CoutLivraison > 0)
+                    {
+                        <span>@Double.Parse(Model.CoutLivraison.ToString()).ToString("0.00") $<br /></span>
+                    }
+                    @if (Model.TPS > 0)
+                    {
 
-                            <span>@Double.Parse(Model.TPS.ToString()).ToString("0.00") $<br /></span>
-                        }
-                        @if (Model.TVQ > 0)
-                        {
+                        <span>@Double.Parse(Model.TPS.ToString()).ToString("0.00") $<br /></span>
+                    }
+                    @if (Model.TVQ > 0)
+                    {
 
-                            <span>@Double.Parse(Model.TVQ.ToString()).ToString("0.00") $<br /></span>
-                        }
-                        @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString()).ToString("0.00")) $<br />
-</strong>
+                        <span>@Double.Parse(Model.TVQ.ToString()).ToString("0.00") $<br /></span>
+                    }
+                    @(Double.Parse((Model.MontantTotAvantTaxes + Model.CoutLivraison + Model.TPS + Model.TVQ).ToString()).ToString("0.00")) $<br />
+                </strong>
             </h5>
         </div>
     </div>
