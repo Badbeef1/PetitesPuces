@@ -52,10 +52,10 @@
                         <div class="col-3">
                             <label class="col-form-label">Poids de livraison Maximum</label>
                             <div class="input-group">
-                                @Html.TextBoxFor(x => x.PoidsMaxLivraison, new { @class = "form-control", placeholder = "999999,9" })
+                                @Html.TextBoxFor(x => x.PoidsMaxLivraison, new { @class = "form-control", placeholder = "999999" })
                                 <div class="input-group-append">
                                     <span class="input-group-text">
-                                        Lbs
+                                        Lb
                                     </span>
                                 </div>
                                 @Html.ValidationMessageFor(x => x.PoidsMaxLivraison)
@@ -76,6 +76,7 @@
                         <div class="col-3">
                             <label class="col-form-label">Taux de redevence</label>
                             @Html.TextBoxFor(x => x.Pourcentage, new { @class = "form-control", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(x => x.Pourcentage)
                         </div>
                         <div class="col-3">
                             <label class="col-form-label">Prélèvement de la taxe</label>

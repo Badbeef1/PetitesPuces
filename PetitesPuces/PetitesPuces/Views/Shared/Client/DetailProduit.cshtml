@@ -63,18 +63,21 @@
                 </p>
                 <hr>
                 <p>
-                    <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit" onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "")>Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
+                    @if (Session["clientObj"] != null)
+                    {
+                        <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit" onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "")>Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
+                    }
                     <span id="spQqt"><span class="font-weight-bold">Quantité restant:</span> @Model.Produit.NombreItems</span>
                     @if (Session["clientObj"] != null)
                     {
-                        <button id="btn_envoyer_message" class="btn btn-outline-primary" onclick="accepter(@Model.Produit.NoVendeur);">Contacter le vendeur</button>
+                        <br /><br /><button id="btn_envoyer_message" class="btn btn-outline-primary" onclick="accepter(@Model.Produit.NoVendeur);">Contacter le vendeur</button>
                     }
                 </p>
                 <hr>
                 <p class="font-weight-bold">Description:</p>
-                <p>@Model.Produit.Description</p>
+                <p style="word-break:break-word; white-space:normal;">@Model.Produit.Description</p>
                 <p>
-                    <span class="font-weight-bold">Poids:</span><span> @Model.Produit.Poids lbs</span><br />
+                    <span class="font-weight-bold">Poids:</span><span> @Model.Produit.Poids lb</span><br />
                     <span><span class="font-weight-bold">En vente depuis:</span> @Model.Produit.DateCreation.Value.ToString("yyyy-MM-dd")</span>
                 </p>
             </div>

@@ -19,111 +19,20 @@
         <div id="commNonLivrerTitre" class="row">
             <h1>Commandes en cours de livraison</h1>
         </div>
-        <div class="col-md-12 text-center">
-            <button type="submit" class="btn btn-primary" id="btnConfirmerHaut">Marquer comme livrée</button>
-            <br />
-            <br />
-        </div>
-        <div class="row">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col" class="text-right">#</th>
-                        <th scope="col" class="text-right">No Commande</th>
-                        <th scope="col" class="text-right">Date</th>
-                        <th scope="col" class="text-left">Nom complet</th>
-                        <th scope="col" class="text-center">
-                            Livrée
-                            <input id="cbAll" type="checkbox" />
-                        </th>
-                        <th scope="col" class="text-center">Voir PDF</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int counterMaisPlusBas = 0;
-                    }
-                    @for (int i = 0; i < Model.lstCommandeNonLivrer.Count; i++)
-                    {
-                        PPCommandes uneComm = Model.lstCommandeNonLivrer[i].commande;
-                        ++counterMaisPlusBas;
-                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.DateCommande)
-                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Prenom)
-                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Prenom)
-                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Nom)
-                        @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.NoCommande)
-                        <tr data-toggle="collapse" data-target="#@("collapse_commande__" + uneComm.NoCommande)" class="clickable">
-                            <th scope="row" class="text-right">@counterMaisPlusBas</th>
-                            <td class="text-right">
-                                @uneComm.NoCommande
-                            </td>
-                            <td class="text-right">
-                                @{
-                                    DateTime date = (DateTime) uneComm.DateCommande;
-
-                                        }
-                                @date.ToString("yyyy-MM-dd")
-                            </td>
-                            <td class="text-left">
-                                @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
-                            </td>
-                            <td class="text-center">
-                                @Html.CheckBoxFor(m => m.lstCommandeNonLivrer[i].isChecked, new { @class = "form-control" })
-                            </td>
-                            <td class="text-center">
-                                <script type="text/javascript">
-                                    function openTab(th) {
-                                        window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
-                                    }
-                                </script>
-                                <button name="@uneComm.NoCommande" class="btn btn-secondary" onclick="openTab(this)">Commande # : @uneComm.NoCommande</button>
-                            </td>
-                        </tr>
-                        <tr id="@("collapse_commande__" + uneComm.NoCommande)" class="collapse">
-                            <td colspan="6">
-                                <div class="col-md-12 text-center">
-                                    <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 text-center">
-                                        <h4>Frais de transaction : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().FraisLesi).ToString("0.00")) $</h4>
-                                    </div>
-                                    <div class="col-md-6 text-center">
-                                        <h4>Redevance : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().Redevance).ToString("0.00")) $</h4>
-                                    </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 text-center">
-                                            <h5>@uneComm.PPClients.AdresseEmail</h5>
-                                            <h5>@uneComm.PPClients.Prenom  @uneComm.PPClients.Nom</h5>
-                                            <h5>@uneComm.PPClients.Tel1</h5>
-                                            <h5>@uneComm.PPClients.Tel2</h5>
-                                        </div>
-                                        <div class="col-md-6 text-center">
-                                            <h5>@uneComm.PPClients.Rue</h5>
-                                            <h5>@uneComm.PPClients.Ville  @uneComm.PPClients.Province</h5>
-                                            <h5>@uneComm.PPClients.Pays</h5>
-                                            <h5>@uneComm.PPClients.CodePostal</h5>
-                                        </div>
-                                    </div>
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-12 text-center">
-            <button type="submit" class="btn btn-primary" id="btnConfirmerBas">Marquer comme livrée</button>
-        </div>
-    </div>
-                            }
-        <br />
-        <br />
-        <div id="commLivrer" class="container">
-            <div id="commLivrerTitre" class="row">
-                <h1>Commandes livrées</h1>
+        @if (Model.lstCommandeNonLivrer.Count > 0)
+        {
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary" id="btnConfirmerHaut">Marquer comme livrée</button>
+                <br />
+                <br />
             </div>
+        }
+        @if (Model.lstCommandeNonLivrer.Count <= 0)
+        {
+            <h2>Aucune commande en attente d'être livrée</h2>
+        }
+        else
+        {
             <div class="row">
                 <table class="table table-striped">
                     <thead>
@@ -132,36 +41,43 @@
                             <th scope="col" class="text-right">No Commande</th>
                             <th scope="col" class="text-right">Date</th>
                             <th scope="col" class="text-left">Nom complet</th>
+                            <th scope="col" class="text-center">
+                                Livrée
+                                <input id="cbAll" type="checkbox" />
+                            </th>
                             <th scope="col" class="text-center">Voir PDF</th>
                         </tr>
                     </thead>
                     <tbody>
                         @{
-                            int counter = 0;
+                            int counterMaisPlusBas = 0;
                         }
-                        @for (int i = 0; i < Model.lstCommandeLivrer.Count; i++)
+                        @for (int i = 0; i < Model.lstCommandeNonLivrer.Count; i++)
                         {
-                            ++counter;
-                            PPCommandes uneComm = Model.lstCommandeLivrer[i];
-                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].DateCommande);
-                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].PPClients.Nom);
-                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].PPClients.Prenom);
-                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].NoCommande);
-                        @Html.HiddenFor(m => m.lstCommandeLivrer)
-                            <tr data-toggle="collapse" data-target="#@("collapse_commande__"+uneComm.NoCommande)" class="clickable">
-                                <th scope="row" class="text-right">@counter</th>
+                            PPCommandes uneComm = Model.lstCommandeNonLivrer[i].commande;
+                            ++counterMaisPlusBas;
+                            @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.DateCommande)
+                            @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Prenom)
+                            @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Prenom)
+                            @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.PPClients.Nom)
+                            @Html.HiddenFor(m => m.lstCommandeNonLivrer[i].commande.NoCommande)
+                            <tr data-toggle="collapse" data-target="#@("collapse_commande__" + uneComm.NoCommande)" class="clickable">
+                                <th scope="row" class="text-right">@counterMaisPlusBas</th>
                                 <td class="text-right">
                                     @uneComm.NoCommande
                                 </td>
                                 <td class="text-right">
                                     @{
-                                        DateTime dateDone = (DateTime)uneComm.DateCommande;
+                                        DateTime date = (DateTime)uneComm.DateCommande;
 
                                     }
-                                    @dateDone.ToString("yyyy-MM-dd")
+                                    @date.ToString("yyyy-MM-dd")
                                 </td>
                                 <td class="text-left">
                                     @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
+                                </td>
+                                <td class="text-center">
+                                    @Html.CheckBoxFor(m => m.lstCommandeNonLivrer[i].isChecked, new { @class = "form-control" })
                                 </td>
                                 <td class="text-center">
                                     <script type="text/javascript">
@@ -169,10 +85,10 @@
                                             window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
                                         }
                                     </script>
-                                    <button name="@uneComm.NoCommande" class="btn btn-secondary" onclick="openTab(this)">Commande # : @uneComm.NoCommande</button>
+                                    <button type="button" name="@uneComm.NoCommande" class="btn btn-secondary" onclick="openTab(this)">Commande # : @uneComm.NoCommande</button>
                                 </td>
                             </tr>
-                            <tr id="@("collapse_commande__"+uneComm.NoCommande)" class="collapse">
+                            <tr id="@("collapse_commande__" + uneComm.NoCommande)" class="collapse">
                                 <td colspan="6">
                                     <div class="col-md-12 text-center">
                                         <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
@@ -206,6 +122,112 @@
                     </tbody>
                 </table>
             </div>
+
+        }
+        @if (Model.lstCommandeNonLivrer.Count > 0)
+        {
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-primary" id="btnConfirmerBas">Marquer comme livrée</button>
+            </div>
+        }
+        </div>
+                            }
+        <br />
+        <br />
+        <div id="commLivrer" class="container">
+            <div id="commLivrerTitre" class="row">
+                <h1>Commandes livrées</h1>
+            </div>
+            @if (Model.lstCommandeLivrer.Count <= 0)
+            {
+                <h2>Aucune commande livrée</h2>
+            }
+            else
+            {
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-right">#</th>
+                            <th scope="col" class="text-right">No Commande</th>
+                            <th scope="col" class="text-right">Date</th>
+                            <th scope="col" class="text-left">Nom complet</th>
+                            <th scope="col" class="text-center">Voir PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 0;
+                        }
+                        @for (int i = 0; i < Model.lstCommandeLivrer.Count; i++)
+                        {
+                            ++counter;
+                            PPCommandes uneComm = Model.lstCommandeLivrer[i];
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].DateCommande);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].PPClients.Nom);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].PPClients.Prenom);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer[i].NoCommande);
+                            @Html.HiddenFor(m => m.lstCommandeLivrer)
+                            <tr data-toggle="collapse" data-target="#@("collapse_commande__" + uneComm.NoCommande)" class="clickable">
+                                <th scope="row" class="text-right">@counter</th>
+                                <td class="text-right">
+                                    @uneComm.NoCommande
+                                </td>
+                                <td class="text-right">
+                                    @{
+                                        DateTime dateDone = (DateTime)uneComm.DateCommande;
+
+                                    }
+                                    @dateDone.ToString("yyyy-MM-dd")
+                                </td>
+                                <td class="text-left">
+                                    @uneComm.PPClients.Prenom @uneComm.PPClients.Nom
+                                </td>
+                                <td class="text-center">
+                                    <script type="text/javascript">
+                                        function openTab(th) {
+                                            window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
+                                        }
+                                    </script>
+                                    <button name="@uneComm.NoCommande" class="btn btn-secondary" type="button" onclick="openTab(this)">Commande # : @uneComm.NoCommande</button>
+                                </td>
+                            </tr>
+                            <tr id="@("collapse_commande__" + uneComm.NoCommande)" class="collapse">
+                                <td colspan="6">
+                                    <div class="col-md-12 text-center">
+                                        <h3>Visites dans le catalogue : @uneComm.PPClients.PPVendeursClients.Where(m => m.NoVendeur == uneComm.NoVendeur).ToList().Count</h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h4>Frais de transaction : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().FraisLesi).ToString("0.00")) $</h4>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h4>Redevance : @(((Double)Model.lstPaiement.Where(m => m.NoCommande == uneComm.NoCommande).First().Redevance).ToString("0.00")) $</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.AdresseEmail</h5>
+                                            <h5>@uneComm.PPClients.Prenom  @uneComm.PPClients.Nom</h5>
+                                            <h5>@uneComm.PPClients.Tel1</h5>
+                                            <h5>@uneComm.PPClients.Tel2</h5>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h5>@uneComm.PPClients.Rue</h5>
+                                            <h5>@uneComm.PPClients.Ville  @uneComm.PPClients.Province</h5>
+                                            <h5>@uneComm.PPClients.Pays</h5>
+                                            <h5>@uneComm.PPClients.CodePostal</h5>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                                        }
+
+                    </tbody>
+                </table>
+            
+            </div>
+                                        }
         </div>
     </body>
 </html>

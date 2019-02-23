@@ -1065,21 +1065,30 @@ namespace PetitesPuces.Controllers
                         //Valide que le mot de passe est bien l'ancien mdp.
                         if (vendeurOriginel.MotDePasse.Equals(strAncientMDP))
                         {
-                            //Valide que le nouveau mdp est identique a celui de confirmation
-                            if (strNouveauMDP.Equals(strConfirmationMDP))
+                            //Valide que le nouveau mdp est différent de l'ancien mdp
+                            if (!vendeurOriginel.MotDePasse.Equals(strNouveauMDP))
                             {
-                                vendeurDao.modifierProfilMDP(strNouveauMDP);
-                                ViewBag.uneErreur = "succes";
+                                //Valide que le nouveau mdp est identique a celui de confirmation
+                                if (strNouveauMDP.Equals(strConfirmationMDP))
+                                {
+                                    vendeurDao.modifierProfilMDP(strNouveauMDP);
+                                    ViewBag.uneErreur = "succes";
+                                }
+                                else
+                                {
+                                    ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                                    ViewBag.uneErreur = "echec";
+                                }
                             }
                             else
                             {
-                                ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                                ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
                                 ViewBag.uneErreur = "echec";
-                            }
+                            }  
                         }
                         else
                         {
-                            ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                            ViewBag.MessageErreurNouveau = "L'ancien mot de passe n'est pas valide";
                             ViewBag.uneErreur = "echec";
                         }
                     }
@@ -1527,7 +1536,7 @@ namespace PetitesPuces.Controllers
             }
 
             Dictionary<int,string> dictioDdl = new Dictionary<int, string>();
-            dictioDdl.Add(0, "");
+            dictioDdl.Add(0, "Toutes");
             dictioDdl.Add(1, "1 mois et +");
             dictioDdl.Add(2, "2 mois et +");
             dictioDdl.Add(3, "3 mois et +");
@@ -1585,7 +1594,7 @@ namespace PetitesPuces.Controllers
                 }
             }
             Dictionary<int, string> dictioDdl = new Dictionary<int, string>();
-            dictioDdl.Add(0, "");
+            dictioDdl.Add(0, "Toutes");
             dictioDdl.Add(1, "1 mois et +");
             dictioDdl.Add(2, "2 mois et +");
             dictioDdl.Add(3, "3 mois et +");
@@ -1640,7 +1649,7 @@ namespace PetitesPuces.Controllers
             Dictionary<long, List<PPArticlesEnPanier>> panierAncien = new Dictionary<long, List<PPArticlesEnPanier>>();
             List<GererPanierViewModel.GererPanier> lstPanierGerable = new List<GererPanierViewModel.GererPanier>();
             Dictionary<int, string> dictioDdl = new Dictionary<int, string>();
-            dictioDdl.Add(0, "");
+            dictioDdl.Add(0, "Toutes");
             dictioDdl.Add(1, "1 mois et +");
             dictioDdl.Add(2, "2 mois et +");
             dictioDdl.Add(3, "3 mois et +");

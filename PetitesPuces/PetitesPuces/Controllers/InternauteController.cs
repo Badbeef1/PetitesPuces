@@ -233,6 +233,7 @@ namespace PetitesPuces.Controllers
                             NoClient = max > 10000 ? max : 10001,
                             AdresseEmail = model.vendeur.AdresseEmail,
                             MotDePasse = model.vendeur.MotDePasse,
+                            Pays = "Canada",
                             DateCreation = DateTime.Now,
                             Statut = 1
                         });

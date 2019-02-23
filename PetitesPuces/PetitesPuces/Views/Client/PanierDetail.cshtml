@@ -125,7 +125,6 @@
                 $('#' + noPanier).val(min);
             }
             var quantite = $('#' + noPanier).val();
-            console.log('J\'update le cart');
             $.ajax({
                 url: "/Client/UpdatePanier",
                 data: { "noPanier": noPanier, "quantite": quantite},
@@ -133,9 +132,6 @@
                 error: error,
             });
         }
-
-        function btnViderPanier
-
        function success(model) {
           
           $("#panier").html(model);
@@ -145,6 +141,14 @@
         function error(error) {
             console.log('erreur : ' + error);
             location.href = '/Client/AccueilClient';
+        }
+        function ViderLePanier(noVendeur) {
+            $.ajax({
+                url: "/Client/VidePanier",
+                data: { "noVendeur": noVendeur },
+                success: success,
+                error: error,
+            });
         }
        
     </script>

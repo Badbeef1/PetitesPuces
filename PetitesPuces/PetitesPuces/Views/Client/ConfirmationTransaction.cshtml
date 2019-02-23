@@ -86,4 +86,10 @@
     function openTab(th) {
         window.open('/Vendeur/VoirPDFCommande?Comm=' + th.name, "_blank");
     }
+    $(document).ready(function () {
+        if (window.history && window.history.pushState) {
+            event.preventDefault();
+            }
+
+    })
 </script>
