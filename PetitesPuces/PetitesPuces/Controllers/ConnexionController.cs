@@ -75,7 +75,7 @@ namespace PetitesPuces.Controllers
                 ? "Votre compte n'est pas actif."
                 : "Le courriel ou le mot de passe n'est pas valide.";
 
-            model.client.MotDePasse = ""; //No red border
+            model.client.MotDePasse = "";//No red border
          }
          return View("Index", model);
       }
@@ -110,7 +110,6 @@ namespace PetitesPuces.Controllers
             //C'est un email qui a un compte associé
             NouveauMDP nMDP = new NouveauMDP();
             nMDP.courriel = validerMotPasse.courriel;
-
             return View("ChangerMDP",nMDP);
          }
          else
@@ -187,7 +186,6 @@ namespace PetitesPuces.Controllers
          {
             return View(nMDP);
          }
-         
       }
       public ActionResult Deconnexion()
       {
