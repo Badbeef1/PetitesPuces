@@ -77,7 +77,7 @@
             z-index: 1;
             top: 105%;
             left: 10px;
-            text-align: center;
+            text-align: left;
         }
 
         .tooltipB:hover .tooltiptext, .tooltipB:hover .tooltiptexterror {
@@ -136,11 +136,12 @@
                             </div>
                             <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.AdresseEmail)</span>
                             @Html.EditorFor(x => x.vendeur.AdresseEmail, new {
-                          htmlAttributes = new {
-                             @class = "form-control ",
-                             @placeholder = "Inscrivez votre courriel"
-                          }
-                         })
+                           htmlAttributes = new {
+                               @class = "form-control ",
+                               @placeholder = "Inscrivez votre courriel",
+                               @maxlength = 100
+                           }
+                       })
 
                         </div>
 
@@ -156,8 +157,10 @@
                            htmlAttributes = new
                            {
                                @class = "form-control",
-                               @placeholder = "Inscrivez votre courriel une autre fois"
-                           }})
+                               @placeholder = "Inscrivez votre courriel une autre fois",
+                               @maxlength = 100
+                           }
+                       })
 
                         </div>
 
@@ -173,8 +176,10 @@
                            {
                                @id = "tbPassword",
                                @class = "form-control",
-                               @placeholder = "Inscrivez votre mot de passe"
-                           }})
+                               @placeholder = "Inscrivez votre mot de passe",
+                               @maxlength = 50
+                           }
+                       })
                             <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.vendeur.MotDePasse)</span>
                             <span class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible">
@@ -196,8 +201,10 @@
                            {
                                @id = "tbPassword2",
                                @class = "form-control",
-                               @placeholder = "Inscrivez votre mot de passe une autre fois"
-                           }})
+                               @placeholder = "Inscrivez votre mot de passe une autre fois",
+                               @maxlength = 50
+                           }
+                       })
                             <span class="tooltiptexterror">@Html.ValidationMessageFor(x => x.confirmPassword)</span>
                             <span class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" style="border:1px solid #ced4da;border-left:none" id="btnPasswordVisible2">

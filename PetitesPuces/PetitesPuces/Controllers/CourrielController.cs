@@ -163,6 +163,7 @@ namespace PetitesPuces.Views
                 courrielVM.noMessageOuvert = msgObj.NoMsg;
                 courrielVM.messageCourriel = msgObj.DescMsg;
                 courrielVM.objetMessage = msgObj.objet;
+                courrielVM.nomFichierJoin = msgObj.FichierJoint?.ToString();
                 courrielVM = GetListePourRedactionMessage(utilisateur,message,courrielVM);
             }
             else
@@ -507,7 +508,7 @@ namespace PetitesPuces.Views
 
                 strExpediteur = unVendeur.NomAffaires + " <" + unVendeur.AdresseEmail + ">";
             }
-            else
+            else if ((expediteur = contextPP.PPGestionnaire.FirstOrDefault(g => g.NoGestionnaire == intNoExpediteur)) != null)
             {
                 strExpediteur = (expediteur as PPGestionnaire).AdresseEmail;
             }
@@ -668,7 +669,7 @@ namespace PetitesPuces.Views
             var noExpediteur = listeNoDestEtAdresse.Where(m => m.Item2.Equals(model.addresseExpediteur)).Select(s => s.Item1).FirstOrDefault();
             //Nb messages present
            var messageOuvert = contextPP.PPMessages.FirstOrDefault(x => x.NoMsg == model.noMessageOuvert);
-            var noMessage = messageOuvert?.NoMsg?? contextPP.PPMessages.Max(x =>x.NoMsg) + 1;
+            var noMessage = messageOuvert?.NoMsg ?? (contextPP.PPMessages.Any() ? contextPP.PPMessages.Max(x =>x.NoMsg) + 1 : 1);
          switch (submit)
          {
             case "Envoyer":
@@ -699,7 +700,7 @@ namespace PetitesPuces.Views
                   messageOuvert.objet = model.objetMessage;
                   messageOuvert.Lieu = 2;
                   messageOuvert.dateEnvoi = DateTime.Now;
-                  messageOuvert.FichierJoint = model.fichierJoint?.FileName;
+                  messageOuvert.FichierJoint = model.fichierJoint?.FileName ?? model.nomFichierJoin;
                   contextPP.SubmitChanges();
                }
 
@@ -750,7 +751,7 @@ namespace PetitesPuces.Views
                      NoMsg = noMessage,
                      NoExpediteur = int.Parse(noExpediteur.ToString()),
                      DescMsg = model.messageCourriel,
-                     FichierJoint = model.fichierJoint?.FileName,
+                     FichierJoint = model.fichierJoint?.FileName ?? model.nomFichierJoin,
                      Lieu = 4,
                      dateEnvoi = DateTime.Now,
                      objet = model.objetMessage
@@ -763,7 +764,7 @@ namespace PetitesPuces.Views
                   messageOuvert.objet = model.objetMessage;
                   messageOuvert.Lieu = 4;
                   messageOuvert.dateEnvoi = DateTime.Now;
-                  messageOuvert.FichierJoint = model.fichierJoint?.FileName;
+                  messageOuvert.FichierJoint = model.fichierJoint?.FileName ?? model.nomFichierJoin;
                   contextPP.SubmitChanges();
                }
                

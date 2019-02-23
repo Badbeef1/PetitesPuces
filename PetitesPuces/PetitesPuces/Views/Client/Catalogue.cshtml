@@ -60,12 +60,16 @@
 
                divDateDebut.classList.add(strVisibleDiv);
                divDateFin.classList.add(strVisibleDiv);
+
+               autoriseRechercheParDateParution();
            }
            else {
                elementZonetext.style = strVisibleInput;
 
                divDateDebut.classList.remove(strVisibleDiv);
                divDateFin.classList.remove(strVisibleDiv);
+
+               document.getElementById('btnRecherche').disabled = false;
            }
        }
 
@@ -125,26 +129,25 @@
            var rechercheSelection = document.getElementById('selTypeRech');
 
            if (rechercheSelection.value == 4) {
-               var Debut = document.getElementById('dtRechercheDebut').value;
-               var Fin = document.getElementById('dtRechercheFin').value;
+               var Debut = document.getElementById('dtRechercheDebut');
+               var Fin = document.getElementById('dtRechercheFin');
 
-               //var unBouton = document.getElementById('btnRecherche')
+               var unBouton = document.getElementById('btnRecherche');
 
-               var dtDebut = Date.parse(Debut) || 0;
-               var dtFin = Date.parse(Fin) || 0;
+               var dtDebut = Date.parse(Debut.value) || 0;
+               var dtFin = Date.parse(Fin.value) || 0;
 
-               if (dtDebut > 0 && dtFin > 0) {
+               //S'assure qu'il n'y est pas d'inversion entre la date de début et celle de fin
+               Fin.min = (dtDebut > 0) ? Debut.value : "";
+               Debut.max = (dtFin > 0) ? Fin.value : "";
 
-               }
-           }
-
-
-           
+               unBouton.disabled = !(dtDebut > 0 && dtFin > 0);
+           }  
        }
 
    </script>
 </head>
-<body class="sPersonnalisationCatalogue">
+<body class="sPersonnalisationCatalogue" onpageshow="rechercheChangement(document.getElementById('selTypeRech').value)">
 
     @Html.Partial("test")
 
@@ -207,14 +210,14 @@
                                     <input type="text" id="tbRecherche" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12">
                                     <div id="divRechercheDateDebut" style="display: none;">
                                         <label for="dtRechercheDebut" class="col-form-label">Date de début</label>
-                                        <input type="date" id="dtRechercheDebut" class="form-control border-primary" onchange="autoriseRechercheParDateParution();" />
+                                        <input type="date" id="dtRechercheDebut" class="form-control border-primary"  onchange="autoriseRechercheParDateParution();" />
                                     </div>
                                     <div id="divRechercheDateFin" style="display:none;">
                                         <label for="dtRechercheFin" class="col-form-label">Date de fin</label>
                                         <input type="date" id="dtRechercheFin" class="form-control border-primary" onchange="autoriseRechercheParDateParution();" />
                                     </div>
                                     <br />
-                                    <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3" onchange="rechercheChangement(this.value)">
+                                    <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3" onchange="rechercheChangement(this.value);">
                                         <option value="1" selected>Nom produit</option>
                                         <option value="2">Numéro produit</option>
                                         <option value="3">Description produit</option>

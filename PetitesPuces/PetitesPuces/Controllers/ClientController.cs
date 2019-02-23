@@ -919,21 +919,30 @@ namespace PetitesPuces.Controllers
                         //Valide que le mot de passe est bien l'ancien mdp.
                         if (clientOriginal.MotDePasse.Equals(strAncientMDP))
                         {
-                            //Valide que le nouveau mdp est identique a celui de confirmation
-                            if (strNouveauMDP.Equals(strConfirmationMDP))
+                            //Valide que le nouveau mdp est différent de l'ancien mdp
+                            if (!clientOriginal.MotDePasse.Equals(strNouveauMDP))
                             {
-                                clientDao.modifierProfilMDP(strNouveauMDP);
-                                ViewBag.uneErreur = "succes";
+                                //Valide que le nouveau mdp est identique a celui de confirmation
+                                if (strNouveauMDP.Equals(strConfirmationMDP))
+                                {
+                                    clientDao.modifierProfilMDP(strNouveauMDP);
+                                    ViewBag.uneErreur = "succes";
+                                }
+                                else
+                                {
+                                    ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                                    ViewBag.uneErreur = "echec";
+                                }
                             }
                             else
                             {
-                                ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                                ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
                                 ViewBag.uneErreur = "echec";
                             }
                         }
                         else
                         {
-                            ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                            ViewBag.MessageErreurNouveau = "L'ancien mot de passe n'est pas valide";
                             ViewBag.uneErreur = "echec";
                         }
                     }
@@ -1064,9 +1073,6 @@ namespace PetitesPuces.Controllers
                     case 4:
                         DateTime dtDebut;
                         DateTime dtFin;
-                        /*
-                        System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Avant)");
-                        lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
 
                         try
                         {
@@ -1074,10 +1080,7 @@ namespace PetitesPuces.Controllers
                             dtFin = Convert.ToDateTime(recherche2);
 
                             lstDesProduits = lstDesProduits
-                                .FindAll(pro => pro.DateCreation.Value >= dtDebut && pro.DateCreation.Value <= dtFin);
-                            /*
-                            System.Diagnostics.Debug.WriteLine("Liste des produits par dates (Après)");
-                            lstDesProduits.ForEach(pro => System.Diagnostics.Debug.WriteLine(pro.DateCreation.Value.ToString("dd-MM-yyyy")));*/
+                                .FindAll(pro => pro.DateCreation.Value.Date >= dtDebut && pro.DateCreation.Value.Date <= dtFin);
                         }
                         catch (FormatException fe)
                         {

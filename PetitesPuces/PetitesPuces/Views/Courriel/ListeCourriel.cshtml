@@ -294,7 +294,7 @@
 
         @foreach (var contenu in Model)
         {
-            string strMessDebut = new string(contenu.Message.DescMsg.Take(60 - contenu.Message.objet.Count()).ToArray());
+            string strMessDebut = new string(contenu.Message.DescMsg?.Take(60 - (contenu.Message.objet?.Count() ?? 0)).ToArray());
             string strDateEnvioFormat = contenu.Message.dateEnvoi.HasValue ? contenu.Message.dateEnvoi.Value.ToString("yyyy-MM-dd") : "";
 
             string strActionAffichage = "";
@@ -358,9 +358,10 @@
                     }
                 </div>
                 <div class="col-4" onclick="location.href='@strActionAffichage'">
-                    @Html.DisplayFor(x => contenu.Message.objet)
-                    @Html.DisplayFor(x => strMessDebut)
-                </div>
+                    <span class="">@Html.DisplayFor(x => contenu.Message.objet)</span>
+                    - 
+                    <span class="font-weight-light text-muted">@Html.DisplayFor(x => strMessDebut)</span>
+</div>
                 <div class="col-2" onclick="location.href='@strActionAffichage'">
                     @Html.DisplayFor(x => strDateEnvioFormat)
                 </div>

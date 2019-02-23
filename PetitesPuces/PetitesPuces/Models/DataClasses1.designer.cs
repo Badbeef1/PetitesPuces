@@ -831,8 +831,8 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_AdresseEmail", DbType = "VarChar(100)")]
-        [MaxLength(100, ErrorMessage = "Longueur maximale du champ : 100 caractères")]
         [Required]
+        [StringLength(100, ErrorMessage = "Longueur maximale du champ : 100 caractères")]
         public string AdresseEmail
         {
             get
@@ -853,7 +853,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_MotDePasse", DbType = "VarChar(50)")]
-        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         [DataType(DataType.Password)]
         public string MotDePasse
         {
@@ -875,8 +875,8 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
-        [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
+        [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]   
         public string Nom
         {
             get
@@ -897,8 +897,8 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Prenom", DbType = "VarChar(50)")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Prenom
         {
             get
@@ -919,7 +919,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Rue", DbType = "VarChar(50)")]
-        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Rue
         {
             get
@@ -940,7 +940,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ville", DbType = "VarChar(50)")]
-        [MaxLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Ville
         {
             get
@@ -982,7 +982,6 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_CodePostal", DbType = "VarChar(7)")]
         [RegularExpression("[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]", ErrorMessage = "Le format du champs doit être A9A 9A9.")]
-
         public string CodePostal
         {
             get
@@ -1024,7 +1023,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel1", DbType = "VarChar(20)")]
         [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Le champs doit contenir seulement des chiffres et respecter le format (999) 999-9999.")]
-        [MaxLength(20, ErrorMessage = "Longueur maximale du champ : 20 caractères")]
+        [StringLength(20, ErrorMessage = "Longueur maximale du champ : 20 caractères")]
         public string Tel1
         {
             get
@@ -1046,7 +1045,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Tel2", DbType = "VarChar(20)")]
         [RegularExpression(@"^\(\d{3}\) \d{3}-\d{4}$", ErrorMessage = "Le champs doit contenir seulement des chiffres et respecter le format (999) 999-9999.")]
-        [MaxLength(20, ErrorMessage = "Longueur maximale du champ : 20 caractères")]
+        [StringLength(20, ErrorMessage = "Longueur maximale du champ : 20 caractères")]
         public string Tel2
         {
             get
@@ -3663,6 +3662,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_NomAffaires", DbType = "VarChar(50)")]
         [Required(ErrorMessage = "Le champ nom d'affaires est requis.")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string NomAffaires
         {
             get
@@ -3684,6 +3684,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Nom", DbType = "VarChar(50)")]
         [Required(ErrorMessage = "Le champ nom est requis.")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
         public string Nom
         {
@@ -3706,7 +3707,9 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Prenom", DbType = "VarChar(50)")]
         [Required(ErrorMessage = "Le champ prénom est requis.")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
+        
         public string Prenom
         {
             get
@@ -3728,6 +3731,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Rue", DbType = "VarChar(50)")]
         [Required(ErrorMessage = "Le champ rue est requis.")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Rue
         {
             get
@@ -3749,6 +3753,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Ville", DbType = "VarChar(50)")]
         [Required(ErrorMessage = "Le champ ville est requis.")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string Ville
         {
             get
@@ -3813,6 +3818,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Pays", DbType = "VarChar(10)")]
         [Required(ErrorMessage = "Le champ pays est requis.")]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 10 caractères")]
         public string Pays
         {
             get
@@ -3879,6 +3885,7 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_AdresseEmail", DbType = "VarChar(100)")]
         [Required(ErrorMessage = "Le champ courriel est requis.")]
+        [StringLength(100, ErrorMessage = "Longueur maximale du champ : 100 caractères")]
         public string AdresseEmail
         {
             get
@@ -3901,6 +3908,7 @@ namespace PetitesPuces.Models
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_MotDePasse", DbType = "VarChar(50)")]
         [Required(ErrorMessage = "Le champ mot de passe est requis.")]
         [DataType(DataType.Password)]
+        [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         public string MotDePasse
         {
             get
@@ -4006,6 +4014,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Configuration", DbType = "VarChar(512)")]
+        [StringLength(512, ErrorMessage = "Longueur maximale du champ : 512 caractères")]
         public string Configuration
         {
             get
