@@ -22,7 +22,14 @@
         </div>
         <div class="offset-md-2"></div>
         <div class="col-md-5 col-xs-5">
-            <h3 class="d-flex align-items-start" style="float:right">Numéro d'autorisation: @Model.NoAutorisation</h3>
+            @if (Model.NoAutorisation == null || Model.NoAutorisation.Trim() == "")
+            {
+                <h3 class="d-flex align-items-start" style="float:right">Numéro d'autorisation: @Model.NoAutorisation</h3>
+            }
+            else
+            {
+                <h3 class="d-flex align-items-start" style="float:right">Numéro d'autorisation: DÉMO</h3>
+            }
             <h3 class="d-flex align-items-end" style="float:right">Date: @Model.DateCommande</h3>
         </div>
     </div>

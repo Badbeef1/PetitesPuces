@@ -65,7 +65,7 @@
                                             counter++;
                                             <tr>
                                                 <th scope="row" class="text-right">@counter</th>
-                                                <td class="text-left">@det.PPProduits.Nom</td>
+                                                <td class="text-left" onclick="javascript:window.location.href='/Client/ProduitDetaille?numero='+@det.NoProduit">@det.PPProduits.Nom</td>
                                                 <td class="text-right">@(decimal.Parse(det.PrixVente.ToString()).ToString("0.00")) $</td>
                                                 <td class="text-right">@det.Quantité</td>
                                                 <td class="text-right">@(decimal.Parse((det.PrixVente * det.Quantité).ToString()).ToString("0.00")) $</td>

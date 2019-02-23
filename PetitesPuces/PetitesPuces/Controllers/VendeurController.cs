@@ -755,21 +755,26 @@ namespace PetitesPuces.Controllers
          String contentType = "Application/pdf";
          byte[] arrByte = null;
 
-         if (comm.ToList().Count > 0)
-         {
-            string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
-            if (System.IO.File.Exists(path))
-            {
-               arrByte = System.IO.File.ReadAllBytes(path);
-               return File(arrByte, contentType);
-            }
-            else
+            if (comm.ToList().Count > 0)
             {
 
-               var html = RenderToString(PartialView("Facture", comm.ToList().First()));
-               PdfConverter pdf = new PdfConverter();
-               pdf.SavePdfFromHtmlStringToFile(html, path);
-               arrByte = System.IO.File.ReadAllBytes(path);
+                if (!Directory.Exists(Server.MapPath("~/PDFFacture")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/PDFFacture"));
+                }
+                string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
+                if (System.IO.File.Exists(path))
+                {
+                    arrByte = System.IO.File.ReadAllBytes(path);
+                    return File(arrByte, contentType);
+                }
+                else
+                {
+                    
+                    var html = RenderToString(PartialView("Facture", comm.ToList().First()));
+                    PdfConverter pdf = new PdfConverter();
+                    pdf.SavePdfFromHtmlStringToFile(html, path);
+                    arrByte = System.IO.File.ReadAllBytes(path);
 
                return File(arrByte, contentType);
             }
