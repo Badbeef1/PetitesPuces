@@ -242,7 +242,7 @@
                                     strClasse += " focus";
                                 }
                             }
-                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse">
+                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse mt-2">
                                 Date de parution
                                 @if ("!" + strTriDate == Model.strTri)
                                 {
@@ -257,7 +257,7 @@
                         <div class="ml-auto">
                            <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
                            @Html.DropDownListFor(x => x.pageDimension, (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary", @onchange = "envoieNbProduit(this.value)" })
-                           @Html.ActionLink("Ajouter un produit", "AjouterProduit", "Vendeur", new { }, new { @class = "btn btn-success" })
+                           @Html.ActionLink("Ajouter un produit", "AjouterProduit", "Vendeur", new { }, new { @class = "btn btn-success mt-2" })
                         </div>
                        
                     </div>

@@ -233,7 +233,6 @@ namespace PetitesPuces.Controllers
                 else
                 {
                      ViewBag.PrixVenteErreur = "Le prix de vente et la date doivent être rempli si il y a un rabais.";
-               
                 }
 
             }
@@ -273,7 +272,7 @@ namespace PetitesPuces.Controllers
                            ).ToList();
 
             PPProduits produitAModifier = produit.First();
-            produitAModifier.Disponibilité = true;
+            //produitAModifier.Disponibilité = true;
             var categories = (from cat in db.GetTable<PPCategories>()
                               select cat
                               ).ToList();
