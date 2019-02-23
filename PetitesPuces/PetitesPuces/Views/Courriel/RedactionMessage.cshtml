@@ -100,12 +100,13 @@
             <label for="objetMessage" class="input-group-text"><b>Sujet : </b></label>
          </div>
          @Html.EditorFor(m => m.objetMessage , new {
-             htmlAttributes = new
-             {
-                 @class = "form-control",
-                 @placeholder = "Ajouter un sujet"
-             }
-         })
+        htmlAttributes = new
+        {
+            @class = "form-control",
+            @placeholder = "Ajouter un sujet",
+            @maxlength = 50
+        }
+    })
       </div>
       <div class="p-2">
          <div class="mb-3 form-row">
@@ -116,17 +117,18 @@
                <div class="custom-file" id="customFile" lang="fr">
                   @Html.TextBoxFor(m => m.fichierJoint, new { @type = "file", @id = "fichier", @class = "custom-file-input" })
                   <label class="custom-file-label fileinput-filename" for="fichier">
-                     Choisir un fichier
+                     @(Model.nomFichierJoin == null ? "Choisir un fichier" : Model.nomFichierJoin)
+                      @Html.HiddenFor(x => x.nomFichierJoin)
                   </label>
                </div>
             </div>
          </div>
          @Html.TextAreaFor(m => m.messageCourriel, new
-            {
-                 @class= "form-control",
-                 @rows = 10,
-                 @placeholder = "Entrer votre message ici ... "
-            })
+        {
+            @class= "form-control",
+            @rows = 10,
+            @placeholder = "Entrer votre message ici ... "
+        })
       </div>
       <div class="p-2 form-row">
          <div class="col-3">
