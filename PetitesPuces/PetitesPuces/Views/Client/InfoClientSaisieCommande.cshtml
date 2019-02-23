@@ -1,7 +1,5 @@
 ﻿@using PetitesPuces.Models
 @model PPClients
-@using (Html.BeginForm())
-{
     <div class="card shopping-cart" id="infoPerso" style="margin-top:0px;">
         <div class="card-header" id="heading_infoPerso">
 
@@ -28,13 +26,11 @@
 
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.EditorFor(mod => Model.Prenom, new { htmlAttributes = new { @class = "form-control", @Value = Model.Prenom, @onchange = "infoClient('Prenom='+this.value)" } })
-                        @Html.ValidationMessageFor(mod => Model.Prenom)
+                        <input type="text" id="Prenom" class="form-control" value="@Model.Prenom" maxlength="50" onfocusout="infoClient('Prenom='+this.value+'='+this.id)"/>
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-4">
-                        @Html.EditorFor(mod => Model.Nom, new { htmlAttributes = new { @class = "form-control", @Value = Model.Nom, @onchange = "infoClient('Nom='+this.value)" } })
-                        @Html.ValidationMessageFor(mod => Model.Nom)
+                        <input type="text" id="Nom" class="form-control" value="@Model.Nom" maxlength="50" onfocusout="infoClient('Nom='+this.value+'='+this.id)" />
                     </div>
                 </div>
 
@@ -48,13 +44,11 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.EditorFor(mod => Model.AdresseEmail, new { htmlAttributes =  new { @class = "form-control", @disabled = "disabled", @Value = Model.AdresseEmail, @onchange = "infoClient('Email='+this.value)" }})
-                        @Html.ValidationMessageFor(mod => Model.AdresseEmail)
+                        <input type="text" class="form-control" value="@Model.AdresseEmail" disabled />
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-4">
-                        @Html.EditorFor(mod => Model.Rue, new { htmlAttributes = new { @class = "form-control", @Value = Model.Rue, @onchange = "infoClient('Rue='+this.value)" } })
-                        @Html.ValidationMessageFor(mod => Model.Rue)
+                        <input type="text" id="Rue" class="form-control" maxlength="50" value="@Model.Rue" onfocusout="infoClient('Rue='+this.value+'='+this.id)" />
                     </div>
                 </div>
 
@@ -68,11 +62,10 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.EditorFor(mod => Model.Ville, new { htmlAttributes = new { @class = "form-control", @Value = Model.Ville, @onchange = "infoClient('Ville='+this.value)" } })
-                        @Html.ValidationMessageFor(mod => Model.Ville)
+                        <input type="text" id="Ville" class="form-control" maxlength="50" value="@Model.Ville" onfocusout="infoClient('Ville='+this.value+'='+this.id)"/>
                     </div>
                         <div class="offset-md-1"></div>
-                            @Html.DropDownListFor(x => x.Province, (SelectList)ViewBag.ListeProvinces, new { @class = "form-control col-md-4", @onchange = "infoClient('Province='+this.value)" })
+                            @Html.DropDownListFor(x => x.Province, (SelectList)ViewBag.ListeProvinces, new { @class = "form-control col-md-4", @onfocusout = "infoClient('Province='+this.value+'='+this.id)" })
                     </div>
 
                 <div class="row">
@@ -86,13 +79,11 @@
                     <div class="offset-md-1"></div>
 
                     <div class="col-md-5">
-                        @Html.EditorFor(mod => Model.Pays, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @Value = "Canada" } })
-                        @Html.ValidationMessageFor(mod => Model.Pays)
+                        <input type="text" class="form-control" value="Canada" disabled/>
                     </div>
                     <div class="offset-md-1"></div>
                     <div class="col-md-4">
-                        @Html.EditorFor(mod => Model.CodePostal, new { htmlAttributes = new { @class = "form-control", @Value=Model.CodePostal, @onchange = "infoClient('CodePostal='+this.value)" } })
-                        @Html.ValidationMessageFor(mod => Model.CodePostal)
+                        <input type="text" id="CodePostal" class="form-control" value="@Model.CodePostal" id="CodePostal" onfocusout="infoClient('CodePostal='+this.value+'='+this.id)"/>
                     </div>
                 </div>
                 <div class="row">
@@ -105,13 +96,11 @@
                 <div class="row">
                     <div class="offset-md-1"></div>
                     <div class="col-md-5">
-                        @Html.EditorFor(mod => Model.Tel1, new { htmlAttributes = new { @class = "form-control", @Value = Model.Tel1, @onchange = "infoClient('Tel1='+this.value)" } })
-                        @Html.ValidationMessageFor(mod => Model.Tel1)
-                    </div>
+                        <input type="text" class="form-control" value="@Model.Tel1" id="Tel1" onfocusout="infoClient('Tel1='+this.value+'='+this.id)" />
+                        </div>
                         <div class="offset-md-1"></div>
                         <div class="col-md-4">
-                            @Html.EditorFor(mod => Model.Tel2, new { htmlAttributes = new { @class = "form-control", @Value = Model.Tel2, @onchange = "infoClient('Tel2='+this.value)" } })
-                            @Html.ValidationMessageFor(mod => Model.Tel2)
+                            <input type="text" class="form-control" value="@Model.Tel2" id="Tel2" onfocusout="infoClient('Tel2='+this.value+'='+this.id)" />
                         </div>
                     </div>
             </div>
@@ -119,9 +108,9 @@
 
             <div class="card-footer">
                 <div class="row align-items-center">
-                    <div class="offset-md-4"></div>
-                    <span class="col-md-4" id="erreur"></span>
-                    <div class="offset-md-4"></div>
+                    <div class="offset-md-3"></div>
+                    <span class="col-md-6 text-center" id="erreur"></span>
+                    <div class="offset-md-3"></div>
                 </div>
                 <div class="row align-items-center">
                     <div class="offset-md-4"></div>
@@ -131,4 +120,4 @@
             </div>
         </div>
     </div>
-}
+

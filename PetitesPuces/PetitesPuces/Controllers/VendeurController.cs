@@ -1499,7 +1499,7 @@ namespace PetitesPuces.Controllers
             }
 
             Dictionary<int,string> dictioDdl = new Dictionary<int, string>();
-            dictioDdl.Add(0, "");
+            dictioDdl.Add(0, "Toutes");
             dictioDdl.Add(1, "1 mois et +");
             dictioDdl.Add(2, "2 mois et +");
             dictioDdl.Add(3, "3 mois et +");
@@ -1557,7 +1557,7 @@ namespace PetitesPuces.Controllers
                 }
             }
             Dictionary<int, string> dictioDdl = new Dictionary<int, string>();
-            dictioDdl.Add(0, "");
+            dictioDdl.Add(0, "Toutes");
             dictioDdl.Add(1, "1 mois et +");
             dictioDdl.Add(2, "2 mois et +");
             dictioDdl.Add(3, "3 mois et +");
@@ -1612,7 +1612,7 @@ namespace PetitesPuces.Controllers
             Dictionary<long, List<PPArticlesEnPanier>> panierAncien = new Dictionary<long, List<PPArticlesEnPanier>>();
             List<GererPanierViewModel.GererPanier> lstPanierGerable = new List<GererPanierViewModel.GererPanier>();
             Dictionary<int, string> dictioDdl = new Dictionary<int, string>();
-            dictioDdl.Add(0, "");
+            dictioDdl.Add(0, "Toutes");
             dictioDdl.Add(1, "1 mois et +");
             dictioDdl.Add(2, "2 mois et +");
             dictioDdl.Add(3, "3 mois et +");
