@@ -3709,7 +3709,6 @@ namespace PetitesPuces.Models
         [Required(ErrorMessage = "Le champ prénom est requis.")]
         [StringLength(50, ErrorMessage = "Longueur maximale du champ : 50 caractères")]
         [RegularExpression(@"^[\p{L}]((['\- ][\p{L}])|[\p{L}])+$", ErrorMessage = "Le champs doit contenir seulement des lettres de l'alphabet latin et les caractères <-> et <'> doivent être insérés entre des lettres.")]
-        
         public string Prenom
         {
             get
@@ -3928,9 +3927,10 @@ namespace PetitesPuces.Models
             }
         }
 
-        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_PoidsMaxLivraison", DbType = "Int")]
         [Required(ErrorMessage = "Le champ poids max livraison est requis.")]
-        [Range(0, 999999, ErrorMessage = "La valeur du champs doit être entre 0.1 à 999999.9")]
+        [RegularExpression(@"^\d+?$", ErrorMessage = "Le prix doit être un entier.")]
+        [Range(1, 999999, ErrorMessage = "La valeur du champs doit être entre 1 à 999999")]
+        [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_PoidsMaxLivraison", DbType = "Int")]
         public System.Nullable<int> PoidsMaxLivraison
         {
             get
@@ -3952,7 +3952,8 @@ namespace PetitesPuces.Models
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_LivraisonGratuite", DbType = "SmallMoney")]
         [Required(ErrorMessage = "Le champ livraison gratuite est requis.")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
+        [RegularExpression(@"^\d+.?\d{0,2}$", ErrorMessage = "Le prix doit être un entier ou un nombre décimal.")]
+        [Range(0, (double) decimal.MaxValue, ErrorMessage = "Le prix doit avoir 18 chiffres maximum (cent incluce)")]
         public System.Nullable<decimal> LivraisonGratuite
         {
             get
@@ -3994,6 +3995,7 @@ namespace PetitesPuces.Models
         }
 
         [global::System.Data.Linq.Mapping.ColumnAttribute(Storage = "_Pourcentage", DbType = "Decimal(4,2)")]
+        [Range(0, 60, ErrorMessage = "La plage du poucentage doit être entre 0 et 60")]
         public System.Nullable<decimal> Pourcentage
         {
             get
