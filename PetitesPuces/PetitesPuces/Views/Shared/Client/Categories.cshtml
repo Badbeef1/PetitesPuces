@@ -28,7 +28,7 @@
    {
       if (entrepriseCat.lstVendeurs.Count > 0)
       {
-         <div class="card">
+         <div class="card mt-2">
             <div class="card-header" id="headingCat_@entrepriseCat.categorie.NoCategorie">
                <div class="float-left">
                   <img src="~/Content/images/categorie.jpg" alt="panier" class="rounded-circle" height="50px" width="50px">
@@ -46,50 +46,39 @@
             <div id="collapseCat_@entrepriseCat.categorie.NoCategorie" class="collapse" aria-labelledby="headingCat_@entrepriseCat.categorie.NoCategorie" data-parent="#accordion">
 
                <div class="card-body">
-                  <div class="card">
-                     <div class="card-header">
-                        <h4>@entrepriseCat.categorie.Description</h4>
-                     </div>
-                     <div class="card-body">
-                        <div class="row">
-                           @{
-                              int compteurj = 0;
-                            }
-                           @foreach (var entreprises in entrepriseCat.lstVendeurs)
-                           {
-                              <div class="col-sm-3">
-                                 <div class="card">
-                                    <div class="card-header">
-                                       <h5>@entreprises.NomAffaires (@dicNombreProduits.ElementAt(compteur).Value.ElementAt(compteurj))</h5>
-                                    </div>
-                                    <div class="card-body">
-                                       <div class="float-center">
-                                          <img src="~/Content/images/icon.png" alt="entreprise" width="75px" height="75px" class="rounded-circle">
-                                       </div>
-                                    </div>
-                                    <div class="card-footer">
-                                       @{
-                                          if ((PPClients)Session["clientObj"] != null)
-                                          {
-                                             @Html.ActionLink("Voir l'entreprise", "Catalogue", "Client", new { vendeur = entreprises.NomAffaires, categorie = entrepriseCat.categorie.Description }, new { @class = "btn btn-success" })
-                                          }
-                                          else
-                                          {
-                                             @Html.ActionLink("Voir l'entreprise", "CatalogueNouveaute", "Internaute", new { @class = "btn btn-success" })
-                                          }
-                                       }
-                                       <!--<button id="btn_@entreprises.NoVendeur" class="btn btn-success">Voir l'entreprise</button>-->
-                                    </div>
+                  <div class="row">
+                     @{
+                        int compteurj = 0;
+                     }
+                     @foreach (var entreprises in entrepriseCat.lstVendeurs)
+                     {
+                        <div class="col-sm-3">
+                           <div class="card">
+                              <div class="card-header">
+                                 <h5>@entreprises.NomAffaires (@dicNombreProduits.ElementAt(compteur).Value.ElementAt(compteurj))</h5>
+                              </div>
+                              <div class="card-body">
+                                 <div class="float-center">
+                                    <img src="~/Content/images/icon.png" alt="entreprise" width="75px" height="75px" class="rounded-circle">
                                  </div>
                               </div>
-                              compteurj++;
-                           }
+                              <div class="card-footer">
+                                 @{
+                                    if ((PPClients)Session["clientObj"] != null)
+                                    {
+                                       @Html.ActionLink("Voir l'entreprise", "Catalogue", "Client", new { vendeur = entreprises.NomAffaires, categorie = entrepriseCat.categorie.Description }, new { @class = "btn btn-success" })
+                                    }
+                                    else
+                                    {
+                                       @Html.ActionLink("Voir l'entreprise", "CatalogueNouveaute", "Internaute", new { @class = "btn btn-success" })
+                                    }
+                                 }
+                                 <!--<button id="btn_@entreprises.NoVendeur" class="btn btn-success">Voir l'entreprise</button>-->
+                              </div>
+                           </div>
                         </div>
-                     </div>
-                     <div class="card-footer">
-                        @*Html.ActionLink("Détail du panier", "PanierDetail", "Client", new { id = articlesVendeur.Key.NoVendeur }, new { @class = "btn btn-primary" })*@
-                        <!-- <a href="/Client/PanierDetail" class="btn btn-primary">Détail du panier</a>-->
-                     </div>
+                        compteurj++;
+                     }
                   </div>
                </div>
             </div>
