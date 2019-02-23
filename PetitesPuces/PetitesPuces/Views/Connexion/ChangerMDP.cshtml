@@ -148,7 +148,9 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script type="text/javascript">
-        $('#modFauxMessage').modal('show');
+        if (document.location.origin != document.referrer) {
+            $('#modFauxMessage').modal('show');
+        }
     </script>
 </body>
 </html>
