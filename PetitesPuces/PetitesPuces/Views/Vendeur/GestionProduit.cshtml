@@ -35,6 +35,11 @@
 
             reader.readAsDataURL(input.files[0]);
          }
+
+      }
+
+      function isFloat(n) {
+         return Number(n) === n && n % 1 !== 0;
       }
 
 
@@ -96,7 +101,7 @@
                   <div class="col-2">
                      <label class="col-form-label">Disponibilité</label><br />
                      <!--<input type="checkbox" class="form-check-label" />-->
-                     @Html.CheckBox("produit.Disponibilité", Model.produit.Disponibilité.Value, new { @class = "form-check-label" } )
+                     @Html.CheckBox("produit.Disponibilité", Model.produit.Disponibilité.Value, new { @class = "form-check-label" })
                   </div>
                </div>
 
@@ -105,7 +110,7 @@
                      <label class="col-form-label">Prix demandé</label>
                      <div class="input-group">
                         <!--<input type="text" class="form-control" id="tbPrixDemande" placeholder="00.00">-->
-                        @Html.EditorFor(model => model.produit.PrixDemande, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @step = "0.01" } })
+                        @Html.EditorFor(model => model.produit.PrixDemande, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @min ="0.00" ,@step = "0.01", @onKeyUp= "if (Number.isNaN(Number(this.value))) { this.value = '';  } else if (Number(this.value) < 1) { this.value = '';}" } })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               $
@@ -119,7 +124,7 @@
                      <div class="input-group">
                         <!--<input type="text" class="form-control" id="tbPrixVente" placeholder="00.00">-->
                         @*Html.EditorFor(model => model.PrixVente, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "00.00", @min="0", @step="0.01"} })*@
-                        @Html.TextBoxFor(model => model.produit.PrixVente, new { @class = "form-control", @type = "number", @min = "0", @step = "0.01" })
+                        @Html.TextBoxFor(model => model.produit.PrixVente, new { @class = "form-control", @type = "number", @min = "0", @step = "0.01", @onKeyUp = "if (Number.isNaN(Number(this.value))) { this.value = '';  } else if (Number(this.value) < 1) { this.value = '';}" })
                         <div class="input-group-append">
                            <span class="input-group-text">
                               $
