@@ -218,100 +218,110 @@ namespace PetitesPuces.Controllers
 
       public ActionResult AccepterVendeur(int id, decimal redevance)
       {
-         Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-         db.Connection.Open();
-         //Aller changer le status du vendeur
-         var vendeurAccepter = (from vendeur in db.GetTable<PPVendeurs>()
-                                where vendeur.NoVendeur.Equals(id)
-                                select vendeur
-                                ).ToList();
-
-         //changer le status du vendeur.
-         vendeurAccepter.First().Statut = 1;
-         vendeurAccepter.First().Pourcentage = redevance;
-         // Submit the changes to the database.
-         try
+         if(((redevance > 0) && (redevance < 60)))
          {
-            db.SubmitChanges();
-         }
-         catch (Exception e)
-         {
-            Console.WriteLine(e);
-         }
-         //Aller chercher toutes les demandes de vendeurs
-         var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
-                         where vendeur.Statut.Equals(0)
-                         select vendeur
-                         ).ToList();
+            ViewBag.TRErreur = "";
+            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
+            db.Connection.Open();
+            //Aller changer le status du vendeur
+            var vendeurAccepter = (from vendeur in db.GetTable<PPVendeurs>()
+                                   where vendeur.NoVendeur.Equals(id)
+                                   select vendeur
+                                   ).ToList();
 
-         Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
-         //Aller chercher la liste des vendeurs admis dans la BD
-         var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
-                              where vendeur.Statut.Equals(1)
-                              select vendeur
+            //changer le status du vendeur.
+            vendeurAccepter.First().Statut = 1;
+            vendeurAccepter.First().Pourcentage = redevance;
+            // Submit the changes to the database.
+            try
+            {
+               db.SubmitChanges();
+            }
+            catch (Exception e)
+            {
+               Console.WriteLine(e);
+            }
+            //Aller chercher toutes les demandes de vendeurs
+            var vendeurs = (from vendeur in db.GetTable<PPVendeurs>()
+                            where vendeur.Statut.Equals(0)
+                            select vendeur
+                            ).ToList();
+
+            Dictionary<PPVendeurs, bool> dicVendeurs = new Dictionary<PPVendeurs, bool>();
+            //Aller chercher la liste des vendeurs admis dans la BD
+            var vendeursAdmis = (from vendeur in db.GetTable<PPVendeurs>()
+                                 where vendeur.Statut.Equals(1)
+                                 select vendeur
+                                 ).ToList();
+            foreach (var vendeurAdmis in vendeursAdmis)
+            {
+               var nbCommandes = (from commande in db.GetTable<PPCommandes>()
+                                  where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
+                                  select commande
+                                  ).ToList();
+
+               //Vérifier si le vendeur a déjà effectué des commandes.
+               if (nbCommandes.Count() > 0)
+               {
+                  dicVendeurs.Add(vendeurAdmis, true);
+               }
+               else
+               {
+                  dicVendeurs.Add(vendeurAdmis, false);
+               }
+            }
+
+            Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
+            var categories = (from categorie in db.GetTable<PPCategories>()
+                              select categorie
                               ).ToList();
-         foreach (var vendeurAdmis in vendeursAdmis)
-         {
-            var nbCommandes = (from commande in db.GetTable<PPCommandes>()
-                               where commande.NoVendeur.Equals(vendeurAdmis.NoVendeur)
-                               select commande
-                               ).ToList();
 
-            //Vérifier si le vendeur a déjà effectué des commandes.
-            if (nbCommandes.Count() > 0)
+            foreach (PPCategories cat in categories)
             {
-               dicVendeurs.Add(vendeurAdmis, true);
+               var query = (from produit in db.GetTable<PPProduits>()
+                            where produit.NoCategorie.Equals(cat.NoCategorie)
+                            select produit
+                            ).ToList();
+               if (query.Count() > 0)
+               {
+                  dicCategories.Add(cat, false);
+               }
+               else
+               {
+                  dicCategories.Add(cat, true);
+               }
             }
-            else
+            //Aller chercher la liste des redevances dues trié par date.
+            Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
+            var listeRedevances = (from red in db.GetTable<PPHistoriquePaiements>()
+                                   where red.Redevance > 0
+                                   orderby red.DateVente ascending
+                                   select red
+                                   ).ToList();
+
+            foreach (var paiement in listeRedevances)
             {
-               dicVendeurs.Add(vendeurAdmis, false);
+               var vendeur = (from v in db.GetTable<PPVendeurs>()
+                              where v.NoVendeur.Equals(paiement.NoVendeur)
+                              select v
+                              ).ToList();
+
+               dicRedevances.Add(paiement, vendeur.First());
             }
+
+            PPCategories c = new PPCategories();
+            AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
+            accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
+            accueilGestionnaireViewModel.lstRedevances = dicRedevances;
+            db.Connection.Close();
+            return View("AccueilGestionnaire", accueilGestionnaireViewModel);
+         }
+         else
+         {
+            ViewBag.TRErreur = "Le taux de redevance doit être 0 et 60%.";
+            return new HttpStatusCodeResult(HttpStatusCode.Unauthorized);
          }
 
-         Dictionary<PPCategories, bool> dicCategories = new Dictionary<PPCategories, bool>();
-         var categories = (from categorie in db.GetTable<PPCategories>()
-                           select categorie
-                           ).ToList();
-
-         foreach (PPCategories cat in categories)
-         {
-            var query = (from produit in db.GetTable<PPProduits>()
-                         where produit.NoCategorie.Equals(cat.NoCategorie)
-                         select produit
-                         ).ToList();
-            if (query.Count() > 0)
-            {
-               dicCategories.Add(cat, false);
-            }
-            else
-            {
-               dicCategories.Add(cat, true);
-            }
-         }
-         //Aller chercher la liste des redevances dues trié par date.
-         Dictionary<PPHistoriquePaiements, PPVendeurs> dicRedevances = new Dictionary<PPHistoriquePaiements, PPVendeurs>();
-         var listeRedevances = (from red in db.GetTable<PPHistoriquePaiements>()
-                                where red.Redevance > 0
-                                orderby red.DateVente ascending
-                                select red
-                                ).ToList();
-
-         foreach (var paiement in listeRedevances)
-         {
-            var vendeur = (from v in db.GetTable<PPVendeurs>()
-                           where v.NoVendeur.Equals(paiement.NoVendeur)
-                           select v
-                           ).ToList();
-
-            dicRedevances.Add(paiement, vendeur.First());
-         }
-
-         PPCategories c = new PPCategories();
-         AccueilGestionnaireViewModel accueilGestionnaireViewModel = new AccueilGestionnaireViewModel(vendeurs, dicCategories, c);
-         accueilGestionnaireViewModel.lstVendeurs = dicVendeurs;
-         accueilGestionnaireViewModel.lstRedevances = dicRedevances;
-         db.Connection.Close();
-         return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
 
       public ActionResult CancellerAjout(int id)
@@ -832,7 +842,6 @@ namespace PetitesPuces.Controllers
          db.Connection.Close();
          return View("AccueilGestionnaire", accueilGestionnaireViewModel);
       }
-
       public ActionResult DetailVendeur(string id)
       {
          int value;

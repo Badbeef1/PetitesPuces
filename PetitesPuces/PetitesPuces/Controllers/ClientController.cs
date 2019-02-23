@@ -1418,7 +1418,6 @@ namespace PetitesPuces.Controllers
          {
             return Redirect("/Client/Catalogue");
          }
-            
         }
 
         //Sauvegarder son commentaire

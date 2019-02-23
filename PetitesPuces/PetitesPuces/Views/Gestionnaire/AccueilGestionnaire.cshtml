@@ -117,18 +117,35 @@
          }
       }
 
+      function verifierRedevance(redevance) {
+         if (((redevance > 0) && (redevance <= 60)) || (redevance == null)) {
+            return true;
+         }
+         else {
+            return false;
+         }
+      }
+
       function modifierRedevance(id) {
          console.log('J\'essaye de modifier');
          var redevance = $('#redevance_' + id).val();
          redevance = redevance.replace(',', '.');
          redevance = parseFloat(redevance);
 
-         $.ajax({
-            url: "/Gestionnaire/ModifierRedevance",
-            data: { "id": id, "redevance": redevance },
-            success: success,
-            error: error,
-         });
+         if (verifierRedevance(redevance)) {
+            console.log('ne devrait pas mettre une erreur');
+            $.ajax({
+               url: "/Gestionnaire/ModifierRedevance",
+               data: { "id": id, "redevance": redevance },
+               success: success,
+               error: error,
+            });
+         }
+         else {
+            console.log('devrait mettre une erreur');
+            $("#erreur_redevance_" + id).text("Le taux de redevance doit être entre 0 et 60%.");
+         }
+
       }
 
       //Cette fonction est appeler lorsqu'une redevance a été payé 
@@ -333,6 +350,8 @@
                               {
                                  <input id="redevance_@vendeur.Key.NoVendeur" type="number" min="0" max="100" step="0.25" value="@poucentage">
                               }
+                              <span id="erreur_redevance_@vendeur.Key.NoVendeur" class="field-validation-error"></span>
+                              
                            }
 
                         </td>
@@ -346,6 +365,7 @@
                               {
                                  <button id="btn_modifier" class="btn btn-success" onclick="modifierRedevance(@vendeur.Key.NoVendeur)">Modifier la redevance</button>
                               }
+
                            }
                         </td>
                      </tr>
