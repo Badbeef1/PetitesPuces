@@ -264,68 +264,85 @@ namespace PetitesPuces.Controllers
         //Panier Détaillé du client
         public ActionResult PanierDetail(string id)
         {
-            List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
-            SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel();
-            long noClient =((PPClients)Session["clientObj"]).NoClient;
+            int value;
+            if(int.TryParse(id, out value))
+            {
+               List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
+               SaisieCommandeViewModel sViewModel = new SaisieCommandeViewModel();
+               long noClient = ((PPClients)Session["clientObj"]).NoClient;
 
-            //requête pour aller chercher les produits à l'aide d'un vendeur
-            List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                                              where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id) && 0 <= panier.PPProduits.NombreItems
-                                              select panier).ToList(); 
-            foreach(PPArticlesEnPanier ppItem in items)
-            {
-                if (ppItem.PPProduits.NombreItems <= 0)
-                {
-                    contextPP.GetTable<PPArticlesEnPanier>().DeleteOnSubmit(ppItem);
-                }
-                else if(ppItem.NbItems > ppItem.PPProduits.NombreItems)
-                    {
+               //requête pour aller chercher les produits à l'aide d'un vendeur
+               List<PPArticlesEnPanier> items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                                 where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id) && 0 <= panier.PPProduits.NombreItems
+                                                 select panier).ToList();
+               if(items.Count() > 0)
+               {
+                  foreach (PPArticlesEnPanier ppItem in items)
+                  {
+                     if (ppItem.PPProduits.NombreItems <= 0)
+                     {
+                        contextPP.GetTable<PPArticlesEnPanier>().DeleteOnSubmit(ppItem);
+                     }
+                     else if (ppItem.NbItems > ppItem.PPProduits.NombreItems)
+                     {
                         contextPP.GetTable<PPArticlesEnPanier>().Where(p => p.NoPanier == ppItem.NoPanier).First().NbItems = ppItem.PPProduits.NombreItems;
-                    }
-            }
-            contextPP.SubmitChanges();
-            items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                     where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id)
-                     select panier).ToList();
-            if (items != null && items.Count> 0)
-            {
-                sViewModel = new SaisieCommandeViewModel()
-                {
-                    lstArticlePanier = items,
-                    vendeur = items[0].PPVendeurs,
-                    client = items[0].PPClients
-                };
-                return View(sViewModel);
+                     }
+                  }
+                  contextPP.SubmitChanges();
+                  items = (from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                           where panier.NoClient.Equals(noClient) && panier.NoVendeur.Equals(id)
+                           select panier).ToList();
+                  if (items != null && items.Count > 0)
+                  {
+                     sViewModel = new SaisieCommandeViewModel()
+                     {
+                        lstArticlePanier = items,
+                        vendeur = items[0].PPVendeurs,
+                        client = items[0].PPClients
+                     };
+                     return View(sViewModel);
+                  }
+                  else
+                  {
+                     //Requête qui va permettre d'aller chercher les paniers du client
+                     var paniers = from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
+                                   where panier.NoClient.Equals(noClient)
+                                   group panier by panier.PPVendeurs;
+                     var toutesCategories = (from cat in contextPP.GetTable<Models.PPCategories>()
+                                             select cat
+                                          );
+                     foreach (var cat in toutesCategories)
+                     {
+                        List<PPVendeurs> lstVendeurs = new List<PPVendeurs>();
+                        var query = (from prod in contextPP.GetTable<Models.PPProduits>()
+                                     where prod.NoCategorie.Equals(cat.NoCategorie)
+                                     select prod
+                                     );
+                        foreach (var obj in query)
+                        {
+                           if (!lstVendeurs.Contains(obj.PPVendeurs))
+                           {
+                              lstVendeurs.Add(obj.PPVendeurs);
+                           }
+                        }
+                        lstEntreCate.Add(new Models.EntrepriseCategorie(cat, lstVendeurs));
+                     }
+
+                     AccueilClientViewModel item = new AccueilClientViewModel(lstEntreCate, paniers);
+                     return View("AccueilClient", item);
+               }
+               
             }
             else
             {
-                //Requête qui va permettre d'aller chercher les paniers du client
-                var paniers = from panier in contextPP.GetTable<Models.PPArticlesEnPanier>()
-                              where panier.NoClient.Equals(noClient)
-                              group panier by panier.PPVendeurs;
-                var toutesCategories = (from cat in contextPP.GetTable<Models.PPCategories>()
-                                        select cat
-                                     );
-                foreach (var cat in toutesCategories)
-                {
-                    List<PPVendeurs> lstVendeurs = new List<PPVendeurs>();
-                    var query = (from prod in contextPP.GetTable<Models.PPProduits>()
-                                 where prod.NoCategorie.Equals(cat.NoCategorie)
-                                 select prod
-                                 );
-                    foreach (var obj in query)
-                    {
-                        if (!lstVendeurs.Contains(obj.PPVendeurs))
-                        {
-                            lstVendeurs.Add(obj.PPVendeurs);
-                        }
-                    }
-                    lstEntreCate.Add(new Models.EntrepriseCategorie(cat, lstVendeurs));
-                }
-
-                AccueilClientViewModel item = new AccueilClientViewModel(lstEntreCate, paniers);
-                return View("AccueilClient", item);
+               return Redirect("/Client/AccueilClient");
             }
+         }
+         else
+         {
+            return Redirect("/Client/AccueilClient");
+         }
+            
         }
 
         /// <summary>
@@ -1418,7 +1435,6 @@ namespace PetitesPuces.Controllers
          {
             return Redirect("/Client/Catalogue");
          }
-            
         }
 
         //Sauvegarder son commentaire

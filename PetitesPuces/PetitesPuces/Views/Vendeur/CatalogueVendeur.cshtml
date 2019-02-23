@@ -179,7 +179,7 @@
                         </div>
                         <div id="divRechercheDateFin" style="display:none;">
                             <label for="dtRechercheFin" class="col-form-label">Date de fin</label>
-                            <input type="date" id="dtRechercheFin" class="form-control border-primary"  onchange="autoriseRechercheParDateParution();"/>
+                            <input type="date" id="dtRechercheFin" class="form-control border-primary" onchange="autoriseRechercheParDateParution();" />
                         </div>
                         <br />
                         <select id="selTypeRech" class="custom-select border-primary text-primary col-6 mt-3" onchange="rechercheChangement(this.value)">
@@ -242,7 +242,7 @@
                                     strClasse += " focus";
                                 }
                             }
-                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse">
+                            <a href="@Url.Action("CatalogueVendeur", new { @tri = ViewBag.TriDate, @categorie = Model.strCategorie, Model.recherche, Model.recherche2 , Model.pageDimension, Model.typeRech})" class="@strClasse mt-2">
                                 Date de parution
                                 @if ("!" + strTriDate == Model.strTri)
                                 {
@@ -255,11 +255,11 @@
                             </a>
                         </div>
                         <div class="ml-auto">
-                           <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
-                           @Html.DropDownListFor(x => x.pageDimension, (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary", @onchange = "envoieNbProduit(this.value)" })
-                           @Html.ActionLink("Ajouter un produit", "AjouterProduit", "Vendeur", new { }, new { @class = "btn btn-success" })
+                            <label for="ProduitParPage" class="font-weight-bold">Par page</label><br /><br />
+                            @Html.DropDownListFor(x => x.pageDimension, (SelectList)ViewBag.ListeNbItems, new { @class = "custom-select border-primary text-primary", @onchange = "envoieNbProduit(this.value)" })
+                            @Html.ActionLink("Ajouter un produit", "AjouterProduit", "Vendeur", new { }, new { @class = "btn btn-success mt-2" })
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
@@ -267,7 +267,14 @@
         <br />
         @Html.PagedListPager(Model.iplProduits, page => Url.Action("CatalogueVendeur", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
         <br />
-        @Html.Partial("Client/ProduitCatalogue", Model.iplProduits)
+        @if (Model.iplProduits.TotalItemCount != 0)
+        {
+            @Html.Partial("Client/ProduitCatalogue", Model.iplProduits)
+        }
+        else
+        {
+            <p class="lead">Désoler, nous n'avons pas trouvé le produit.</p>
+        }
         <br />
         @Html.PagedListPager(Model.iplProduits, page => Url.Action("CatalogueVendeur", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech }))
     </main>
