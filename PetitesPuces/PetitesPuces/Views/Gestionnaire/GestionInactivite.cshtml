@@ -17,35 +17,40 @@
     @using (Html.BeginForm("GestionInactivite", "Gestionnaire", FormMethod.Post))
     {
 
-        <div class="container sEspaceBarNavigation" id="divPage">
-            <div id="infoPage" style="padding-left:10px;padding-right:10px">
-                <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
-            </div>
-            @if (Model.lstClientsRetirer != null)
+    <div class="container sEspaceBarNavigation" id="divPage">
+        <div id="infoPage" style="padding-left:10px;padding-right:10px">
+            <h1 style="text-align:center"><u>Gestion de l'inactivité</u></h1>
+        </div>
+        @if (Model.lstClientsRetirer != null)
+        {
+            foreach (PPClients client in Model.lstClientsRetirer)
             {
-                foreach (PPClients client in Model.lstClientsRetirer)
-                {
 
-                    <div class="container">
-                        @Html.Partial("ClientInactiverStats", client)
-                    </div>
-                }
-            }
-            <br />
-            <div id="divConfirmationTop" style="text-align:center">
-                <input id="btnConfirmerTop" type="submit" value="Supprimer" class="btn btn-primary" />
-            </div>
-            <div id="divClient">
-                <div class="row">
-                    <div class="col-md-8 text-left">
-                        <h2><u>Client(s)</u></h2>
-                    </div>
-                    <div class="col-md-4 text-right">
-                        <span style="padding-right:10px">Période d'inactivité : </span>
-                        @Html.DropDownListFor(x => x.valDdlClient, (SelectList)ViewBag.ListeDdlClient, new { @onchange = "ddlChange()", @style = "display:inline" })
-                        <br />
-                    </div>
+                <div class="container">
+                    @Html.Partial("ClientInactiverStats", client)
                 </div>
+            }
+        }
+        <br />
+        @if (Model.cbClients.Count > 0 || Model.cbVendeurs.Count > 0)
+        {
+        <div id="divConfirmationTop" style="text-align:center">
+            <input id="btnConfirmerTop" type="submit" value="Supprimer" class="btn btn-primary" />
+        </div>
+        }
+        <div id="divClient">
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    <h2><u>Client(s)</u></h2>
+                </div>
+                <div class="col-md-4 text-right">
+                    <span style="padding-right:10px">Période d'inactivité : </span>
+                    @Html.DropDownListFor(x => x.valDdlClient, (SelectList)ViewBag.ListeDdlClient, new { @onchange = "ddlChange()", @style = "display:inline" })
+                    <br />
+                </div>
+            </div>
+            @if (Model.cbClients.Count > 0)
+            {
                 <div id="tableauClient">
                     <table class="table table-bordered">
                         <tr>
@@ -57,69 +62,71 @@
                         </tr>
 
                         @{
-                            if (Model.cbClients.Count > 0)
+                            for (int i = 0; i < @Model.cbClients.Count; i++)
                             {
-                                for (int i = 0; i < @Model.cbClients.Count; i++)
-                                {
-                        <tr>
-                            <th style="text-align:right">@(i + 1)</th>
-                            <td>@Model.cbClients[i].AdresseEmail</td>
-                            @if ((Model.cbClients[i].Prenom != null || Model.cbClients[i].Nom != null) && (Model.cbClients[i].Prenom.Trim() != "" || Model.cbClients[i].Nom.Trim() != ""))
-                            {
+                                <tr>
+                                    <th style="text-align:right">@(i + 1)</th>
+                                    <td>@Model.cbClients[i].AdresseEmail</td>
+                                    @if ((Model.cbClients[i].Prenom != null || Model.cbClients[i].Nom != null) && (Model.cbClients[i].Prenom.Trim() != "" || Model.cbClients[i].Nom.Trim() != ""))
+                                    {
 
-                                <td>@Model.cbClients[i].Prenom @Model.cbClients[i].Nom</td>
-                            }
-                            else
-                            {
+                                        <td>@Model.cbClients[i].Prenom @Model.cbClients[i].Nom</td>
+                                    }
+                                    else
+                                    {
 
-                                <td>Anonyme</td>
-                            }
-                            @if (Model.cbClients[i].dernierPresence == DateTime.MinValue)
-                            {
-                                <td style="text-align:right">Aucune présence</td>
-                            }
-                            else
-                            {
-                                <td style="text-align:right">
-                                    @Model.cbClients[i].dernierPresence.ToString("yyyy-MM-dd")
+                                        <td>Anonyme</td>
+                                    }
+                                    @if (Model.cbClients[i].dernierPresence == DateTime.MinValue)
+                                    {
+                                        <td style="text-align:right">Aucune présence</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="text-align:right">
+                                            @Model.cbClients[i].dernierPresence.ToString("yyyy-MM-dd")
 
-                                </td>
-                            }
-                            <td class="text-center">
-                                @Html.HiddenFor(x => Model.cbClients[i].ID)
-                                @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected)
-                                @Html.HiddenFor(x => Model.cbClients[i].idClient)
-                                @Html.HiddenFor(x => Model.cbClients[i].dernierPresence)
-                                @Html.HiddenFor(x => Model.cbClients[i].Nom)
-                                @Html.HiddenFor(x => Model.cbClients[i].Prenom)
-                                @Html.HiddenFor(x => Model.cbClients[i].AdresseEmail)
-                            </td>
+                                        </td>
+                                    }
+                                    <td class="text-center">
+                                        @Html.HiddenFor(x => Model.cbClients[i].ID)
+                                        @Html.CheckBoxFor(x => Model.cbClients[i].IsSelected)
+                                        @Html.HiddenFor(x => Model.cbClients[i].idClient)
+                                        @Html.HiddenFor(x => Model.cbClients[i].dernierPresence)
+                                        @Html.HiddenFor(x => Model.cbClients[i].Nom)
+                                        @Html.HiddenFor(x => Model.cbClients[i].Prenom)
+                                        @Html.HiddenFor(x => Model.cbClients[i].AdresseEmail)
+                                    </td>
 
-                        </tr>
-                                }
+                                </tr>
                             }
 
                         }
 
-                    </table>
-                    @if (Model.cbVendeurs.Count == 0)
-                    {
 
-                        <h5>Il n'y a aucun client pour la période choisie</h5>
-                    }
+                    </table>
+                </div>
+            }
+
+            else if (Model.cbClients.Count <= 0)
+            {
+
+                <h5>Il n'y a aucun client pour la période choisie</h5>
+            }
+        </div>
+        <div id="divVendeur">
+            <div class="row">
+                <div class="col-md-8 text-left">
+                    <h2><u>Vendeur(s)</u></h2>
+                </div>
+                <div class="col-md-4 text-right">
+                    <span style="padding-right:10px">Période d'inactivité : </span>
+                    @Html.DropDownListFor(m => m.valDdlVendeur, (SelectList)ViewBag.ListeDdlVendeur, new { @onchange = "ddlChange()" })
+                    <br />
                 </div>
             </div>
-            <div id="divVendeur">
-                <div class="row">
-                    <div class="col-md-8 text-left">
-                        <h2><u>Vendeur(s)</u></h2>
-                    </div>
-                    <div class="col-md-4 text-right">
-                        <span style="padding-right:10px">Période d'inactivité : </span>
-                        @Html.DropDownListFor(m => m.valDdlVendeur, (SelectList)ViewBag.ListeDdlVendeur, new { @onchange = "ddlChange()" })
-                        <br />
-                    </div>
-                </div>
+            @if (Model.cbVendeurs.Count > 0)
+            {
                 <div id="tableauVendeur">
                     <table class="table table-bordered">
                         <tr>
@@ -132,62 +139,64 @@
 
 
                         @{
-                            if (Model.cbVendeurs.Count > 0)
+                            for (int i = 0; i < @Model.cbVendeurs.Count; i++)
                             {
-                                for (int i = 0; i < @Model.cbVendeurs.Count; i++)
-                                {
-                        <tr>
-                            <th style="text-align:right">@(i + 1)</th>
-                            <td>@Model.cbVendeurs[i].AdresseEmail</td>
-                            @if ((Model.cbVendeurs[i].Prenom != null || Model.cbVendeurs[i].Nom != null) && (Model.cbVendeurs[i].Prenom.Trim() != "" || Model.cbVendeurs[i].Nom.Trim() != ""))
-                            {
+                                <tr>
+                                    <th style="text-align:right">@(i + 1)</th>
+                                    <td>@Model.cbVendeurs[i].AdresseEmail</td>
+                                    @if ((Model.cbVendeurs[i].Prenom != null || Model.cbVendeurs[i].Nom != null) && (Model.cbVendeurs[i].Prenom.Trim() != "" || Model.cbVendeurs[i].Nom.Trim() != ""))
+                                    {
 
-                                <td>@Model.cbVendeurs[i].Prenom @Model.cbVendeurs[i].Nom</td>
-                            }
-                            else
-                            {
+                                        <td>@Model.cbVendeurs[i].Prenom @Model.cbVendeurs[i].Nom</td>
+                                    }
+                                    else
+                                    {
 
-                                <td>Anonyme</td>
-                            }
-                            @if (Model.cbVendeurs[i].dernierPresence == DateTime.MinValue)
-                            {
-                                <td style="text-align:right">Aucune présence</td>
-                            }
-                            else
-                            {
-                                <td style="text-align:right">
-                                    @Model.cbVendeurs[i].dernierPresence.ToString("yyyy-MM-dd")
+                                        <td>Anonyme</td>
+                                    }
+                                    @if (Model.cbVendeurs[i].dernierPresence == DateTime.MinValue)
+                                    {
+                                        <td style="text-align:right">Aucune présence</td>
+                                    }
+                                    else
+                                    {
+                                        <td style="text-align:right">
+                                            @Model.cbVendeurs[i].dernierPresence.ToString("yyyy-MM-dd")
 
-                                </td>
-                            }
-                            <td class="text-center">
-                                @Html.HiddenFor(x => Model.cbVendeurs[i].ID)
-                                @Html.CheckBoxFor(x => Model.cbVendeurs[i].IsSelected)
-                                @Html.HiddenFor(x => Model.cbVendeurs[i].idClient)
-                                @Html.HiddenFor(x => Model.cbVendeurs[i].dernierPresence)
-                                @Html.HiddenFor(x => Model.cbVendeurs[i].Nom)
-                                @Html.HiddenFor(x => Model.cbVendeurs[i].Prenom)
-                                @Html.HiddenFor(x => Model.cbVendeurs[i].AdresseEmail)
-                            </td>
-                        </tr>
-                                }
+                                        </td>
+                                    }
+                                    <td class="text-center">
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].ID)
+                                        @Html.CheckBoxFor(x => Model.cbVendeurs[i].IsSelected)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].idClient)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].dernierPresence)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].Nom)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].Prenom)
+                                        @Html.HiddenFor(x => Model.cbVendeurs[i].AdresseEmail)
+                                    </td>
+                                </tr>
                             }
 
                         }
                     </table>
-                    @if (Model.cbVendeurs.Count == 0)
-                    {
 
-                        <h5>Il n'y a aucun vendeur pour la période choisie</h5>
-                    }
                 </div>
+
+            }
+            else if (Model.cbVendeurs.Count <= 0)
+            {
+                <h5>Il n'y a aucun vendeur pour la période choisie</h5>
+            }
+        </div>
+    </div>
+        <br />
+        <br />
+        if (Model.cbClients.Count > 0 || Model.cbVendeurs.Count > 0)
+        {
+            <div id="divConfirmationBottom" style="text-align:center">
+                <input id="btnConfirmerBottom" type="submit" value="Supprimer" class="btn btn-primary" />
             </div>
-        </div>
-        <br />
-        <br />
-        <div id="divConfirmationBottom" style="text-align:center">
-            <input id="btnConfirmerBottom" type="submit" value="Supprimer" class="btn btn-primary" />
-        </div>
+        }
     }
 </body>
 </html>

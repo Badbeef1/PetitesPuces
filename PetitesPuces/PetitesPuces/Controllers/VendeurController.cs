@@ -739,6 +739,10 @@ namespace PetitesPuces.Controllers
 
             if (comm.ToList().Count > 0)
             {
+                if (!Directory.Exists(Server.MapPath("~/PDFFacture")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/PDFFacture"));
+                }
                 string path = Server.MapPath("~/PDFFacture/" + comm.ToList().First().NoCommande + ".pdf");
                 if (System.IO.File.Exists(path))
                 {
