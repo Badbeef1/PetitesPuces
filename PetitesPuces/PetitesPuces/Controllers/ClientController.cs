@@ -597,21 +597,30 @@ namespace PetitesPuces.Controllers
                         //Valide que le mot de passe est bien l'ancien mdp.
                         if (clientOriginal.MotDePasse.Equals(strAncientMDP))
                         {
-                            //Valide que le nouveau mdp est identique a celui de confirmation
-                            if (strNouveauMDP.Equals(strConfirmationMDP))
+                            //Valide que le nouveau mdp est différent de l'ancien mdp
+                            if (!clientOriginal.MotDePasse.Equals(strNouveauMDP))
                             {
-                                clientDao.modifierProfilMDP(strNouveauMDP);
-                                ViewBag.uneErreur = "succes";
+                                //Valide que le nouveau mdp est identique a celui de confirmation
+                                if (strNouveauMDP.Equals(strConfirmationMDP))
+                                {
+                                    clientDao.modifierProfilMDP(strNouveauMDP);
+                                    ViewBag.uneErreur = "succes";
+                                }
+                                else
+                                {
+                                    ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                                    ViewBag.uneErreur = "echec";
+                                }
                             }
                             else
                             {
-                                ViewBag.MessageErreurConfirmation = "La confirmation doit être identique au nouveau mot de passe!";
+                                ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
                                 ViewBag.uneErreur = "echec";
                             }
                         }
                         else
                         {
-                            ViewBag.MessageErreurNouveau = "Le nouveau mot de passe doit être différent de celui actuel";
+                            ViewBag.MessageErreurNouveau = "L'ancien mot de passe n'est pas valide";
                             ViewBag.uneErreur = "echec";
                         }
                     }
