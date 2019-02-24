@@ -1,55 +1,74 @@
-﻿@{
-    Layout = null;
+﻿@using PetitesPuces.Models
+@{
+   if (Session["clientObj"] == null)
+   {
+      if (Session["vendeurObj"] != null)
+      {
+         Response.Redirect(Url.Action("AccueilVendeur", "Vendeur"));
+      }
+      else if (Session["gestionnaireObj"] != null)
+      {
+         Response.Redirect(Url.Action("AccueilGestionnaire", "Gestionnaire"));
+      }
+      else
+      {
+         Response.Redirect(Url.Action("Index", "Internaute"));
+      }
+   }
+   DataClasses1DataContext db = new DataClasses1DataContext();
+   db.Connection.Open();
+
+   var notif = (from desti in db.GetTable<PPDestinataires>()
+                where (desti.NoDestinataire.Equals((Session["clientObj"] as PPClients).NoClient)) &&
+                (desti.EtatLu.Equals(0) && desti.Lieu == 1)
+                select desti
+                   ).ToList();
+   db.Connection.Close();
 }
 
-<!DOCTYPE html>
+<header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
+   <a class="navbar-brand" href="/Client/AccueilClient">Petites Puces</a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+   </button>
+   <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+         <a class="nav-link" href="/Internaute/Inscription">Inscription Vendeur<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="/Client/GestionProfilClient" id="navbarDropdown">
+            Gérer mon profil
+         </a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="/Client/Catalogue">
+            Voir le catalogue
+         </a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="/Client/HistoriqueCommande">
+            Historique des commandes
+         </a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="/Courriel/Index">
+            Messagerie
+            <i class="fas fa-envelope"></i>
+            @if (notif.Count() > 0)
+            {
+               @notif.Count();
+            }
+         </a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="/Connexion/Deconnexion">
+            Déconnexion
+            <i class="fas fa-sign-out-alt"></i>
+         </a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
+      </li>
+   </ul>
+</header>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <meta charset="utf-8" />
-    <title></title>
-    <link rel="stylesheet" href="~/Content/css/styleGeneral.css" />
-</head>
-<body>
-   <div>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
-         <a class="navbar-brand" href="/Client/AccueilClient">Petites Puces</a>
-         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-         </button>
-
-         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-               <li class="nav-item active">
-                  <a class="nav-link" href="/Internaute/Inscription">Inscription Vendeur<span class="sr-only">(current)</span></a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="/Client/GestionProfilClient" id="navbarDropdown">
-                     Gérer mon profil
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="/Vendeur/GestionCommande">
-                     Gérer ma commande
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="/Connexion/">
-                     Déconnexion
-                     <i class="fas fa-sign-out-alt"></i>
-                  </a>
-               </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
-               </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-            </form>
-         </div>
-      </nav>
-   </div>
-</body>
-</html>

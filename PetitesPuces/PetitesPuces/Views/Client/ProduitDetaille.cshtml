@@ -32,7 +32,7 @@
             }
             else if (Session["clientObj"] != null)
             {
-                @Html.Partial("~/Views/Client/test.cshtml")
+                @Html.Partial("~/Views/Client/index.cshtml")
             }
             else
             {
@@ -42,29 +42,27 @@
 
     </div>
     <br /><br /><br />
-                <div class="container mb-5">
-                   @Html.Partial("Client/DetailProduit", Model)
+    <div class="container mb-5">
+        @Html.Partial("Client/DetailProduit", Model)
 
+        @Html.Partial("Client/EcrireEvaluation", Model)
 
+        @if (Request.UrlReferrer != null)
+        {
+            <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
+        }
+        @if (Session["clientObj"] != null)
+        {
 
-                   @Html.Partial("Client/EcrireEvaluation", Model)
+            MessageViewModel message = new MessageViewModel((int)((PPClients)Session["clientObj"]).NoClient, (int)Model.Produit.NoVendeur, ViewBag.NomVendeur, ViewBag.NomClient, "");
 
-                   @if (Request.UrlReferrer != null)
-                   {
-                      <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
-                   }
-                   @if (Session["clientObj"] != null)
-                   {
-
-                      MessageViewModel message = new MessageViewModel((int)((PPClients)Session["clientObj"]).NoClient, (int)Model.Produit.NoVendeur, ViewBag.NomVendeur, ViewBag.NomClient, "");
-
-                      <div id="saisie_courriel" style="visibility:hidden">
-                         <br />
-                         <h4>Envoie d'un message au vendeur du produit</h4>
-                         @Html.Partial("Courriel/Message", message);
-                      </div>
-                   }
-                </div>
+            <div id="saisie_courriel" style="visibility:hidden">
+                <br />
+                <h4>Envoie d'un message au vendeur du produit</h4>
+                @Html.Partial("Courriel/Message", message);
+            </div>
+        }
+    </div>
     <script type="text/javascript">
     $.AjoutAuPanier = function (numeroDeProduit) {
         let qqtProduitDesire = $('#numNbAjoutPanier').val();

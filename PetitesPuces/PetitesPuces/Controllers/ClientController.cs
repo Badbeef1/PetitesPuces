@@ -35,12 +35,14 @@ namespace PetitesPuces.Controllers
 
             return sb.ToString();
         }
+        /*
         public ActionResult Index()
         {
             String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
             //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
             /* Compare data with Database */
+            /*
             Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
             db.Connection.Open();
 
@@ -52,7 +54,13 @@ namespace PetitesPuces.Controllers
             db.Connection.Close();
 
             return View("AccueilPanier", paniers);
+        }*/
+
+        public ActionResult Index()
+        {
+            return View("AccueilClient");
         }
+
 
         public ActionResult HistoriqueCommande()
         {
@@ -1393,7 +1401,7 @@ namespace PetitesPuces.Controllers
             if (long.TryParse(numero, out value))
             {
                 PPProduits unProduit = contextPP.PPProduits.FirstOrDefault(predicate: pro => pro.NoProduit == value);
-                if ((unProduit.NombreItems != -1) && (unProduit.Disponibilité.Value  || Session["vendeurObj"] != null))
+                if ((unProduit.NombreItems != -1) && (unProduit.Disponibilité.Value || Session["vendeurObj"] != null))
                 {
                     var model = new ViewModels.ProduitDetailViewModel
                     {
@@ -1441,7 +1449,7 @@ namespace PetitesPuces.Controllers
                 {
                     return Redirect(strRedirection);
                 }
-                
+
 
             }
             else
@@ -1504,7 +1512,7 @@ namespace PetitesPuces.Controllers
         {
             return View(client);
         }
-        public ActionResult test() => View();
+        //public ActionResult test() => View();
 
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
@@ -1819,5 +1827,12 @@ namespace PetitesPuces.Controllers
 
             return intNbProduitDejaPanier;
         }
+
+        /*
+        private void GestionAccesClient()
+        {
+            if (Session["clientObj"] !=)
+        }
+        */
     }
 }

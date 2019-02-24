@@ -460,7 +460,6 @@
     <Content Include="Views\Vendeur\GestionProfilVendeur.cshtml" />
     <Content Include="Views\Client\GestionProfilClient.cshtml" />
     <Content Include="Views\Internaute\index.cshtml" />
-    <Content Include="Views\Client\index.cshtml" />
     <Content Include="Views\Vendeur\index.cshtml" />
     <Content Include="Views\Gestionnaire\index.cshtml" />
     <None Include="Properties\Settings.settings">
@@ -482,7 +481,7 @@
     <Content Include="Views\Shared\Client\DetailProduit.cshtml" />
     <Content Include="Views\Internaute\ProduitDetaille.cshtml" />
     <Content Include="Views\Shared\Client\ProduitCatalogue.cshtml" />
-    <Content Include="Views\Client\test.cshtml" />
+    <Content Include="Views\Client\index.cshtml" />
     <Content Include="Views\Vendeur\CommandeDetail.cshtml" />
     <Content Include="Views\Shared\Vendeur\PanierVendeur.cshtml" />
     <Content Include="Views\Vendeur\PanierDetailVendeur.cshtml" />
