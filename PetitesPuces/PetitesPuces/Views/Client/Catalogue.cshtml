@@ -156,7 +156,7 @@
         <div class="container-fluid">
             <div class="row flex-xl-nowrap">
                 <div class="col-sm-3 col-md-2 hidden-xs-down bd-sidebar bg-light">
-                    <nav class="sidebar bg-light collapse bd-links">
+                    <nav class="sidebar bg-light collapse bd-links pl-3">
                         <h6 class="mt-2">Catégorie de produit</h6>
                         <ul class="nav nav-pills flex-column" id="parentAccordeon">
                             @foreach (var categorie in Model.dicVendeur)
@@ -164,7 +164,7 @@
                                 <li class="nav-item">
                                     <div class="row">
                                         <a class="nav-link" href="@Url.Action("Catalogue", new { categorie = categorie.Key, Model.pageDimension})">@categorie.Key.ToString()</a>
-                                        <a data-toggle="collapse" href="@("#accordeon" + intIndex)">+</a>
+                                        <a data-toggle="collapse" class="pt-2" href="@("#accordeon" + intIndex)">+</a>
                                     </div>
 
                                     <ul class="collapse" id="@("accordeon" + intIndex)">

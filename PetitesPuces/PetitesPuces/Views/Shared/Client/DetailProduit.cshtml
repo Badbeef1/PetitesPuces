@@ -34,7 +34,16 @@
                         <small>rabais de @rabais.Value.ToString("0.00")$</small><br />
                         <small>jusqu'au @Model.Produit.DateVente.Value.ToString("yyyy-MM-dd")</small><br />
                     }
-                    <span><span class="font-weight-bold">Vendu par:</span> <a href="@Url.Action("Catalogue", "Client", new { vendeur = @Model.Produit.PPVendeurs.NomAffaires})">@Model.Produit.PPVendeurs.NomAffaires</a></span>
+
+                    @if (Session["clientObj"] != null)
+                    {
+                        <span><span class="font-weight-bold">Vendu par:</span> <a href="@Url.Action("Catalogue", "Client", new { vendeur = @Model.Produit.PPVendeurs.NomAffaires})">@Model.Produit.PPVendeurs.NomAffaires</a></span>
+                    }
+                    else
+                    {
+                        <span><span class="font-weight-bold">Vendu par:</span> @Model.Produit.PPVendeurs.NomAffaires</span>
+                    }
+
                     <br />
                     @{
                         var sansDecimal = Model.FormattedRating - (Model.FormattedRating % 1);
