@@ -360,6 +360,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BDController.cs" />
     <Compile Include="Controllers\ClientDao.cs" />
@@ -371,6 +372,9 @@
     <Compile Include="Controllers\IVendeur.cs" />
     <Compile Include="Controllers\VendeurController.cs" />
     <Compile Include="Controllers\VendeurDao.cs" />
+    <Compile Include="Filter\VerifieSessionClient.cs" />
+    <Compile Include="Filter\VerifieSessionGestionnaire.cs" />
+    <Compile Include="Filter\VerifieSessionVendeur.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

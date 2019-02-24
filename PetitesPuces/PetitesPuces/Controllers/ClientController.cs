@@ -12,9 +12,11 @@ using System.IO;
 using System.Text;
 using System.Web.UI;
 using ExpertPdf.HtmlToPdf;
+using PetitesPuces.Filter;
 
 namespace PetitesPuces.Controllers
 {
+    [VerifieSessionClient]
     public class ClientController : Controller
     {
         DataClasses1DataContext contextPP = new DataClasses1DataContext();
@@ -34,26 +36,6 @@ namespace PetitesPuces.Controllers
 
             return sb.ToString();
         }
-        /*
-        public ActionResult Index()
-        {
-            String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
-
-            //long noClient = ((Models.PPClients)Session["clientObj"]).NoClient;
-            /* Compare data with Database */
-            /*
-            Models.DataClasses1DataContext db = new Models.DataClasses1DataContext();
-            db.Connection.Open();
-
-            //Requête qui va permettre d'aller chercher les paniers du client
-            var paniers = from panier in db.GetTable<Models.PPArticlesEnPanier>()
-                          where panier.NoClient.Equals(noClient)
-                          group panier by panier.PPVendeurs;
-
-            db.Connection.Close();
-
-            return View("AccueilPanier", paniers);
-        }*/
 
         public ActionResult Index()
         {
@@ -74,9 +56,11 @@ namespace PetitesPuces.Controllers
             return View(lstCommandes);
         }
 
-
+        
         public ActionResult AccueilClient()
         {
+            //GestionAccesClient()
+
             List<Models.EntrepriseCategorie> lstEntreCate = new List<Models.EntrepriseCategorie>();
             String noClient = ((PPClients)Session["clientObj"]).NoClient.ToString();
 
@@ -1827,19 +1811,32 @@ namespace PetitesPuces.Controllers
         }
 
         /*
-        private void GestionAccesClient()
+
+        private ActionResult GestionAccesClient()
         {
-            if (Session["vendeurObj"] == null)
+            if (Session["vendeurObj"] != null)
             {
-                //RedirectToAction()
+                return RedirectToAction("/Vendeur");
+            }
+            else if (Session["gestionnaireObj"] != null)
+            {
+                return RedirectToAction("/Gestionnaire");
+            }
+            else if (Session["clientObj"] == null)
+            {
+                return RedirectToAction("/Internaute");
             }
 
+            return null;
+        }
 
-            if (Session["clientObj"] == null)
+        private void GestionAcces()
+        {
+            if ((Session["clientObj"] == null) && (Session["vendeurObj"] == null) && (Session["gestionnaireObj"] == null))
             {
                 RedirectToAction("/Internaute");
             }
-        }*/
-        
+        }
+        */
     }
 }

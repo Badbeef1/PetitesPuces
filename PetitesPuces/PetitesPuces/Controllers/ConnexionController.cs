@@ -167,7 +167,7 @@ namespace PetitesPuces.Controllers
                {
                   db.SubmitChanges();
                }
-               catch (Exception e)
+               catch (Exception )
                {
 
                }

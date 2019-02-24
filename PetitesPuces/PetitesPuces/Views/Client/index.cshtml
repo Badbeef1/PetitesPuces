@@ -1,20 +1,5 @@
 ﻿@using PetitesPuces.Models
 @{
-   if (Session["clientObj"] == null)
-   {
-      if (Session["vendeurObj"] != null)
-      {
-         Response.Redirect(Url.Action("AccueilVendeur", "Vendeur"));
-      }
-      else if (Session["gestionnaireObj"] != null)
-      {
-         Response.Redirect(Url.Action("AccueilGestionnaire", "Gestionnaire"));
-      }
-      else
-      {
-         Response.Redirect(Url.Action("Index", "Internaute"));
-      }
-   }
    DataClasses1DataContext db = new DataClasses1DataContext();
    db.Connection.Open();
 
