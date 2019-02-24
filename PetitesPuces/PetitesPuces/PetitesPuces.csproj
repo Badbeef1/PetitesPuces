@@ -366,7 +366,6 @@
     <Compile Include="Controllers\GestionnaireController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\IClient.cs" />
-    <Compile Include="Controllers\ICourriel.cs" />
     <Compile Include="Controllers\InternauteController.cs" />
     <Compile Include="Controllers\ConnexionController.cs" />
     <Compile Include="Controllers\IVendeur.cs" />

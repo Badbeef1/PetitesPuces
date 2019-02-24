@@ -16,7 +16,7 @@ namespace PetitesPuces.Controllers
    public class GestionnaireController : Controller
    {
       DataClasses1DataContext dc = new DataClasses1DataContext();
-      public ActionResult Index() => View("AccueilGestionnaire");
+      public ActionResult Index() => RedirectToAction("AccueilGestionnaire");
 
       public ActionResult AccueilGestionnaire()
       {

@@ -19,7 +19,7 @@ namespace PetitesPuces.Controllers
       DataClasses1DataContext contextPP = new DataClasses1DataContext();
       VendeurDao vendeurDao;
 
-      public ActionResult Index() => View("AccueilVendeur");
+      public ActionResult Index() => RedirectToAction("AccueilVendeur");
 
       public ActionResult AccueilVendeur()
       {

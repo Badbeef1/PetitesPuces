@@ -11,7 +11,6 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Web.UI;
-using System.ComponentModel.DataAnnotations;
 using ExpertPdf.HtmlToPdf;
 
 namespace PetitesPuces.Controllers
@@ -58,7 +57,7 @@ namespace PetitesPuces.Controllers
 
         public ActionResult Index()
         {
-            return View("AccueilClient");
+            return RedirectToAction("AccueilClient");
         }
 
 
@@ -1512,7 +1511,6 @@ namespace PetitesPuces.Controllers
         {
             return View(client);
         }
-        //public ActionResult test() => View();
 
         [HttpPost]
         public ActionResult ConfirmationTransaction(string NoAutorisation, string DateAutorisation, string FraisMarchand, string InfoSuppl)
@@ -1831,8 +1829,17 @@ namespace PetitesPuces.Controllers
         /*
         private void GestionAccesClient()
         {
-            if (Session["clientObj"] !=)
-        }
-        */
+            if (Session["vendeurObj"] == null)
+            {
+                //RedirectToAction()
+            }
+
+
+            if (Session["clientObj"] == null)
+            {
+                RedirectToAction("/Internaute");
+            }
+        }*/
+        
     }
 }
