@@ -47,7 +47,7 @@ namespace PetitesPuces.Controllers
 
                 if (clientLogged != null && clientLogged.Statut == 1)
                 {
-                    Session.Abandon();
+                    Session["vendeurObj"] = Session["gestionnaireObj"] = null;
                     Session["clientObj"] = clientLogged;
                     clientLogged.NbConnexions += 1;
                     clientLogged.DateDerniereConnexion = DateTime.Now;
@@ -59,7 +59,7 @@ namespace PetitesPuces.Controllers
 
                 if (vendeurLogged != null && vendeurLogged.Statut == 1)
                 {
-                    Session.Abandon();
+                    Session["gestionnaireObj"] = Session["clientObj"] = null;
                     Session["vendeurObj"] = vendeurLogged;
                     ((PPVendeurs)Session["vendeurObj"]).MotDePasse = "";
                     return RedirectToAction("AccueilVendeur", "Vendeur");
@@ -67,7 +67,7 @@ namespace PetitesPuces.Controllers
 
                 if (gestionnaireLogged != null)
                 {
-                    Session.Abandon();
+                    Session["vendeurObj"] = Session["clientObj"] = null;
                     Session["gestionnaireObj"] = gestionnaireLogged;
                     ((PPGestionnaire)Session["gestionnaireObj"]).MotDePasse = "";
                     return RedirectToAction("AccueilGestionnaire", "Gestionnaire");
