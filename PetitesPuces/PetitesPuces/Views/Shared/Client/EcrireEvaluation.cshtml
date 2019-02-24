@@ -34,7 +34,7 @@
                 <input name="submitVal" type="submit" 
                        class="btn btn-secondary btn-block @(Model.nbEvaluateurs == 0 ? "disabled":"" )" 
                        value="Voir les commentaires" @(Model.nbEvaluateurs == 0 ? "disabled":"" )/>
-                @if (!Model.ClientARecuCeProduit)
+                @if (!Model.ClientARecuCeProduit && (Session["clientObj"] != null))
                 {
                     <small class="text-muted"> Vous n'avez pas achet&eacute; ce produit pour laisser un commentaire.</small>
                 }

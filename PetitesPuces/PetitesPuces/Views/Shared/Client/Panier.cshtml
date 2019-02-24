@@ -11,7 +11,7 @@
                     Votre panier pour le vendeur @Model.vendeur.NomAffaires
             </h5>
             <br />
-            <button class="btn btn-danger" id="btnViderPanier" type="button" onclick="ViderLePanier(@Model.vendeur.NomAffaires)">Vider le panier</button>
+            <button class="btn btn-danger" id="btnViderPanier" type="button" onclick="ViderLePanier(@Model.vendeur.NoVendeur)">Vider le panier</button>
         </div>
         <div class="float-right">
            <a class="btn btn-outline-primary btn-sm btn-block" href="/Client/Catalogue">Continuer à magasiner</a>
@@ -88,7 +88,16 @@
                             </div>
                             <div class="col-2 col-sm-2 col-md-2" style="padding-left:0px;padding-right:0px">
                                 <div class="quantity">
-                                    <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
+                                    @if (Model.lstArticlePanier[x].PPProduits.NombreItems == 0)
+                                    {
+                                        <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="0" max="0" step="1" class="qty" value="0" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" />
+
+                                    }
+                                    else
+                                    {
+                                    <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)">
+
+                                    }
                                 </div>
                             </div>
 

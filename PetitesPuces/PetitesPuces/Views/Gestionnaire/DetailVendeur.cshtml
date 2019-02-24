@@ -19,27 +19,52 @@
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
+   <style type="text/css">
+      .field-validation-error {
+         color: #b94a48;
+         background-color: #f2dede;
+         border-color: #eed3d7;
+      }
+
+   </style>
+
    <script type="text/javascript">
+
+      function verifierRedevance(redevance) {
+         if (((redevance > 0) && (redevance <= 60)) || (redevance == null)) {
+            return true;
+         }
+         else {
+            return false;
+         }
+      }
+
       function accepter(id) {
          console.log($('#saisie_courriel').css("visibility") == "hidden");
          if ($('#saisie_courriel').css("visibility") == "hidden") {
-            var objSaisieMessage = document.getElementById('saisie_courriel');
-            objSaisieMessage.style.visibility = "visible";
-            var message = 'Bonjour M. @Model.Nom, j\'ai l\'honneur de vous annoncer que votre demande de vendeur a été acceptée.';
-            $('#form_message').text(message);
-            $('#btn_accepter').prop("disabled", true);
-            $('#btn_refuser').prop("disabled", true);
-            $('#redevance').prop("disabled", true);
+
             var redevance = $('#redevance').val();
             redevance = redevance.replace(",", ".");
             redevance = parseFloat(redevance);
+            if (verifierRedevance(redevance)) {
+               var objSaisieMessage = document.getElementById('saisie_courriel');
+               objSaisieMessage.style.visibility = "visible";
+               var message = 'Bonjour M. @Model.Nom, j\'ai l\'honneur de vous annoncer que votre demande de vendeur a été acceptée.';
+               $('#form_message').text(message);
+               $('#btn_accepter').prop("disabled", true);
+               $('#btn_refuser').prop("disabled", true);
+               $('#redevance').prop("disabled", true);
 
-            $.ajax({
-               url: "/Gestionnaire/AccepterVendeur",
-               data: { "id": id, "redevance": redevance },
-               success: success,
-               error: error,
-            });
+               $.ajax({
+                  url: "/Gestionnaire/AccepterVendeur",
+                  data: { "id": id, "redevance": redevance },
+                  success: success,
+                  error: error,
+               });
+            }
+            else {
+               $("#erreur_redevance").text("Le taux de redevance doit être entre 0 et 60%.");
+            }
          }
       }
       function refuser(id) {
@@ -94,13 +119,15 @@
 
       function success() {
          console.log('réussi');
+         $("#erreur_redevance").text("");
       }
       function retourAccueil(){
          console.log('skurrrrrr');
          location.href = "/Gestionnaire/AccueilGestionnaire";
       }
       function error() {
-         console.log('erreur')
+         console.log('erreur');
+         $("#erreur_redevance").text(@ViewBag.TRErreur);
       }
    </script>
 </head>
@@ -227,6 +254,7 @@
                </div>
                <div class="col-sm-4">
                   <input id="redevance" type="number" min="0" max="60" step="0.25" value="0"> %
+                  <span id="erreur_redevance" class="field-validation-error">@ViewBag.TRErreur</span>
                </div>
                <div class="col-sm-4">
                   <div class="row">

@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using PetitesPuces.Models;
 using PagedList;
 using System.IO;
+using PetitesPuces.Filter;
 
 namespace PetitesPuces.Views
 {
+    [VerifieSessionCourriel]
     public class CourrielController : Controller
     {
         DataClasses1DataContext contextPP = new DataClasses1DataContext();
@@ -33,8 +35,8 @@ namespace PetitesPuces.Views
         const string strNouveauMessage = "NouveauMessage";
         const string strEnvoye = "Envoyer";
 
-       public static string msgErreur = "";
-       public static string msgSucces = "";
+        public static string msgErreur = "";
+        public static string msgSucces = "";
 
         const int intNbMessageParPage = 10;
 

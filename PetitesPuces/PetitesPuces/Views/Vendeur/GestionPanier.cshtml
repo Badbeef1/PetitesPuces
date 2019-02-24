@@ -4,6 +4,9 @@
     Layout = null;
 }
 
+<!DOCTYPE html>
+
+
 <link rel="stylesheet" href="~/Content/css/styleGeneral.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" />
@@ -13,8 +16,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
-<!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -33,148 +34,187 @@
             </div>
             <div class="row">
                 <div class="text-right col-md-12">
-                    Panier(s) inactif(s) depuis : @Html.DropDownListFor(m => m.valeurDdl, (SelectList)ViewBag.ListeTri, new { @onchange = "ddlChange()" })
+                    Période d'inactivité d'un panier : @Html.DropDownListFor(m => m.valeurDdl, (SelectList)ViewBag.ListeTri, new { @onchange = "ddlChange()" })
                 </div>
             </div>
             <div class="row">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col" colspan="1" class="text-right">#</th>
-                            <th scope="col" colspan="2" class="text-left">Adresse courriel</th>
-                            <th scope="col" colspan="2" class="text-left">Nom complet</th>
-                            <th scope="col" colspan="2" class="text-right">Date d'activité</th>
-                            <th scope="col" colspan="1" class="text-center">Supprimer : <input type="checkbox" id="cbAll" /></th>
-                            <th scope="col" colspan="2" class="text-center"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{ int counter = 0;
-                            for (int i = 0; i < Model.lstPanierAncien.Count; i++)
-                            {
-                                @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].DateCreation)
-                                @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NbItems)
-                                @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoClient)
-                                @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoPanier)
-                                @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoProduit)
-                                @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoVendeur)
-                                DateTime date = (DateTime)Model.lstPanierAncien[i].ppArtPan[0].DateCreation;
-                                ++counter;
-                                <tr>
-                                    <th colspan="1" scope="row" class="text-right">@counter</th>
-                                    <td colspan="2" class="text-left">@Model.lstPanierAncien[i].ppArtPan[0].PPClients.AdresseEmail</td>
-                                    <td colspan="2" class="text-left">@Model.lstPanierAncien[i].ppArtPan[0].PPClients.Prenom @Model.lstPanierAncien[i].ppArtPan[0].PPClients.Nom</td>
-                                    <td colspan="2" class="text-right">@date.ToString("yyyy-MM-dd")</td>
-                                    <td colspan="1" class="text-center">@Html.CheckBoxFor(p => Model.lstPanierAncien[i].isChecked, new { @class = "form-control" }) </td>
-                                    <td colspan="2" class="text-center"><input type="button" id="@("btnOuvrirPanier"+Model.lstPanierAncien[i].ppArtPan[0].NoPanier)" value="Aperçu du panier" class="btn btn-secondary" data-toggle="collapse" data-target="#@("collapse_panierAncien__" + Model.lstPanierAncien[i].ppArtPan[0].NoPanier)"/></td>
-                                </tr>
-                                <tr id=@("collapse_panierAncien__" + Model.lstPanierAncien[i].ppArtPan[0].NoPanier) class="collapse">
-                                    <td colspan="10">
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col" class="text-right">#</th>
-                                                    <th scope="col" class="text-left">Nom</th>
-                                                    <th scope="col" class="text-right">Prix</th>
-                                                    <th scope="col" class="text-center">est en rabais</th>
-                                                    <th scope="col" class="text-right">Quantité</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @for (int j = 0; j < Model.lstPanierAncien[i].ppArtPan.Count;j++)
-                                                {
-                                                <tr>
-                                                    <th scope="row" class="text-right">@((j + 1).ToString())</th>
-                                                    <td class="text-left">@Model.lstPanierAncien[i].ppArtPan[j].PPProduits.Nom</td>
-                                                    @if (Model.lstPanierAncien[i].ppArtPan[j].PPProduits.DateVente > DateTime.Now && Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixVente != null)
-                                                    {
-                                                    <td class="text-right">@Double.Parse(Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixVente.ToString()).ToString("0.00") $</td>
-                                                        <td class="text-center"><input type="checkbox" value="true" disabled/></td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td class="text-right">@Double.Parse(Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixDemande.ToString()).ToString("0.00") $</td>
-                                                        <td class="text-center"><input type="checkbox" value="false" disabled/></td>
-                                                    }
-                                                    <td class="text-right">@Model.lstPanierAncien[i].ppArtPan[j].NbItems</td>
-                                                </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            }
-                            for (int i = 0; i < Model.lstPanierRecent.Count; i++)
-                            {
-                                @Html.HiddenFor(m => m.lstPanierRecent[i].ToList()[0].DateCreation)
-                                @Html.HiddenFor(m => m.lstPanierRecent[i].ToList()[0].NbItems)
-                                @Html.HiddenFor(m => m.lstPanierRecent[i].ToList()[0].NoClient)
-                                @Html.HiddenFor(m => m.lstPanierRecent[i].ToList()[0].NoPanier)
-                                @Html.HiddenFor(m => m.lstPanierRecent[i].ToList()[0].NoProduit)
-                                @Html.HiddenFor(m => m.lstPanierRecent[i].ToList()[0].NoVendeur)
-                                DateTime date = (DateTime)Model.lstPanierRecent[i].ToList()[0].DateCreation;
-                                ++counter;
-                                <tr>
-                                    <th scope="row" colspan="1" class="text-right">@counter</th>
-                                    <td colspan="2" class="text-left">@Model.lstPanierRecent[i].ToList()[0].PPClients.AdresseEmail</td>
-                                    <td colspan="2" class="text-left">@Model.lstPanierRecent[i].ToList()[0].PPClients.Prenom @Model.lstPanierRecent[i].ToList()[0].PPClients.Nom</td>
-                                    <td colspan="2" class="text-right">@date.ToString("yyyy-MM-dd")</td>
-                                    <td colspan="1" class="text-center"></td>
-                                    <td colspan="2" class="text-center">
-                                    <input type="button" id="@("btnOuvrirPanier"+Model.lstPanierRecent[i].ToList()[0].NoPanier)" value="Aperçu du panier" class="btn btn-secondary" data-toggle="collapse" data-target="#@("collapse_panierRecent__" + Model.lstPanierRecent[i].ToList()[0].NoPanier)" /></td>
+                @if (Model.lstPanierAncien.Count == 0 && Model.lstPanierRecent.Count == 0)
+                {
+                    <h2>Aucun panier ancien ou récent pour cette période d'inactivité</h2>
+                }
+                else
+                {
 
-                                </tr>
-                                <tr id="@("collapse_panierRecent__" + Model.lstPanierRecent[i].ToList()[0].NoPanier)" class="collapse">
-                                    <td colspan="10">
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col" class="text-right">#</th>
-                                                    <th scope="col" class="text-left">Nom</th>
-                                                    <th scope="col" class="text-right">Prix</th>
-                                                    <th scope="col" class="text-center">est en rabais</th>
-                                                    <th scope="col" class="text-right">Quantité</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @for (int j = 0; j < Model.lstPanierRecent[i].ToList().Count; j++)
-                                                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" colspan="1" class="text-right">#</th>
+                                <th scope="col" colspan="2" class="text-left">Adresse courriel</th>
+                                <th scope="col" colspan="2" class="text-left">Nom complet</th>
+                                <th scope="col" colspan="2" class="text-right">Date d'activité</th>
+                                @if (Model.lstPanierAncien.Count > 0)
+                                {
+                                    <th scope="col" colspan="1" class="text-center">Supprimer : <input type="checkbox" id="cbAll" /></th>
+                                }
+                                <th scope="col" colspan="2" class="text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int counter = 0;
+                                for (int i = 0; i < Model.lstPanierAncien.Count; i++)
+                                {
+                                    @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].DateCreation)
+                                    @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NbItems)
+                                    @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoClient)
+                                    @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoPanier)
+                                    @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoProduit)
+                                    @Html.HiddenFor(m => m.lstPanierAncien[i].ppArtPan[0].NoVendeur)
+                                    DateTime date = (DateTime)Model.lstPanierAncien[i].ppArtPan[0].DateCreation;
+                                    ++counter;
+                                    <tr id="@("parent_"+i)">
+                                        <th colspan="1" scope="row" class="text-right">@counter</th>
+                                        <td colspan="2" class="text-left">@Model.lstPanierAncien[i].ppArtPan[0].PPClients.AdresseEmail</td>
+                                        @if ((Model.lstPanierAncien[i].ppArtPan[0].PPClients.Prenom != null || Model.lstPanierAncien[i].ppArtPan[0].PPClients.Nom != null) && (Model.lstPanierAncien[i].ppArtPan[0].PPClients.Prenom.Trim() != "" || Model.lstPanierAncien[i].ppArtPan[0].PPClients.Nom.Trim() != ""))
+                                        {
+                                            <td colspan="2" class="text-left">@Model.lstPanierAncien[i].ppArtPan[0].PPClients.Prenom @Model.lstPanierAncien[i].ppArtPan[0].PPClients.Nom</td>
+                                        }
+                                        else
+                                        {
+
+                                            <td colspan="2" class="text-left">Anonyme</td>
+                                        }
+                                        <td colspan="2" class="text-right">@date.ToString("yyyy-MM-dd")</td>
+                                        <td colspan="1" class="text-center">@Html.CheckBoxFor(p => Model.lstPanierAncien[i].isChecked, new { @class = "form-control" }) </td>
+                                        <td colspan="2" class="text-center"><input type="button" id="@("btnOuvrirPanier"+Model.lstPanierAncien[i].ppArtPan[0].NoPanier)" value="Aperçu du panier" class="btn btn-secondary" data-target="#@("collapse_panierAncien__" + Model.lstPanierAncien[i].ppArtPan[0].NoPanier)" data-toggle="collapse" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="10" id=@("collapse_panierAncien__" + Model.lstPanierAncien[i].ppArtPan[0].NoPanier) class="collapse">
+                                            <table>
+                                                <thead>
                                                     <tr>
-                                                        <th scope="row" class="text-right">@((j + 1).ToString())</th>
-                                                        <td class="text-left">@Model.lstPanierRecent[i].ToList()[j].PPProduits.Nom</td>
-                                                        @if (Model.lstPanierRecent[i].ToList()[j].PPProduits.DateVente > DateTime.Now && Model.lstPanierRecent[i].ToList()[j].PPProduits.PrixVente != null)
-                                                        {
-                                                            <td class="text-right">@Double.Parse(Model.lstPanierRecent[i].ToList()[j].PPProduits.PrixVente.ToString()).ToString("0.00") $</td>
-                                                            <td class="text-center"><input type="checkbox" value="true" disabled /></td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td class="text-right">@Double.Parse(Model.lstPanierRecent[i].ToList()[j].PPProduits.PrixDemande.ToString()).ToString("0.00") $</td>
-                                                            <td class="text-center"><input type="checkbox" value="false" disabled /></td>
-                                                        }
-                                                        <td class="text-right">@Model.lstPanierRecent[i].ToList()[j].NbItems</td>
+                                                        <th scope="col" class="text-right">#</th>
+                                                        <th scope="col" class="text-left">Nom</th>
+                                                        <th scope="col" class="text-right">Prix</th>
+                                                        <th scope="col" class="text-center">est en rabais</th>
+                                                        <th scope="col" class="text-right">Quantité</th>
                                                     </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+                                                </thead>
+                                                <tbody>
+                                                    @for (int j = 0; j < Model.lstPanierAncien[i].ppArtPan.Count; j++)
+                                                    {
+                                                        <tr>
+                                                            <th scope="row" class="text-right">@((j + 1).ToString())</th>
+                                                            <td class="text-left" onclick="javascript:window.location.href='/Client/ProduitDetaille?numero='+@Model.lstPanierAncien[i].ppArtPan[j].PPProduits.NoProduit">@Model.lstPanierAncien[i].ppArtPan[j].PPProduits.Nom</td>
+                                                            @if (Model.lstPanierAncien[i].ppArtPan[j].PPProduits.DateVente > DateTime.Now && Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixVente != null)
+                                                            {
+                                                                <td class="text-right">@Double.Parse(Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixVente.ToString()).ToString("0.00") $</td>
+                                                                <td class="text-center"><input type="checkbox" value="true" disabled /></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="text-right">@Double.Parse(Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixDemande.ToString()).ToString("0.00") $</td>
+                                                                <td class="text-center"><input type="checkbox" value="false" disabled /></td>
+                                                            }
+                                                            <td class="text-right">@Model.lstPanierAncien[i].ppArtPan[j].NbItems</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
+                                for (int k = 0;  k < Model.lstPanierRecent.Count; k++)
+                                {
+                                    @Html.HiddenFor(m => m.lstPanierRecent[k].ToList()[0].DateCreation)
+                                    @Html.HiddenFor(m => m.lstPanierRecent[k].ToList()[0].NbItems)
+                                    @Html.HiddenFor(m => m.lstPanierRecent[k].ToList()[0].NoClient)
+                                    @Html.HiddenFor(m => m.lstPanierRecent[k].ToList()[0].NoPanier)
+                                    @Html.HiddenFor(m => m.lstPanierRecent[k].ToList()[0].NoProduit)
+                                    @Html.HiddenFor(m => m.lstPanierRecent[k].ToList()[0].NoVendeur)
+                                    DateTime date = (DateTime)Model.lstPanierRecent[k].ToList()[0].DateCreation;
+                                    ++counter;
+                                    <tr>
+                                        <th scope="row" colspan="1" class="text-right">@counter</th>
+                                        <td colspan="2" class="text-left">@Model.lstPanierRecent[k].ToList()[0].PPClients.AdresseEmail</td>
+                                        @if ((Model.lstPanierRecent[k].ToList()[0].PPClients.Prenom != null || Model.lstPanierRecent[k].ToList()[0].PPClients.Nom != null) && (Model.lstPanierRecent[k].ToList()[0].PPClients.Prenom.Trim() != "" || Model.lstPanierRecent[k].ToList()[0].PPClients.Nom.Trim() != ""))
+                                        {
+                                            <td colspan="2" class="text-left">@Model.lstPanierRecent[k].ToList()[0].PPClients.Prenom @Model.lstPanierRecent[k].ToList()[0].PPClients.Nom</td>
+                                        }
+                                        else
+                                        {
 
+                                            <td colspan="2" class="text-left">Anonyme</td>
+                                        }
+                                        <td colspan="2" class="text-right">@date.ToString("yyyy-MM-dd")</td>
+                                        @if (Model.lstPanierAncien.Count > 0)
+                                        {
+                                            <td colspan="1" class="text-center"></td>
+                                        }
+                                        <td colspan="2" class="text-center">
+                                            <input type="button" id="@("btnOuvrirPanier"+Model.lstPanierRecent[k].ToList()[0].NoPanier)" value="Aperçu du panier" class="btn btn-secondary" data-toggle="collapse" data-target="#@("collapse_panierRecent__" + Model.lstPanierRecent[k].ToList()[0].NoPanier)" />
+                                        </td>
+
+                                    </tr>
+                                    <tr id="@("collapse_panierRecent__" + Model.lstPanierRecent[k].ToList()[0].NoPanier)" class="collapse">
+                                        <td colspan="10">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" class="text-right">#</th>
+                                                        <th scope="col" class="text-left">Nom</th>
+                                                        <th scope="col" class="text-right">Prix final unitaire</th>
+                                                        <th scope="col" class="text-center">est en rabais</th>
+                                                        <th scope="col" class="text-right">Quantité</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @for (int m = 0; m < Model.lstPanierRecent[k].ToList().Count; m++)
+                                                    {
+                                                        <tr>
+                                                            <th scope="row" class="text-right">@((m + 1).ToString())</th>
+                                                            <td class="text-left" onclick="javascript:window.location.href='/Client/ProduitDetaille?numero='+@Model.lstPanierRecent[k].ToList()[m].PPProduits.NoProduit">@Model.lstPanierRecent[k].ToList()[m].PPProduits.Nom</td>
+                                                            @if (Model.lstPanierRecent[k].ToList()[m].PPProduits.DateVente > DateTime.Now && Model.lstPanierRecent[k].ToList()[m].PPProduits.PrixVente != null)
+                                                            {
+                                                                <td class="text-right">@Double.Parse(Model.lstPanierRecent[k].ToList()[m].PPProduits.PrixVente.ToString()).ToString("0.00") $</td>
+                                                                <td class="text-center"><input type="checkbox" checked disabled /></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td class="text-right">@Double.Parse(Model.lstPanierRecent[k].ToList()[m].PPProduits.PrixDemande.ToString()).ToString("0.00") $</td>
+                                                                <td class="text-center"><input type="checkbox" disabled /></td>
+                                                            }
+                                                            <td class="text-right">@Model.lstPanierRecent[k].ToList()[m].NbItems</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                }
             </div>
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <button id="supprPanier" class="btn btn-primary" type="submit">Supprimer la sélection</button>
+            if (Model.lstPanierAncien.Count > 0)
+            {
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button id="supprPanier" class="btn btn-primary" type="submit">Supprimer la sélection</button>
+                    </div>
                 </div>
-            </div>
+            }
         }
     </div>
 </body>
 </html>
 <script>
+    function reload_js(src) {
+        $('script[src="' + src + '"]').remove();
+        $('<script>').attr('src', src + '?cachebuster=' + new Date().getTime()).appendTo('head');
+    }
+
     $(document).ready(function () {
         // Bouton final
         $("#supprPanier").click(function () {
@@ -185,8 +225,15 @@
                 }
             };
             if (countClientCocher > 0) {
+                var phrase = '';
+                if (countClientCocher > 1) {
+                    phrase = "Voulez-vous vraiment supprimer les paniers sélectionnés";
+                }
+                else {
+                    phrase = "Voulez-vous vraiment supprimer le panier sélectionné";
+                }
 
-                if (confirm("Voulez-vous vraiment supprimer ou inactiver ces client(s)/vendeur(s)?")) {
+                if (confirm(phrase)) {
                     return true;
                 }
                 else {
@@ -206,7 +253,7 @@
             };
         });
 
-         
+
     });
     function ddlChange() {
                 $.ajax({
@@ -217,7 +264,7 @@
                     error: error,
                 });
             }
-        function success(model) {
+    function success(model) {
                 $("#body").html(model);
 
             }

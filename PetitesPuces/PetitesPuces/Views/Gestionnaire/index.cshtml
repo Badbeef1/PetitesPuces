@@ -1,21 +1,6 @@
 ﻿   @using PetitesPuces.Models
 
 @{
-   if (Session["gestionnaireObj"] == null)
-   {
-      if (Session["vendeurObj"] != null)
-      {
-         Response.Redirect(Url.Action("AccueilVendeur", "Vendeur"));
-      }
-      else if (Session["clientObj"] != null)
-      {
-         Response.Redirect(Url.Action("AccueilClient", "Client"));
-      }
-      else
-      {
-         Response.Redirect(Url.Action("Index", "Internaute"));
-      }
-   }
    DataClasses1DataContext db = new DataClasses1DataContext();
    db.Connection.Open();
 
@@ -71,7 +56,7 @@
                </a>
             </li>
             <li class="nav-item">
-               <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
+               <a class="nav-link" href="@Session["retour"]"><i class="fas fa-arrow-left"></i>Retour</a>
             </li>
          </ul>
       </div>

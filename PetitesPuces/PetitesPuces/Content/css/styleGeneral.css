@@ -27,6 +27,15 @@
 
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
+    overflow-x: hidden;
 
     display:block!important;
+}
+
+.Ancre::before {
+    display: block;
+    padding-top: 6rem;
+    margin-top: -6rem;
+    content: "";
+    
 }

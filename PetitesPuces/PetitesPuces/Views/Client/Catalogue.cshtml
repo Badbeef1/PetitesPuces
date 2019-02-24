@@ -149,14 +149,14 @@
 </head>
 <body class="sPersonnalisationCatalogue" onpageshow="rechercheChangement(document.getElementById('selTypeRech').value)">
 
-    @Html.Partial("test")
+    @Html.Partial("index")
 
     @using (Html.BeginForm())
     {
         <div class="container-fluid">
             <div class="row flex-xl-nowrap">
                 <div class="col-sm-3 col-md-2 hidden-xs-down bd-sidebar bg-light">
-                    <nav class="sidebar bg-light collapse bd-links">
+                    <nav class="sidebar bg-light collapse bd-links pl-3">
                         <h6 class="mt-2">Catégorie de produit</h6>
                         <ul class="nav nav-pills flex-column" id="parentAccordeon">
                             @foreach (var categorie in Model.dicVendeur)
@@ -164,7 +164,7 @@
                                 <li class="nav-item">
                                     <div class="row">
                                         <a class="nav-link" href="@Url.Action("Catalogue", new { categorie = categorie.Key, Model.pageDimension})">@categorie.Key.ToString()</a>
-                                        <a data-toggle="collapse" href="@("#accordeon" + intIndex)">+</a>
+                                        <a data-toggle="collapse" class="pt-2" href="@("#accordeon" + intIndex)">+</a>
                                     </div>
 
                                     <ul class="collapse" id="@("accordeon" + intIndex)">
@@ -210,7 +210,7 @@
                                     <input type="text" id="tbRecherche" value="" placeholder="Que recherchez-vous?" class="form-control border-primary col-12">
                                     <div id="divRechercheDateDebut" style="display: none;">
                                         <label for="dtRechercheDebut" class="col-form-label">Date de début</label>
-                                        <input type="date" id="dtRechercheDebut" class="form-control border-primary"  onchange="autoriseRechercheParDateParution();" />
+                                        <input type="date" id="dtRechercheDebut" class="form-control border-primary" onchange="autoriseRechercheParDateParution();" />
                                     </div>
                                     <div id="divRechercheDateFin" style="display:none;">
                                         <label for="dtRechercheFin" class="col-form-label">Date de fin</label>
@@ -298,11 +298,18 @@
                         </div>
                     </div>
                     <br />
-                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech, Model.vendeur }))
+                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech, Model.vendeur, @categorie = Model.strCategorie }))
                     <br />
-                    @Html.Partial("Client/ProduitCatalogue", Model.iplProduits)
+                    @if (Model.iplProduits.TotalItemCount != 0)
+                    {
+                        @Html.Partial("Client/ProduitCatalogue", Model.iplProduits)
+                    }
+                    else
+                    {
+                        <p class="lead">Désoler, nous n'avons trouvé aucun résultat.</p>
+                    }
                     <br />
-                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech, Model.vendeur }))
+                    @Html.PagedListPager(Model.iplProduits, page => Url.Action("Catalogue", new { page, Model.pageDimension, @tri = ViewBag.TriActuel, Model.recherche, Model.recherche2, Model.typeRech, Model.vendeur, @categorie = Model.strCategorie }))
                 </main>
             </div>
         </div>
@@ -325,7 +332,7 @@
                         </p>
                         <div class="d-flex" id="divControleQuantite">
                             <label for="numNbAjoutPanier" class="col-form-label mr-auto">Quantité: </label>
-                            <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" step="1" value="1" onKeyUp="if (!Number.isInteger(Number(this.value))) { this.value = '';  } else if (Number(this.value) > Number(this.max)) { this.value = ''; } else if (Number(this.value) < 1) { this.value = '';}"   />
+                            <input id="numNbAjoutPanier" type="number" class="form-control col-5" min="1" step="1" value="1" onKeyUp="if (!Number.isInteger(Number(this.value))) { this.value = ''; } else if (Number(this.value) > Number(this.max)) { this.value = ''; } else if (Number(this.value) < 1) { this.value = ''; }"   />
                         </div>
                     </div>
                     <div class="modal-footer">

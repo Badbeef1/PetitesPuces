@@ -10,10 +10,10 @@
    <meta name="viewport" content="width=device-width" />
    <meta charset="utf-8">
    <title>Petites Puces</title>
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+   <script src="~/Scripts/jquery-3.3.1.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+   <script src="~/Scripts/bootstrap.min.js"></script>
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
    <title>Petites Puces</title>
    <style>
@@ -125,7 +125,6 @@
                 $('#' + noPanier).val(min);
             }
             var quantite = $('#' + noPanier).val();
-            console.log('J\'update le cart');
             $.ajax({
                 url: "/Client/UpdatePanier",
                 data: { "noPanier": noPanier, "quantite": quantite},
@@ -133,9 +132,6 @@
                 error: error,
             });
         }
-
-        function btnViderPanier
-
        function success(model) {
           
           $("#panier").html(model);
@@ -146,11 +142,19 @@
             console.log('erreur : ' + error);
             location.href = '/Client/AccueilClient';
         }
+        function ViderLePanier(noVendeur) {
+            $.ajax({
+                url: "/Client/VidePanier",
+                data: { "noVendeur": noVendeur },
+                success: success,
+                error: error,
+            });
+        }
        
     </script>
 </head>
 <body>
-   @Html.Partial("test")
+   @Html.Partial("index")
    <br /><br /><br />
    <div id="panier" class="container">
      @Html.Partial("Client/Panier", Model)

@@ -88,7 +88,7 @@
                             </div>
                             @Html.EditorFor(x => x.password1, new { htmlAttributes = new {
                             @class = "form-control",
-                            @placeholder = "Nouveau mot de passe",
+                            @placeholder = "Mot de passe",
                             @type="password"
                          }
                          })
@@ -104,13 +104,13 @@
 
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text text-center" style="width: 200px">
-                                    Nouveau mot de passe
-                                </span>
+                               <span class="input-group-text text-center" style="width: 200px">
+                                  Confirmation
+                               </span>
                             </div>
                             @Html.EditorFor(x => x.password2, new { htmlAttributes = new {
                             @class = "form-control",
-                            @placeholder = "Nouveau mot de passe",
+                            @placeholder = "Mot de passe",
                             @type="password"
                          }
                          })
@@ -148,7 +148,14 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script type="text/javascript">
-        $('#modFauxMessage').modal('show');
+        var uneErreur = '@ViewBag.msgErreur';
+        var champMDP1 = document.getElementById('password1');
+        var champMDP2 = document.getElementById('password2');
+
+        //Affiche seulement le message au premier affichage
+        if (uneErreur.length == 0 && !champMDP1.classList.contains('input-validation-error') && !champMDP2.classList.contains('input-validation-error')) {
+            $('#modFauxMessage').modal('show');
+        }
     </script>
 </body>
 </html>

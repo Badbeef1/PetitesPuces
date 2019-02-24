@@ -2,33 +2,16 @@
 
 @{
     List<PPDestinataires> notif = null;
-    if (Session["vendeurObj"] == null)
-    {
-        if (Session["clientObj"] != null)
-        {
-            Response.Redirect(Url.Action("AccueilClient", "Client"));
-        }
-        else if (Session["gestionnaireObj"] != null)
-        {
-            Response.Redirect(Url.Action("AccueilGestionnaire", "Gestionnaire"));
-        }
-        else
-        {
-            Response.Redirect(Url.Action("Index", "Internaute"));
-        }
-    }
-    else
-    {
-        DataClasses1DataContext db = new DataClasses1DataContext();
-        db.Connection.Open();
 
-        notif = (from desti in db.GetTable<PPDestinataires>()
-                 where (desti.NoDestinataire.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)) &&
-                 (desti.EtatLu.Equals(0) && desti.Lieu == 1)
-                 select desti).ToList();
+    DataClasses1DataContext db = new DataClasses1DataContext();
+    db.Connection.Open();
 
-        db.Connection.Close();
-    }
+    notif = (from desti in db.GetTable<PPDestinataires>()
+                where (desti.NoDestinataire.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)) &&
+                (desti.EtatLu.Equals(0) && desti.Lieu == 1)
+                select desti).ToList();
+
+    db.Connection.Close();
 }
 <header class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light bd-navbar">
@@ -68,7 +51,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-arrow-left"></i>Retour</a>
+                    <a class="nav-link" href="@Session["retour"]"><i class="fas fa-arrow-left"></i>Retour</a>
                 </li>
             </ul>
         </div>
