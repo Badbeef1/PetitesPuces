@@ -373,6 +373,7 @@
     <Compile Include="Controllers\VendeurController.cs" />
     <Compile Include="Controllers\VendeurDao.cs" />
     <Compile Include="Filter\VerifieSessionClient.cs" />
+    <Compile Include="Filter\VerifieSessionCourriel.cs" />
     <Compile Include="Filter\VerifieSessionGestionnaire.cs" />
     <Compile Include="Filter\VerifieSessionVendeur.cs" />
     <Compile Include="Global.asax.cs">

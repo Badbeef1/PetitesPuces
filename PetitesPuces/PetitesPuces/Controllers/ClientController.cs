@@ -1809,34 +1809,5 @@ namespace PetitesPuces.Controllers
 
             return intNbProduitDejaPanier;
         }
-
-        /*
-
-        private ActionResult GestionAccesClient()
-        {
-            if (Session["vendeurObj"] != null)
-            {
-                return RedirectToAction("/Vendeur");
-            }
-            else if (Session["gestionnaireObj"] != null)
-            {
-                return RedirectToAction("/Gestionnaire");
-            }
-            else if (Session["clientObj"] == null)
-            {
-                return RedirectToAction("/Internaute");
-            }
-
-            return null;
-        }
-
-        private void GestionAcces()
-        {
-            if ((Session["clientObj"] == null) && (Session["vendeurObj"] == null) && (Session["gestionnaireObj"] == null))
-            {
-                RedirectToAction("/Internaute");
-            }
-        }
-        */
     }
 }

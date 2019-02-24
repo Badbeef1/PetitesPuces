@@ -7,21 +7,13 @@ using System.Web.Routing;
 
 namespace PetitesPuces.Filter
 {
-    public class VerifieSessionGestionnaire : ActionFilterAttribute
+    public class VerifieSessionCourriel : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var Session = filterContext.HttpContext.Session;
 
-            if (Session["clientObj"] != null)
-            {
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Client" }));
-            }
-            if (Session["vendeurObj"] != null)
-            {
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Vendeur" }));
-            }
-            else if (Session["gestionnaireObj"] == null)
+            if ((Session["clientObj"] == null) && (Session["vendeurObj"] == null) && (Session["gestionnaireObj"] == null))
             {
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Internaute" }));
             }

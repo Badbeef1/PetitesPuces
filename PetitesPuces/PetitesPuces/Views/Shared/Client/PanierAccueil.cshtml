@@ -63,7 +63,7 @@
          @foreach (var articlesVendeur in Model.lstPanierVendeur)
          {
             <div class="card">
-               <div class="card-header" id="heading_@articlesVendeur.Key.NoVendeur">
+               <div class="card-header Ancre" id="heading_@articlesVendeur.Key.NoVendeur">
                   <div class="float-left">
                      <img src="~/Content/images/cart.jpg" alt="panier" class="rounded-circle" height="50px width="50px">
                   </div>
@@ -76,7 +76,7 @@
                   </div>
                </div>
 
-               <div id="collapse_@articlesVendeur.Key.NoVendeur" class="collapse" aria-labelledby="heading_@articlesVendeur.Key.NoVendeur" data-parent="#accordionPanier">
+               <div id="collapse_@articlesVendeur.Key.NoVendeur" class="collapse Ancre" aria-labelledby="heading_@articlesVendeur.Key.NoVendeur" data-parent="#accordionPanier">
 
                   <div class="card-body">
                      <div class="card">

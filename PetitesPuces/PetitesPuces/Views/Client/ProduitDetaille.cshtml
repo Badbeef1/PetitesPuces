@@ -49,7 +49,7 @@
 
         @if (Request.UrlReferrer != null)
         {
-            <a class="btn btn-primary btn-block" onclick="history.go(-1); return false;" href="#">Retour à la page précédente</a><br />
+            <a class="btn btn-primary btn-block" href="@Session["retour"]">Retour à la page précédente</a><br />
         }
         @if (Session["clientObj"] != null)
         {
