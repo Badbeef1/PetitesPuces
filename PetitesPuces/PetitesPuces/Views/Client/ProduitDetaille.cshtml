@@ -73,14 +73,14 @@
             type: "POST",
             data: JSON.stringify({ "intNoProduit": numeroDeProduit, "intNbProduit": qqtProduitDesire }),
             success: function (elementRetour, status, xhr) {
-                alert('parfait => ' + elementRetour);
+                console.log('parfait => ' + elementRetour);
                 $('#modAjoutPanier').modal('hide');
             },
             failure: function (response) {
-                alert("La requete d'ajout a échouée!");
+                console.log("La requete d'ajout a échouée!");
             },
             error: function (response) {
-                alert("Une erreur dans la requete d'ajout!");
+                console.log("Une erreur dans la requete d'ajout!");
             }
         });
     }
@@ -93,7 +93,7 @@
             type: "POST",
             data: JSON.stringify({ "intNoProduit": numeroDeProduit }),
             success: function (elementRetour, status, xhr) {
-                alert('parfait => ' + elementRetour);
+                console.log('parfait => ' + elementRetour);
 
                 if (elementRetour == @Model.Produit.NombreItems) {
                     $('#messageIndisponible').css("display", "");
@@ -118,10 +118,10 @@
 
             },
             failure: function (response) {
-                alert("La requete d'ajout a échouée!");
+                console.log("La requete d'ajout a échouée!");
             },
             error: function (response) {
-                alert("Une erreur dans la requete d'ajout!");
+                console.log("Une erreur dans la requete d'ajout!");
             }
        });
        }
