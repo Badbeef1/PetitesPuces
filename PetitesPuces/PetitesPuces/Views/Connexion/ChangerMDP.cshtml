@@ -148,7 +148,12 @@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script type="text/javascript">
-        if (document.location.origin != document.referrer) {
+        var uneErreur = '@ViewBag.msgErreur';
+        var champMDP1 = document.getElementById('password1');
+        var champMDP2 = document.getElementById('password2');
+
+        //Affiche seulement le message au premier affichage
+        if (uneErreur.length == 0 && !champMDP1.classList.contains('input-validation-error') && !champMDP2.classList.contains('input-validation-error')) {
             $('#modFauxMessage').modal('show');
         }
     </script>
