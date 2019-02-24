@@ -76,7 +76,16 @@
                     {
                         <button type="button" class="btn btn-outline-primary" value="@Model.Produit.NoProduit" onclick="$.VerificationDisponibilite(this.value)" @(Model.Produit.NombreItems == 0 ? "disabled" : "")>Ajouter au panier <span class="fas fa-shopping-cart"></span></button>
                     }
-                    <span id="spQqt"><span class="font-weight-bold">Quantité restant:</span> @Model.Produit.NombreItems</span>
+
+                    @if (Model.Produit.NombreItems > 0)
+                    {
+                        <span id="spQqt">Quantité restant: @Html.DisplayFor(x => Model.Produit.NombreItems)</span>
+                    }
+                    else if (Model.Produit.NombreItems <= 0)
+                    {
+                        <span id="spQqt">Quantité restant: <span class="badge badge-danger">Rupture de stock</span></span>
+                    }
+
                     @if (Session["clientObj"] != null)
                     {
                         <br /><br /><button id="btn_envoyer_message" class="btn btn-outline-primary" onclick="accepter(@Model.Produit.NoVendeur);">Contacter le vendeur</button>

@@ -11,16 +11,24 @@
          <div class="card-body">
             <h5 class="card-title">@Html.DisplayFor(x => produit.Nom)</h5>
             <p class="card-text">
-               @Html.DisplayFor(x => produit.PrixDemande)$<br />
+                @Html.DisplayFor(x => produit.PrixDemande)$<br />
                 @if (produit.DateVente.HasValue && DateTime.Now <= produit.DateVente.Value)
                 {
-                    var rabais = produit.PrixDemande - produit.PrixVente;                   
+                    var rabais = produit.PrixDemande - produit.PrixVente;
                     <small>rabais de @rabais.Value.ToString("0.00")$</small><br />
                     <small>jusqu'au @produit.DateVente.Value.ToString("yyyy-MM-dd")</small><br />
                 }
-               <span id="spQqt">Quantité restant: @Html.DisplayFor(x => produit.NombreItems)</span><br />
-               <small>#@Html.DisplayFor(x => produit.NoProduit)</small><br />
-               <small>Date création: @produit.DateCreation.Value.ToString("yyyy-MM-dd")</small>
+                @if (produit.NombreItems > 0)
+                {
+                    <span id="spQqt">Quantité restant: @Html.DisplayFor(x => produit.NombreItems)</span>
+                }
+                else if (produit.NombreItems <= 0)
+                {
+                    <span id="spQqt">Quantité restant:<span class="badge badge-danger">Rupture de stock</span></span>
+                }
+                <br />
+                <small>#@Html.DisplayFor(x => produit.NoProduit)</small><br />
+                <small>Date création: @produit.DateCreation.Value.ToString("yyyy-MM-dd")</small>
             </p>
             <p class="text-right">
                <span class="badge badge-success">@Html.DisplayFor(x => produit.PPCategories.Description)</span>

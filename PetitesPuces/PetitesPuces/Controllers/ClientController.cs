@@ -1392,8 +1392,8 @@ namespace PetitesPuces.Controllers
             long value;
             if (long.TryParse(numero, out value))
             {
-
-                if (contextPP.PPProduits.FirstOrDefault(predicate: pro => pro.NoProduit == value).Disponibilité.Value || Session["vendeurObj"] != null)
+                PPProduits unProduit = contextPP.PPProduits.FirstOrDefault(predicate: pro => pro.NoProduit == value);
+                if ((unProduit.NombreItems != -1) && (unProduit.Disponibilité.Value  || Session["vendeurObj"] != null))
                 {
                     var model = new ViewModels.ProduitDetailViewModel
                     {
