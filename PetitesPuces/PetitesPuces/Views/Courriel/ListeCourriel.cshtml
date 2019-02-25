@@ -94,12 +94,14 @@
             tabCb.push(list.id.substring(2));
         });
 
-        document.getElementById('ElementSelectionner').value = tabCb;
-        document.getElementById("uneAction").value = element.value;
+        if (tabCb.length > 0) {
+            document.getElementById('ElementSelectionner').value = tabCb;
+            document.getElementById("uneAction").value = element.value;
 
-        if (confirm("Êtes-vous sûr de vouloir appliquer l'action sur les " + tabCb.length + " messages?")) {
-            document.getElementsByTagName("form")[0].submit();
-        }
+            if (confirm("Êtes-vous sûr de vouloir appliquer l'action sur les " + tabCb.length + " messages?")) {
+                document.getElementsByTagName("form")[0].submit();
+            }
+        } 
     }
 </script>
 
