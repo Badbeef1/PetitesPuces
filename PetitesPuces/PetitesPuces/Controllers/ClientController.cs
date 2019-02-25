@@ -1385,7 +1385,7 @@ namespace PetitesPuces.Controllers
         {
 
             //Reste a nick a décider de l'endroit à rediriger
-            String strRedirection = Session["clientObj"] != null ? "/Client/Catalogue" : (Session["vendeurObj"] != null ? "/Vendeur/CatalogueVendeur" : "/Gestionnaire/AccueilGestionnaire");
+            String strRedirection = Session["clientObj"] != null ? "/Client/Catalogue" : (Session["vendeurObj"] != null ? "/Vendeur/CatalogueVendeur" : Session["retour"] as string);
 
             long value;
             if (long.TryParse(numero, out value))
