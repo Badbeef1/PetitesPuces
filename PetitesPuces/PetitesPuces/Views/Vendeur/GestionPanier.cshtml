@@ -108,7 +108,7 @@
                                                             @if (Model.lstPanierAncien[i].ppArtPan[j].PPProduits.DateVente > DateTime.Now && Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixVente != null)
                                                             {
                                                                 <td class="text-right">@Double.Parse(Model.lstPanierAncien[i].ppArtPan[j].PPProduits.PrixVente.ToString()).ToString("0.00") $</td>
-                                                                <td class="text-center"><input type="checkbox" value="true" disabled /></td>
+                                                                <td class="text-center"><input type="checkbox" checked disabled /></td>
                                                             }
                                                             else
                                                             {
