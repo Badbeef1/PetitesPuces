@@ -923,7 +923,11 @@
 
                 form.appendChild(InfoSuppl);
 
-                    document.body.appendChild(form);
+                document.body.appendChild(form);
+                console.log(InfoSuppl.getAttribute("value"))
+                setTimeout(function () {
+
+                },100000)
                     form.submit();
 
                     $("#erreurPaiement").text("");

@@ -15,7 +15,7 @@ namespace PetitesPuces
             BundleTable.EnableOptimizations = true;
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
         }
     }
 }
