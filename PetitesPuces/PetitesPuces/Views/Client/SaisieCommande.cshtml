@@ -290,11 +290,11 @@
                                         <div class="quantity">
                                             @if (Model.lstArticlePanier[x].PPProduits.NombreItems < Model.lstArticlePanier[x].NbItems)
                                             {
-                                                <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
+                                                <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].PPProduits.NombreItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
                                             }
                                             else
                                             {
-                                                <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].PPProduits.NombreItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
+                                                <input id="@Model.lstArticlePanier[x].NoPanier" type="number" min="1" max="@Model.lstArticlePanier[x].PPProduits.NombreItems" step="1" class="qty" value="@Model.lstArticlePanier[x].NbItems" onchange="updateCart(@Model.lstArticlePanier[x].NoPanier)" onkeyup="">
 
                                             }
                                         </div>

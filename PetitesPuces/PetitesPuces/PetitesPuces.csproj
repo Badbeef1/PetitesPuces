@@ -526,6 +526,7 @@
     <Content Include="Views\Vendeur\GestionPanier.cshtml" />
     <Content Include="Views\Client\HistoriqueCommande.cshtml" />
     <Content Include="Views\Shared\Facture.cshtml" />
+    <Content Include="Views\Client\VoirPDFCommande.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
