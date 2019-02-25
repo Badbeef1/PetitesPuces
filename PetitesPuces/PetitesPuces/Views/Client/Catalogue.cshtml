@@ -388,6 +388,7 @@
                             $('#messageAvertissement').css("display", "");
                             $('#spQuantite').text(elementRetour);
                             $('#numNbAjoutPanier').prop("max", nombreProduitTotal - elementRetour);
+                            $('#numNbAjoutPanier').val(1);
 
                             $('#btnAjoutProduit').val(numeroDeProduit);
 
@@ -395,6 +396,7 @@
                         }
                         else {
                             $('#numNbAjoutPanier').prop("max", nombreProduitTotal - elementRetour);
+                            $('#numNbAjoutPanier').val(1);
                             $('#btnAjoutProduit').val(numeroDeProduit);
 
                             $('#modAjoutPanier').modal('show');

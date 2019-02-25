@@ -107,11 +107,13 @@
                     $('#messageAvertissement').css("display", "");
                     $('#spQuantite').text(elementRetour);
                     $('#numNbAjoutPanier').prop("max", @Model.Produit.NombreItems - elementRetour);
+                    $('#numNbAjoutPanier').val(1);
 
                     $('#modAjoutPanier').modal('show');
                 }
                 else {
                     $('#numNbAjoutPanier').prop("max", @Model.Produit.NombreItems - elementRetour);
+                    $('#numNbAjoutPanier').val(1);
 
                     $('#modAjoutPanier').modal('show');
                 }
