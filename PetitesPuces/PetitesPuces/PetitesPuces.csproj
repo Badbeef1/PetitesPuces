@@ -169,6 +169,7 @@
     <Content Include="Content\images\1100030.jpg" />
     <Content Include="Content\images\1100031.jpg" />
     <Content Include="Content\images\1100032.jpg" />
+    <Content Include="Content\images\1100033.jpg" />
     <Content Include="Content\images\1200001.jpg" />
     <Content Include="Content\images\1200002.jpg" />
     <Content Include="Content\images\1200003.jpg" />
@@ -287,6 +288,7 @@
     <Content Include="Content\images\Imprimante24.jpg" />
     <Content Include="Content\images\Imprimante25.jpg" />
     <Content Include="Content\images\mac.jpg" />
+    <Content Include="Content\images\new_item.JPG" />
     <Content Include="Content\images\order.jpg" />
     <Content Include="Content\images\sport.jpg" />
     <Content Include="Content\images\sport2.jpg" />
