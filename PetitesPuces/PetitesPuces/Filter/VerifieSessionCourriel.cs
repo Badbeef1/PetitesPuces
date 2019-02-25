@@ -19,13 +19,24 @@ namespace PetitesPuces.Filter
             }
             else
             {
-                if (Session["retour"] == null)
+                try
                 {
-                    Session["retour"] = filterContext.HttpContext.Request.Url;
+                    if (Session["retour"] == null)
+                    {
+                        Session["retour"] = filterContext.HttpContext.Request.Url;
+                    }
+                    else if (filterContext.HttpContext.Request.UrlReferrer.AbsolutePath != filterContext.HttpContext.Request.Url.AbsolutePath)
+                    {
+                        Session["retour"] = filterContext.HttpContext.Request.UrlReferrer.AbsoluteUri;
+                    }
                 }
-                else if (filterContext.HttpContext.Request.UrlReferrer.AbsolutePath != filterContext.HttpContext.Request.Url.AbsolutePath)
+                catch (NullReferenceException)
                 {
-                    Session["retour"] = filterContext.HttpContext.Request.UrlReferrer.AbsoluteUri;
+                    if ((filterContext.HttpContext.Request.UrlReferrer is null) && (filterContext.HttpContext.Request.Url.AbsolutePath != "/Courriel") && (Session["retour"] != null))
+                    {
+                        Session["retour"] = null;
+                        filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Courriel" }));
+                    }
                 }
             }
 

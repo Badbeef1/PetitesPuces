@@ -14,8 +14,6 @@ namespace PetitesPuces.Filter
         {
             var Session = filterContext.HttpContext.Session;
 
-            
-
             if (filterContext.ActionDescriptor.ActionName != "ProduitDetaille")
             {
                 if (Session["vendeurObj"] != null)
@@ -32,13 +30,23 @@ namespace PetitesPuces.Filter
                 }
                 else
                 {
-                    if (Session["retour"] == null)
+                    try
                     {
-                        Session["retour"] = filterContext.HttpContext.Request.Url;
-                    }
-                    else if (filterContext.HttpContext.Request.UrlReferrer.AbsolutePath != filterContext.HttpContext.Request.Url.AbsolutePath)
+                        if (Session["retour"] == null)
+                        {
+                            Session["retour"] = filterContext.HttpContext.Request.Url;
+                        }
+                        else if (filterContext.HttpContext.Request.UrlReferrer.AbsolutePath != filterContext.HttpContext.Request.Url.AbsolutePath)
+                        {
+                            Session["retour"] = filterContext.HttpContext.Request.UrlReferrer.AbsoluteUri;
+                        }
+                    }catch(NullReferenceException )
                     {
-                        Session["retour"] = filterContext.HttpContext.Request.UrlReferrer.AbsoluteUri;
+                        if ((filterContext.HttpContext.Request.UrlReferrer is null) && (filterContext.HttpContext.Request.Url.AbsolutePath != "/Client") && (Session["retour"] != null))
+                        {
+                            Session["retour"] = null;
+                            filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Client" }));
+                        }
                     }
                 }
             }
@@ -50,14 +58,24 @@ namespace PetitesPuces.Filter
                 }
                 else
                 {
-                    if (Session["retour"] == null)
+                    try
                     {
-                        Session["retour"] = filterContext.HttpContext.Request.Url;
-                    }
-                    else if (filterContext.HttpContext.Request.UrlReferrer.AbsolutePath != filterContext.HttpContext.Request.Url.AbsolutePath)
+                        if (Session["retour"] == null)
+                        {
+                            Session["retour"] = filterContext.HttpContext.Request.Url;
+                        }
+                        else if (filterContext.HttpContext.Request.UrlReferrer.AbsolutePath != filterContext.HttpContext.Request.Url.AbsolutePath)
+                        {
+                            Session["retour"] = filterContext.HttpContext.Request.UrlReferrer.AbsoluteUri;
+                        }
+                    }catch(NullReferenceException )
                     {
-                        Session["retour"] = filterContext.HttpContext.Request.UrlReferrer.AbsoluteUri;
-                    }
+                        if ((filterContext.HttpContext.Request.UrlReferrer is null) && (filterContext.HttpContext.Request.Url.AbsolutePath != "/Client") && (Session["retour"]  != null))
+                        {
+                            Session["retour"] = null;
+                            filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Client" }));
+                        }
+                    }   
                 }
             }
 

@@ -984,7 +984,7 @@ namespace PetitesPuces.Controllers
 
         //Les produits avec une quantité défini par page
 
-        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche, string recherche2, int? typeRech, int? page, int pageDimension = 15, int noPage = 1)
+        public ActionResult Catalogue(string tri, string categorie, string vendeur, string recherche, string recherche2, int? typeRech, int? page, string pageDimension = "15", int noPage = 1)
         {
             const String strTriNum = "numero";
             const String strTriCat = "categorie";
@@ -1003,6 +1003,8 @@ namespace PetitesPuces.Controllers
             //System.Diagnostics.Debug.WriteLine("tri1: " + (ViewBag.TriNum as String) + " Tri2: " + (ViewBag.TriCat as String) + " Tri3: " + (ViewBag.TriDate as String));
 
             List<PPProduits> lstDesProduits = contextPP.PPProduits.Where(prod => prod.Disponibilité == true).ToList();
+
+            int.TryParse(pageDimension, out int intPageDimension);
 
             //tri
             switch (tri)
@@ -1114,6 +1116,11 @@ namespace PetitesPuces.Controllers
             dicSelectionNbItems.Add("50", 50);
             dicSelectionNbItems.Add("tous", contextPP.PPProduits.Count());
 
+            if (!dicSelectionNbItems.ContainsValue(intPageDimension))
+            {
+                intPageDimension = 15;
+            }
+
             int intNumeroPage = (page ?? 1);
 
             //Vendeur par catégorie
@@ -1135,9 +1142,9 @@ namespace PetitesPuces.Controllers
                 strCategorie = categorie,
                 recherche = recherche,
                 recherche2 = recherche2,
-                pageDimension = pageDimension,
+                pageDimension = intPageDimension,
                 intNoPage = noPage,
-                iplProduits = lstDesProduits.ToPagedList(intNumeroPage, pageDimension),
+                iplProduits = lstDesProduits.ToPagedList(intNumeroPage, intPageDimension),
                 dicVendeur = dicCateAvecVendeur,
                 vendeur = vendeur,
                 lstVendeur = lstVendeur,
