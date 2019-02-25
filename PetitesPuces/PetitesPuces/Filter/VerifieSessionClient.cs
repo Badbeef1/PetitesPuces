@@ -32,7 +32,11 @@ namespace PetitesPuces.Filter
                 {
                     try
                     {
-                        if (Session["retour"] == null)
+                        if (filterContext.ActionDescriptor.ActionName == "ConfirmationTransaction" || filterContext.ActionDescriptor.ActionName == "VoirPDFCommande")
+                        {
+
+                        }
+                        else if (Session["retour"] == null)
                         {
                             Session["retour"] = filterContext.HttpContext.Request.Url;
                         }
@@ -60,7 +64,11 @@ namespace PetitesPuces.Filter
                 {
                     try
                     {
-                        if (Session["retour"] == null)
+                        if (filterContext.ActionDescriptor.ActionName == "ConfirmationTransaction" || filterContext.ActionDescriptor.ActionName == "VoirPDFCommande")
+                        {
+
+                        }
+                        else if (Session["retour"] == null)
                         {
                             Session["retour"] = filterContext.HttpContext.Request.Url;
                         }

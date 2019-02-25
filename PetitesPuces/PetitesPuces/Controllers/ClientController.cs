@@ -16,6 +16,7 @@ using PetitesPuces.Filter;
 
 namespace PetitesPuces.Controllers
 {
+    [VerifieSessionClient]
     public class ClientController : Controller
     {
         DataClasses1DataContext contextPP = new DataClasses1DataContext();

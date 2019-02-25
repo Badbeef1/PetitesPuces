@@ -29,6 +29,10 @@ namespace PetitesPuces.Filter
             {
                 try
                 {
+                    if (filterContext.ActionDescriptor.ActionName == "VoirPDFCommande")
+                    {
+
+                    }
                     if (Session["retour"] == null)
                     {
                         Session["retour"] = filterContext.HttpContext.Request.Url;
