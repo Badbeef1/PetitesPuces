@@ -193,8 +193,20 @@ namespace PetitesPuces.Controllers
                                                                where pMax.NoVendeur.Equals((Session["vendeurObj"] as PPVendeurs).NoVendeur)
                                                                select pMax
                                                                ).ToList();
-                                    long noProduit = maxNoProduitVendeur.Last().NoProduit + 1;
-                                    prod.NoProduit = noProduit;
+                                    long noProduit;
+                                    if (maxNoProduitVendeur.Count() > 0)
+                                    {
+                                       noProduit = maxNoProduitVendeur.Last().NoProduit + 1;
+                                       prod.NoProduit = noProduit;
+                                    }
+                                    else
+                                    {
+                                       string strNoProduit = (Session["vendeurObj"] as PPVendeurs).NoVendeur.ToString() + "00001";
+                                       noProduit = long.Parse(strNoProduit);
+                                       prod.NoProduit = noProduit;
+                                    }
+                                    
+                                    
                                     prod.DateCreation = DateTime.Now;
                                     prod.Disponibilité = model.produit.Disponibilité;
 

@@ -6,8 +6,12 @@ select * from PPClients
 select * from PPVendeurs
 select * from PPGestionnaires
 
+--Test statistiques clients potentiels,actif et visiteurs
 select distinct NoClient from PPCommandes
 select distinct NoClient from PPArticlesEnPanier
+--Test statistiques nouveaux clients.
+select DateCreation from PPClients
+where DateCreation > 2018-02-21
 
 select * from PPProduits where NoVendeur = 12 AND NoCategorie = 20
 
@@ -31,6 +35,9 @@ insert into PPVendeurs values(1,'Childish', 'Blanchet-Plante', 'Kevin','Notre-Da
 /* Rajouter des paniers aux utilisateurs*/
 INSERT INTO PPArticlesEnPanier
 VALUES (1, 10000, 10, 1000010, GETDATE(), 1);
+
+
+
 
 INSERT INTO PPArticlesEnPanier
 VALUES (2, 10000, 10, 1000020, GETDATE(), 1);
@@ -57,7 +64,7 @@ delete PPVendeurs
 delete PPDestinataires
 delete PPMessages
 
-
+update PPVendeurs Set Configuration = ';;' where NoVendeur = 8
 --Ajouter des produits
 insert into PPProduits 
 values(2000050,20,3,'Apple Watch série 3','(GPS + cellulaire) 38 mm boîtier aluminium doré + bracelet sport rose des sables','2000050.jpg',430.24,3,1,NULL,430.24,2.0,2018-02-30,NULL)
