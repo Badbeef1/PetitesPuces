@@ -319,7 +319,7 @@ namespace PetitesPuces.Views
                     messVM.StrNomAffichageExpediteur = unVendeur.NomAffaires;
                     messVM.strNomdestinataireExpediteurPourTri = unVendeur.AdresseEmail;
                 }
-                else
+                else if((dynExpediteur = contextPP.PPGestionnaire.FirstOrDefault(predicate: vendeur => vendeur.NoGestionnaire == intNoExpediteur)) != null)
                 {
                     PPGestionnaire unGestionnaire = (dynExpediteur as PPGestionnaire);
 

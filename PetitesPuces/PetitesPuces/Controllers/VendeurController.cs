@@ -206,7 +206,6 @@ namespace PetitesPuces.Controllers
                                        prod.NoProduit = noProduit;
                                     }
                                     
-                                    
                                     prod.DateCreation = DateTime.Now;
                                     prod.Disponibilité = model.produit.Disponibilité;
 
